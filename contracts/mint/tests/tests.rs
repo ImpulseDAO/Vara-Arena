@@ -1,4 +1,3 @@
-use gstd::ActorId;
 use gtest::{Program, System};
 
 #[test]
@@ -12,5 +11,5 @@ fn game() {
     );
 
     mint.send(10, 0x00);
-    mint.send(10, ActorId::from(5));
+    mint.send(10, 0x00);
 }

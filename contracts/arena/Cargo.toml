@@ -1,5 +1,5 @@
 [package]
-name = "mint"
+name = "arena"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,6 +7,10 @@ edition = "2021"
 
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], branch = "stable" }
+codec = { package = "parity-scale-codec", version = "3.1.2", default-features = false }
 
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", branch = "stable" }
+
+[dev-dependencies]
+gtest = { git = "https://github.com/gear-tech/gear.git", branch = "stable" }

@@ -26,7 +26,7 @@ unsafe extern "C" fn init() {
 extern "C" fn handle() {
     let state = unsafe { STATE.as_mut().unwrap() };
 
-    let submitted_code: CodeId = msg::load().expect("Unable to decode `CodeId`");
+    let submitted_code: CodeId = msg::load().expect("unable to decode `CodeId`");
     let (_, character_id) =
         ProgramGenerator::create_program_with_gas(submitted_code, b"payload", 10_000_000_000, 0)
             .unwrap();
@@ -36,4 +36,5 @@ extern "C" fn handle() {
 
     state.characters.insert(character_id, info);
     debug!("character {:?} minted", character_id);
+    msg::reply(character_id, 0).expect("unable to reply");
 }

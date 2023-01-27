@@ -26,9 +26,7 @@ unsafe extern "C" fn init() {
 extern "C" fn handle() {
     let state = unsafe { STATE.as_mut().unwrap() };
 
-    let submitted_code: CodeId =
-        hex_literal::hex!("abf3746e72a6e8740bd9e12b879fbdd59e052cb390f116454e9116c22021ae4a")
-            .into();
+    let submitted_code: CodeId = msg::load().expect("Unable to decode `CodeId`");
     let (_, character_id) =
         ProgramGenerator::create_program_with_gas(submitted_code, b"payload", 10_000_000_000, 0)
             .unwrap();

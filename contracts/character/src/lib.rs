@@ -1,8 +1,11 @@
 #![no_std]
 
-use gstd::debug;
+use common::GameAction;
+use gstd::{debug, msg};
 
-#[no_mangle]
-extern "C" fn handle() {
-    debug!("character handle");
+#[gstd::async_main]
+async fn main() {
+    debug!("attaking");
+    msg::send(msg::source(), GameAction::Attack, 0).expect("unable to send message");
+    msg::reply("", 0).expect("unable to reply");
 }

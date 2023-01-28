@@ -21,6 +21,7 @@ checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 name = "arena"
 version = "0.1.0"
 dependencies = [
+ "common",
  "gear-wasm-builder",
  "gstd",
  "gtest",
@@ -147,6 +148,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "character"
 version = "0.1.0"
 dependencies = [
+ "common",
  "gear-wasm-builder",
  "gstd",
 ]
@@ -160,6 +162,14 @@ dependencies = [
  "atty",
  "lazy_static",
  "winapi",
+]
+
+[[package]]
+name = "common"
+version = "0.1.0"
+dependencies = [
+ "gstd",
+ "parity-scale-codec",
 ]
 
 [[package]]

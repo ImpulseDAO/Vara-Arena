@@ -1,5 +1,5 @@
 use codec::Decode;
-use common::{GameAction, InitCharacter, InitialAttributes};
+use common::{CreateCharacter, GameAction, InitialAttributes};
 use gstd::{ActorId, CodeId};
 use gtest::{Program, System};
 
@@ -27,7 +27,7 @@ fn game() {
         .into();
     let code_id = CodeId::from(hash);
 
-    let payload = InitCharacter {
+    let payload = CreateCharacter {
         code_id,
         attributes: InitialAttributes {
             agility: 1,

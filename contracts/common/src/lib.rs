@@ -26,7 +26,7 @@ pub struct InitialAttributes {
 }
 
 #[derive(Encode, Decode, Clone, Debug)]
-pub struct InitCharacter {
+pub struct CreateCharacter {
     pub code_id: CodeId,
     pub attributes: InitialAttributes,
 }

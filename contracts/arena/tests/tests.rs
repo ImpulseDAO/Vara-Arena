@@ -1,6 +1,6 @@
 use codec::Decode;
-use common::GameAction;
-use gstd::ActorId;
+use common::{GameAction, InitCharacter, InitialAttributes};
+use gstd::{ActorId, CodeId};
 use gtest::{Program, System};
 
 const USER_ID: u64 = 10;
@@ -22,9 +22,23 @@ fn game() {
     );
     arena.send(USER_ID, 0x00);
 
-    let code_id = system.submit_code("../../target/wasm32-unknown-unknown/release/character.wasm");
-    let character1 = ActorId::decode(&mut mint.send(USER_ID, code_id).log()[0].payload()).unwrap();
-    let character2 = ActorId::decode(&mut mint.send(USER_ID, code_id).log()[0].payload()).unwrap();
+    let hash: [u8; 32] = system
+        .submit_code("../../target/wasm32-unknown-unknown/release/character.wasm")
+        .into();
+    let code_id = CodeId::from(hash);
+
+    let payload = InitCharacter {
+        code_id,
+        attributes: InitialAttributes {
+            agility: 1,
+            strength: 1,
+            stamina: 1,
+            vitality: 1,
+        },
+    };
+    let character1 =
+        ActorId::decode(&mut mint.send(USER_ID, payload.clone()).log()[0].payload()).unwrap();
+    let character2 = ActorId::decode(&mut mint.send(USER_ID, payload).log()[0].payload()).unwrap();
 
     arena.send(
         USER_ID,

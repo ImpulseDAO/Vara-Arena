@@ -25,8 +25,13 @@ pub struct InitialAttributes {
     pub stamina: u8,
 }
 
-#[derive(Encode, Decode, Clone, Debug)]
-pub struct CreateCharacter {
-    pub code_id: CodeId,
-    pub attributes: InitialAttributes,
+#[derive(Encode, Decode, Clone)]
+pub enum MintAction {
+    CreateCharacter {
+        code_id: CodeId,
+        attributes: InitialAttributes,
+    },
+    CharacterInfo {
+        character_id: ActorId,
+    },
 }

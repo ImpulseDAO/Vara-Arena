@@ -1,13 +1,13 @@
 #![no_std]
 
-use common::CreateCharacter;
+use codec::Encode;
+use common::{InitialAttributes, MintAction};
 use gstd::prog::ProgramGenerator;
-use gstd::{debug, msg, prelude::*, ActorId};
+use gstd::{debug, msg, prelude::*, ActorId, CodeId};
 
 type CharacterId = ActorId;
 
-#[allow(dead_code)]
-#[derive(Default)]
+#[derive(Encode, Default)]
 struct CharacterAttributes {
     strength: u8,
     agility: u8,
@@ -15,7 +15,7 @@ struct CharacterAttributes {
     stamina: u8,
 }
 
-#[allow(dead_code)]
+#[derive(Encode)]
 struct CharacterInfo {
     owner: ActorId,
     attributes: CharacterAttributes,
@@ -29,28 +29,32 @@ struct Mint {
 static mut MINT: Option<Mint> = None;
 
 impl Mint {
-    fn create_character(&mut self, payload: CreateCharacter) {
-        let (_, character_id) = ProgramGenerator::create_program_with_gas(
-            payload.code_id,
-            b"payload",
-            10_000_000_000,
-            0,
-        )
-        .unwrap();
+    fn create_character(&mut self, code_id: CodeId, attributes: InitialAttributes) {
+        let (_, character_id) =
+            ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
+                .unwrap();
 
         let info = CharacterInfo {
             owner: msg::source(),
             attributes: CharacterAttributes {
-                strength: payload.attributes.strength,
-                agility: payload.attributes.agility,
-                vitality: payload.attributes.vitality,
-                stamina: payload.attributes.stamina,
+                strength: attributes.strength,
+                agility: attributes.agility,
+                vitality: attributes.vitality,
+                stamina: attributes.stamina,
             },
         };
 
         self.characters.insert(character_id, info);
         debug!("character {:?} minted", character_id);
         msg::reply(character_id, 0).expect("unable to reply");
+    }
+
+    fn character_info(&self, character_id: CharacterId) {
+        let character = self
+            .characters
+            .get(&character_id)
+            .expect("character doesn't exist");
+        msg::reply(character, 0).expect("unable to reply");
     }
 }
 
@@ -62,6 +66,14 @@ unsafe extern "C" fn init() {
 #[no_mangle]
 extern "C" fn handle() {
     let mint = unsafe { MINT.as_mut().unwrap() };
-    let payload: CreateCharacter = msg::load().expect("unable to decode `CreateCharacter`");
-    mint.create_character(payload);
+    let action: MintAction = msg::load().expect("unable to decode `MintAction`");
+    match action {
+        MintAction::CreateCharacter {
+            code_id,
+            attributes,
+        } => {
+            mint.create_character(code_id, attributes);
+        }
+        MintAction::CharacterInfo { character_id } => mint.character_info(character_id),
+    }
 }

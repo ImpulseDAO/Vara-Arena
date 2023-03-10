@@ -1,25 +1,10 @@
 #![no_std]
 
-use codec::Encode;
-use common::{InitialAttributes, MintAction};
+use common::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction};
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
 
 type CharacterId = ActorId;
-
-#[derive(Encode, Default)]
-struct CharacterAttributes {
-    strength: u8,
-    agility: u8,
-    vitality: u8,
-    stamina: u8,
-}
-
-#[derive(Encode)]
-struct CharacterInfo {
-    owner: ActorId,
-    attributes: CharacterAttributes,
-}
 
 #[derive(Default)]
 struct Mint {

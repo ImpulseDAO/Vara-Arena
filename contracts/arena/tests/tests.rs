@@ -20,7 +20,7 @@ fn game() {
         &system,
         "../../target/wasm32-unknown-unknown/release/arena.wasm",
     );
-    arena.send(USER_ID, 0x00);
+    arena.send(USER_ID, mint.id());
 
     let hash: [u8; 32] = system
         .submit_code("../../target/wasm32-unknown-unknown/release/character.wasm")

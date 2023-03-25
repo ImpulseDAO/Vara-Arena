@@ -10,7 +10,7 @@ const BASE_HP: u8 = 10;
 
 type CharacterId = ActorId;
 
-#[allow(dead_code)]
+#[derive(Clone)]
 struct Character {
     id: CharacterId,
     hp: u8,
@@ -23,25 +23,72 @@ struct Arena {
     mint: ActorId,
 }
 
+struct Pair {
+    c1: Character,
+    c2: Character,
+}
+
 impl Arena {
-    async fn play(&self) {
+    async fn play(&mut self) {
         debug!("starting the battle");
-        'outer: loop {
-            for character in &self.characters {
-                msg::send_for_reply(character.id, YourTurn, 0)
-                    .expect("unable to send message")
-                    .await
-                    .expect("unable to receive reply");
-                let opponent = self
-                    .characters
-                    .iter()
-                    .find(|c| c.id != character.id)
-                    .unwrap();
-                if opponent.hp == 0 {
-                    debug!("{:?} is a winner", character.id);
-                    break 'outer;
+        let mut pairs: Vec<Pair> = self
+            .characters
+            .chunks_exact(2)
+            .map(|characters| Pair {
+                c1: characters[0].clone(),
+                c2: characters[1].clone(),
+            })
+            .collect();
+
+        loop {
+            let mut winners = vec![];
+            for pair in &mut pairs {
+                'battle: loop {
+                    msg::send_for_reply(pair.c1.id, YourTurn, 0)
+                        .expect("unable to send message")
+                        .await
+                        .expect("unable to receive reply");
+                    pair.c2.hp = pair.c2.hp.saturating_sub(5);
+                    if pair.c2.hp == 0 {
+                        debug!("{:?} is a winner", pair.c1.id);
+                        winners.push(pair.c1.id);
+                        break 'battle;
+                    }
+
+                    msg::send_for_reply(pair.c2.id, YourTurn, 0)
+                        .expect("unable to send message")
+                        .await
+                        .expect("unable to receive reply");
+                    pair.c1.hp = pair.c1.hp.saturating_sub(5);
+                    if pair.c1.hp == 0 {
+                        debug!("{:?} is a winner", pair.c2.id);
+                        winners.push(pair.c2.id);
+                        break 'battle;
+                    }
                 }
             }
+
+            if winners.len() == 1 {
+                break;
+            }
+
+            pairs = winners
+                .chunks_exact(2)
+                .map(|characters| Pair {
+                    c1: self
+                        .characters
+                        .iter()
+                        .find(|c| c.id == characters[0])
+                        .unwrap()
+                        .clone(),
+                    c2: self
+                        .characters
+                        .iter()
+                        .find(|c| c.id == characters[1])
+                        .unwrap()
+                        .clone(),
+                })
+                .collect();
         }
     }
 
@@ -67,20 +114,6 @@ impl Arena {
         debug!("character {:?} registered on the arena", character.id);
         self.characters.push(character);
     }
-
-    fn attack(&mut self) {
-        debug!("attack received");
-        let opponent = self
-            .characters
-            .iter_mut()
-            .find(|c| c.id != msg::source())
-            .unwrap();
-        opponent.hp = opponent.hp.saturating_sub(5);
-    }
-
-    fn move_left(&mut self) {}
-
-    fn move_right(&mut self) {}
 }
 
 static mut ARENA: Option<Arena> = None;
@@ -103,8 +136,5 @@ async fn main() {
             arena.register(character).await;
         }
         GameAction::Play => arena.play().await,
-        GameAction::Attack => arena.attack(),
-        GameAction::MoveLeft => arena.move_left(),
-        GameAction::MoveRight => arena.move_right(),
     }
 }

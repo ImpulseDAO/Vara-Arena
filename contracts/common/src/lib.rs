@@ -9,9 +9,6 @@ pub type CharacterId = ActorId;
 pub enum GameAction {
     Register { character: CharacterId },
     Play,
-    MoveLeft,
-    MoveRight,
-    Attack,
 }
 
 #[derive(Encode, Decode)]

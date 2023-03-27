@@ -1,6 +1,6 @@
 #![no_std]
 
-use common::{CharacterInfo, GameAction, MintAction, YourTurn};
+use common::{BattleAction, CharacterInfo, GameAction, MintAction, YourTurn};
 use gstd::{debug, msg, prelude::*, ActorId};
 
 const FIRST_POS: u8 = 4;
@@ -44,26 +44,38 @@ impl Arena {
             let mut winners = vec![];
             for pair in &mut pairs {
                 'battle: loop {
-                    msg::send_for_reply(pair.c1.id, YourTurn, 0)
+                    let action: BattleAction = msg::send_for_reply_as(pair.c1.id, YourTurn, 0)
                         .expect("unable to send message")
                         .await
-                        .expect("unable to receive reply");
-                    pair.c2.hp = pair.c2.hp.saturating_sub(5);
-                    if pair.c2.hp == 0 {
-                        debug!("{:?} is a winner", pair.c1.id);
-                        winners.push(pair.c1.id);
-                        break 'battle;
+                        .expect("unable to receive `BattleAction`");
+                    match action {
+                        BattleAction::Attack => {
+                            pair.c2.hp = pair.c2.hp.saturating_sub(5);
+                            if pair.c2.hp == 0 {
+                                debug!("{:?} is a winner", pair.c1.id);
+                                winners.push(pair.c1.id);
+                                break 'battle;
+                            }
+                        }
+                        BattleAction::MoveLeft => todo!(),
+                        BattleAction::MoveRight => todo!(),
                     }
 
-                    msg::send_for_reply(pair.c2.id, YourTurn, 0)
+                    let action = msg::send_for_reply_as(pair.c2.id, YourTurn, 0)
                         .expect("unable to send message")
                         .await
-                        .expect("unable to receive reply");
-                    pair.c1.hp = pair.c1.hp.saturating_sub(5);
-                    if pair.c1.hp == 0 {
-                        debug!("{:?} is a winner", pair.c2.id);
-                        winners.push(pair.c2.id);
-                        break 'battle;
+                        .expect("unable to receive `BattleAction`");
+                    match action {
+                        BattleAction::Attack => {
+                            pair.c1.hp = pair.c1.hp.saturating_sub(5);
+                            if pair.c1.hp == 0 {
+                                debug!("{:?} is a winner", pair.c2.id);
+                                winners.push(pair.c2.id);
+                                break 'battle;
+                            }
+                        }
+                        BattleAction::MoveLeft => todo!(),
+                        BattleAction::MoveRight => todo!(),
                     }
                 }
             }

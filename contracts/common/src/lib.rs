@@ -11,6 +11,13 @@ pub enum GameAction {
     Play,
 }
 
+#[derive(Encode, Decode, Debug)]
+pub enum BattleAction {
+    Attack,
+    MoveRight,
+    MoveLeft,
+}
+
 #[derive(Encode, Decode)]
 pub struct YourTurn;
 

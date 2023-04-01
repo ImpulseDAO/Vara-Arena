@@ -12,8 +12,15 @@ pub enum GameAction {
 }
 
 #[derive(Encode, Decode, Debug)]
+pub enum AttackKind {
+    Quick,
+    Normal,
+    Hard,
+}
+
+#[derive(Encode, Decode, Debug)]
 pub enum BattleAction {
-    Attack,
+    Attack { kind: AttackKind },
     MoveRight,
     MoveLeft,
 }
@@ -29,7 +36,7 @@ pub struct InitialAttributes {
     pub stamina: u8,
 }
 
-#[derive(Encode, Decode, Default)]
+#[derive(Encode, Decode, Clone, Default)]
 pub struct CharacterAttributes {
     pub strength: u8,
     pub agility: u8,

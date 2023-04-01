@@ -1,21 +1,15 @@
 #![no_std]
 
-use common::{BattleAction, CharacterInfo, GameAction, MintAction, YourTurn};
+use battle::{Battle, Character};
+use common::{CharacterInfo, GameAction, MintAction};
 use gstd::{debug, msg, prelude::*, ActorId};
+
+mod battle;
 
 const FIRST_POS: u8 = 4;
 const SECOND_POS: u8 = 15;
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
-
-type CharacterId = ActorId;
-
-#[derive(Clone)]
-struct Character {
-    id: CharacterId,
-    hp: u8,
-    position: u8,
-}
 
 #[derive(Default)]
 struct Arena {
@@ -23,82 +17,42 @@ struct Arena {
     mint: ActorId,
 }
 
-struct Pair {
-    c1: Character,
-    c2: Character,
-}
-
 impl Arena {
     async fn play(&mut self) {
         debug!("starting the battle");
-        let mut pairs: Vec<Pair> = self
+        let mut battles: Vec<Battle> = self
             .characters
             .chunks_exact(2)
-            .map(|characters| Pair {
-                c1: characters[0].clone(),
-                c2: characters[1].clone(),
-            })
+            .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
             .collect();
 
         loop {
             let mut winners = vec![];
-            for pair in &mut pairs {
-                'battle: loop {
-                    let action: BattleAction = msg::send_for_reply_as(pair.c1.id, YourTurn, 0)
-                        .expect("unable to send message")
-                        .await
-                        .expect("unable to receive `BattleAction`");
-                    match action {
-                        BattleAction::Attack => {
-                            pair.c2.hp = pair.c2.hp.saturating_sub(5);
-                            if pair.c2.hp == 0 {
-                                debug!("{:?} is a winner", pair.c1.id);
-                                winners.push(pair.c1.id);
-                                break 'battle;
-                            }
-                        }
-                        BattleAction::MoveLeft => todo!(),
-                        BattleAction::MoveRight => todo!(),
-                    }
 
-                    let action = msg::send_for_reply_as(pair.c2.id, YourTurn, 0)
-                        .expect("unable to send message")
-                        .await
-                        .expect("unable to receive `BattleAction`");
-                    match action {
-                        BattleAction::Attack => {
-                            pair.c1.hp = pair.c1.hp.saturating_sub(5);
-                            if pair.c1.hp == 0 {
-                                debug!("{:?} is a winner", pair.c2.id);
-                                winners.push(pair.c2.id);
-                                break 'battle;
-                            }
-                        }
-                        BattleAction::MoveLeft => todo!(),
-                        BattleAction::MoveRight => todo!(),
-                    }
-                }
+            for battle in battles {
+                let winner = battle.fight().await;
+                winners.push(winner.id);
             }
 
             if winners.len() == 1 {
                 break;
             }
 
-            pairs = winners
+            battles = winners
                 .chunks_exact(2)
-                .map(|characters| Pair {
-                    c1: self
-                        .characters
-                        .iter()
-                        .find(|c| c.id == characters[0])
-                        .unwrap()
-                        .clone(),
-                    c2: self
-                        .characters
-                        .iter()
-                        .find(|c| c.id == characters[1])
-                        .unwrap()
-                        .clone(),
+                .map(|characters| {
+                    Battle::new(
+                        self.characters
+                            .iter()
+                            .find(|c| c.id == characters[0])
+                            .unwrap()
+                            .clone(),
+                        self.characters
+                            .iter()
+                            .find(|c| c.id == characters[1])
+                            .unwrap()
+                            .clone(),
+                    )
                 })
                 .collect();
         }
@@ -121,6 +75,7 @@ impl Arena {
             id: character_id,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
             position,
+            attributes: character_info.attributes,
         };
 
         debug!("character {:?} registered on the arena", character.id);

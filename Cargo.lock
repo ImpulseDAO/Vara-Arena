@@ -26,6 +26,7 @@ dependencies = [
  "gstd",
  "gtest",
  "parity-scale-codec",
+ "rand",
 ]
 
 [[package]]

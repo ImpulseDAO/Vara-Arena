@@ -12,6 +12,7 @@ type CharacterId = ActorId;
 pub struct Character {
     pub id: CharacterId,
     pub hp: u8,
+    pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
 }
@@ -39,24 +40,42 @@ impl Battle {
                 BattleAction::Attack { kind } => {
                     match kind {
                         AttackKind::Quick => {
-                            let success = rng.gen_ratio(75, 100);
-                            if success {
-                                let damage = QUICK_DAMAGE[self.c1.attributes.strength as usize];
-                                self.c2.hp = self.c2.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c1.energy.checked_sub(20) {
+                                self.c1.energy = energy;
+                                let success = rng.gen_ratio(75, 100);
+                                if success {
+                                    let damage =
+                                        QUICK_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                    self.c2.hp = self.c2.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c1.id);
                             }
                         }
                         AttackKind::Normal => {
-                            let success = rng.gen_ratio(33, 100);
-                            if success {
-                                let damage = NORMAL_DAMAGE[self.c1.attributes.strength as usize];
-                                self.c2.hp = self.c2.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c1.energy.checked_sub(26) {
+                                self.c1.energy = energy;
+                                let success = rng.gen_ratio(33, 100);
+                                if success {
+                                    let damage =
+                                        NORMAL_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                    self.c2.hp = self.c2.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c1.id);
                             }
                         }
                         AttackKind::Hard => {
-                            let success = rng.gen_ratio(17, 100);
-                            if success {
-                                let damage = HARD_DAMAGE[self.c1.attributes.strength as usize];
-                                self.c2.hp = self.c2.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c1.energy.checked_sub(32) {
+                                self.c1.energy = energy;
+                                let success = rng.gen_ratio(17, 100);
+                                if success {
+                                    let damage =
+                                        HARD_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                    self.c2.hp = self.c2.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c1.id);
                             }
                         }
                     }
@@ -77,24 +96,42 @@ impl Battle {
                 BattleAction::Attack { kind } => {
                     match kind {
                         AttackKind::Quick => {
-                            let success = rng.gen_ratio(75, 100);
-                            if success {
-                                let damage = QUICK_DAMAGE[self.c2.attributes.strength as usize];
-                                self.c1.hp = self.c1.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c2.energy.checked_sub(20) {
+                                self.c2.energy = energy;
+                                let success = rng.gen_ratio(75, 100);
+                                if success {
+                                    let damage =
+                                        QUICK_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                    self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c2.id);
                             }
                         }
                         AttackKind::Normal => {
-                            let success = rng.gen_ratio(33, 100);
-                            if success {
-                                let damage = NORMAL_DAMAGE[self.c2.attributes.strength as usize];
-                                self.c1.hp = self.c1.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c2.energy.checked_sub(26) {
+                                self.c2.energy = energy;
+                                let success = rng.gen_ratio(33, 100);
+                                if success {
+                                    let damage =
+                                        NORMAL_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                    self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c2.id);
                             }
                         }
                         AttackKind::Hard => {
-                            let success = rng.gen_ratio(17, 100);
-                            if success {
-                                let damage = HARD_DAMAGE[self.c2.attributes.strength as usize];
-                                self.c1.hp = self.c1.hp.saturating_sub(damage);
+                            if let Some(energy) = self.c2.energy.checked_sub(32) {
+                                self.c2.energy = energy;
+                                let success = rng.gen_ratio(17, 100);
+                                if success {
+                                    let damage =
+                                        HARD_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                    self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                }
+                            } else {
+                                debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c2.id);
                             }
                         }
                     }

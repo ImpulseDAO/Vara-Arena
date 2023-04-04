@@ -10,6 +10,7 @@ const FIRST_POS: u8 = 4;
 const SECOND_POS: u8 = 15;
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
+const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
 
 #[derive(Default)]
 struct Arena {
@@ -74,6 +75,7 @@ impl Arena {
         let character = Character {
             id: character_id,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
+            energy: ENERGY[usize::from(character_info.attributes.stamina)],
             position,
             attributes: character_info.attributes,
         };

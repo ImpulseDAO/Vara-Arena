@@ -6,8 +6,6 @@ use gstd::{debug, msg, prelude::*, ActorId};
 
 mod battle;
 
-const FIRST_POS: u8 = 4;
-const SECOND_POS: u8 = 15;
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
 const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
@@ -66,17 +64,11 @@ impl Arena {
             .await
             .expect("unable to receive reply");
 
-        let position = if self.characters.is_empty() {
-            FIRST_POS
-        } else {
-            SECOND_POS
-        };
-
         let character = Character {
             id: character_id,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
-            position,
+            position: 0.0,
             attributes: character_info.attributes,
         };
 

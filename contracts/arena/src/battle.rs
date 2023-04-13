@@ -2,6 +2,8 @@ use common::{AttackKind, BattleAction, CharacterAttributes, YourTurn};
 use gstd::{debug, exec, msg, ActorId};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
+const MIN_POS: f32 = 0.0;
+const MAX_POS: f32 = 0.0;
 const FIRST_POS: f32 = 4.0;
 const SECOND_POS: f32 = 15.0;
 
@@ -47,7 +49,7 @@ impl Battle {
                 BattleAction::Attack { kind } => {
                     match kind {
                         AttackKind::Quick => {
-                            if let Some(energy) = self.c1.energy.checked_sub(20) {
+                            if let Some(_energy) = self.c1.energy.checked_sub(20) {
                                 // self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
@@ -65,7 +67,7 @@ impl Battle {
                             }
                         }
                         AttackKind::Normal => {
-                            if let Some(energy) = self.c1.energy.checked_sub(26) {
+                            if let Some(_energy) = self.c1.energy.checked_sub(26) {
                                 // self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
@@ -83,7 +85,7 @@ impl Battle {
                             }
                         }
                         AttackKind::Hard => {
-                            if let Some(energy) = self.c1.energy.checked_sub(32) {
+                            if let Some(_energy) = self.c1.energy.checked_sub(32) {
                                 // self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
@@ -106,8 +108,20 @@ impl Battle {
                         return self.c1;
                     }
                 }
-                BattleAction::MoveLeft => todo!(),
-                BattleAction::MoveRight => todo!(),
+                BattleAction::MoveLeft => {
+                    if let Some(_energy) = self.c1.energy.checked_sub(3) {
+                        // self.c1.energy = energy;
+                        let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                        self.c1.position = (self.c1.position - move_).max(MIN_POS);
+                    }
+                }
+                BattleAction::MoveRight => {
+                    if let Some(_energy) = self.c1.energy.checked_sub(3) {
+                        // self.c1.energy = energy;
+                        let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                        self.c1.position = (self.c1.position + move_).min(self.c2.position - 1.0);
+                    }
+                }
             }
 
             let action = msg::send_for_reply_as(self.c2.id, YourTurn, 0)
@@ -118,7 +132,7 @@ impl Battle {
                 BattleAction::Attack { kind } => {
                     match kind {
                         AttackKind::Quick => {
-                            if let Some(energy) = self.c2.energy.checked_sub(20) {
+                            if let Some(_energy) = self.c2.energy.checked_sub(20) {
                                 // self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
@@ -136,7 +150,7 @@ impl Battle {
                             }
                         }
                         AttackKind::Normal => {
-                            if let Some(energy) = self.c2.energy.checked_sub(26) {
+                            if let Some(_energy) = self.c2.energy.checked_sub(26) {
                                 // self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
@@ -154,7 +168,7 @@ impl Battle {
                             }
                         }
                         AttackKind::Hard => {
-                            if let Some(energy) = self.c2.energy.checked_sub(32) {
+                            if let Some(_energy) = self.c2.energy.checked_sub(32) {
                                 // self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
@@ -177,8 +191,20 @@ impl Battle {
                         return self.c1;
                     }
                 }
-                BattleAction::MoveLeft => todo!(),
-                BattleAction::MoveRight => todo!(),
+                BattleAction::MoveLeft => {
+                    if let Some(_energy) = self.c2.energy.checked_sub(3) {
+                        // self.c2.energy = energy;
+                        let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                        self.c2.position = (self.c2.position - move_).max(self.c1.position + 1.0);
+                    }
+                }
+                BattleAction::MoveRight => {
+                    if let Some(_energy) = self.c2.energy.checked_sub(3) {
+                        // self.c2.energy = energy;
+                        let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                        self.c2.position = (self.c2.position + move_).min(MAX_POS);
+                    }
+                }
             }
         }
     }

@@ -13,6 +13,8 @@ const HARD_DAMAGE: [u8; 10] = [0, 20, 20, 24, 32, 40, 48, 56, 64, 72];
 
 const MOVE: [f32; 10] = [0.0, 1.0, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5];
 
+pub const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
+
 type CharacterId = ActorId;
 
 #[derive(Clone)]
@@ -122,6 +124,10 @@ impl Battle {
                         self.c1.position = (self.c1.position + move_).min(self.c2.position - 1.0);
                     }
                 }
+                BattleAction::Rest => {
+                    let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
+                    self.c1.energy = min(self.c1.energy + 10, full_energy);
+                }
             }
 
             let action = msg::send_for_reply_as(self.c2.id, YourTurn, 0)
@@ -204,6 +210,10 @@ impl Battle {
                         let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                         self.c2.position = (self.c2.position + move_).min(MAX_POS);
                     }
+                }
+                BattleAction::Rest => {
+                    let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
+                    self.c2.energy = min(self.c2.energy + 10, full_energy);
                 }
             }
         }

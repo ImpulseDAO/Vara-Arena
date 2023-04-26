@@ -23,6 +23,7 @@ pub enum BattleAction {
     Attack { kind: AttackKind },
     MoveRight,
     MoveLeft,
+    Rest,
 }
 
 #[derive(Encode, Decode)]

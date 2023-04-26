@@ -1,6 +1,6 @@
 #![no_std]
 
-use battle::{Battle, Character};
+use battle::{Battle, Character, ENERGY};
 use common::{CharacterInfo, GameAction, MintAction};
 use gstd::{debug, msg, prelude::*, ActorId};
 
@@ -8,7 +8,6 @@ mod battle;
 
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
-const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
 
 #[derive(Default)]
 struct Arena {

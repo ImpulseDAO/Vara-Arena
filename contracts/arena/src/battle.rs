@@ -1,4 +1,6 @@
-use common::{AttackKind, BattleAction, CharacterAttributes, YourTurn};
+use core::cmp::min;
+
+use common::{AttackKind, BattleAction, CharacterAttributes, CharacterState, YourTurn};
 use gstd::{debug, exec, msg, ActorId};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
@@ -43,7 +45,17 @@ impl Battle {
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
 
         loop {
-            let action: BattleAction = msg::send_for_reply_as(self.c1.id, YourTurn, 0)
+            let turn = YourTurn {
+                you: CharacterState {
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                },
+                enemy: CharacterState {
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                },
+            };
+            let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0)
                 .expect("unable to send message")
                 .await
                 .expect("unable to receive `BattleAction`");
@@ -130,7 +142,17 @@ impl Battle {
                 }
             }
 
-            let action = msg::send_for_reply_as(self.c2.id, YourTurn, 0)
+            let turn = YourTurn {
+                you: CharacterState {
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                },
+                enemy: CharacterState {
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                },
+            };
+            let action = msg::send_for_reply_as(self.c2.id, turn, 0)
                 .expect("unable to send message")
                 .await
                 .expect("unable to receive `BattleAction`");

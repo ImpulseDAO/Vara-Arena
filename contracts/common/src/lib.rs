@@ -27,7 +27,16 @@ pub enum BattleAction {
 }
 
 #[derive(Encode, Decode)]
-pub struct YourTurn;
+pub struct CharacterState {
+    pub hp: u8,
+    pub position: f32,
+}
+
+#[derive(Encode, Decode)]
+pub struct YourTurn {
+    pub you: CharacterState,
+    pub enemy: CharacterState,
+}
 
 #[derive(Encode, Decode, Clone, Debug)]
 pub struct InitialAttributes {

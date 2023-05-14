@@ -3,6 +3,8 @@
 use common::{AttackKind, BattleAction, YourTurn};
 use gstd::{debug, msg};
 
+const HARD_ATTAK_ENERGY: u8 = 32;
+
 #[gstd::async_main]
 async fn main() {
     let turn: YourTurn = msg::load().expect("unable to decode `YourTurn`");
@@ -20,12 +22,17 @@ async fn main() {
         return;
     }
 
-    debug!("attaking");
-    msg::reply(
-        BattleAction::Attack {
-            kind: AttackKind::Hard,
-        },
-        0,
-    )
-    .expect("unable to reply");
+    if turn.you.energy >= HARD_ATTAK_ENERGY {
+        debug!("attaking");
+        msg::reply(
+            BattleAction::Attack {
+                kind: AttackKind::Hard,
+            },
+            0,
+        )
+        .expect("unable to reply");
+    } else {
+        debug!("resting...");
+        msg::reply(BattleAction::Rest, 0).expect("unable to reply");
+    }
 }

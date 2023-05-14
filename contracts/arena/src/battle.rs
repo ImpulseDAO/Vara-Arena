@@ -49,10 +49,12 @@ impl Battle {
                 you: CharacterState {
                     hp: self.c1.hp,
                     position: self.c1.position,
+                    energy: self.c1.energy,
                 },
                 enemy: CharacterState {
                     hp: self.c1.hp,
                     position: self.c1.position,
+                    energy: self.c1.energy,
                 },
             };
             let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0)
@@ -64,7 +66,7 @@ impl Battle {
                     match kind {
                         AttackKind::Quick => {
                             if let Some(_energy) = self.c1.energy.checked_sub(20) {
-                                // self.c1.energy = energy;
+                                self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
                                     (self.c1.position + move_).min(self.c2.position - 1.0);
@@ -82,7 +84,7 @@ impl Battle {
                         }
                         AttackKind::Normal => {
                             if let Some(_energy) = self.c1.energy.checked_sub(26) {
-                                // self.c1.energy = energy;
+                                self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
                                     (self.c1.position + move_).min(self.c2.position - 1.0);
@@ -100,7 +102,7 @@ impl Battle {
                         }
                         AttackKind::Hard => {
                             if let Some(_energy) = self.c1.energy.checked_sub(32) {
-                                // self.c1.energy = energy;
+                                self.c1.energy = energy;
                                 let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                                 self.c1.position =
                                     (self.c1.position + move_).min(self.c2.position - 1.0);
@@ -124,14 +126,14 @@ impl Battle {
                 }
                 BattleAction::MoveLeft => {
                     if let Some(_energy) = self.c1.energy.checked_sub(3) {
-                        // self.c1.energy = energy;
+                        self.c1.energy = energy;
                         let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                         self.c1.position = (self.c1.position - move_).max(MIN_POS);
                     }
                 }
                 BattleAction::MoveRight => {
                     if let Some(_energy) = self.c1.energy.checked_sub(3) {
-                        // self.c1.energy = energy;
+                        self.c1.energy = energy;
                         let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                         self.c1.position = (self.c1.position + move_).min(self.c2.position - 1.0);
                     }
@@ -146,10 +148,12 @@ impl Battle {
                 you: CharacterState {
                     hp: self.c1.hp,
                     position: self.c1.position,
+                    energy: self.c1.energy,
                 },
                 enemy: CharacterState {
                     hp: self.c1.hp,
                     position: self.c1.position,
+                    energy: self.c1.energy,
                 },
             };
             let action = msg::send_for_reply_as(self.c2.id, turn, 0)
@@ -161,7 +165,7 @@ impl Battle {
                     match kind {
                         AttackKind::Quick => {
                             if let Some(_energy) = self.c2.energy.checked_sub(20) {
-                                // self.c2.energy = energy;
+                                self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
                                     (self.c2.position - move_).max(self.c1.position + 1.0);
@@ -179,7 +183,7 @@ impl Battle {
                         }
                         AttackKind::Normal => {
                             if let Some(_energy) = self.c2.energy.checked_sub(26) {
-                                // self.c2.energy = energy;
+                                self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
                                     (self.c2.position - move_).max(self.c1.position + 1.0);
@@ -197,7 +201,7 @@ impl Battle {
                         }
                         AttackKind::Hard => {
                             if let Some(_energy) = self.c2.energy.checked_sub(32) {
-                                // self.c2.energy = energy;
+                                self.c2.energy = energy;
                                 let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                                 self.c2.position =
                                     (self.c2.position - move_).max(self.c1.position + 1.0);
@@ -221,14 +225,14 @@ impl Battle {
                 }
                 BattleAction::MoveLeft => {
                     if let Some(_energy) = self.c2.energy.checked_sub(3) {
-                        // self.c2.energy = energy;
+                        self.c2.energy = energy;
                         let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                         self.c2.position = (self.c2.position - move_).max(self.c1.position + 1.0);
                     }
                 }
                 BattleAction::MoveRight => {
                     if let Some(_energy) = self.c2.energy.checked_sub(3) {
-                        // self.c2.energy = energy;
+                        self.c2.energy = energy;
                         let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                         self.c2.position = (self.c2.position + move_).min(MAX_POS);
                     }

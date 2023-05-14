@@ -30,6 +30,7 @@ pub enum BattleAction {
 pub struct CharacterState {
     pub hp: u8,
     pub position: f32,
+    pub energy: u8,
 }
 
 #[derive(Encode, Decode)]

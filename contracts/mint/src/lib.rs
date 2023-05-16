@@ -62,3 +62,9 @@ extern "C" fn handle() {
         MintAction::CharacterInfo { character_id } => mint.character_info(character_id),
     }
 }
+
+#[no_mangle]
+extern "C" fn metahash() {
+    let metahash: [u8; 32] = include!("../.metahash");
+    msg::reply(metahash, 0).expect("Failed to share metahash");
+}

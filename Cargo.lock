@@ -183,8 +183,10 @@ dependencies = [
 name = "common"
 version = "0.1.0"
 dependencies = [
+ "gmeta",
  "gstd",
  "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]

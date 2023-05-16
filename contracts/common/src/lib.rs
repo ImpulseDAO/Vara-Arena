@@ -1,7 +1,8 @@
 #![no_std]
 
 use codec::{Decode, Encode};
-use gstd::{ActorId, CodeId};
+use gmeta::{InOut, Metadata};
+use gstd::{ActorId, CodeId, TypeInfo};
 
 pub type CharacterId = ActorId;
 
@@ -39,7 +40,7 @@ pub struct YourTurn {
     pub enemy: CharacterState,
 }
 
-#[derive(Encode, Decode, Clone, Debug)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct InitialAttributes {
     pub strength: u8,
     pub agility: u8,
@@ -61,7 +62,7 @@ pub struct CharacterInfo {
     pub attributes: CharacterAttributes,
 }
 
-#[derive(Encode, Decode, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone)]
 pub enum MintAction {
     CreateCharacter {
         code_id: CodeId,
@@ -70,4 +71,15 @@ pub enum MintAction {
     CharacterInfo {
         character_id: ActorId,
     },
+}
+
+pub struct MintMetadata;
+
+impl Metadata for MintMetadata {
+    type Init = InOut<(), ()>;
+    type Handle = InOut<MintAction, ()>;
+    type Others = InOut<(), ()>;
+    type Reply = InOut<(), ()>;
+    type Signal = ();
+    type State = ();
 }

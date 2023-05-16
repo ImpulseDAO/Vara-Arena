@@ -11,3 +11,4 @@ common = { path = "../common" }
 
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", rev = "5c685d0" }
+common = { path = "../common" }

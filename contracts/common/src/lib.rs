@@ -6,7 +6,7 @@ use gstd::{ActorId, CodeId, TypeInfo};
 
 pub type CharacterId = ActorId;
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
     Register { character: CharacterId },
     Play,
@@ -78,6 +78,17 @@ pub struct MintMetadata;
 impl Metadata for MintMetadata {
     type Init = InOut<(), ()>;
     type Handle = InOut<MintAction, ()>;
+    type Others = InOut<(), ()>;
+    type Reply = InOut<(), ()>;
+    type Signal = ();
+    type State = ();
+}
+
+pub struct ArenaMetadata;
+
+impl Metadata for ArenaMetadata {
+    type Init = InOut<ActorId, ()>;
+    type Handle = InOut<GameAction, ()>;
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();

@@ -67,7 +67,7 @@ impl Arena {
             id: character_id,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
-            position: 0.0,
+            position: 0,
             attributes: character_info.attributes,
         };
 

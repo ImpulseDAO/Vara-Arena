@@ -12,6 +12,24 @@ pub enum GameAction {
     Play,
 }
 
+#[derive(Encode, Decode, TypeInfo)]
+pub enum TurnResult {
+    NotEnoughEnergy,
+    Miss { position: u8 },
+    Attack { position: u8, damage: u8 },
+    Move { position: u8 },
+    Rest { energy: u8 },
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum GameEvent {
+    PlayerRegistered(ActorId),
+    PlayerWon(ActorId),
+    BattleStarted(ActorId, ActorId),
+    BattleEvent(ActorId, TurnResult),
+    BattleFinished(ActorId),
+}
+
 #[derive(Encode, Decode, Debug)]
 pub enum AttackKind {
     Quick,
@@ -88,7 +106,7 @@ pub struct ArenaMetadata;
 
 impl Metadata for ArenaMetadata {
     type Init = InOut<ActorId, ()>;
-    type Handle = InOut<GameAction, ()>;
+    type Handle = InOut<GameAction, GameEvent>;
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();

@@ -1,7 +1,7 @@
 #![no_std]
 
 use battle::{Battle, Character, ENERGY};
-use common::{CharacterInfo, GameAction, MintAction};
+use common::{CharacterInfo, GameAction, GameEvent, MintAction};
 use gstd::{debug, msg, prelude::*, ActorId};
 
 mod battle;
@@ -33,6 +33,8 @@ impl Arena {
             }
 
             if winners.len() == 1 {
+                let winner = winners[0];
+                msg::reply(GameEvent::PlayerWon(winner), 0).expect("unable to reply");
                 break;
             }
 
@@ -73,6 +75,8 @@ impl Arena {
 
         debug!("character {:?} registered on the arena", character.id);
         self.characters.push(character);
+
+        msg::reply(GameEvent::PlayerRegistered(character_id), 0).expect("unable to reply");
     }
 }
 

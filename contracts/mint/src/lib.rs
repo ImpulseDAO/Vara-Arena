@@ -20,7 +20,7 @@ impl Mint {
                 .unwrap();
 
         let info = CharacterInfo {
-            owner: msg::source(),
+            id: character_id,
             attributes: CharacterAttributes {
                 strength: attributes.strength,
                 agility: attributes.agility,
@@ -29,16 +29,16 @@ impl Mint {
             },
         };
 
-        self.characters.insert(character_id, info);
+        self.characters.insert(msg::source(), info);
         debug!("character {:?} minted", character_id);
         msg::reply(character_id, 0).expect("unable to reply");
     }
 
-    fn character_info(&self, character_id: CharacterId) {
+    fn character_info(&self, owner_id: CharacterId) {
         let character = self
             .characters
-            .get(&character_id)
-            .expect("character doesn't exist");
+            .get(&owner_id)
+            .expect("user has no character");
         msg::reply(character, 0).expect("unable to reply");
     }
 }
@@ -59,7 +59,7 @@ extern "C" fn handle() {
         } => {
             mint.create_character(code_id, attributes);
         }
-        MintAction::CharacterInfo { character_id } => mint.character_info(character_id),
+        MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
     }
 }
 

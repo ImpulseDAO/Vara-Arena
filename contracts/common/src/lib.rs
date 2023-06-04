@@ -4,11 +4,9 @@ use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
 use gstd::{ActorId, CodeId, TypeInfo};
 
-pub type CharacterId = ActorId;
-
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
-    Register { character: CharacterId },
+    Register { owner_id: ActorId },
     Play,
 }
 
@@ -76,7 +74,7 @@ pub struct CharacterAttributes {
 
 #[derive(Encode, Decode)]
 pub struct CharacterInfo {
-    pub owner: ActorId,
+    pub id: ActorId,
     pub attributes: CharacterAttributes,
 }
 
@@ -87,7 +85,7 @@ pub enum MintAction {
         attributes: InitialAttributes,
     },
     CharacterInfo {
-        character_id: ActorId,
+        owner_id: ActorId,
     },
 }
 

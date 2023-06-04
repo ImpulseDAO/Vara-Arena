@@ -36,20 +36,19 @@ fn game() {
             vitality: 1,
         },
     };
-    let character1 =
-        ActorId::decode(&mut mint.send(USER_ID, payload.clone()).log()[0].payload()).unwrap();
-    let character2 = ActorId::decode(&mut mint.send(USER_ID, payload).log()[0].payload()).unwrap();
+    mint.send(USER_ID, payload.clone());
+    mint.send(USER_ID, payload);
 
     arena.send(
         USER_ID,
         GameAction::Register {
-            character: character1,
+            owner_id: USER_ID.into(),
         },
     );
     arena.send(
         USER_ID,
         GameAction::Register {
-            character: character2,
+            owner_id: USER_ID.into(),
         },
     );
 

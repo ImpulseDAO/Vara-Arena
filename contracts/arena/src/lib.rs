@@ -58,15 +58,15 @@ impl Arena {
         }
     }
 
-    async fn register(&mut self, character_id: ActorId) {
-        let payload = MintAction::CharacterInfo { character_id };
+    async fn register(&mut self, owner_id: ActorId) {
+        let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0)
             .expect("unable to send message")
             .await
             .expect("unable to receive reply");
 
         let character = Character {
-            id: character_id,
+            id: character_info.id,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
             position: 0,
@@ -76,7 +76,7 @@ impl Arena {
         debug!("character {:?} registered on the arena", character.id);
         self.characters.push(character);
 
-        msg::reply(GameEvent::PlayerRegistered(character_id), 0).expect("unable to reply");
+        msg::reply(GameEvent::PlayerRegistered(character_info.id), 0).expect("unable to reply");
     }
 }
 
@@ -96,8 +96,8 @@ async fn main() {
     let arena = unsafe { ARENA.as_mut().unwrap() };
     let action: GameAction = msg::load().expect("unable to decode `GameAction`");
     match action {
-        GameAction::Register { character } => {
-            arena.register(character).await;
+        GameAction::Register { owner_id } => {
+            arena.register(owner_id).await;
         }
         GameAction::Play => arena.play().await,
     }

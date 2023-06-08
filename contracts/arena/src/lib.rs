@@ -34,6 +34,7 @@ impl Arena {
 
             if winners.len() == 1 {
                 let winner = winners[0];
+                self.characters = vec![];
                 msg::reply(GameEvent::PlayerWon(winner), 0).expect("unable to reply");
                 break;
             }

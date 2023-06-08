@@ -14,13 +14,14 @@ struct Mint {
 static mut MINT: Option<Mint> = None;
 
 impl Mint {
-    fn create_character(&mut self, code_id: CodeId, attributes: InitialAttributes) {
+    fn create_character(&mut self, code_id: CodeId, name: String, attributes: InitialAttributes) {
         let (_, character_id) =
             ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                 .unwrap();
 
         let info = CharacterInfo {
             id: character_id,
+            name,
             attributes: CharacterAttributes {
                 strength: attributes.strength,
                 agility: attributes.agility,
@@ -55,9 +56,10 @@ extern "C" fn handle() {
     match action {
         MintAction::CreateCharacter {
             code_id,
+            name,
             attributes,
         } => {
-            mint.create_character(code_id, attributes);
+            mint.create_character(code_id, name, attributes);
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
     }

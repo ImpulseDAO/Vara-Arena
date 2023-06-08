@@ -1,6 +1,5 @@
-use codec::Decode;
 use common::{GameAction, InitialAttributes, MintAction};
-use gstd::{ActorId, CodeId};
+use gstd::CodeId;
 use gtest::{Program, System};
 
 const USER_ID: u64 = 10;
@@ -29,6 +28,7 @@ fn game() {
 
     let payload = MintAction::CreateCharacter {
         code_id,
+        name: "Oleg".to_string(),
         attributes: InitialAttributes {
             agility: 1,
             strength: 1,

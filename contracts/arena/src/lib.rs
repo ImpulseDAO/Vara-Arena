@@ -2,60 +2,71 @@
 
 use battle::{Battle, Character, ENERGY};
 use common::{CharacterInfo, GameAction, GameEvent, MintAction};
-use gstd::{debug, msg, prelude::*, ActorId};
+use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 
 mod battle;
 
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
+const GAS_FOR_BATTLE: u64 = 200_000_000_000;
 
 #[derive(Default)]
 struct Arena {
     characters: Vec<Character>,
     mint: ActorId,
+    battles: Vec<Battle>,
+    winners: Vec<ActorId>,
+    reservations: Vec<ReservationId>,
 }
 
 impl Arena {
     async fn play(&mut self) {
-        debug!("starting the battle");
-        let mut battles: Vec<Battle> = self
-            .characters
-            .chunks_exact(2)
-            .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
-            .collect();
-
-        loop {
-            let mut winners = vec![];
-
-            for battle in battles {
-                let winner = battle.fight().await;
-                winners.push(winner.id);
-            }
-
-            if winners.len() == 1 {
-                let winner = winners[0];
-                self.characters = vec![];
-                msg::reply(GameEvent::PlayerWon(winner), 0).expect("unable to reply");
-                break;
-            }
-
-            battles = winners
+        if self.battles.is_empty() {
+            // TODO: check if number of characters is dividable by 4
+            debug!("starting the battle");
+            self.battles = self
+                .characters
                 .chunks_exact(2)
-                .map(|characters| {
-                    Battle::new(
-                        self.characters
-                            .iter()
-                            .find(|c| c.id == characters[0])
-                            .unwrap()
-                            .clone(),
-                        self.characters
-                            .iter()
-                            .find(|c| c.id == characters[1])
-                            .unwrap()
-                            .clone(),
-                    )
-                })
+                .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
+        }
+
+        let battle = self.battles.pop().unwrap();
+        let winner = battle.fight().await;
+        self.winners.push(winner.id);
+
+        if self.battles.is_empty() {
+            if self.winners.len() == 1 {
+                msg::reply(GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
+                return;
+            } else {
+                self.battles = self
+                    .winners
+                    .chunks_exact(2)
+                    .map(|characters| {
+                        Battle::new(
+                            self.characters
+                                .iter()
+                                .find(|c| c.id == characters[0])
+                                .unwrap()
+                                .clone(),
+                            self.characters
+                                .iter()
+                                .find(|c| c.id == characters[1])
+                                .unwrap()
+                                .clone(),
+                        )
+                    })
+                    .collect();
+            }
+        }
+
+        if let Some(id) = self.reservations.pop() {
+            msg::send_from_reservation(id, exec::program_id(), GameAction::Play, 0)
+                .expect("unable to send");
+            msg::reply(GameEvent::NextBattleFromReservation, 0).expect("unable to reply");
+        } else {
+            panic!("more gas is required");
         }
     }
 
@@ -79,6 +90,13 @@ impl Arena {
 
         msg::reply(GameEvent::PlayerRegistered(character_info.id), 0).expect("unable to reply");
     }
+
+    fn reserve_gas(&mut self) {
+        let reservation_id =
+            ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
+        self.reservations.push(reservation_id);
+        msg::reply(GameEvent::GasReserved, 0).expect("unable to reply");
+    }
 }
 
 static mut ARENA: Option<Arena> = None;
@@ -101,6 +119,7 @@ async fn main() {
             arena.register(owner_id).await;
         }
         GameAction::Play => arena.play().await,
+        GameAction::ReserveGas => arena.reserve_gas(),
     }
 }
 

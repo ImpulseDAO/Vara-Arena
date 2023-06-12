@@ -8,6 +8,7 @@ use gstd::{prelude::*, ActorId, CodeId, TypeInfo};
 pub enum GameAction {
     Register { owner_id: ActorId },
     Play,
+    ReserveGas,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -26,6 +27,8 @@ pub enum GameEvent {
     BattleStarted(ActorId, ActorId),
     BattleEvent(ActorId, TurnResult),
     BattleFinished(ActorId),
+    GasReserved,
+    NextBattleFromReservation,
 }
 
 #[derive(Encode, Decode, Debug)]

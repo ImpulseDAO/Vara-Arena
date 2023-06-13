@@ -37,6 +37,7 @@ impl Arena {
 
         if self.battles.is_empty() {
             if self.winners.len() == 1 {
+                self._clean_state();
                 msg::reply(GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
                 return;
             } else {
@@ -96,6 +97,11 @@ impl Arena {
             ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
         self.reservations.push(reservation_id);
         msg::reply(GameEvent::GasReserved, 0).expect("unable to reply");
+    }
+
+    fn _clean_state(&mut self) {
+        self.winners = vec![];
+        self.reservations = vec![];
     }
 }
 

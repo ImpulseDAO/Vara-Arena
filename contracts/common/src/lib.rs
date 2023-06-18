@@ -67,7 +67,7 @@ pub struct InitialAttributes {
     pub stamina: u8,
 }
 
-#[derive(Encode, Decode, Clone, Default)]
+#[derive(Encode, Decode, TypeInfo, Clone, Default)]
 pub struct CharacterAttributes {
     pub strength: u8,
     pub agility: u8,
@@ -75,7 +75,7 @@ pub struct CharacterAttributes {
     pub stamina: u8,
 }
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct CharacterInfo {
     pub id: ActorId,
     pub name: String,
@@ -94,6 +94,11 @@ pub enum MintAction {
     },
 }
 
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub struct MintState {
+    pub characters: BTreeMap<ActorId, CharacterInfo>,
+}
+
 pub struct MintMetadata;
 
 impl Metadata for MintMetadata {
@@ -102,7 +107,7 @@ impl Metadata for MintMetadata {
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();
-    type State = ();
+    type State = MintState;
 }
 
 pub struct ArenaMetadata;

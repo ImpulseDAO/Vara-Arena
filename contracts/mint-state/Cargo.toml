@@ -1,5 +1,5 @@
 [package]
-name = "mint"
+name = "mint-state"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,9 +7,8 @@ edition = "2021"
 
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], rev = "5c685d0" }
+gmeta = { git = "https://github.com/gear-tech/gear.git", features = ["codegen"], rev = "5c685d0" }
 common = { path = "../common" }
 
 [build-dependencies]
-gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", rev = "5c685d0" }
-gmeta = { git = "https://github.com/gear-tech/gear", rev = "5c685d0" }
-common = { path = "../common" }
+gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", features = ["metawasm"], rev = "5c685d0" }

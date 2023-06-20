@@ -28,6 +28,7 @@ pub struct Character {
     pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
+    pub owner_id: ActorId,
 }
 
 pub struct Battle {

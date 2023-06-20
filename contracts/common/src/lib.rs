@@ -22,7 +22,7 @@ pub enum TurnResult {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameEvent {
-    PlayerRegistered(ActorId),
+    RegisteredPlayers(Vec<ActorId>),
     PlayerWon(ActorId),
     BattleStarted(ActorId, ActorId),
     BattleEvent(ActorId, TurnResult),

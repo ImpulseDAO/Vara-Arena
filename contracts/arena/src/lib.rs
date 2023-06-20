@@ -84,12 +84,22 @@ impl Arena {
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
             position: 0,
             attributes: character_info.attributes,
+            owner_id,
         };
 
         debug!("character {:?} registered on the arena", character.id);
         self.characters.push(character);
 
-        msg::reply(GameEvent::PlayerRegistered(character_info.id), 0).expect("unable to reply");
+        msg::reply(
+            GameEvent::RegisteredPlayers(
+                self.characters
+                    .iter()
+                    .map(|character| character.owner_id.clone())
+                    .collect(),
+            ),
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn reserve_gas(&mut self) {

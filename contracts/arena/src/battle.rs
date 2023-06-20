@@ -3,7 +3,7 @@ use core::cmp::{max, min};
 use common::{
     AttackKind, BattleAction, CharacterAttributes, CharacterState, GameEvent, TurnResult, YourTurn,
 };
-use gstd::{debug, exec, msg, ActorId};
+use gstd::{debug, exec, msg, prelude::*, ActorId};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
 const MIN_POS: u8 = 0;
@@ -24,11 +24,11 @@ type CharacterId = ActorId;
 #[derive(Clone)]
 pub struct Character {
     pub id: CharacterId,
+    pub name: String,
     pub hp: u8,
     pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
-    pub owner_id: ActorId,
 }
 
 pub struct Battle {

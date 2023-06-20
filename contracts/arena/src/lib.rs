@@ -80,11 +80,11 @@ impl Arena {
 
         let character = Character {
             id: character_info.id,
+            name: character_info.name,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
             position: 0,
             attributes: character_info.attributes,
-            owner_id,
         };
 
         debug!("character {:?} registered on the arena", character.id);
@@ -94,7 +94,11 @@ impl Arena {
             GameEvent::RegisteredPlayers(
                 self.characters
                     .iter()
-                    .map(|character| character.owner_id.clone())
+                    .map(|character| CharacterInfo {
+                        id: character.id,
+                        name: character.name.clone(),
+                        attributes: character.attributes.clone(),
+                    })
                     .collect(),
             ),
             0,

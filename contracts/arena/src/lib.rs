@@ -115,6 +115,7 @@ impl Arena {
 
     fn _clean_state(&mut self) {
         self.winners = vec![];
+        self.characters = vec![];
         self.reservations = vec![];
     }
 }

@@ -113,10 +113,11 @@ impl Arena {
         msg::reply(GameEvent::GasReserved, 0).expect("unable to reply");
     }
 
-    fn _clean_state(&mut self) {
+    fn clean_state(&mut self) {
         self.winners = vec![];
         self.characters = vec![];
         self.reservations = vec![];
+        self.battles = vec![];
     }
 }
 
@@ -141,6 +142,7 @@ async fn main() {
         }
         GameAction::Play => arena.play().await,
         GameAction::ReserveGas => arena.reserve_gas(),
+        GameAction::CleanState => arena.clean_state(),
     }
 }
 

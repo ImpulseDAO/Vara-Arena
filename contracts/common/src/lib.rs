@@ -9,6 +9,7 @@ pub enum GameAction {
     Register { owner_id: ActorId },
     Play,
     ReserveGas,
+    CleanState,
 }
 
 #[derive(Encode, Decode, TypeInfo)]

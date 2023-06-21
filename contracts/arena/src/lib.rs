@@ -11,6 +11,7 @@ mod battle;
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
 const GAS_FOR_BATTLE: u64 = 200_000_000_000;
+const NUMBER_OF_PLAYERS: usize = 4;
 
 #[derive(Default)]
 struct Arena {
@@ -24,7 +25,6 @@ struct Arena {
 impl Arena {
     async fn play(&mut self) {
         if self.battles.is_empty() {
-            // TODO: check if number of characters is dividable by 4
             debug!("starting the battle");
             self.battles = self
                 .characters
@@ -74,6 +74,10 @@ impl Arena {
     }
 
     async fn register(&mut self, owner_id: ActorId) {
+        if self.characters.len() == NUMBER_OF_PLAYERS {
+            panic!("max number of players is already registered");
+        }
+
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0)
             .expect("unable to send message")

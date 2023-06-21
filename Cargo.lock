@@ -41,6 +41,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "arena-state"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "gear-wasm-builder",
+ "gmeta",
+ "gstd",
+]
+
+[[package]]
 name = "arrayvec"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"

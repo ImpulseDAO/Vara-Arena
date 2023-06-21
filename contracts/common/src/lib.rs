@@ -2,7 +2,7 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
-use gstd::{prelude::*, ActorId, CodeId, TypeInfo};
+use gstd::{prelude::*, ActorId, CodeId, ReservationId, TypeInfo};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
@@ -84,6 +84,22 @@ pub struct CharacterInfo {
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
+pub struct Character {
+    pub id: ActorId,
+    pub name: String,
+    pub hp: u8,
+    pub energy: u8,
+    pub position: u8,
+    pub attributes: CharacterAttributes,
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub struct BattleState {
+    pub c1: Character,
+    pub c2: Character,
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone)]
 pub enum MintAction {
     CreateCharacter {
         code_id: CodeId,
@@ -111,6 +127,15 @@ impl Metadata for MintMetadata {
     type State = MintState;
 }
 
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub struct ArenaState {
+    pub characters: Vec<Character>,
+    pub mint: ActorId,
+    pub battles: Vec<BattleState>,
+    pub winners: Vec<ActorId>,
+    pub reservations: Vec<ReservationId>,
+}
+
 pub struct ArenaMetadata;
 
 impl Metadata for ArenaMetadata {
@@ -119,5 +144,5 @@ impl Metadata for ArenaMetadata {
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();
-    type State = ();
+    type State = ArenaState;
 }

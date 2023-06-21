@@ -1,9 +1,9 @@
 use core::cmp::{max, min};
 
 use common::{
-    AttackKind, BattleAction, CharacterAttributes, CharacterState, GameEvent, TurnResult, YourTurn,
+    AttackKind, BattleAction, Character, CharacterState, GameEvent, TurnResult, YourTurn,
 };
-use gstd::{debug, exec, msg, prelude::*, ActorId};
+use gstd::{debug, exec, msg, prelude::*};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
 const MIN_POS: u8 = 0;
@@ -19,21 +19,9 @@ const MOVE: [u8; 10] = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
 pub const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
 
-type CharacterId = ActorId;
-
-#[derive(Clone)]
-pub struct Character {
-    pub id: CharacterId,
-    pub name: String,
-    pub hp: u8,
-    pub energy: u8,
-    pub position: u8,
-    pub attributes: CharacterAttributes,
-}
-
 pub struct Battle {
-    c1: Character,
-    c2: Character,
+    pub c1: Character,
+    pub c2: Character,
 }
 
 impl Battle {

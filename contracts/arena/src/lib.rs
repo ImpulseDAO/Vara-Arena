@@ -1,7 +1,9 @@
 #![no_std]
 
-use battle::{Battle, Character, ENERGY};
-use common::{CharacterInfo, GameAction, GameEvent, MintAction};
+use battle::{Battle, ENERGY};
+use common::{
+    ArenaState, BattleState, Character, CharacterInfo, GameAction, GameEvent, MintAction,
+};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 
 mod battle;
@@ -37,7 +39,7 @@ impl Arena {
 
         if self.battles.is_empty() {
             if self.winners.len() == 1 {
-                self._clean_state();
+                self.clean_state();
                 msg::reply(GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
                 return;
             } else {
@@ -150,4 +152,27 @@ async fn main() {
 extern "C" fn metahash() {
     let metahash: [u8; 32] = include!("../.metahash");
     msg::reply(metahash, 0).expect("Failed to share metahash");
+}
+
+#[no_mangle]
+extern "C" fn state() {
+    let arena = unsafe { ARENA.as_ref().unwrap() };
+    msg::reply(
+        ArenaState {
+            mint: arena.mint,
+            characters: arena.characters.clone(),
+            reservations: arena.reservations.clone(),
+            winners: arena.winners.clone(),
+            battles: arena
+                .battles
+                .iter()
+                .map(|battle| BattleState {
+                    c1: battle.c1.clone(),
+                    c2: battle.c2.clone(),
+                })
+                .collect(),
+        },
+        0,
+    )
+    .expect("failed to share state");
 }

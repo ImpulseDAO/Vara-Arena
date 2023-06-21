@@ -1,0 +1,31 @@
+.buttonText {
+}
+
+.pointButtonWrapper{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  border-radius: 8px;
+  & > :nth-child(1) {
+    margin-right: auto;
+  }
+  & > .pointButton:last-child  {
+    border-radius: 0 8px 8px 0;
+  }
+  & > .pointButton:nth-child(2)  {
+    border-radius: 8px 0 0 8px;
+  }
+}
+
+.pointButton {
+  height: 40px;
+  width: 40px;
+  border: 1px solid rgba(208, 213, 221, 1);
+  font-size: 16px;
+  box-sizing: border-box;
+  padding: 10px 18px;
+  color: #344054;
+}

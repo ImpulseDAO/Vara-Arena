@@ -1,0 +1,10 @@
+.app {
+  height: 100%;
+}
+
+.content {
+  height: calc(100% - 80px);
+  & > div {
+    overflow: scroll;
+  }
+}

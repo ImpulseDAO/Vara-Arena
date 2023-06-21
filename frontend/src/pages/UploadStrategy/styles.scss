@@ -1,0 +1,177 @@
+.upload {
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  background-image: url('../../assets/images/mintCharacterScreen.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .header {
+    display: flex;
+    position: sticky;
+    background-color: black;
+    width: 100%;
+    height: 68px;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  .table_header {
+    width: 100%;
+    height: 80px;
+    background: black;
+    margin-top: -1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    position: sticky;
+    border-bottom: 1px solid #eaecf0;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .table_container {
+    margin: 44px 120px 280px;
+    display: flex;
+    width: 880px;
+    height: 643px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #eaecf0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    :is(Button) {
+      flex-direction: column;
+    }
+  }
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    row-gap: 27px;
+    box-sizing: border-box;
+    padding: 24px 24px 16px;
+    flex-wrap: wrap;
+  }
+
+  .imgWrapper {
+    position: relative;
+  }
+  .input_file_container {width: 570px;
+    height: 254px;
+    background-color: white;
+    border: 1px dashed #EAECF0;
+    border-radius: 8px;
+    align-content: center;
+    justify-content: center;
+    display: flex;
+  }
+
+  .input_file {display: none}
+
+  .modal_right {
+    display: flex;
+    flex-direction: column;
+    width: 375px;
+    height: 442px;
+    box-sizing: border-box;
+  }
+
+  .top_wrapper {
+    display: grid;
+    gap: 12px;
+  }
+
+  .input_file_content {
+    margin: 80px 50px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .upload_text {
+    align-items: center;
+    justify-self: center;
+    font-size: 18px;
+  }
+
+  .text {color: #667085;
+  font-size: 14px;}
+
+  .comment {color: #667085;
+    font-size: 12px;
+  margin-top: 4px;}
+
+  .upload_icon { width: 40px;
+  height: 40px;}
+
+  .buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 43px;
+  }
+
+  .cancelButton {
+    border-radius: 8px;
+    height: 44px;
+    width: 167.5px;
+    border: 1px solid rgba(208, 213, 221, 1);
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    color: #344054;
+  }
+
+  .uploadButton {
+    border-radius: 8px;
+    height: 44px;
+    width: 167.5px;
+    // border: 1px solid rgba(33, 82, 255, 1);
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    color: white;
+    background-color: rgba(33, 82, 255, 1);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+
+    &.disabled {
+      background: #656565;
+    }
+  }
+
+  .input_container {
+    height: 44px;
+    width: 572px;
+    & > input {
+      color: black;
+      background: #FFFFFF;
+      border: 1px solid #D0D5DD;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+      border-radius: 8px;
+      font-size: 18px;
+      box-sizing: border-box;
+      padding: 10px 14px;
+
+      &::placeholder {
+        color: #8f8f8f;
+      }
+
+      &:-ms-input-placeholder {
+        color: white;
+      }
+
+      &::-ms-input-placeholder {
+        color: white;
+      }
+    }
+  }
+}

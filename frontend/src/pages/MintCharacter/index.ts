@@ -1,0 +1,1 @@
+export { MintCharacter } from './MintCharacter';

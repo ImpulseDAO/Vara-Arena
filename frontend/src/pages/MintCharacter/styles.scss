@@ -1,0 +1,234 @@
+.mint_char {
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  background-image: url('../../assets/images/mintCharacterScreen.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .header {
+    display: flex;
+    position: sticky;
+    background-color: black;
+    width: 100%;
+    height: 68px;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  .table_header {
+    width: 100%;
+    height: 80px;
+    background: black;
+    margin-top: -1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    position: sticky;
+    border-bottom: 1px solid #eaecf0;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .table_container {
+    margin: 44px 120px 280px;
+    display: flex;
+    width: 880px;
+    height: 700px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #eaecf0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    :is(Button) {
+      flex-direction: column;
+    }
+  }
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    row-gap: 27px;
+    width: 375px;
+    box-sizing: border-box;
+    padding: 24px 24px 16px;
+    flex-wrap: wrap;
+  }
+
+  .imgWrapper {
+    position: relative;
+    // display: flex;
+    // flex-direction: column;
+    // flex-basis: fit-content;
+    //gap: 27px;
+    //box-sizing: border-box;
+    //padding: 16px 28px;
+    //flex-wrap: wrap;
+    //& > :nth-child(5) {align-self: center}
+  }
+
+  //.bar {
+  //  width: 375px;
+  //  color: white;
+  //  font-size: 18px;
+  //  flex-direction: row;
+  //  align-items: center;
+  //  gap: 0px;
+  //  margin: 0;
+  //}
+
+  .modal_right {
+    display: flex;
+    flex-direction: column;
+    // row-gap: 27px;
+    width: 375px;
+    height: 442px;
+    box-sizing: border-box;
+    // padding: 24px 24px 16px;
+    // flex-wrap: wrap;
+    //& > :nth-child(5) {align-self: center}
+    .lock_img1 {
+      position: absolute;
+      top: 0px;
+      left: calc(50% - 35px);
+    }
+    .lock_img2 {
+      position: absolute;
+      top: 30px;
+      left: 0px;
+    }
+    .lock_img3 {
+      position: absolute;
+      top: 105px;
+      left: 0px;
+    }
+    .lock_img4 {
+      position: absolute;
+      top: 180px;
+      left: 0px;
+    }
+    .lock_img5 {
+      position: absolute;
+      top: 255px;
+      left: 0px;
+    }
+    .char_svg {
+      position: absolute;
+      top: 87px;
+      left: calc(50% - 69.5px);
+    }
+    .lock_img6 {
+      position: absolute;
+      top: 30px;
+      right: 0px;
+    }
+    .lock_img7 {
+      position: absolute;
+      top: 105px;
+      right: 0px;
+    }
+    .lock_img8 {
+      position: absolute;
+      top: 180px;
+      right: 0px;
+    }
+    .lock_img9 {
+      position: absolute;
+      top: 255px;
+      right: 0px;
+    }
+  }
+
+  .top_wrapper {
+    display: grid;
+    gap: 20px;
+  }
+
+  .char_info {
+    color: white;
+    font-size: 18px;
+  }
+
+  .points {
+    margin-left: auto;
+    color: white;
+    font-size: 18px;
+    & > span {
+      margin-left: 5px;
+      color: #2152ff;
+    }
+  }
+
+  .buttonWrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 43px;
+  }
+
+  .cancelButton {
+    border-radius: 8px;
+    height: 44px;
+    width: 167.5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    color: #344054;
+    border: none;
+  }
+
+  .lock_img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .mintButton {
+    border-radius: 8px;
+    height: 44px;
+    width: 167.5px;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 10px 18px;
+    color: white;
+    background-color: rgba(33, 82, 255, 1);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    border: none;
+    &.disabled {
+      background: #656565;
+    }
+  }
+
+  .input_container {
+    height: 44px;
+    width: 320px;
+    color: white;
+    & > input {
+      color: white;
+      border-radius: 8px;
+      border: 1px solid #ffffff;
+      font-size: 18px;
+      background: black;
+      box-sizing: border-box;
+      padding: 10px 14px;
+
+      &::placeholder {
+        color: #8f8f8f;
+      }
+
+      &:-ms-input-placeholder {
+        color: white;
+      }
+
+      &::-ms-input-placeholder {
+        color: white;
+      }
+    }
+  }
+}

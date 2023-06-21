@@ -1,0 +1,45 @@
+@use '@gear-js/ui/variables' as *;
+
+.wallet {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 52px;
+  // background: rgb(42, 42, 50);
+  background: linear-gradient(
+    22deg,
+    rgba(42, 42, 50, 1) 0%,
+    rgba(34, 38, 38, 1) 31%,
+    rgba(11, 52, 23, 1) 67%,
+    rgba(7, 51, 12, 1) 72%
+  );
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.balance {
+  display: flex;
+  gap: 4px;
+  margin-right: 25px;
+  font-size: $fontSizeMedium;
+  font-weight: bold;
+}
+
+.currency {
+  color: $textColorSecondary;
+}
+
+.balanceWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.value {
+  color: white;
+}
+
+.balanceTitle {
+  color: $textColorSecondary;
+  font-size: 12px;
+}

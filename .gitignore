@@ -1,3 +1,8 @@
 target/
 .binpath
 .metahash
+frontend/.env
+frontend/node_modules
+
+**/*/.idea
+

@@ -1,47 +1,47 @@
-import { FC, useEffect, useMemo, useState } from 'react';
-import './styles.scss';
-import { TableUI } from 'components/Table';
-import { TableColumnsType } from 'components/Table/types';
-import AvatarIcon from '../../assets/images/avatar.png';
-import ProgressIcon from '../../assets/svg/progress.svg';
+import { FC, useEffect, useMemo, useState } from "react";
+import "./styles.scss";
+import { TableUI } from "components/Table";
+import { TableColumnsType } from "components/Table/types";
+import AvatarIcon from "../../assets/images/avatar.png";
+import ProgressIcon from "../../assets/svg/progress.svg";
 import {
   useAccount,
   useAlert,
   useApi,
   useReadWasmState,
   useSendMessage,
-} from '@gear-js/react-hooks';
-import { HexString } from '@polkadot/util/types';
-import { getProgramMetadata } from '@gear-js/api';
-import { ARENA_ID, METADATA } from 'pages/StartFight/constants';
-import stateMetaWasm from '../../assets/mint_state.meta.wasm';
-import { MINT_ID } from 'pages/MintCharacter/constants';
-import { userStore } from '../../model/user';
-import { useStore, useUnit } from 'effector-react';
-import { useNavigate } from 'react-router-dom';
-import { logsStore } from 'model/logs';
-import { isEmpty } from 'lodash';
+} from "@gear-js/react-hooks";
+import { HexString } from "@polkadot/util/types";
+import { getProgramMetadata } from "@gear-js/api";
+import { ARENA_ID, METADATA } from "pages/StartFight/constants";
+import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import { MINT_ID } from "pages/MintCharacter/constants";
+import { userStore } from "../../model/user";
+import { useStore, useUnit } from "effector-react";
+import { useNavigate } from "react-router-dom";
+import { logsStore } from "model/logs";
+import { isEmpty } from "lodash";
 
 export type QueueProps = {};
 
 const inProgressColumns: TableColumnsType[] = [
   {
-    field: 'id',
-    headerName: 'Player ID',
+    field: "id",
+    headerName: "Player ID",
     width: 220,
-    position: 'center',
+    position: "center",
   },
   {
-    field: 'NB',
-    headerName: 'Number of battles',
+    field: "NB",
+    headerName: "Number of battles",
     width: 144,
-    position: 'center',
+    position: "center",
   },
   {
-    field: 'level',
-    headerName: 'Level',
+    field: "level",
+    headerName: "Level",
     width: 172,
-    position: 'center',
+    position: "center",
   },
 ];
 
@@ -59,15 +59,15 @@ const getRows = (
 ) => {
   return players.map((player) => ({
     id: (
-      <div className='row_player'>
+      <div className="row_player">
         <img src={AvatarIcon} />
         <div>
-          <p className='row_name'>{player.name}</p>
+          <p className="row_name">{player.name}</p>
         </div>
       </div>
     ),
-    NB: '0',
-    level: <span className='row_lvl'>1LVL</span>,
+    NB: "0",
+    level: <span className="row_lvl">1LVL</span>,
   }));
 };
 
@@ -122,17 +122,10 @@ export const Queue: FC<QueueProps> = ({}) => {
 
   const { account } = useAccount();
 
-  console.log('account', account);
-  console.log('usersOnBattle', usersOnBattle);
+  console.log("account", account);
+  console.log("usersOnBattle", usersOnBattle);
 
   const inProgressRows = useMemo(() => getRows(players), [players]);
-
-  // const charInfo = useReadWasmState(
-  //   MINT_ID,
-  //   buffer,
-  //   'character_info',
-  //   '0x924f709f99420ab4e07411ae6a396e0c8b7ad5d21b16364f8a642fa14e8e4952'
-  // );
 
   useEffect(() => {
     reset();
@@ -154,7 +147,7 @@ export const Queue: FC<QueueProps> = ({}) => {
   useEffect(() => {
     if (api?.gearEvents) {
       api.gearEvents.subscribeToGearEvent(
-        'UserMessageSent',
+        "UserMessageSent",
         ({
           data: {
             //@ts-ignore
@@ -162,7 +155,7 @@ export const Queue: FC<QueueProps> = ({}) => {
           },
         }) => {
           console.log(
-            'meta logs',
+            "meta logs",
             meta
               //@ts-ignore
               .createType(meta.types.handle.output, message.payload)
@@ -209,7 +202,7 @@ export const Queue: FC<QueueProps> = ({}) => {
                 //@ts-ignore
                 .toJSON()?.playerWon
             ) {
-              navigate('/battle');
+              navigate("/battle");
             }
 
             if (
@@ -251,7 +244,7 @@ export const Queue: FC<QueueProps> = ({}) => {
                 //@ts-ignore
                 .toJSON()?.battleEvent;
               setLogs({ text: JSON.stringify(action), id: `${id}` });
-              navigate('/battle');
+              navigate("/battle");
             }
           }
         }
@@ -260,17 +253,17 @@ export const Queue: FC<QueueProps> = ({}) => {
   }, [api]);
 
   return (
-    <div className='queue'>
-      <div className='modal_queue'>
-        <div className='modal_loader'>
-          <p className='modal_tille'>Tournament participants</p>
-          <img className={'modal_progress'} src={ProgressIcon} />
-          <p className='modal_info'>Waiting players</p>
-          <p className='modal_badge'>{`${Math.floor(
+    <div className="queue">
+      <div className="modal_queue">
+        <div className="modal_loader">
+          <p className="modal_tille">Tournament participants</p>
+          <img className={"modal_progress"} src={ProgressIcon} />
+          <p className="modal_info">Waiting players</p>
+          <p className="modal_badge">{`${Math.floor(
             timer / (1000 * 60)
           )}:${Math.floor((timer - timer / 60) / 1000)}`}</p>
         </div>
-        <div className='modal_table'>
+        <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />
         </div>
       </div>

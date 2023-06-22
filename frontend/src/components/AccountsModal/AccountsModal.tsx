@@ -1,26 +1,27 @@
-import { Modal } from '@gear-js/ui';
-import { Accounts } from '../accounts';
-import { useAccount } from '@gear-js/react-hooks';
+import { Modal } from "@gear-js/ui";
+import { Accounts } from "../accounts";
+import { useAccount } from "@gear-js/react-hooks";
 
 type Props = {
   close: () => void;
+  userChoose: VoidFunction;
 };
 
-export const AccountsModal = ({ close }: Props) => {
+export const AccountsModal = ({ close, userChoose }: Props) => {
   const { accounts } = useAccount();
   return (
-    <Modal heading='Connect' close={close}>
+    <Modal heading="Connect" close={close}>
       {accounts ? (
-        <Accounts list={accounts} />
+        <Accounts list={accounts} userChoose={userChoose} />
       ) : (
         <p>
           Wallet extension was not found or disconnected. Please check how to
-          install a supported wallet and create an account{' '}
+          install a supported wallet and create an account{" "}
           <a
-            href='https://wiki.gear-tech.io/docs/idea/account/create-account'
-            target='_blank'
-            rel='noreferrer'
-            className='link-text'
+            href="https://wiki.gear-tech.io/docs/idea/account/create-account"
+            target="_blank"
+            rel="noreferrer"
+            className="link-text"
           >
             here
           </a>

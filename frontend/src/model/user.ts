@@ -1,19 +1,32 @@
-import { createEvent, createStore, sample } from 'effector';
+import { createEvent, createStore, sample } from "effector";
 
-const $user = createStore('');
+const $user = createStore<null | {
+  id: string;
+  attributes: {
+    strength: string;
+    agility: string;
+    vitality: string;
+    stamina: string;
+  };
+  name: string;
+}>(null);
 
-const $registerUsers = createStore<
-  Array<{
-    id: string;
-    attributes: {
-      strength: string;
-      agility: string;
-      vitality: string;
-      stamina: string;
-    };
-    name: string;
-  }>
->([]);
+$user.watch((state) => {
+  console.log("state", state);
+});
+
+// const $registerUsers = createStore<
+//   Array<{
+//     id: string;
+//     attributes: {
+//       strength: string;
+//       agility: string;
+//       vitality: string;
+//       stamina: string;
+//     };
+//     name: string;
+//   }>
+// >([]);
 
 // const updateRegisterUsers = createEvent<
 //   Array<{
@@ -28,7 +41,16 @@ const $registerUsers = createStore<
 //   }>
 // >();
 
-const setName = createEvent<string>();
+const setName = createEvent<{
+  id: string;
+  attributes: {
+    strength: string;
+    agility: string;
+    vitality: string;
+    stamina: string;
+  };
+  name: string;
+}>();
 
 // sample({ clock: updateRegisterUsers, target: $registerUsers });
 

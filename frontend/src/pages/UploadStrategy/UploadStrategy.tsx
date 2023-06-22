@@ -1,18 +1,18 @@
-import { useAccount, useApi, useCreateHandler } from '@gear-js/react-hooks';
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
-import Table from '@mui/material/Table';
-import { Input } from '../../components';
-import { Button } from '../../components/Button';
-import UploadIcon from '../../assets/svg/upload_icon.svg';
+import { useAccount, useApi, useCreateHandler } from "@gear-js/react-hooks";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import Table from "@mui/material/Table";
+import { Input } from "../../components";
+import { Button } from "../../components/Button";
+import UploadIcon from "../../assets/svg/upload_icon.svg";
 
-import './styles.scss';
-import { web3FromSource } from '@polkadot/extension-dapp';
-import { HexString } from '@polkadot/util/types';
-import { useNavigate } from 'react-router-dom';
+import "./styles.scss";
+import { web3FromSource } from "@polkadot/extension-dapp";
+import { HexString } from "@polkadot/util/types";
+import { useNavigate } from "react-router-dom";
 
 export const UploadStrategy = () => {
-  const [programName, setProgramName] = useState('');
-  const [hash, setHash] = useState('');
+  const [programName, setProgramName] = useState("");
+  const [hash, setHash] = useState("");
   const inputFileRef = useRef();
   const navigate = useNavigate();
   // const createProgram = useCreateHandler(
@@ -37,7 +37,7 @@ export const UploadStrategy = () => {
     fileReader.readAsText(event.target.files[0]);
 
     fileReader.onload = async (e) => {
-      console.log('fileReader.result', fileReader.result);
+      console.log("fileReader.result", fileReader.result);
       setFileContent(fileReader.result);
     };
   };
@@ -54,7 +54,7 @@ export const UploadStrategy = () => {
       if (fileContent) {
         //@ts-ignore
         const { codeHash } = await api.code.upload(fileContent);
-        console.log('codeHash', codeHash);
+        console.log("codeHash", codeHash);
 
         setHash(codeHash);
 
@@ -63,15 +63,15 @@ export const UploadStrategy = () => {
         ]);
 
         api.code.signAndSend(account.address, { signer }, ({ events }) => {
-          navigate('/arena');
+          navigate("/arena");
 
           events.forEach(({ event: { method, data } }) => {
-            if (method === 'ExtrinsicFailed') {
-              console.log('data.toString()', data.toHuman());
+            if (method === "ExtrinsicFailed") {
+              console.log("data.toString()", data.toHuman());
 
               throw new Error(data.toString());
-            } else if (method === 'CodeChanged') {
-              console.log('success:___', data.toHuman());
+            } else if (method === "CodeChanged") {
+              console.log("success:___", data.toHuman());
             }
           });
         });
@@ -82,40 +82,40 @@ export const UploadStrategy = () => {
   }, [fileContent]);
 
   return (
-    <div className='upload'>
-      <Table className={'table_container'}>
-        <div className={'table_header'}>Upload program (2/2)</div>
-        <div className={'modal'}>
-          <div className={'top_wrapper'}>
-            <div className={'upload_text'}>Upload your Arena strategy</div>
-            <div className={'char_info'}>Program name</div>
+    <div className="upload">
+      <Table className={"table_container"}>
+        <div className={"table_header"}>Upload program (2/2)</div>
+        <div className={"modal"}>
+          <div className={"top_wrapper"}>
+            <div className={"upload_text"}>Upload your Arena strategy</div>
+            <div className={"char_info"}>Program name</div>
             <Input
-              className={'input_container'}
+              className={"input_container"}
               onChange={onChangeInputProgramName}
               value={programName}
-              placeholder='My strategy'
+              placeholder="My strategy"
             />
           </div>
         </div>
-        <div className={'input_file_container'}>
-          <div className={'input_file_content'}>
-            <img src={UploadIcon} className={'upload_icon'} />
+        <div className={"input_file_container"}>
+          <div className={"input_file_content"}>
+            <img src={UploadIcon} className={"upload_icon"} />
             <input
-              type='file'
+              type="file"
               onChange={uploadFile}
-              className={'input_file'}
+              className={"input_file"}
               ref={inputFileRef}
             />
-            <div className={'text'}> or drag and drop</div>
-            <div className={'comment'}> example.opt.wasm file</div>
+            <div className={"text"}> or drag and drop</div>
+            <div className={"comment"}> example.opt.wasm file</div>
           </div>
         </div>
 
-        <div className={'buttonWrapper'}>
-          <Button className={'cancelButton'} onClick={() => {}}>
+        <div className={"buttonWrapper"}>
+          <Button className={"cancelButton"} onClick={() => {}}>
             Cancel
           </Button>
-          <Button className={'uploadButton'} onClick={handleOnUpload}>
+          <Button className={"uploadButton"} onClick={handleOnUpload}>
             Upload program
           </Button>
         </div>

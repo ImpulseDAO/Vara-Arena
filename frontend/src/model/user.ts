@@ -11,10 +11,6 @@ const $user = createStore<null | {
   name: string;
 }>(null);
 
-$user.watch((state) => {
-  console.log("state", state);
-});
-
 // const $registerUsers = createStore<
 //   Array<{
 //     id: string;

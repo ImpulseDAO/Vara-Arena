@@ -1,4 +1,4 @@
-import { createEvent, createStore, sample } from 'effector';
+import { createEvent, createStore, sample } from "effector";
 
 const $logs = createStore<Array<{ text: string; id: string }>>([]);
 
@@ -36,18 +36,27 @@ const updateUsersReadyForBattle = createEvent<
   >
 >();
 
+const $battleStartedIndex = createStore<number[]>([]);
+const setBattleStartedIndex = createEvent<number>();
+const resetBattleStartedIndex = createEvent();
+
+const updateAllBattleIds = createEvent<Array<Array<string>>>();
 const $battleIds = createStore<Array<Array<string>>>([]);
 const setBattleIds = createEvent<Array<string>>();
+const resetBattleIds = createEvent();
+
+sample({
+  clock: setBattleStartedIndex,
+  source: $battleStartedIndex,
+  target: $battleStartedIndex,
+  fn: (allIndex, index) => [...allIndex, index],
+});
 
 sample({
   clock: setBattleIds,
   source: $battleIds,
   target: $battleIds,
-  fn: (allIds, ids) => {
-    console.log('allIds, ids', allIds, ids);
-
-    return [...allIds, ids];
-  },
+  fn: (allIds, ids) => [...allIds, ids],
 });
 
 sample({
@@ -56,15 +65,22 @@ sample({
 });
 
 sample({
+  clock: updateAllBattleIds,
+  target: $battleIds,
+});
+
+sample({
   clock: setLogs,
   source: $logs,
   target: $logs,
   fn: (logs, log) => {
-    return [log, ...logs];
+    return [...logs, log];
   },
 });
 
 $logs.reset(reset);
+$battleStartedIndex.reset(resetBattleIds);
+$battleIds.reset(resetBattleIds);
 
 export const logsStore = {
   $logs,
@@ -74,4 +90,9 @@ export const logsStore = {
   $usersOnBattle,
   $battleIds,
   setBattleIds,
+  updateAllBattleIds,
+  resetBattleIds,
+  $battleStartedIndex,
+  setBattleStartedIndex,
+  resetBattleStartedIndex,
 };

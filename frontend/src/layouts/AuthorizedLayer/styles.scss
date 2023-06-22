@@ -6,5 +6,10 @@
   height: calc(100% - 80px);
   & > div {
     overflow: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
   }
 }

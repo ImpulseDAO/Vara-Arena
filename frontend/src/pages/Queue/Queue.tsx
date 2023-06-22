@@ -21,6 +21,7 @@ import { useStore, useUnit } from "effector-react";
 import { useNavigate } from "react-router-dom";
 import { logsStore } from "model/logs";
 import { isEmpty } from "lodash";
+import { UnsubscribePromise } from "@polkadot/api/types";
 
 export type QueueProps = {};
 
@@ -96,12 +97,14 @@ export const Queue: FC<QueueProps> = ({}) => {
     updateUsersReadyForBattle,
     usersOnBattle,
     setBattleIds,
+    resetBattleIds,
   ] = useUnit([
     logsStore.reset,
     logsStore.setLogs,
     logsStore.updateUsersReadyForBattle,
     logsStore.$usersOnBattle,
     logsStore.setBattleIds,
+    logsStore.resetBattleIds,
   ]);
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
@@ -120,15 +123,13 @@ export const Queue: FC<QueueProps> = ({}) => {
     }>
   >([]);
 
-  const { account } = useAccount();
-
-  console.log("account", account);
   console.log("usersOnBattle", usersOnBattle);
 
   const inProgressRows = useMemo(() => getRows(players), [players]);
 
   useEffect(() => {
     reset();
+    resetBattleIds();
   }, []);
 
   // useEffect(() => {
@@ -145,8 +146,9 @@ export const Queue: FC<QueueProps> = ({}) => {
   // pewepew {"playerRegistered":"0x7c19d3c535a8abefb55ce6c0b4b64788a41986fce8f9b151ff5643e8fbf700ca"}
 
   useEffect(() => {
+    let unsub: UnsubscribePromise | undefined;
     if (api?.gearEvents) {
-      api.gearEvents.subscribeToGearEvent(
+      unsub = api.gearEvents.subscribeToGearEvent(
         "UserMessageSent",
         ({
           data: {
@@ -244,12 +246,15 @@ export const Queue: FC<QueueProps> = ({}) => {
                 //@ts-ignore
                 .toJSON()?.battleEvent;
               setLogs({ text: JSON.stringify(action), id: `${id}` });
-              navigate("/battle");
             }
           }
         }
       );
     }
+
+    return () => {
+      unsub?.then((res) => console.log("res", res()));
+    };
   }, [api]);
 
   return (

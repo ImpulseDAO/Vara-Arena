@@ -46,12 +46,9 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
     };
     name: string;
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
-  console.log("account && userChoosed", account, userChoosed);
 
   useEffect(() => {
     if (account && userChoosed) {
-      console.log("charInfo.state", charInfo.state);
-
       if (!charInfo.state) {
         navigate("/mint-character");
       } else {

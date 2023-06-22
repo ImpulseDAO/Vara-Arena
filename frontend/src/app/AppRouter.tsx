@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 import { MintCharacter, StartScreen } from '../pages';
 import { AuthorizedLayer } from 'layouts/AuthorizedLayer';
 import { StartFight } from 'pages/StartFight';
@@ -10,7 +10,7 @@ import { Profile } from 'pages/Profile';
 import { UploadStrategy } from 'pages/UploadStrategy';
 import { Battle } from 'pages/Battle';
 
-export const appRouter = createBrowserRouter([
+export const appRouter = createHashRouter([
   {
     element: <StartScreen />,
     path: '/',

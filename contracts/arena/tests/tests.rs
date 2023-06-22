@@ -51,6 +51,21 @@ fn game() {
             owner_id: USER_ID.into(),
         },
     );
+    arena.send(
+        USER_ID,
+        GameAction::Register {
+            owner_id: USER_ID.into(),
+        },
+    );
+    arena.send(
+        USER_ID,
+        GameAction::Register {
+            owner_id: USER_ID.into(),
+        },
+    );
+
+    arena.send(USER_ID, GameAction::ReserveGas);
+    arena.send(USER_ID, GameAction::ReserveGas);
 
     arena.send(USER_ID, GameAction::Play);
 }

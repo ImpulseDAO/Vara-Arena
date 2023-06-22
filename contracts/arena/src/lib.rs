@@ -20,27 +20,31 @@ struct Arena {
     battles: Vec<Battle>,
     winners: Vec<ActorId>,
     reservations: Vec<ReservationId>,
+    source: Option<ActorId>, // original play sender
 }
 
 impl Arena {
     async fn play(&mut self) {
         if self.battles.is_empty() {
             debug!("starting the battle");
+            self.source = Some(msg::source());
             self.battles = self
                 .characters
                 .chunks_exact(2)
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
         }
+        let source = self.source.expect("original sender is not specified");
 
         let battle = self.battles.pop().unwrap();
-        let winner = battle.fight().await;
+        let winner = battle.fight(source).await;
         self.winners.push(winner.id);
 
         if self.battles.is_empty() {
             if self.winners.len() == 1 {
                 self.clean_state();
-                msg::reply(GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
+                debug!("{:?} is an arena winner", winner.id);
+                msg::send(source, GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
                 return;
             } else {
                 self.battles = self
@@ -61,13 +65,14 @@ impl Arena {
                         )
                     })
                     .collect();
+                self.winners = vec![];
             }
         }
 
         if let Some(id) = self.reservations.pop() {
             msg::send_from_reservation(id, exec::program_id(), GameAction::Play, 0)
                 .expect("unable to send");
-            msg::reply(GameEvent::NextBattleFromReservation, 0).expect("unable to reply");
+            msg::send(source, GameEvent::NextBattleFromReservation, 0).expect("unable to reply");
         } else {
             panic!("more gas is required");
         }
@@ -124,6 +129,7 @@ impl Arena {
         self.characters = vec![];
         self.reservations = vec![];
         self.battles = vec![];
+        self.source = None;
     }
 }
 

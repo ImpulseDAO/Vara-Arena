@@ -31,6 +31,12 @@ export const Battle: FC<BattleProps> = () => {
   const [pos, setPos] = useState({ pos1: 0, pos2: 20 });
   const [hp, setHp] = useState({ hp1: "50", hp2: "50", pos: 0 });
 
+  useEffect(() => {
+    if (playerWon) {
+      alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
+    }
+  }, [playerWon, usersOnBattle]);
+
   const [user1, user2] = useMemo(() => {
     if (isEmpty(ownerBattleIds)) {
       return [undefined, undefined];

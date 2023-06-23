@@ -3,6 +3,7 @@ target/
 .metahash
 frontend/.env
 frontend/node_modules
+frontend/build
 
 **/*/.idea
 

@@ -4,20 +4,11 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
-import {
-  useAccount,
-  useAlert,
-  useApi,
-  useReadWasmState,
-  useSendMessage,
-} from "@gear-js/react-hooks";
-import { HexString } from "@polkadot/util/types";
+import { useAlert, useApi } from "@gear-js/react-hooks";
 import { getProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { MINT_ID } from "pages/MintCharacter/constants";
-import { userStore } from "../../model/user";
-import { useStore, useUnit } from "effector-react";
+
+import { useUnit } from "effector-react";
 import { useNavigate } from "react-router-dom";
 import { logsStore } from "model/logs";
 import { isEmpty } from "lodash";
@@ -98,6 +89,8 @@ export const Queue: FC<QueueProps> = ({}) => {
     usersOnBattle,
     setBattleIds,
     resetBattleIds,
+    setBattleFinishedIndex,
+    setPlayerWon,
   ] = useUnit([
     logsStore.reset,
     logsStore.setLogs,
@@ -105,6 +98,8 @@ export const Queue: FC<QueueProps> = ({}) => {
     logsStore.$usersOnBattle,
     logsStore.setBattleIds,
     logsStore.resetBattleIds,
+    logsStore.setBattleFinishedIndex,
+    logsStore.setPlayerWon,
   ]);
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
@@ -134,7 +129,7 @@ export const Queue: FC<QueueProps> = ({}) => {
 
   // useEffect(() => {
   //   const intervalId = setInterval(() => {
-  //     setTimer((prev) => prev + 1000);
+  //     setTimer((prev) => prev + 1);
   //   }, 1000);
 
   //   return () => {
@@ -146,6 +141,7 @@ export const Queue: FC<QueueProps> = ({}) => {
   // pewepew {"playerRegistered":"0x7c19d3c535a8abefb55ce6c0b4b64788a41986fce8f9b151ff5643e8fbf700ca"}
 
   useEffect(() => {
+    let index = 0;
     let unsub: UnsubscribePromise | undefined;
     if (api?.gearEvents) {
       unsub = api.gearEvents.subscribeToGearEvent(
@@ -156,15 +152,15 @@ export const Queue: FC<QueueProps> = ({}) => {
             message,
           },
         }) => {
-          console.log(
-            "meta logs",
-            meta
-              //@ts-ignore
-              .createType(meta.types.handle.output, message.payload)
-              //@ts-ignore
-              .toJSON()
-          );
           if (JSON.parse(message.toString()).source === ARENA_ID) {
+            console.log(
+              "meta logs",
+              meta
+                //@ts-ignore
+                .createType(meta.types.handle.output, message.payload)
+                //@ts-ignore
+                .toJSON()
+            );
             if (
               !isEmpty(
                 meta
@@ -204,6 +200,13 @@ export const Queue: FC<QueueProps> = ({}) => {
                 //@ts-ignore
                 .toJSON()?.playerWon
             ) {
+              setPlayerWon(
+                meta
+                  //@ts-ignore
+                  .createType(meta.types.handle.output, message.payload)
+                  //@ts-ignore
+                  .toJSON()?.playerWon
+              );
               navigate("/battle");
             }
 
@@ -224,14 +227,23 @@ export const Queue: FC<QueueProps> = ({}) => {
               );
             }
 
-            // console.log(
-            //   'hello',
-            //   meta
-            //     //@ts-ignore
-            //     .createType(meta.types.handle.output, message.payload)
-            //     //@ts-ignore
-            //     .toJSON()?.battleEvent
-            // );
+            if (
+              //@ts-ignore
+              meta
+                //@ts-ignore
+                .createType(meta.types.handle.output, message.payload)
+                //@ts-ignore
+                .toJSON()?.battleFinished
+            ) {
+              setBattleFinishedIndex({
+                index: index.toString(),
+                id: meta
+                  //@ts-ignore
+                  .createType(meta.types.handle.output, message.payload)
+                  //@ts-ignore
+                  .toJSON()?.battleFinished,
+              });
+            }
 
             if (
               meta
@@ -246,6 +258,7 @@ export const Queue: FC<QueueProps> = ({}) => {
                 //@ts-ignore
                 .toJSON()?.battleEvent;
               setLogs({ text: JSON.stringify(action), id: `${id}` });
+              index++;
             }
           }
         }
@@ -264,9 +277,11 @@ export const Queue: FC<QueueProps> = ({}) => {
           <p className="modal_tille">Tournament participants</p>
           <img className={"modal_progress"} src={ProgressIcon} />
           <p className="modal_info">Waiting players</p>
-          <p className="modal_badge">{`${Math.floor(
-            timer / (1000 * 60)
-          )}:${Math.floor((timer - timer / 60) / 1000)}`}</p>
+          <p className="modal_badge">{`${Math.floor(timer / 60)
+            .toString()
+            .padStart(2, "0")}:${(timer - Math.floor(timer / 60) * 60)
+            .toString()
+            .padStart(2, "0")}`}</p>
         </div>
         <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />

@@ -36,9 +36,12 @@ const updateUsersReadyForBattle = createEvent<
   >
 >();
 
-const $battleStartedIndex = createStore<number[]>([]);
-const setBattleStartedIndex = createEvent<number>();
-const resetBattleStartedIndex = createEvent();
+const $playerWon = createStore<string>("");
+const setPlayerWon = createEvent<string>();
+
+const $battleFinishedIndex = createStore<{ index: string; id: string }[]>([]);
+const setBattleFinishedIndex = createEvent<{ index: string; id: string }>();
+const resetBattleFinishedIndex = createEvent();
 
 const updateAllBattleIds = createEvent<Array<Array<string>>>();
 const $battleIds = createStore<Array<Array<string>>>([]);
@@ -46,9 +49,9 @@ const setBattleIds = createEvent<Array<string>>();
 const resetBattleIds = createEvent();
 
 sample({
-  clock: setBattleStartedIndex,
-  source: $battleStartedIndex,
-  target: $battleStartedIndex,
+  clock: setBattleFinishedIndex,
+  source: $battleFinishedIndex,
+  target: $battleFinishedIndex,
   fn: (allIndex, index) => [...allIndex, index],
 });
 
@@ -62,6 +65,11 @@ sample({
 sample({
   clock: updateUsersReadyForBattle,
   target: $usersOnBattle,
+});
+
+sample({
+  clock: setPlayerWon,
+  target: $playerWon,
 });
 
 sample({
@@ -79,7 +87,7 @@ sample({
 });
 
 $logs.reset(reset);
-$battleStartedIndex.reset(resetBattleIds);
+$battleFinishedIndex.reset(resetBattleIds);
 $battleIds.reset(resetBattleIds);
 
 export const logsStore = {
@@ -92,7 +100,9 @@ export const logsStore = {
   setBattleIds,
   updateAllBattleIds,
   resetBattleIds,
-  $battleStartedIndex,
-  setBattleStartedIndex,
-  resetBattleStartedIndex,
+  $battleFinishedIndex,
+  setBattleFinishedIndex,
+  resetBattleFinishedIndex,
+  $playerWon,
+  setPlayerWon,
 };

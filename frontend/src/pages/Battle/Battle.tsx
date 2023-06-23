@@ -12,6 +12,7 @@ import { useUnit } from "effector-react";
 import { logsStore } from "model/logs";
 import { userStore } from "model/user";
 import { isEmpty } from "lodash";
+import { useAlert } from "@gear-js/react-hooks";
 
 export type BattleProps = {};
 export const Battle: FC<BattleProps> = () => {
@@ -23,7 +24,7 @@ export const Battle: FC<BattleProps> = () => {
       logsStore.$battleFinishedIndex,
       logsStore.$playerWon,
     ]);
-
+  const gearAlert = useAlert();
   const user = useUnit(userStore.$user);
   const [curBattle, setCurrentBattle] = useState(0);
   const [ownerBattleIds, setOwnerBattleIds] = useState<string[][]>([]);
@@ -34,6 +35,9 @@ export const Battle: FC<BattleProps> = () => {
   useEffect(() => {
     if (playerWon) {
       alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
+      gearAlert.success(
+        `Победил пользователь ${usersOnBattle[playerWon].name}`
+      );
     }
   }, [playerWon, usersOnBattle]);
 
@@ -72,7 +76,6 @@ export const Battle: FC<BattleProps> = () => {
   // window.battleFinishedIndex = battleFinishedIndex;
   // console.log("playerWon", playerWon);
   // window.playerWon = playerWon;
-
   // console.log("curLog", curLog);
 
   useEffect(() => {

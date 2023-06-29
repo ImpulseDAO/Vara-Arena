@@ -1,4 +1,4 @@
-use common::MintMetadata;
+use mint_io::MintMetadata;
 
 fn main() {
     gear_wasm_builder::build_with_metadata::<MintMetadata>();

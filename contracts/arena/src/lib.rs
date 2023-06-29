@@ -1,10 +1,9 @@
 #![no_std]
 
+use arena_io::{ArenaState, BattleState, Character, GameAction, GameEvent};
 use battle::{Battle, ENERGY};
-use common::{
-    ArenaState, BattleState, Character, CharacterInfo, GameAction, GameEvent, MintAction,
-};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
+use mint_io::{CharacterInfo, MintAction};
 
 mod battle;
 

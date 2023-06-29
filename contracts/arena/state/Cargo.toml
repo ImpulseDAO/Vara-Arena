@@ -1,5 +1,5 @@
 [package]
-name = "mint-state"
+name = "arena-state"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], rev = "78dfa07" }
 gmeta = { git = "https://github.com/gear-tech/gear.git", features = ["codegen"], rev = "78dfa07" }
-common = { path = "../common" }
+arena-io = { path = "../io" }
 
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", features = ["metawasm"], rev = "78dfa07" }

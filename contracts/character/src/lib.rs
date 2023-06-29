@@ -1,6 +1,6 @@
 #![no_std]
 
-use common::{AttackKind, BattleAction, YourTurn};
+use arena_io::{AttackKind, BattleAction, YourTurn};
 use gstd::{debug, msg};
 
 const QUICK_ATTAK_ENERGY: u8 = 20;

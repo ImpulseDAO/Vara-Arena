@@ -8,12 +8,13 @@ edition = "2021"
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], rev = "78dfa07" }
 codec = { package = "parity-scale-codec", version = "3.5.0", default-features = false }
-common = { path = "../common" }
+arena-io = { path = "./io" }
+mint-io = { path = "../mint/io" }
 rand = { version = "0.8", features = ["small_rng"], default-features = false }
 
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", rev = "78dfa07" }
-common = { path = "../common" }
+arena-io = { path = "./io" }
 
 [dev-dependencies]
 gtest = { git = "https://github.com/gear-tech/gear.git", rev = "78dfa07" }

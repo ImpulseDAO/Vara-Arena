@@ -1,8 +1,8 @@
 #![no_std]
 
-use common::{CharacterInfo, MintMetadata};
 use gmeta::{metawasm, Metadata};
 use gstd::ActorId;
+use mint_io::{CharacterInfo, MintMetadata};
 
 #[metawasm]
 pub mod metafns {

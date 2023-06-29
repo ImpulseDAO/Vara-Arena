@@ -1,6 +1,6 @@
 use core::cmp::{max, min};
 
-use common::{
+use arena_io::{
     AttackKind, BattleAction, Character, CharacterState, GameEvent, TurnResult, YourTurn,
 };
 use gstd::{debug, exec, msg, prelude::*, ActorId};

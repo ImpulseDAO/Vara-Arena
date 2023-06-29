@@ -1,4 +1,8 @@
 [workspace]
 members = [
-    "contracts/*"
+    "contracts/*",
+    "contracts/arena/io",
+    "contracts/arena/state",
+    "contracts/mint/io",
+    "contracts/mint/state",
 ]

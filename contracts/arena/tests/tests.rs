@@ -1,6 +1,7 @@
-use common::{GameAction, InitialAttributes, MintAction};
+use arena_io::GameAction;
 use gstd::CodeId;
 use gtest::{Program, System};
+use mint_io::{InitialAttributes, MintAction};
 
 const USER_ID: u64 = 10;
 

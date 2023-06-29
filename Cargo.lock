@@ -102,19 +102,31 @@ checksum = "9c7d0618f0e0b7e8ff11427422b64564d5fb0be1940354bfe2e0529b18a9d9b8"
 name = "arena"
 version = "0.1.0"
 dependencies = [
- "common",
+ "arena-io",
  "gear-wasm-builder",
  "gstd",
  "gtest",
+ "mint-io",
  "parity-scale-codec",
  "rand 0.8.5",
+]
+
+[[package]]
+name = "arena-io"
+version = "0.1.0"
+dependencies = [
+ "gmeta",
+ "gstd",
+ "mint-io",
+ "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
 name = "arena-state"
 version = "0.1.0"
 dependencies = [
- "common",
+ "arena-io",
  "gear-wasm-builder",
  "gmeta",
  "gstd",
@@ -224,7 +236,7 @@ checksum = "8c3c1a368f70d6cf7302d78f8f7093da241fb8e8807c05cc9e51a125895a6d5b"
 name = "berserk"
 version = "0.1.0"
 dependencies = [
- "common",
+ "arena-io",
  "gear-wasm-builder",
  "gstd",
 ]
@@ -430,7 +442,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "character"
 version = "0.1.0"
 dependencies = [
- "common",
+ "arena-io",
  "gear-wasm-builder",
  "gstd",
 ]
@@ -456,16 +468,6 @@ dependencies = [
  "atty",
  "lazy_static",
  "winapi",
-]
-
-[[package]]
-name = "common"
-version = "0.1.0"
-dependencies = [
- "gmeta",
- "gstd",
- "parity-scale-codec",
- "scale-info",
 ]
 
 [[package]]
@@ -1855,20 +1857,30 @@ dependencies = [
 name = "mint"
 version = "0.1.0"
 dependencies = [
- "common",
  "gear-wasm-builder",
  "gmeta",
  "gstd",
+ "mint-io",
+]
+
+[[package]]
+name = "mint-io"
+version = "0.1.0"
+dependencies = [
+ "gmeta",
+ "gstd",
+ "parity-scale-codec",
+ "scale-info",
 ]
 
 [[package]]
 name = "mint-state"
 version = "0.1.0"
 dependencies = [
- "common",
  "gear-wasm-builder",
  "gmeta",
  "gstd",
+ "mint-io",
 ]
 
 [[package]]

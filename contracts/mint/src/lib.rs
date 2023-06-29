@@ -1,8 +1,8 @@
 #![no_std]
 
-use common::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState};
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
+use mint_io::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState};
 
 type CharacterId = ActorId;
 

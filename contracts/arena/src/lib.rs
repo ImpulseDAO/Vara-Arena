@@ -20,6 +20,7 @@ struct Arena {
     winners: Vec<ActorId>,
     reservations: Vec<ReservationId>,
     source: Option<ActorId>, // original play sender
+    leaderboard: BTreeMap<ActorId, u32>,
 }
 
 impl Arena {
@@ -44,6 +45,7 @@ impl Arena {
                 self.clean_state();
                 debug!("{:?} is an arena winner", winner.id);
                 msg::send(source, GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
+                self.tournament_winners(winner.id);
                 return;
             } else {
                 self.battles = self
@@ -130,6 +132,19 @@ impl Arena {
         self.battles = vec![];
         self.source = None;
     }
+
+    fn tournament_winners(&mut self, winner: ActorId) {
+        if self.leaderboard.contains_key(&winner) {
+            if let Some(value) = self.leaderboard.get_mut(&winner) {
+                *value += 1;
+            }
+        } else {
+            self.leaderboard.insert(winner, 0);
+            if let Some(value) = self.leaderboard.get_mut(&winner) {
+                *value += 1;
+            }
+        }
+    }
 }
 
 static mut ARENA: Option<Arena> = None;
@@ -166,6 +181,7 @@ extern "C" fn metahash() {
 #[no_mangle]
 extern "C" fn state() {
     let arena = unsafe { ARENA.as_ref().unwrap() };
+
     msg::reply(
         ArenaState {
             mint: arena.mint,
@@ -180,6 +196,7 @@ extern "C" fn state() {
                     c2: battle.c2.clone(),
                 })
                 .collect(),
+            leaderboard: arena.leaderboard.clone(),
         },
         0,
     )

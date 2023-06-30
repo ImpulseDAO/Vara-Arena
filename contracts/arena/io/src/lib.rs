@@ -84,6 +84,7 @@ pub struct ArenaState {
     pub battles: Vec<BattleState>,
     pub winners: Vec<ActorId>,
     pub reservations: Vec<ReservationId>,
+    pub leaderboard: BTreeMap<ActorId, u32>,
 }
 
 pub struct ArenaMetadata;

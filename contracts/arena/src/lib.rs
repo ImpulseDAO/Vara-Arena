@@ -134,16 +134,10 @@ impl Arena {
     }
 
     fn tournament_winners(&mut self, winner: ActorId) {
-        if self.leaderboard.contains_key(&winner) {
-            if let Some(value) = self.leaderboard.get_mut(&winner) {
-                *value += 1;
-            }
-        } else {
-            self.leaderboard.insert(winner, 0);
-            if let Some(value) = self.leaderboard.get_mut(&winner) {
-                *value += 1;
-            }
-        }
+        self.leaderboard
+            .entry(winner)
+            .and_modify(|value| *value += 1)
+            .or_insert(1);
     }
 }
 

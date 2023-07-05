@@ -43,9 +43,9 @@ impl Arena {
         if self.battles.is_empty() {
             if self.winners.len() == 1 {
                 self.clean_state();
-                debug!("{:?} is an arena winner", winner.id);
+                debug!("{:?} is an arena winner", winner.owner);
                 msg::send(source, GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
-                self.tournament_winners(winner.id);
+                self.tournament_winners(winner.owner);
                 return;
             } else {
                 self.battles = self
@@ -91,6 +91,7 @@ impl Arena {
             .expect("unable to receive reply");
 
         let character = Character {
+            owner: owner_id,
             id: character_info.id,
             name: character_info.name,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,

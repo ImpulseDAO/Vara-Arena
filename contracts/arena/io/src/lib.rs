@@ -63,6 +63,7 @@ pub struct YourTurn {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct Character {
+    pub owner: ActorId,
     pub id: ActorId,
     pub name: String,
     pub hp: u8,

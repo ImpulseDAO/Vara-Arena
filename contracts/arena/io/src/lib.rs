@@ -63,6 +63,7 @@ pub struct YourTurn {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct Character {
+    pub owner: ActorId,
     pub id: ActorId,
     pub name: String,
     pub hp: u8,
@@ -84,6 +85,7 @@ pub struct ArenaState {
     pub battles: Vec<BattleState>,
     pub winners: Vec<ActorId>,
     pub reservations: Vec<ReservationId>,
+    pub leaderboard: BTreeMap<ActorId, u32>,
 }
 
 pub struct ArenaMetadata;

@@ -1,9 +1,9 @@
 use core::cmp::{max, min};
 
 use arena_io::{
-    AttackKind, BattleAction, Character, CharacterState, GameEvent, TurnResult, YourTurn,
+    AttackKind, BattleAction, BattleLog, Character, CharacterState, TurnResult, YourTurn,
 };
-use gstd::{debug, exec, msg, prelude::*, ActorId};
+use gstd::{debug, exec, msg, prelude::*};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
 const MIN_POS: u8 = 0;
@@ -31,9 +31,8 @@ impl Battle {
         Battle { c1, c2 }
     }
 
-    pub async fn fight(mut self, source: ActorId) -> Character {
-        msg::send(source, GameEvent::BattleStarted(self.c1.id, self.c2.id), 0)
-            .expect("unable to send");
+    pub async fn fight(mut self) -> BattleLog {
+        let mut turns = vec![];
 
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
@@ -70,51 +69,22 @@ impl Battle {
                                         let damage =
                                             QUICK_DAMAGE[usize::from(self.c1.attributes.strength)];
                                         self.c2.hp = self.c2.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Attack {
-                                                    position: self.c1.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c1.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Miss {
-                                                    position: self.c1.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c1.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c1.id,
-                                            TurnResult::Miss {
-                                                position: self.c1.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c1.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c1.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c1.id);
                             }
                         }
@@ -130,51 +100,22 @@ impl Battle {
                                         let damage =
                                             NORMAL_DAMAGE[usize::from(self.c1.attributes.strength)];
                                         self.c2.hp = self.c2.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Attack {
-                                                    position: self.c1.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c1.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Miss {
-                                                    position: self.c1.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c1.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c1.id,
-                                            TurnResult::Miss {
-                                                position: self.c1.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c1.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c1.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c1.id);
                             }
                         }
@@ -190,60 +131,34 @@ impl Battle {
                                         let damage =
                                             HARD_DAMAGE[usize::from(self.c1.attributes.strength)];
                                         self.c2.hp = self.c2.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Attack {
-                                                    position: self.c1.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c1.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c1.id,
-                                                TurnResult::Miss {
-                                                    position: self.c1.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c1.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c1.id,
-                                            TurnResult::Miss {
-                                                position: self.c1.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c1.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c1.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c1.id);
                             }
                         }
                     }
                     if self.c2.hp == 0 {
                         debug!("{:?} is a winner", self.c1.id);
-                        msg::send(source, GameEvent::BattleFinished(self.c1.id), 0)
-                            .expect("unable to send");
-                        return self.c1;
+                        return BattleLog {
+                            c1: self.c1.id,
+                            c2: self.c2.id,
+                            winner: self.c1.id,
+                            turns,
+                        };
                     }
                 }
                 BattleAction::MoveLeft => {
@@ -251,24 +166,11 @@ impl Battle {
                         self.c1.energy = _energy;
                         let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                         self.c1.position = max(self.c1.position - move_, MIN_POS);
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(
-                                self.c1.id,
-                                TurnResult::Move {
-                                    position: self.c1.position,
-                                },
-                            ),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::Move {
+                            position: self.c1.position,
+                        });
                     } else {
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(self.c1.id, TurnResult::NotEnoughEnergy),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::MoveRight => {
@@ -276,40 +178,19 @@ impl Battle {
                         self.c1.energy = _energy;
                         let move_ = MOVE[usize::from(self.c1.attributes.agility)];
                         self.c1.position = min(self.c1.position + move_, self.c2.position - 1);
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(
-                                self.c1.id,
-                                TurnResult::Move {
-                                    position: self.c1.position,
-                                },
-                            ),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::Move {
+                            position: self.c1.position,
+                        });
                     } else {
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(self.c1.id, TurnResult::NotEnoughEnergy),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::Rest => {
                     let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
                     self.c1.energy = min(self.c1.energy + 10, full_energy);
-                    msg::send(
-                        source,
-                        GameEvent::BattleEvent(
-                            self.c1.id,
-                            TurnResult::Rest {
-                                energy: self.c1.energy,
-                            },
-                        ),
-                        0,
-                    )
-                    .expect("unable to send");
+                    turns.push(TurnResult::Rest {
+                        energy: self.c1.energy,
+                    });
                 }
             }
 
@@ -344,51 +225,22 @@ impl Battle {
                                         let damage =
                                             QUICK_DAMAGE[usize::from(self.c2.attributes.strength)];
                                         self.c1.hp = self.c1.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Attack {
-                                                    position: self.c2.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Miss {
-                                                    position: self.c2.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c2.id,
-                                            TurnResult::Miss {
-                                                position: self.c2.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c2.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c2.id);
                             }
                         }
@@ -404,51 +256,22 @@ impl Battle {
                                         let damage =
                                             NORMAL_DAMAGE[usize::from(self.c2.attributes.strength)];
                                         self.c1.hp = self.c1.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Attack {
-                                                    position: self.c2.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Miss {
-                                                    position: self.c2.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c2.id,
-                                            TurnResult::Miss {
-                                                position: self.c2.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c2.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c2.id);
                             }
                         }
@@ -464,60 +287,34 @@ impl Battle {
                                         let damage =
                                             HARD_DAMAGE[usize::from(self.c2.attributes.strength)];
                                         self.c1.hp = self.c1.hp.saturating_sub(damage);
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Attack {
-                                                    position: self.c2.position,
-                                                    damage,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
                                     } else {
-                                        msg::send(
-                                            source,
-                                            GameEvent::BattleEvent(
-                                                self.c2.id,
-                                                TurnResult::Miss {
-                                                    position: self.c2.position,
-                                                },
-                                            ),
-                                            0,
-                                        )
-                                        .expect("unable to send");
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
                                     }
                                 } else {
-                                    msg::send(
-                                        source,
-                                        GameEvent::BattleEvent(
-                                            self.c2.id,
-                                            TurnResult::Miss {
-                                                position: self.c2.position,
-                                            },
-                                        ),
-                                        0,
-                                    )
-                                    .expect("unable to send");
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
                                 }
                             } else {
-                                msg::send(
-                                    source,
-                                    GameEvent::BattleEvent(self.c2.id, TurnResult::NotEnoughEnergy),
-                                    0,
-                                )
-                                .expect("unable to send");
+                                turns.push(TurnResult::NotEnoughEnergy);
                                 debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c2.id);
                             }
                         }
                     }
                     if self.c1.hp == 0 {
                         debug!("{:?} is a winner", self.c2.id);
-                        msg::send(source, GameEvent::BattleFinished(self.c2.id), 0)
-                            .expect("unable to send");
-                        return self.c1;
+                        return BattleLog {
+                            c1: self.c1.id,
+                            c2: self.c2.id,
+                            winner: self.c2.id,
+                            turns,
+                        };
                     }
                 }
                 BattleAction::MoveLeft => {
@@ -525,24 +322,11 @@ impl Battle {
                         self.c2.energy = _energy;
                         let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                         self.c2.position = max(self.c2.position - move_, self.c1.position + 1);
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(
-                                self.c2.id,
-                                TurnResult::Move {
-                                    position: self.c2.position,
-                                },
-                            ),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::Move {
+                            position: self.c2.position,
+                        });
                     } else {
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(self.c2.id, TurnResult::NotEnoughEnergy),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::MoveRight => {
@@ -550,40 +334,20 @@ impl Battle {
                         self.c2.energy = _energy;
                         let move_ = MOVE[usize::from(self.c2.attributes.agility)];
                         self.c2.position = min(self.c2.position + move_, MAX_POS);
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(
-                                self.c2.id,
-                                TurnResult::Move {
-                                    position: self.c2.position,
-                                },
-                            ),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::Move {
+                            position: self.c2.position,
+                        });
                     } else {
-                        msg::send(
-                            source,
-                            GameEvent::BattleEvent(self.c2.id, TurnResult::NotEnoughEnergy),
-                            0,
-                        )
-                        .expect("unable to send");
+                        turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::Rest => {
                     let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
                     self.c2.energy = min(self.c2.energy + 10, full_energy);
-                    msg::send(
-                        source,
-                        GameEvent::BattleEvent(
-                            self.c2.id,
-                            TurnResult::Rest {
-                                energy: self.c2.energy,
-                            },
-                        ),
-                        0,
-                    )
-                    .expect("unable to send");
+
+                    turns.push(TurnResult::Rest {
+                        energy: self.c2.energy,
+                    });
                 }
             }
         }

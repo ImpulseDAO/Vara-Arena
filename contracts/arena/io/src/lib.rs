@@ -23,14 +23,21 @@ pub enum TurnResult {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
+pub struct BattleLog {
+    pub c1: ActorId,
+    pub c2: ActorId,
+    pub winner: ActorId,
+    pub turns: Vec<TurnResult>,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
 pub enum GameEvent {
     RegisteredPlayers(Vec<CharacterInfo>),
-    PlayerWon(ActorId),
-    BattleStarted(ActorId, ActorId),
-    BattleEvent(ActorId, TurnResult),
-    BattleFinished(ActorId),
+    ArenaLog {
+        winner: ActorId,
+        logs: Vec<BattleLog>,
+    },
     GasReserved,
-    NextBattleFromReservation,
 }
 
 #[derive(Encode, Decode, Debug)]

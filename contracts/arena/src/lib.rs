@@ -99,7 +99,7 @@ impl Arena {
         }
 
         let payload = MintAction::CharacterInfo { owner_id };
-        let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0)
+        let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
             .await
             .expect("unable to receive reply");
@@ -180,12 +180,6 @@ async fn main() {
         GameAction::ReserveGas => arena.reserve_gas(),
         GameAction::CleanState => arena.clean_state(),
     }
-}
-
-#[no_mangle]
-extern "C" fn metahash() {
-    let metahash: [u8; 32] = include!("../.metahash");
-    msg::reply(metahash, 0).expect("failed to share metahash");
 }
 
 #[no_mangle]

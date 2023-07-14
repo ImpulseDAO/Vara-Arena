@@ -50,7 +50,7 @@ impl Battle {
                     energy: self.c2.energy,
                 },
             };
-            let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0)
+            let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0, 0)
                 .expect("unable to send message")
                 .await
                 .expect("unable to receive `BattleAction`");
@@ -206,7 +206,7 @@ impl Battle {
                     energy: self.c1.energy,
                 },
             };
-            let action = msg::send_for_reply_as(self.c2.id, turn, 0)
+            let action = msg::send_for_reply_as(self.c2.id, turn, 0, 0)
                 .expect("unable to send message")
                 .await
                 .expect("unable to receive `BattleAction`");

@@ -66,12 +66,6 @@ extern "C" fn handle() {
 }
 
 #[no_mangle]
-extern "C" fn metahash() {
-    let metahash: [u8; 32] = include!("../.metahash");
-    msg::reply(metahash, 0).expect("failed to share metahash");
-}
-
-#[no_mangle]
 extern "C" fn state() {
     let mint = unsafe { MINT.as_ref().unwrap() };
     msg::reply(

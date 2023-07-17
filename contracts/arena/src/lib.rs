@@ -1,10 +1,9 @@
 #![no_std]
 
+use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent};
 use battle::{Battle, ENERGY};
-use common::{
-    ArenaState, BattleState, Character, CharacterInfo, GameAction, GameEvent, MintAction,
-};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
+use mint_io::{CharacterInfo, MintAction};
 
 mod battle;
 
@@ -21,6 +20,8 @@ struct Arena {
     winners: Vec<ActorId>,
     reservations: Vec<ReservationId>,
     source: Option<ActorId>, // original play sender
+    logs: Vec<BattleLog>,
+    leaderboard: BTreeMap<ActorId, u32>,
 }
 
 impl Arena {
@@ -37,14 +38,29 @@ impl Arena {
         let source = self.source.expect("original sender is not specified");
 
         let battle = self.battles.pop().unwrap();
-        let winner = battle.fight(source).await;
-        self.winners.push(winner.id);
+        let log = battle.fight().await;
+        self.winners.push(log.winner);
+        self.logs.push(log);
 
         if self.battles.is_empty() {
             if self.winners.len() == 1 {
+                let winner = self
+                    .characters
+                    .iter()
+                    .find(|c| c.id == self.winners[0])
+                    .unwrap();
+                debug!("{:?} is an arena winner", winner.owner);
+                msg::send(
+                    source,
+                    GameEvent::ArenaLog {
+                        winner: winner.id,
+                        logs: self.logs.drain(..).collect(),
+                    },
+                    0,
+                )
+                .expect("unable to reply");
+                self.tournament_winners(winner.owner);
                 self.clean_state();
-                debug!("{:?} is an arena winner", winner.id);
-                msg::send(source, GameEvent::PlayerWon(winner.id), 0).expect("unable to reply");
                 return;
             } else {
                 self.battles = self
@@ -72,7 +88,6 @@ impl Arena {
         if let Some(id) = self.reservations.pop() {
             msg::send_from_reservation(id, exec::program_id(), GameAction::Play, 0)
                 .expect("unable to send");
-            msg::send(source, GameEvent::NextBattleFromReservation, 0).expect("unable to reply");
         } else {
             panic!("more gas is required");
         }
@@ -84,12 +99,13 @@ impl Arena {
         }
 
         let payload = MintAction::CharacterInfo { owner_id };
-        let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0)
+        let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
             .await
             .expect("unable to receive reply");
 
         let character = Character {
+            owner: owner_id,
             id: character_info.id,
             name: character_info.name,
             hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
@@ -129,7 +145,15 @@ impl Arena {
         self.characters = vec![];
         self.reservations = vec![];
         self.battles = vec![];
+        self.logs = vec![];
         self.source = None;
+    }
+
+    fn tournament_winners(&mut self, winner: ActorId) {
+        self.leaderboard
+            .entry(winner)
+            .and_modify(|value| *value += 1)
+            .or_insert(1);
     }
 }
 
@@ -159,14 +183,9 @@ async fn main() {
 }
 
 #[no_mangle]
-extern "C" fn metahash() {
-    let metahash: [u8; 32] = include!("../.metahash");
-    msg::reply(metahash, 0).expect("Failed to share metahash");
-}
-
-#[no_mangle]
 extern "C" fn state() {
     let arena = unsafe { ARENA.as_ref().unwrap() };
+
     msg::reply(
         ArenaState {
             mint: arena.mint,
@@ -181,6 +200,7 @@ extern "C" fn state() {
                     c2: battle.c2.clone(),
                 })
                 .collect(),
+            leaderboard: arena.leaderboard.clone(),
         },
         0,
     )

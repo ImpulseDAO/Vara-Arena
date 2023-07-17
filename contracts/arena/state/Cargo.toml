@@ -1,5 +1,5 @@
 [package]
-name = "mint"
+name = "arena-state"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,9 +7,8 @@ edition = "2021"
 
 [dependencies]
 gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], rev = "946ac47" }
-mint-io = { path = "./io" }
+gmeta = { git = "https://github.com/gear-tech/gear.git", features = ["codegen"], rev = "946ac47" }
+arena-io = { path = "../io" }
 
 [build-dependencies]
-gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", rev = "946ac47" }
-gmeta = { git = "https://github.com/gear-tech/gear", rev = "946ac47" }
-mint-io = { path = "./io" }
+gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", features = ["metawasm"], rev = "946ac47" }

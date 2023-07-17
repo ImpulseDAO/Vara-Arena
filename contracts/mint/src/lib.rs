@@ -1,8 +1,8 @@
 #![no_std]
 
-use common::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState};
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
+use mint_io::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState};
 
 type CharacterId = ActorId;
 
@@ -63,12 +63,6 @@ extern "C" fn handle() {
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
     }
-}
-
-#[no_mangle]
-extern "C" fn metahash() {
-    let metahash: [u8; 32] = include!("../.metahash");
-    msg::reply(metahash, 0).expect("failed to share metahash");
 }
 
 #[no_mangle]

@@ -2,7 +2,8 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
-use gstd::{prelude::*, ActorId, CodeId, ReservationId, TypeInfo};
+use gstd::{prelude::*, ActorId, ReservationId, TypeInfo};
+use mint_io::{CharacterAttributes, CharacterInfo};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
@@ -22,14 +23,21 @@ pub enum TurnResult {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
+pub struct BattleLog {
+    pub c1: ActorId,
+    pub c2: ActorId,
+    pub winner: ActorId,
+    pub turns: Vec<TurnResult>,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
 pub enum GameEvent {
     RegisteredPlayers(Vec<CharacterInfo>),
-    PlayerWon(ActorId),
-    BattleStarted(ActorId, ActorId),
-    BattleEvent(ActorId, TurnResult),
-    BattleFinished(ActorId),
+    ArenaLog {
+        winner: ActorId,
+        logs: Vec<BattleLog>,
+    },
     GasReserved,
-    NextBattleFromReservation,
 }
 
 #[derive(Encode, Decode, Debug)]
@@ -60,31 +68,9 @@ pub struct YourTurn {
     pub enemy: CharacterState,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
-pub struct InitialAttributes {
-    pub strength: u8,
-    pub agility: u8,
-    pub vitality: u8,
-    pub stamina: u8,
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone, Default)]
-pub struct CharacterAttributes {
-    pub strength: u8,
-    pub agility: u8,
-    pub vitality: u8,
-    pub stamina: u8,
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone)]
-pub struct CharacterInfo {
-    pub id: ActorId,
-    pub name: String,
-    pub attributes: CharacterAttributes,
-}
-
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct Character {
+    pub owner: ActorId,
     pub id: ActorId,
     pub name: String,
     pub hp: u8,
@@ -100,40 +86,13 @@ pub struct BattleState {
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
-pub enum MintAction {
-    CreateCharacter {
-        code_id: CodeId,
-        name: String,
-        attributes: InitialAttributes,
-    },
-    CharacterInfo {
-        owner_id: ActorId,
-    },
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone)]
-pub struct MintState {
-    pub characters: BTreeMap<ActorId, CharacterInfo>,
-}
-
-pub struct MintMetadata;
-
-impl Metadata for MintMetadata {
-    type Init = InOut<(), ()>;
-    type Handle = InOut<MintAction, ()>;
-    type Others = InOut<(), ()>;
-    type Reply = InOut<(), ()>;
-    type Signal = ();
-    type State = MintState;
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
     pub characters: Vec<Character>,
     pub mint: ActorId,
     pub battles: Vec<BattleState>,
     pub winners: Vec<ActorId>,
     pub reservations: Vec<ReservationId>,
+    pub leaderboard: BTreeMap<ActorId, u32>,
 }
 
 pub struct ArenaMetadata;

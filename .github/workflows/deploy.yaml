@@ -1,0 +1,17 @@
+name: deploy
+on:
+  workflow_dispatch:
+
+env:
+  CI: true
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Deploy
+        run: npm run deploy

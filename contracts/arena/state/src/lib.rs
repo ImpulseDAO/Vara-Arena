@@ -1,6 +1,6 @@
 #![no_std]
 
-use common::{ArenaMetadata, Character};
+use arena_io::{ArenaMetadata, Character};
 use gmeta::{metawasm, Metadata};
 use gstd::prelude::*;
 

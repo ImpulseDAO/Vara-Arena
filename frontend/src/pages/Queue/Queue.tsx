@@ -138,7 +138,6 @@ export const Queue: FC<QueueProps> = ({}) => {
   // }, []);
 
   const { api } = useApi();
-  // pewepew {"playerRegistered":"0x7c19d3c535a8abefb55ce6c0b4b64788a41986fce8f9b151ff5643e8fbf700ca"}
 
   useEffect(() => {
     let index = 0;
@@ -153,14 +152,14 @@ export const Queue: FC<QueueProps> = ({}) => {
           },
         }) => {
           if (JSON.parse(message.toString()).source === ARENA_ID) {
-            console.log(
-              "meta logs",
-              meta
-                //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()
-            );
+            // console.log(
+            //   "meta logs",
+            //   meta
+            //     //@ts-ignore
+            //     .createType(meta.types.handle.output, message.payload)
+            //     //@ts-ignore
+            //     .toJSON()
+            // );
             if (
               !isEmpty(
                 meta

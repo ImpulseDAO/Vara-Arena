@@ -1,7 +1,6 @@
 import { Header } from "layouts/Header";
 import { FC, ReactNode, memo } from "react";
 import "./styles.scss";
-import { StartFight } from "pages/StartFight";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;

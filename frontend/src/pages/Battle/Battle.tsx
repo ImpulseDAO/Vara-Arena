@@ -62,27 +62,9 @@ export const Battle: FC<BattleProps> = () => {
     }
   }, [user1, user2]);
 
-  // console.log("logs", logs);
-  // window.logs = logs;
-  // console.log("usersOnBattle", usersOnBattle);
-  // window.usersOnBattle = usersOnBattle;
-  // console.log("battleIds", battleIds);
-  // window.battleIds = battleIds;
-  // console.log("user", user);
-  // window.user = user;
-  // console.log("curBattle", curBattle);
-  // window.curBattle = curBattle;
-  // console.log("battleFinishedIndex", battleFinishedIndex);
-  // window.battleFinishedIndex = battleFinishedIndex;
-  // console.log("playerWon", playerWon);
-  // window.playerWon = playerWon;
-  // console.log("curLog", curLog);
-
   useEffect(() => {
     setOwnerBattleIds(battleIds.filter((ids) => ids.includes(user.id)));
   }, [battleIds, setOwnerBattleIds, user]);
-
-  console.log("ownerBattleIds", ownerBattleIds);
 
   const handleOnNextBattle = () => {
     setCurrentBattle((prev) => {

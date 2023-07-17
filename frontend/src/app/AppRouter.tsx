@@ -1,108 +1,89 @@
-import { createHashRouter } from 'react-router-dom';
-import { MintCharacter, StartScreen } from '../pages';
-import { AuthorizedLayer } from 'layouts/AuthorizedLayer';
-import { StartFight } from 'pages/StartFight';
-import { Queue } from 'pages/Queue';
-import { NavWrapper } from './NavWrapper';
-import { Leaderboard } from '../pages/Leaderboard';
-import { Logs } from '../pages/Logs';
-import { Profile } from 'pages/Profile';
-import { UploadStrategy } from 'pages/UploadStrategy';
-import { Battle } from 'pages/Battle';
+import { createHashRouter } from "react-router-dom";
+import { MintCharacter, StartScreen } from "../pages";
+import { AuthorizedLayer } from "layouts/AuthorizedLayer";
+import { StartFight } from "pages/StartFight";
+import { Queue } from "pages/Queue";
+import { Leaderboard } from "../pages/Leaderboard";
+import { Logs } from "../pages/Logs";
+import { Profile } from "pages/Profile";
+import { UploadStrategy } from "pages/UploadStrategy";
+import { Battle } from "pages/Battle";
 
 export const appRouter = createHashRouter([
   {
     element: <StartScreen />,
-    path: '/',
+    path: "/",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <MintCharacter />
-        </NavWrapper>
+        <MintCharacter />
       </AuthorizedLayer>
     ),
-    path: '/mint-character',
+    path: "/mint-character",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <Queue />
-        </NavWrapper>
+        <Queue />
       </AuthorizedLayer>
     ),
-    path: '/arena/queue',
+    path: "/arena/queue",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <Leaderboard />
-        </NavWrapper>
+        <Leaderboard />
       </AuthorizedLayer>
     ),
-    path: '/leaderboard',
+    path: "/leaderboard",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <Logs />
-        </NavWrapper>
+        <Logs />
       </AuthorizedLayer>
     ),
-    path: '/logs',
+    path: "/logs",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <UploadStrategy />
-        </NavWrapper>
+        <UploadStrategy />
       </AuthorizedLayer>
     ),
-    path: '/strategy',
+    path: "/strategy",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <StartFight />
-        </NavWrapper>
+        <StartFight />
       </AuthorizedLayer>
     ),
-    path: '/arena/',
+    path: "/arena",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <Profile />
-        </NavWrapper>
+        <Profile />
       </AuthorizedLayer>
     ),
-    path: '/my_profile',
+    path: "/my_profile",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <Battle />
-        </NavWrapper>
+        <Battle />
       </AuthorizedLayer>
     ),
-    path: '/battle',
+    path: "/battle",
   },
   {
     element: (
       <AuthorizedLayer>
-        <NavWrapper>
-          <div></div>
-        </NavWrapper>
+        <div></div>
       </AuthorizedLayer>
     ),
-    path: '/*',
+    path: "/*",
   },
 ]);

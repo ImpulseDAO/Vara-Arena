@@ -2,7 +2,7 @@
 
 use arena_io::{ArenaMetadata, Character};
 use gmeta::{metawasm, Metadata};
-use gstd::prelude::*;
+use gstd::{prelude::*, ActorId};
 
 #[metawasm]
 pub mod metafns {

@@ -52,7 +52,8 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
       if (!charInfo.state) {
         navigate("/mint-character");
       } else {
-        navigate("/arena");
+        navigate("/mint-character");
+        // navigate("/arena");
         setUserName(charInfo.state);
       }
     }

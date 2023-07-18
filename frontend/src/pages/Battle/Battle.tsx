@@ -10,145 +10,149 @@ import Back from "../../assets/svg/back.svg";
 import { Button } from "components/Button";
 import { useUnit } from "effector-react";
 import { logsStore } from "model/logs";
-import { userStore } from "model/user";
-import { isEmpty } from "lodash";
-import { useAlert } from "@gear-js/react-hooks";
+// import { userStore } from "model/user";
+// import { isEmpty } from "lodash";
+// import { useAlert } from "@gear-js/react-hooks";
 
 export type BattleProps = {};
 export const Battle: FC<BattleProps> = () => {
-  const [usersOnBattle, logs, battleIds, battleFinishedIndex, playerWon] =
-    useUnit([
-      logsStore.$usersOnBattle,
-      logsStore.$logs,
-      logsStore.$battleIds,
-      logsStore.$battleFinishedIndex,
-      logsStore.$playerWon,
-    ]);
-  const gearAlert = useAlert();
-  const user = useUnit(userStore.$user);
-  const [curBattle, setCurrentBattle] = useState(0);
-  const [ownerBattleIds, setOwnerBattleIds] = useState<string[][]>([]);
-  const [curLog, setCurLog] = useState(0);
-  const [pos, setPos] = useState({ pos1: 0, pos2: 20 });
+  const [
+    usersOnBattle,
+    // logs, battleIds, battleFinishedIndex, playerWon
+  ] = useUnit([
+    logsStore.$usersOnBattle,
+    // logsStore.$logs,
+    // logsStore.$battleIds,
+    // logsStore.$battleFinishedIndex,
+    // logsStore.$playerWon,
+  ]);
+  // const gearAlert = useAlert();
+  // const user = useUnit(userStore.$user);
+  // const [curBattle, setCurrentBattle] = useState(0);
+  // const [ownerBattleIds, setOwnerBattleIds] = useState<string[][]>([]);
+  // const [curLog, setCurLog] = useState(0);
+  // const [pos, setPos] = useState({ pos1: 0, pos2: 20 });
   const [hp, setHp] = useState({ hp1: "50", hp2: "50", pos: 0 });
 
-  useEffect(() => {
-    if (playerWon) {
-      alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
-      gearAlert.success(
-        `Победил пользователь ${usersOnBattle[playerWon].name}`
-      );
-    }
-  }, [playerWon, usersOnBattle]);
+  console.log("usersOnBattle", usersOnBattle);
 
-  const [user1, user2] = useMemo(() => {
-    if (isEmpty(ownerBattleIds)) {
-      return [undefined, undefined];
-    }
-    return [
-      usersOnBattle[ownerBattleIds[curBattle][0]],
-      usersOnBattle[ownerBattleIds[curBattle][1]],
-    ];
-  }, [curBattle, ownerBattleIds, usersOnBattle]);
+  // useEffect(() => {
+  //   if (playerWon) {
+  //     alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
+  //     gearAlert.success(
+  //       `Победил пользователь ${usersOnBattle[playerWon].name}`
+  //     );
+  //   }
+  // }, [playerWon, usersOnBattle]);
 
-  useEffect(() => {
-    if (user1 && user2) {
-      // stats.vitality * 30 + 10
-      setHp({
-        hp1: (Number(user1.attributes.vitality) * 30 + 10).toString(),
-        hp2: (Number(user2.attributes.vitality) * 30 + 10).toString(),
-        pos: 0,
-      });
-    }
-  }, [user1, user2]);
+  // const [user1, user2] = useMemo(() => {
+  //   if (isEmpty(ownerBattleIds)) {
+  //     return [undefined, undefined];
+  //   }
+  //   return [
+  //     usersOnBattle[ownerBattleIds[curBattle][0]],
+  //     usersOnBattle[ownerBattleIds[curBattle][1]],
+  //   ];
+  // }, [curBattle, ownerBattleIds, usersOnBattle]);
 
-  useEffect(() => {
-    setOwnerBattleIds(battleIds.filter((ids) => ids.includes(user.id)));
-  }, [battleIds, setOwnerBattleIds, user]);
+  // useEffect(() => {
+  //   if (user1 && user2) {
+  //     // stats.vitality * 30 + 10
+  //     setHp({
+  //       hp1: (Number(user1.attributes.vitality) * 30 + 10).toString(),
+  //       hp2: (Number(user2.attributes.vitality) * 30 + 10).toString(),
+  //       pos: 0,
+  //     });
+  //   }
+  // }, [user1, user2]);
+
+  // useEffect(() => {
+  //   setOwnerBattleIds(battleIds.filter((ids) => ids.includes(user.id)));
+  // }, [battleIds, setOwnerBattleIds, user]);
 
   const handleOnNextBattle = () => {
-    setCurrentBattle((prev) => {
-      if (prev + 1 === ownerBattleIds.length) {
-        return 0;
-      }
-      return prev + 1;
-    });
+    // setCurrentBattle((prev) => {
+    //   if (prev + 1 === ownerBattleIds.length) {
+    //     return 0;
+    //   }
+    //   return prev + 1;
+    // });
   };
 
   const handleOnPrevBattle = () => {
-    setCurrentBattle((prev) => {
-      if (prev === 0) {
-        return ownerBattleIds.length - 1;
-      }
-      return prev - 1;
-    });
+    // setCurrentBattle((prev) => {
+    //   if (prev === 0) {
+    //     return ownerBattleIds.length - 1;
+    //   }
+    //   return prev - 1;
+    // });
   };
 
   const handleOnNextLog = () => {
-    setCurLog((prev) => {
-      if (
-        prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
-        +battleFinishedIndex[curBattle].index
-      ) {
-        return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
-      }
-      return prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
-    });
+    // setCurLog((prev) => {
+    //   if (
+    //     prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
+    //     +battleFinishedIndex[curBattle].index
+    //   ) {
+    //     return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
+    //   }
+    //   return prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
+    // });
   };
 
   const handleOnPrevLog = () => {
-    setCurLog((prev) => {
-      if (prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") === 0) {
-        return prev;
-      }
-      return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") - 1;
-    });
+    // setCurLog((prev) => {
+    //   if (prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") === 0) {
+    //     return prev;
+    //   }
+    //   return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") - 1;
+    // });
   };
 
-  useEffect(() => {
-    const log = logs[curLog];
-    const action = Object.keys(JSON.parse(log?.text))[0];
-    const value = JSON.parse(log?.text)[action];
-    if (action === "move") {
-      if (user1?.id === log?.id) {
-        setPos((prev) => ({
-          ...prev,
-          pos1: value.position,
-        }));
-      } else if (user2?.id === log?.id) {
-        setPos((prev) => ({
-          ...prev,
-          pos2: value.position,
-        }));
-      }
-    }
+  // useEffect(() => {
+  //   const log = logs[curLog];
+  //   const action = Object.keys(JSON.parse(log?.text))[0];
+  //   const value = JSON.parse(log?.text)[action];
+  //   if (action === "move") {
+  //     if (user1?.id === log?.id) {
+  //       setPos((prev) => ({
+  //         ...prev,
+  //         pos1: value.position,
+  //       }));
+  //     } else if (user2?.id === log?.id) {
+  //       setPos((prev) => ({
+  //         ...prev,
+  //         pos2: value.position,
+  //       }));
+  //     }
+  //   }
 
-    if (action === "attack") {
-      if (user1?.id === log?.id) {
-        setHp((prev) => {
-          return {
-            ...prev,
-            hp2: (
-              +prev.hp2 -
-              +value.damage * (curLog < prev.pos ? -1 : 1)
-            ).toString(),
-            pos: curLog,
-          };
-        });
-      } else if (user2?.id === log?.id) {
-        setHp((prev) => {
-          return {
-            ...prev,
-            hp1: (
-              +prev.hp1 -
-              +value.damage * (curLog < prev.pos ? -1 : 1)
-            ).toString(),
-            pos: curLog,
-          };
-        });
-      }
-    }
-  }, [curLog, logs, user1, user2]);
+  //   if (action === "attack") {
+  //     if (user1?.id === log?.id) {
+  //       setHp((prev) => {
+  //         return {
+  //           ...prev,
+  //           hp2: (
+  //             +prev.hp2 -
+  //             +value.damage * (curLog < prev.pos ? -1 : 1)
+  //           ).toString(),
+  //           pos: curLog,
+  //         };
+  //       });
+  //     } else if (user2?.id === log?.id) {
+  //       setHp((prev) => {
+  //         return {
+  //           ...prev,
+  //           hp1: (
+  //             +prev.hp1 -
+  //             +value.damage * (curLog < prev.pos ? -1 : 1)
+  //           ).toString(),
+  //           pos: curLog,
+  //         };
+  //       });
+  //     }
+  //   }
+  // }, [curLog, logs, user1, user2]);
 
   return (
     <div className="battle">
@@ -157,7 +161,7 @@ export const Battle: FC<BattleProps> = () => {
           <div className="battle_data">
             <div className="battle_user">
               <div className="battle_name">
-                <p>{user1?.name}</p>
+                {/* <p>{user1?.name}</p> */}
                 <p>
                   <span>Level</span>
                   <span>1</span>
@@ -171,20 +175,20 @@ export const Battle: FC<BattleProps> = () => {
             <div className="battle_stats">
               <p>
                 <span>Strength</span>
-                <span>{user1?.attributes.strength}</span>
+                {/* <span>{user1?.attributes.strength}</span> */}
               </p>
 
               <p>
                 <span>Agility</span>
-                <span>{user1?.attributes.agility}</span>
+                {/* <span>{user1?.attributes.agility}</span> */}
               </p>
               <p>
                 <span>Vitality</span>
-                <span>{user1?.attributes.vitality}</span>
+                {/* <span>{user1?.attributes.vitality}</span> */}
               </p>
               <p>
                 <span>Stamina</span>
-                <span>{user1?.attributes.stamina}</span>
+                {/* <span>{user1?.attributes.stamina}</span> */}
               </p>
             </div>
           </div>
@@ -208,7 +212,7 @@ export const Battle: FC<BattleProps> = () => {
           <div className="battle_data">
             <div className="battle_user">
               <div className="battle_name">
-                <p>{user2?.name}</p>
+                {/* <p>{user2?.name}</p> */}
                 <p>
                   <span>Level</span>
                   <span>1</span>
@@ -222,20 +226,20 @@ export const Battle: FC<BattleProps> = () => {
             <div className="battle_stats">
               <p>
                 <span>Strength</span>
-                <span>{user2?.attributes.strength}</span>
+                {/* <span>{user2?.attributes.strength}</span> */}
               </p>
 
               <p>
                 <span>Agility</span>
-                <span>{user2?.attributes.agility}</span>
+                {/* <span>{user2?.attributes.agility}</span> */}
               </p>
               <p>
                 <span>Vitality</span>
-                <span>{user2?.attributes.vitality}</span>
+                {/* <span>{user2?.attributes.vitality}</span> */}
               </p>
               <p>
                 <span>Stamina</span>
-                <span>{user2?.attributes.stamina}</span>
+                {/* <span>{user2?.attributes.stamina}</span> */}
               </p>
             </div>
           </div>
@@ -286,50 +290,51 @@ export const Battle: FC<BattleProps> = () => {
           <div className="battle_area">
             <div
               className="battle_line_user1"
-              style={{
-                left: `${pos.pos1 * 5 + 1}%`,
-              }}
+              // style={{
+              //   left: `${pos.pos1 * 5 + 1}%`,
+              // }}
             />
             <div
               className="battle_line_user2"
-              style={{ left: `${pos.pos2 * 5 - 1}%` }}
+              // style={{ left: `${pos.pos2 * 5 - 1}%` }}
             />
             <div className="battle_axis" />
           </div>
         </div>
-        <div className="battle_logs_content">
-          {logs.map((player, i) => {
-            const message = JSON.parse(player.text);
-            const action = Object.keys(message)[0];
-            const value = JSON.stringify(message[action]);
-
-            if (
-              i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") >=
-              +battleFinishedIndex[curBattle].index
-            ) {
-              return null;
-            }
-            return (
-              <div
-                className={`battle_log ${
-                  i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
-                  curLog
-                    ? "active"
-                    : ""
-                }`}
-              >
-                <p className={"battle_player_name"}>
-                  №{i - +(battleFinishedIndex[curBattle - 1]?.index ?? "0")}:{" "}
-                  {`${usersOnBattle[player.id].name}`}
-                </p>
-                <p>
-                  action: {action}, value = {value}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+        <div className="battle_logs_content"></div>
       </div>
     </div>
   );
 };
+
+// {logs.map((player, i) => {
+//   const message = JSON.parse(player.text);
+//   const action = Object.keys(message)[0];
+//   const value = JSON.stringify(message[action]);
+
+//   // if (
+//   //   i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") >=
+//   //   +battleFinishedIndex[curBattle].index
+//   // ) {
+//   //   return null;
+//   // }
+//   return (
+//     <div
+//       className={`battle_log
+//       ${
+//         1
+//         // i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
+//         // curLog
+//         //   ? "active"
+//         //   : ""
+//       }
+//       `}
+//     >
+//       <p className={"battle_player_name"}>
+//         {/* №{i - +(battleFinishedIndex[curBattle - 1]?.index ?? "0")}:{" "}
+//         {`${usersOnBattle[player.id].name}`} */}
+//       </p>
+//       <p>{/* action: {action}, value = {value} */}</p>
+//     </div>
+//   );
+// })}

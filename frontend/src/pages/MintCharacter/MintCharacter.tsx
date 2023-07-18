@@ -29,7 +29,7 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
   const [data, setData] = useState({
     codeId:
-      "0x313919bb00afbd3f03cc0dec4046bb87ab1d6569d7eeab601abdaee913a0043e",
+      "0x4b3f39e1e28263eebcde5423e75421dd18daf35dc3059e4a8f9b54d673a7f9a9",
     name: "",
   });
 

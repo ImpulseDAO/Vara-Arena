@@ -4,7 +4,12 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
-import { useAlert, useApi } from "@gear-js/react-hooks";
+import {
+  useAccount,
+  useAlert,
+  useApi,
+  useReadWasmState,
+} from "@gear-js/react-hooks";
 import { getProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 
@@ -13,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 import { logsStore } from "model/logs";
 import { isEmpty } from "lodash";
 import { UnsubscribePromise } from "@polkadot/api/types";
+import { battleLogs } from "model/battleLogs";
+import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 
 export type QueueProps = {};
 
@@ -81,26 +88,11 @@ export const useWasmMetadata = (source: RequestInfo | URL) => {
 };
 
 export const Queue: FC<QueueProps> = ({}) => {
-  // const { buffer } = useWasmMetadata(stateMetaWasm);
-  const [
-    reset,
-    setLogs,
-    updateUsersReadyForBattle,
-    usersOnBattle,
-    setBattleIds,
-    resetBattleIds,
-    setBattleFinishedIndex,
-    setPlayerWon,
-  ] = useUnit([
-    logsStore.reset,
-    logsStore.setLogs,
+  const [updateUsersReadyForBattle, setBattleLog] = useUnit([
     logsStore.updateUsersReadyForBattle,
-    logsStore.$usersOnBattle,
-    logsStore.setBattleIds,
-    logsStore.resetBattleIds,
-    logsStore.setBattleFinishedIndex,
-    logsStore.setPlayerWon,
+    battleLogs.setBattleLog,
   ]);
+
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
@@ -118,13 +110,11 @@ export const Queue: FC<QueueProps> = ({}) => {
     }>
   >([]);
 
-  console.log("usersOnBattle", usersOnBattle);
-
   const inProgressRows = useMemo(() => getRows(players), [players]);
 
   useEffect(() => {
-    reset();
-    resetBattleIds();
+    // reset();
+    // resetBattleIds();
   }, []);
 
   // useEffect(() => {
@@ -140,7 +130,6 @@ export const Queue: FC<QueueProps> = ({}) => {
   const { api } = useApi();
 
   useEffect(() => {
-    let index = 0;
     let unsub: UnsubscribePromise | undefined;
     if (api?.gearEvents) {
       unsub = api.gearEvents.subscribeToGearEvent(
@@ -152,112 +141,49 @@ export const Queue: FC<QueueProps> = ({}) => {
           },
         }) => {
           if (JSON.parse(message.toString()).source === ARENA_ID) {
-            // console.log(
-            //   "meta logs",
-            //   meta
-            //     //@ts-ignore
-            //     .createType(meta.types.handle.output, message.payload)
-            //     //@ts-ignore
-            //     .toJSON()
-            // );
-            if (
-              !isEmpty(
-                meta
-                  //@ts-ignore
-                  .createType(meta.types.handle.output, message.payload)
-                  //@ts-ignore
-                  .toJSON()?.registeredPlayers
-              )
-            ) {
-              setPlayers([
-                ...(meta
-                  //@ts-ignore
-                  .createType(meta.types.handle.output, message.payload)
-                  //@ts-ignore
-                  .toJSON()?.registeredPlayers || []),
-              ]);
-              updateUsersReadyForBattle(
-                [
-                  ...(meta
-                    //@ts-ignore
-                    .createType(meta.types.handle.output, message.payload)
-                    //@ts-ignore
-                    .toJSON()?.registeredPlayers || []),
-                ].reduce((acc, cur) => {
-                  return {
-                    ...acc,
-                    [`${cur.id}`]: cur,
-                  };
-                }, {})
-              );
-            }
+            const result = meta
+              //@ts-ignore
+              .createType(meta.types.handle.output, message.payload)
+              //@ts-ignore
+              .toJSON();
 
-            if (
-              meta
+            //@ts-ignore
+            if (result?.arenaLog) {
+              //@ts-ignore
+              setBattleLog(result?.arenaLog);
+              localStorage.setItem(
+                "battleLog",
                 //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()?.playerWon
-            ) {
-              setPlayerWon(
-                meta
-                  //@ts-ignore
-                  .createType(meta.types.handle.output, message.payload)
-                  //@ts-ignore
-                  .toJSON()?.playerWon
+                JSON.stringify(result?.arenaLog)
               );
               navigate("/battle");
             }
 
             if (
-              //@ts-ignore
-              meta
+              !isEmpty(
                 //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()?.battleStarted
+                result?.registeredPlayers
+              )
             ) {
-              setBattleIds(
-                meta
-                  //@ts-ignore
-                  .createType(meta.types.handle.output, message.payload)
-                  //@ts-ignore
-                  .toJSON()?.battleStarted
+              setPlayers(
+                //@ts-ignore
+                result?.registeredPlayers
               );
-            }
+              const usersOnQueue = [
+                //@ts-ignore
+                ...(result?.registeredPlayers || []),
+              ].reduce((acc, cur) => {
+                return {
+                  ...acc,
+                  [`${cur.id}`]: cur,
+                };
+              }, {});
+              localStorage.setItem(
+                "usersOnQueue",
+                JSON.stringify(usersOnQueue)
+              );
 
-            if (
-              //@ts-ignore
-              meta
-                //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()?.battleFinished
-            ) {
-              setBattleFinishedIndex({
-                index: index.toString(),
-                id: meta
-                  //@ts-ignore
-                  .createType(meta.types.handle.output, message.payload)
-                  //@ts-ignore
-                  .toJSON()?.battleFinished,
-              });
-            }
-
-            if (
-              meta
-                //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()?.battleEvent
-            ) {
-              const [id, action] = meta
-                //@ts-ignore
-                .createType(meta.types.handle.output, message.payload)
-                //@ts-ignore
-                .toJSON()?.battleEvent;
-              setLogs({ text: JSON.stringify(action), id: `${id}` });
-              index++;
+              updateUsersReadyForBattle(usersOnQueue);
             }
           }
         }
@@ -267,7 +193,7 @@ export const Queue: FC<QueueProps> = ({}) => {
     return () => {
       unsub?.then((res) => console.log("res", res()));
     };
-  }, [api]);
+  }, [api, meta, navigate, setBattleLog, updateUsersReadyForBattle]);
 
   return (
     <div className="queue">

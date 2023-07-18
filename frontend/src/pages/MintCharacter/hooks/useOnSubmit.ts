@@ -20,13 +20,14 @@ export const useOnSubmit = ({
 }): VoidFunction => {
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
   const send = useSendMessage(MINT_ID, meta);
+
   return useCallback(() => {
     send(
       {
         CreateCharacter: {
           code_id: codeId,
-          name: name,
           attributes: stats,
+          name,
         },
       },
       {
@@ -38,5 +39,5 @@ export const useOnSubmit = ({
         },
       }
     );
-  }, []);
+  }, [codeId, name, send, stats]);
 };

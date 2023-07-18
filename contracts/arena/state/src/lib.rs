@@ -11,4 +11,8 @@ pub mod metafns {
     pub fn registered(state: State) -> Vec<Character> {
         state.characters.clone()
     }
+
+    pub fn leaderboard(state: State) -> BTreeMap<ActorId, u32> {
+        state.leaderboard.clone()
+    }
 }

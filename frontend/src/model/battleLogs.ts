@@ -10,7 +10,7 @@ $battleLogs.watch((data) => {
 
 sample({ clock: setBattleLog, target: $battleLogs });
 
-export const battleLogs = {
+export const battle = {
   $battleLogs,
   setBattleLog,
 };

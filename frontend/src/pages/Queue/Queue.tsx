@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { logsStore } from "model/logs";
 import { isEmpty } from "lodash";
 import { UnsubscribePromise } from "@polkadot/api/types";
-import { battleLogs } from "model/battleLogs";
+import { battle } from "model/battleLogs";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 
 export type QueueProps = {};
@@ -90,7 +90,7 @@ export const useWasmMetadata = (source: RequestInfo | URL) => {
 export const Queue: FC<QueueProps> = ({}) => {
   const [updateUsersReadyForBattle, setBattleLog] = useUnit([
     logsStore.updateUsersReadyForBattle,
-    battleLogs.setBattleLog,
+    battle.setBattleLog,
   ]);
 
   const [timer, setTimer] = useState(0);

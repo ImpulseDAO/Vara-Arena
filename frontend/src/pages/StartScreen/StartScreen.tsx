@@ -7,7 +7,7 @@ import { useAccount, useAlert, useReadWasmState } from "@gear-js/react-hooks";
 import { useUnit } from "effector-react";
 import { userStore } from "model/user";
 import { MINT_ID } from "pages/MintCharacter/constants";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 export const useWasmMetadata = (source: RequestInfo | URL) => {
   const alert = useAlert();
@@ -67,10 +67,13 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
   ]);
 
   return (
-    <div className="scr_start">
-      <p>Arena</p>
-      <Button onClick={toggle}>Connect wallet to enter the Arena</Button>
-      {visible && <AccountsModal close={toggle} userChoose={userChoose} />}
-    </div>
+    <>
+      <div className="scr_start">
+        <p>Arena</p>
+        <Button onClick={toggle}>Connect wallet to enter the Arena</Button>
+        {visible && <AccountsModal close={toggle} userChoose={userChoose} />}
+      </div>
+      <Outlet />
+    </>
   );
 });

@@ -45,6 +45,18 @@ impl Mint {
             .expect("user has no character");
         msg::reply(character, 0).expect("unable to reply");
     }
+
+    fn increase_xp(&mut self, owner_id: CharacterId) {
+        let caller = msg::source();
+
+        assert!(
+            caller == self.arena_contract,
+            "only the arena contract can call this fn"
+        );
+
+        let mut character = self.characters.get(&owner_id).expect("invalid owner_id");
+        character.attributes.increase_xp();
+    }
 }
 
 #[no_mangle]
@@ -69,6 +81,7 @@ extern "C" fn handle() {
             mint.create_character(code_id, name, attributes);
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
+        MintAction::BattleResult { winner_id } => mint.increase_xp(winner_id),
     }
 }
 

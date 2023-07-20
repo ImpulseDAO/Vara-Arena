@@ -59,6 +59,16 @@ impl Arena {
                     0,
                 )
                 .expect("unable to reply");
+
+                msg::send(
+                    self.mint,
+                    MintAction::BattleResult {
+                        winner_id: winner.id,
+                    },
+                    0,
+                )
+                .expect("unable to reply");
+
                 self.tournament_winners(winner.owner);
                 self.clean_state();
                 return;

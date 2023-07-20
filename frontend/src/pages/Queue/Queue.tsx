@@ -134,17 +134,10 @@ export const Queue: FC<QueueProps> = ({}) => {
     if (api?.gearEvents) {
       unsub = api.gearEvents.subscribeToGearEvent(
         "UserMessageSent",
-        ({
-          data: {
-            //@ts-ignore
-            message,
-          },
-        }) => {
+        ({ data: { message } }) => {
           if (JSON.parse(message.toString()).source === ARENA_ID) {
             const result = meta
-              //@ts-ignore
               .createType(meta.types.handle.output, message.payload)
-              //@ts-ignore
               .toJSON();
 
             //@ts-ignore

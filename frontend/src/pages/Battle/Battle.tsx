@@ -15,9 +15,7 @@ import { battle } from "model/battleLogs";
 export type BattleProps = {};
 
 type TurnTypes = "move" | "attack" | "miss" | "rest";
-type TurnGeneric<K extends TurnTypes, T> = {
-  [key in K]: T;
-};
+type TurnGeneric<K extends TurnTypes, T> = { [key in K]: T };
 type Turn =
   | TurnGeneric<"move", { position: number }>
   | TurnGeneric<"attack", { damage: number; position: number }>
@@ -25,14 +23,12 @@ type Turn =
   | TurnGeneric<"rest", { position: number }>;
 
 type BattleLogs = {
-  logs: Array<
-    {
-      [key in `c${"1" | "2" | "3" | "4"}`]: string;
-    } & {
-      turns: Turn[];
-      winner: string;
-    }
-  >;
+  logs: Array<{
+    c1: string;
+    c2: string;
+    turns: Turn[];
+    winner: string;
+  }>;
   winner: string;
 };
 

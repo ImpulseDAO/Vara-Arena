@@ -383,7 +383,8 @@ export const Battle: FC<BattleProps> = () => {
         </div>
         <table className="battle_logs_content">
           {(currentBattleLog.turns ?? []).map((currentTurn, i, arr) => {
-            const { isPl1Turn, isMove, isAttack, isMiss, isRest } = currentTurn;
+            const { isPl1Turn, isMove, isAttack, isMiss, isRest, value } =
+              currentTurn;
 
             const name = usersOnBattle[currentTurn.id].name;
 
@@ -416,7 +417,11 @@ export const Battle: FC<BattleProps> = () => {
                 {isMove ? (
                   <td>{actions[isPl1Turn ? "moveRight" : "moveLeft"](name)}</td>
                 ) : isAttack ? (
-                  <td>{actions.normalAttack.success(name)}</td>
+                  <td>
+                    {actions.normalAttack.success(name)}
+                    <br />
+                    Damage: {"damage" in value ? (value.damage as number) : 0}
+                  </td>
                 ) : isMiss ? (
                   <td>{actions.normalAttack.fail(name)}</td>
                 ) : isRest ? (

@@ -9,6 +9,7 @@ type CharacterId = ActorId;
 #[derive(Default)]
 struct Mint {
     characters: BTreeMap<CharacterId, CharacterInfo>,
+    arena_contract: ActorId,
 }
 
 static mut MINT: Option<Mint> = None;
@@ -47,8 +48,11 @@ impl Mint {
 }
 
 #[no_mangle]
-unsafe extern "C" fn init() {
-    MINT = Some(Mint::default());
+unsafe extern "C" fn init(arena_contract: ActorId) {
+    MINT = Some(Mint {
+        arena_contract,
+        characters: BTreeMap::default(),
+    });
 }
 
 #[no_mangle]

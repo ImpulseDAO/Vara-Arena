@@ -18,6 +18,8 @@ pub struct CharacterAttributes {
     pub agility: u8,
     pub vitality: u8,
     pub stamina: u8,
+    pub level: u8,
+    pub experience: u8,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

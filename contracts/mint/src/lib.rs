@@ -49,7 +49,7 @@ impl Mint {
 
 #[no_mangle]
 unsafe extern "C" fn init() {
-    let arean_contract: ActorId = msg::load();
+    let arean_contract: ActorId = msg::load().expect("Can't load id of arena contract");
     MINT = Some(Mint {
         arena_contract,
         characters: BTreeMap::default(),

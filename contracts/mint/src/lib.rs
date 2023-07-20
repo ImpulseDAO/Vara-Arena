@@ -48,7 +48,8 @@ impl Mint {
 }
 
 #[no_mangle]
-unsafe extern "C" fn init(arena_contract: ActorId) {
+unsafe extern "C" fn init() {
+    let arean_contract: ActorId = msg::load();
     MINT = Some(Mint {
         arena_contract,
         characters: BTreeMap::default(),

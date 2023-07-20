@@ -1,8 +1,5 @@
 import { FC, useMemo, useState } from "react";
 import "./styles.scss";
-import { StatBar } from "components/StatBar";
-import LockSvg from "../../assets/svg/lock.svg";
-import CharSvg from "../../assets/svg/char.svg";
 import StepBack from "../../assets/svg/step_back.svg";
 import StepForward from "../../assets/svg/step_forward.svg";
 import Forward from "../../assets/svg/forward.svg";
@@ -11,6 +8,8 @@ import { Button } from "components/Button";
 import { useUnit } from "effector-react";
 import { logsStore } from "model/logs";
 import { battle } from "model/battleLogs";
+import { textMap } from "./components/textMap";
+import { BattleUser } from "./components/BattleUser";
 
 export type BattleProps = {};
 
@@ -22,7 +21,7 @@ type Turn =
   | TurnGeneric<"miss", { position: number }>
   | TurnGeneric<"rest", { position: number }>;
 
-type BattleLogs = {
+export type BattleLogs = {
   logs: Array<{
     c1: string;
     c2: string;
@@ -32,34 +31,9 @@ type BattleLogs = {
   winner: string;
 };
 
-const actions = {
-  quickAttack: {
-    success: (name: string) =>
-      `${name} swiftly strikes the opponent with a quick attack, catching them off guard. The sound of steel meeting flesh echoes through the arena as the opponent staggers backward, momentarily disoriented`,
-    fail: (name: string) =>
-      `${name} swiftly lunges forward, aiming for a quick strike, but their opponent is as quick as a viper. With uncanny reflexes, the opponent anticipates the attack and gracefully evades it, leaving ${name} momentarily off balance. The crowd gasps in anticipation as the Gladiator readies themselves for the opponent's imminent counterattack`,
-  },
-  normalAttack: {
-    success: (name: string) =>
-      `With a calculated swing, ${name} delivers a solid blow with a normal attack. The clash of weapons reverberates in the air as the opponent grunts in pain`,
-    fail: (name: string) =>
-      `With determination, ${name} delivers a well-measured strike, but their opponent proves to be a formidable adversary. The opponent's defenses hold strong, deflecting the ${name}’s attack with impeccable skill. The clash of weapons echoes through the arena, drawing the attention of the crowd, who watches in anticipation as the ${name} quickly recovers, preparing for their next move`,
-  },
-  hardAttack: {
-    success: (name: string) =>
-      `Gathering all their strength, ${name} unleashes a powerful strike with a resounding impact. The force of the blow sends shockwaves through the arena, causing the opponent to stumble backward, clutching their wounds`,
-    fail: (name: string) =>
-      `Gathering every ounce of strength, ${name} unleashes a mighty swing, aiming to deliver a crushing blow. However, their opponent is no stranger to the art of combat. With an instinctual maneuver, the opponent expertly parries the ${name}’s attack, turning the forceful strike into a mere glancing blow. The arena rumbles with the sound of clashing steel, as the ${name} finds themselves momentarily exposed and on the defensive, forced to react swiftly to the opponent's ensuing assault`,
-  },
-  moveRight: (name: string) => `${name} steps to the right`,
-  moveLeft: (name: string) => `${name} steps to the left`,
-  rest: (name: string) =>
-    `Sensing the ebb and flow of battle, ${name} takes a moment to catch their breath, seeking respite in the midst of combat. Gladiator’s muscles tense and relax as they regain focus, rejuvenating their stamina for the challenges that lie ahead`,
-};
-
 export const Battle: FC<BattleProps> = () => {
   const [
-    // usersOnBattle,
+    ,// usersOnBattle,
     // battleLogs,
     // logs, battleIds, battleFinishedIndex, playerWon
   ] = useUnit([
@@ -80,7 +54,6 @@ export const Battle: FC<BattleProps> = () => {
   const [curTurnIndex, setCurTurnIndex] = useState(0);
 
   console.log("battleLogs", battleLogs);
-
   console.log("usersOnBattle", usersOnBattle);
 
   const nextBattleLog = () => {
@@ -230,108 +203,8 @@ export const Battle: FC<BattleProps> = () => {
       </h2>
 
       <div className="battle_users">
-        <div className="battle_user1">
-          <div className="battle_data">
-            <div className="battle_user">
-              <div className="battle_name">
-                <p>{user1?.name}</p>
-                <p>
-                  <span>Level</span>
-                  <span>1</span>
-                </p>
-              </div>
-            </div>
-            <div className="battle_armour">
-              <span>Armour</span>
-              <span>0</span>
-            </div>
-            <div className="battle_stats">
-              <p>
-                <span>Strength</span>
-                <span>{user1?.attributes.strength}</span>
-              </p>
-
-              <p>
-                <span>Agility</span>
-                <span>{user1?.attributes.agility}</span>
-              </p>
-              <p>
-                <span>Vitality</span>
-                <span>{user1?.attributes.vitality}</span>
-              </p>
-              <p>
-                <span>Stamina</span>
-                <span>{user1?.attributes.stamina}</span>
-              </p>
-            </div>
-          </div>
-          <div className="battle_equip">
-            <StatBar health={pl1Health} />
-            <div className={"img_wrapper"}>
-              <img className={"lock_img1"} src={LockSvg} />
-              <img className={"lock_img2"} src={LockSvg} />
-              <img className={"lock_img3"} src={LockSvg} />
-              <img className={"lock_img4"} src={LockSvg} />
-              <img className={"lock_img5"} src={LockSvg} />
-              <img className={"char_svg"} src={CharSvg} />
-              <img className={"lock_img6"} src={LockSvg} />
-              <img className={"lock_img7"} src={LockSvg} />
-              <img className={"lock_img8"} src={LockSvg} />
-              <img className={"lock_img9"} src={LockSvg} />
-            </div>
-          </div>
-        </div>
-        <div className="battle_user2">
-          <div className="battle_data">
-            <div className="battle_user">
-              <div className="battle_name">
-                <p>{user2?.name}</p>
-                <p>
-                  <span>Level</span>
-                  <span>1</span>
-                </p>
-              </div>
-            </div>
-            <div className="battle_armour">
-              <span>Armour</span>
-              <span>0</span>
-            </div>
-            <div className="battle_stats">
-              <p>
-                <span>Strength</span>
-                <span>{user2?.attributes.strength}</span>
-              </p>
-
-              <p>
-                <span>Agility</span>
-                <span>{user2?.attributes.agility}</span>
-              </p>
-              <p>
-                <span>Vitality</span>
-                <span>{user2?.attributes.vitality}</span>
-              </p>
-              <p>
-                <span>Stamina</span>
-                <span>{user2?.attributes.stamina}</span>
-              </p>
-            </div>
-          </div>
-          <div className="battle_equip">
-            <StatBar health={pl2Health} />
-            <div className={"img_wrapper"}>
-              <img className={"lock_img1"} src={LockSvg} />
-              <img className={"lock_img2"} src={LockSvg} />
-              <img className={"lock_img3"} src={LockSvg} />
-              <img className={"lock_img4"} src={LockSvg} />
-              <img className={"lock_img5"} src={LockSvg} />
-              <img className={"char_svg"} src={CharSvg} />
-              <img className={"lock_img6"} src={LockSvg} />
-              <img className={"lock_img7"} src={LockSvg} />
-              <img className={"lock_img8"} src={LockSvg} />
-              <img className={"lock_img9"} src={LockSvg} />
-            </div>
-          </div>
-        </div>
+        <BattleUser user={user1} userIndex={1} health={pl1Health} />
+        <BattleUser user={user2} userIndex={2} health={pl2Health} />
       </div>
       <div className="battle_actions">
         <Button
@@ -339,16 +212,16 @@ export const Battle: FC<BattleProps> = () => {
           className={"battle_button prev"}
           onClick={prevBattleLog}
         >
-          <img src={Back} /> Previous battle
+          <img src={Back} alt=" Previous battle" /> Previous battle
         </Button>
         <Button className={"battle_button step_left"} onClick={prevBattleTurn}>
-          <img src={StepBack} />
+          <img src={StepBack} alt="Step back" />
         </Button>
         <Button disabled className={"battle_button play"} onClick={() => {}}>
           Play battle
         </Button>
         <Button className={"battle_button step_right"} onClick={nextBattleTurn}>
-          <img src={StepForward} />
+          <img src={StepForward} alt="Step forward" />
         </Button>
         <Button
           disabled={battleLogs.logs.length <= 1}
@@ -356,7 +229,7 @@ export const Battle: FC<BattleProps> = () => {
           onClick={nextBattleLog}
         >
           Next battle
-          <img src={Forward} />
+          <img src={Forward} alt="Next battle" />
         </Button>
       </div>
       <div className="battle_logs">
@@ -411,17 +284,17 @@ export const Battle: FC<BattleProps> = () => {
 
                 {/* Description */}
                 {isMove ? (
-                  <td>{actions[isPl1Turn ? "moveRight" : "moveLeft"](name)}</td>
+                  <td>{textMap[isPl1Turn ? "moveRight" : "moveLeft"](name)}</td>
                 ) : isAttack ? (
                   <td>
-                    {actions.normalAttack.success(name)}
+                    {textMap.normalAttack.success(name)}
                     <br />
                     Damage: {"damage" in value ? (value.damage as number) : 0}
                   </td>
                 ) : isMiss ? (
-                  <td>{actions.normalAttack.fail(name)}</td>
+                  <td>{textMap.normalAttack.fail(name)}</td>
                 ) : isRest ? (
-                  <td>{actions.rest(name)}</td>
+                  <td>{textMap.rest(name)}</td>
                 ) : (
                   <td></td>
                 )}

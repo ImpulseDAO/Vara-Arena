@@ -39,6 +39,9 @@ pub enum MintAction {
     CharacterInfo {
         owner_id: ActorId,
     },
+    SetArena {
+        arena_id: ActorId,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

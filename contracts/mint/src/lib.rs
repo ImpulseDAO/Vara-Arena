@@ -9,7 +9,8 @@ type CharacterId = ActorId;
 #[derive(Default)]
 struct Mint {
     characters: BTreeMap<CharacterId, CharacterInfo>,
-    arena_contract: ActorId,
+    arena_contract: Option<ActorId>,
+    contract_owner: ActorId,
 }
 
 static mut MINT: Option<Mint> = None;
@@ -57,14 +58,26 @@ impl Mint {
         let mut character = self.characters.get(&owner_id).expect("invalid owner_id");
         character.attributes.increase_xp();
     }
+
+    fn set_arena(&mut self, arena_id: ActorId) {
+        let caller = msg::source();
+        assert!(
+            caller == self.contract_owner,
+            "only the owner can set address of arena contract"
+        );
+
+        assert!(self.arena_contract.is_none(), "arena contract already set");
+
+        self.arena_contract = Some(arena_id);
+    }
 }
 
 #[no_mangle]
 unsafe extern "C" fn init() {
-    let arean_contract: ActorId = msg::load().expect("Can't load id of arena contract");
+    let contract_owner = msg::source();
     MINT = Some(Mint {
-        arena_contract,
-        characters: BTreeMap::default(),
+        contract_owner,
+        ..Default::default()
     });
 }
 
@@ -82,6 +95,7 @@ extern "C" fn handle() {
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
         MintAction::BattleResult { winner_id } => mint.increase_xp(winner_id),
+        MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
     }
 }
 

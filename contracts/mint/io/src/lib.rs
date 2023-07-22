@@ -56,6 +56,9 @@ pub enum MintAction {
     },
     BattleResult {
         winner_id: ActorId,
+    }
+    SetArena {
+        arena_id: ActorId,
     },
 }
 

@@ -33,7 +33,7 @@ pub struct CharacterAttributes {
 
 impl CharacterAttributes {
     pub fn increase_xp(&mut self) {
-        self.experience = self.experience.saturating_add(XP_GAIN[self.level]);
+        self.experience = self.experience.saturating_add(XP_GAIN[self.level as usize]);
     }
 }
 
@@ -56,7 +56,7 @@ pub enum MintAction {
     },
     BattleResult {
         winner_id: ActorId,
-    }
+    },
     SetArena {
         arena_id: ActorId,
     },

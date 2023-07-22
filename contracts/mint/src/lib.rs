@@ -50,12 +50,17 @@ impl Mint {
     fn increase_xp(&mut self, owner_id: CharacterId) {
         let caller = msg::source();
 
+        assert!(self.arena_contract.is_some(), "arena contract is not set");
+
         assert!(
-            caller == self.arena_contract,
+            Some(caller) == self.arena_contract,
             "only the arena contract can call this fn"
         );
 
-        let mut character = self.characters.get(&owner_id).expect("invalid owner_id");
+        let character = self
+            .characters
+            .get_mut(&owner_id)
+            .expect("invalid owner_id");
         character.attributes.increase_xp();
     }
 

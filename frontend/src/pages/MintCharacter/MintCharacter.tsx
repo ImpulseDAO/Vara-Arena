@@ -33,8 +33,6 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
     name: "",
   });
 
-  const navigate = useNavigate();
-
   const { decrease, increase, stats } = useStats();
   const onSubmit = useOnSubmit({ ...data, stats });
   const onChangeInput = useOnChange(setData);
@@ -42,9 +40,8 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   useEffect(() => {
     if (charInfo.state) {
       setUserName(charInfo.state);
-      navigate("/arena");
     }
-  }, [charInfo, setUserName, navigate, data.name]);
+  }, [charInfo.state, setUserName]);
 
   return (
     <MintCharacterView

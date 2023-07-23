@@ -1,13 +1,15 @@
-import { ReactNode, useMemo } from 'react';
-import { TableColumnsType } from '../types';
-import { Styled } from '../styles';
+import { ReactNode, useMemo } from "react";
+import { TableColumnsType } from "../types";
+import { Styled } from "../styles";
 
 export const useGetRowItems = ({
   columns,
   rows,
+  cellClick,
 }: {
   columns: TableColumnsType[];
   rows: object[];
+  cellClick?: (arg: object) => void;
 }) => {
   return useMemo((): ReactNode => {
     return rows.map((row, i) => {
@@ -18,7 +20,7 @@ export const useGetRowItems = ({
             key={i}
             style={{ width: cur.width }}
           >
-            {row[cur.field]}
+            <div onClick={() => cellClick?.(row)}>{row[cur.field]}</div>
           </Styled.Cell>
         );
 
@@ -26,5 +28,5 @@ export const useGetRowItems = ({
       }, []);
       return <Styled.Row key={i}>{items}</Styled.Row>;
     });
-  }, [columns, rows]);
+  }, [cellClick, columns, rows]);
 };

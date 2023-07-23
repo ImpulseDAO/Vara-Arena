@@ -48,23 +48,14 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
 
   useEffect(() => {
-    if (account && userChoosed) {
-      if (!charInfo.state) {
-        navigate("/mint-character");
-      } else {
-        navigate("/mint-character");
-        // navigate("/arena");
+    if (account) {
+      if (charInfo.state) {
+        navigate("/arena");
+        localStorage.setItem("charInfo", JSON.stringify(charInfo.state));
         setUserName(charInfo.state);
       }
     }
-  }, [
-    account,
-    charInfo.isStateRead,
-    charInfo.state,
-    setUserName,
-    navigate,
-    userChoosed,
-  ]);
+  }, [account, charInfo.state, navigate, setUserName, userChoosed]);
 
   return (
     <>

@@ -12,7 +12,7 @@ export const useOnSubmit = (): VoidFunction => {
   const send = useSendMessage(ARENA_ID, meta);
 
   return useCallback(() => {
-    navigate("/arena/queue");
+    navigate("/queue");
     send(
       {
         Register: {
@@ -28,5 +28,5 @@ export const useOnSubmit = (): VoidFunction => {
         },
       }
     );
-  }, [account.decodedAddress, navigate, send]);
+  }, [account?.decodedAddress, navigate, send]);
 };

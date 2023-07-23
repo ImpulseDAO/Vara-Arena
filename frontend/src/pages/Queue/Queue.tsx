@@ -96,36 +96,28 @@ export const Queue: FC<QueueProps> = ({}) => {
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
-  // const send = useSendMessage(ARENA_ID, meta);
-  const [players, setPlayers] = useState<
-    Array<{
-      id: string;
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-      };
-      name: string;
-    }>
-  >([]);
-
-  const inProgressRows = useMemo(() => getRows(players), [players]);
+  const players = JSON.parse(localStorage.getItem("players"));
+  const inProgressRows = useMemo(() => {
+    if (!players || isEmpty(Object.values(players))) {
+      return [];
+    }
+    return getRows(Object.values(players));
+  }, [players]);
 
   useEffect(() => {
     // reset();
     // resetBattleIds();
   }, []);
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     setTimer((prev) => prev + 1);
-  //   }, 1000);
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTimer((prev) => prev + 1);
+    }, 1000);
 
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, []);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const { api } = useApi();
 
@@ -165,10 +157,12 @@ export const Queue: FC<QueueProps> = ({}) => {
                 result?.registeredPlayers
               )
             ) {
-              setPlayers(
+              console.log(
+                "result?.registeredPlayers",
                 //@ts-ignore
                 result?.registeredPlayers
               );
+
               const usersOnQueue = [
                 //@ts-ignore
                 ...(result?.registeredPlayers || []),
@@ -182,7 +176,11 @@ export const Queue: FC<QueueProps> = ({}) => {
                 "usersOnQueue",
                 JSON.stringify(usersOnQueue)
               );
-
+              //@ts-ignore
+              localStorage.setItem(
+                "players",
+                JSON.stringify(result?.registeredPlayers)
+              );
               updateUsersReadyForBattle(usersOnQueue);
             }
           }

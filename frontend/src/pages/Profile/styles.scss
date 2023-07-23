@@ -2,7 +2,7 @@
   padding-top: 40px;
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../assets/images/profile.png');
+  background-image: url("../../assets/images/profile.png");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -17,7 +17,7 @@
     width: 86px;
     height: 40px;
     background: #000000;
-    border: 1px solid #FFFFFF;
+    border: 1px solid #ffffff;
     border-radius: 8px;
   }
 
@@ -145,4 +145,29 @@
     top: 255px;
     right: 0px;
   }
+}
+
+.row_player {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row_win {
+  color: #1ef01e;
+}
+.row_lose {
+  color: #ff4c4c;
+}
+
+.row_lvl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 22px;
+  border-radius: 16px;
+  background: white;
+  color: black;
+  padding: 2px 8px;
 }

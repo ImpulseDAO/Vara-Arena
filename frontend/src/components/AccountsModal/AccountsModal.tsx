@@ -1,18 +1,21 @@
 import { Modal } from "@gear-js/ui";
 import { Accounts } from "../accounts";
 import { useAccount } from "@gear-js/react-hooks";
+import { Account } from "@gear-js/react-hooks/dist/esm/types";
+import styles from "./AccountsModal.module.scss";
 
 type Props = {
   close: () => void;
   userChoose: VoidFunction;
+  account?: Account;
 };
 
-export const AccountsModal = ({ close, userChoose }: Props) => {
-  const { accounts } = useAccount();
+export const AccountsModal = ({ close, userChoose, account }: Props) => {
+  const { accounts, logout } = useAccount();
   return (
     <Modal heading="Connect" close={close}>
       {accounts ? (
-        <Accounts list={accounts} userChoose={userChoose} />
+        <Accounts close={close} list={accounts} userChoose={userChoose} />
       ) : (
         <p>
           Wallet extension was not found or disconnected. Please check how to
@@ -27,6 +30,13 @@ export const AccountsModal = ({ close, userChoose }: Props) => {
           </a>
         </p>
       )}
+      {account ? (
+        <div className={styles.footer}>
+          <div className={styles.logout} onClick={logout}>
+            logout
+          </div>
+        </div>
+      ) : null}
     </Modal>
   );
 };

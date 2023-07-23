@@ -1,26 +1,20 @@
 import { Wallet } from "components/wallet";
-import { FC } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { FC, useEffect, useReducer } from "react";
+import { NavLink } from "react-router-dom";
 import "./styles.scss";
 import { useAccount } from "@gear-js/react-hooks";
+import { AccountsModal } from "components/AccountsModal";
 
 export type HeaderProps = {};
 
 export const Header: FC<HeaderProps> = () => {
-  const { account, logout } = useAccount();
-  const navigate = useNavigate();
+  const { account } = useAccount();
+  const [visible, toggle] = useReducer((state) => !state, false);
+  const [userChoosed, userChoose] = useReducer((state) => !state, false);
 
   return (
     <div className="header">
-      <p
-        className={"header_title"}
-        onClick={() => {
-          navigate("/");
-          logout();
-        }}
-      >
-        Arena
-      </p>
+      <p className={"header_title"}>Arena</p>
 
       <div className={"header_nav"}>
         <NavLink
@@ -30,10 +24,16 @@ export const Header: FC<HeaderProps> = () => {
           Arena
         </NavLink>
         <NavLink
-          to="/logs"
+          to="/mint-character"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
-          My logs
+          Create New
+        </NavLink>
+        <NavLink
+          to="/queue"
+          className={({ isActive }) => (isActive ? "active" : "")}
+        >
+          Queue
         </NavLink>
         <NavLink
           to="/leaderboard"
@@ -42,7 +42,7 @@ export const Header: FC<HeaderProps> = () => {
           Leaderboard
         </NavLink>
         <NavLink
-          to="/my_profile"
+          to={`/profile/${account?.decodedAddress}`}
           className={({ isActive }) => (isActive ? "active" : "")}
         >
           My profile
@@ -53,6 +53,14 @@ export const Header: FC<HeaderProps> = () => {
           balance={account.balance}
           address={account.address}
           name={account.meta.name}
+          onClick={toggle}
+        />
+      )}
+      {visible && (
+        <AccountsModal
+          close={toggle}
+          userChoose={userChoose}
+          account={account}
         />
       )}
     </div>

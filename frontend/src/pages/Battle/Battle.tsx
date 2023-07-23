@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import "./styles.scss";
 import { StatBar } from "components/StatBar";
 import LockSvg from "../../assets/svg/lock.svg";
@@ -8,37 +8,13 @@ import StepForward from "../../assets/svg/step_forward.svg";
 import Forward from "../../assets/svg/forward.svg";
 import Back from "../../assets/svg/back.svg";
 import { Button } from "components/Button";
-import { useUnit } from "effector-react";
-import { logsStore } from "model/logs";
-import { battle } from "model/battleLogs";
-// import { userStore } from "model/user";
-// import { isEmpty } from "lodash";
-// import { useAlert } from "@gear-js/react-hooks";
 
 export type BattleProps = {};
 export const Battle: FC<BattleProps> = () => {
-  const [
-    // usersOnBattle,
-    // battleLogs,
-    // logs, battleIds, battleFinishedIndex, playerWon
-  ] = useUnit([
-    logsStore.$usersOnBattle,
-    battle.$battleLogs,
-    // logsStore.$logs,
-    // logsStore.$battleIds,
-    // logsStore.$battleFinishedIndex,
-    // logsStore.$playerWon,
-  ]);
   const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue"));
   const battleLogs = JSON.parse(localStorage.getItem("battleLog"));
-  // const gearAlert = useAlert();
-  // const user = useUnit(userStore.$user);
   const [curBattleIndex, setCurrentBattleIndex] = useState(0);
   const [curTurnIndex, setCurTurnIndex] = useState(0);
-
-  console.log("battleLogs", battleLogs);
-
-  console.log("usersOnBattle", usersOnBattle);
 
   const nextBattleLog = () => {
     //@ts-ignore

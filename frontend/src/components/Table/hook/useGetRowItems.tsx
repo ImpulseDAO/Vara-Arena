@@ -19,6 +19,7 @@ export const useGetRowItems = ({
             position={cur.position}
             key={i}
             style={{ width: cur.width }}
+            ableClick={!!cellClick}
           >
             <div onClick={() => cellClick?.(row)}>{row[cur.field]}</div>
           </Styled.Cell>

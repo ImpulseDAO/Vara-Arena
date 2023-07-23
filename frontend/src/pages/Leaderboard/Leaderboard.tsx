@@ -1,9 +1,7 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import "./styles.scss";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
-import AvatarIcon from "../../assets/images/avatar.png";
-import { Button } from "../../components/Button";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { useWasmMetadata } from "pages/Queue";
@@ -16,13 +14,13 @@ const inProgressColumns: TableColumnsType[] = [
   {
     field: "ownerId",
     headerName: "Owner Id",
-    width: 605,
+    width: 645,
     position: "center",
   },
   {
     field: "nw",
     headerName: "number of wins",
-    width: 160,
+    width: 120,
     position: "center",
   },
 ];
@@ -43,7 +41,7 @@ export const Leaderboard = () => {
     if (leaderBoard) {
       return Object.keys(leaderBoard)
         .map((key) => ({
-          ownerId: key,
+          ownerId: <p className="row_ownerId">🔗 {key}</p>,
           nw: leaderBoard[key],
         }))
         .sort((row1, row2) => Number(row2.nw) - Number(row1.nw));

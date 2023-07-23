@@ -19,6 +19,7 @@ export const Battle: FC<BattleProps> = () => {
   const nextBattleLog = () => {
     //@ts-ignore
     const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
     setCurrentBattleIndex((prev) => {
       if (prev + 1 === count) {
         return 0;
@@ -30,6 +31,7 @@ export const Battle: FC<BattleProps> = () => {
   const prevBattleLog = () => {
     //@ts-ignore
     const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
     setCurrentBattleIndex((prev) => {
       if (prev === 0) {
         return count - 1;

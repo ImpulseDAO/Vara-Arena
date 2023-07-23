@@ -1,6 +1,6 @@
 import { Wallet } from "components/wallet";
 import { FC, useEffect, useReducer } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./styles.scss";
 import { useAccount } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
@@ -11,18 +11,15 @@ export const Header: FC<HeaderProps> = () => {
   const { account } = useAccount();
   const [visible, toggle] = useReducer((state) => !state, false);
   const [userChoosed, userChoose] = useReducer((state) => !state, false);
+  const navigate = useNavigate();
 
   return (
     <div className="header">
-      <p className={"header_title"}>Arena</p>
+      <p className={"header_title"} onClick={() => navigate("/arena")}>
+        Arena
+      </p>
 
       <div className={"header_nav"}>
-        <NavLink
-          to="/arena"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Arena
-        </NavLink>
         <NavLink
           to="/mint-character"
           className={({ isActive }) => (isActive ? "active" : "")}
@@ -30,10 +27,10 @@ export const Header: FC<HeaderProps> = () => {
           Create New
         </NavLink>
         <NavLink
-          to="/queue"
+          to="/tournament"
           className={({ isActive }) => (isActive ? "active" : "")}
         >
-          Queue
+          Tournament
         </NavLink>
         <NavLink
           to="/leaderboard"

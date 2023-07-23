@@ -139,6 +139,7 @@ export const Queue: FC<QueueProps> = ({}) => {
               //@ts-ignore
               .toJSON();
 
+            console.log("result", result);
             //@ts-ignore
             if (result?.arenaLog) {
               //@ts-ignore
@@ -176,9 +177,9 @@ export const Queue: FC<QueueProps> = ({}) => {
                 "usersOnQueue",
                 JSON.stringify(usersOnQueue)
               );
-              //@ts-ignore
               localStorage.setItem(
                 "players",
+                //@ts-ignore
                 JSON.stringify(result?.registeredPlayers)
               );
               updateUsersReadyForBattle(usersOnQueue);

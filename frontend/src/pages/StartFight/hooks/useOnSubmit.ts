@@ -12,7 +12,7 @@ export const useOnSubmit = (): VoidFunction => {
   const send = useSendMessage(ARENA_ID, meta);
 
   return useCallback(() => {
-    navigate("/queue");
+    navigate("/tournament");
     send(
       {
         Register: {

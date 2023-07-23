@@ -21,7 +21,7 @@ export const useWasmMetadata = (source: RequestInfo | URL) => {
         .then((buffer) => setData(buffer))
         .catch(({ message }: Error) => alert.error(`Fetch error: ${message}`));
     }
-  }, [source]);
+  }, [alert, source]);
 
   return { buffer: data };
 };

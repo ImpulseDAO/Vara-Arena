@@ -52,7 +52,7 @@ export const Leaderboard = () => {
 
   const handleClickCell = useCallback(
     (arg) => {
-      navigate(`/profile/${arg.ownerId}`);
+      navigate(`/profile/${arg.ownerId.props.children[1]}`);
     },
     [navigate]
   );

@@ -58,12 +58,19 @@ export const Profile: FC = () => {
   }>(MINT_ID, buffer, "character_info", id);
 
   const rows = useMemo(() => {
-    const battleLog = JSON.parse(localStorage.getItem("battleLog"));
+    const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));
     const usersOnQueue = JSON.parse(localStorage.getItem("usersOnQueue"));
 
-    const logs = (battleLog?.logs ?? []).filter((log) => {
-      return log.c1 === charInfo.state?.id || log.c2 === charInfo.state?.id;
-    });
+    if (id !== account?.decodedAddress) {
+      return [];
+    }
+
+    const logs = allBattleLog.reduce((acc, cur) => {
+      const logs = (cur?.logs ?? []).filter((log) => {
+        return log.c1 === charInfo.state?.id || log.c2 === charInfo.state?.id;
+      });
+      return acc.concat(logs);
+    }, []);
 
     const rowsInfo = logs.map((log) => {
       let id;
@@ -81,7 +88,7 @@ export const Profile: FC = () => {
       return {
         id,
         name,
-        isWinner: log.winner === id,
+        isWinner: log.winner === charInfo.state?.id,
       };
     });
 
@@ -108,9 +115,6 @@ export const Profile: FC = () => {
       };
     });
   }, [charInfo.state]);
-
-  console.log("account", account);
-  console.log("charInfo", charInfo);
 
   return (
     <div className="profile">

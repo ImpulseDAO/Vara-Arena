@@ -144,11 +144,20 @@ export const Queue: FC<QueueProps> = ({}) => {
             if (result?.arenaLog) {
               //@ts-ignore
               setBattleLog(result?.arenaLog);
+              const allBattleLog =
+                JSON.parse(localStorage.getItem("allBattleLog")) ?? [];
               localStorage.setItem(
                 "battleLog",
                 //@ts-ignore
                 JSON.stringify(result?.arenaLog)
               );
+
+              localStorage.setItem(
+                "allBattleLog",
+                //@ts-ignore
+                JSON.stringify(allBattleLog.concat(result?.arenaLog ?? []))
+              );
+
               navigate("/battle");
             }
 

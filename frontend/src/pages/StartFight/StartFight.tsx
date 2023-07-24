@@ -30,8 +30,6 @@ export const StartFight = memo(() => {
     name: string;
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
 
-  console.log("charInfo", charInfo);
-
   return (
     <StartFightView
       name={charInfo?.state?.name ?? ""}

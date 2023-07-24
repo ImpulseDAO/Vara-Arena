@@ -65,7 +65,7 @@ export const Profile: FC = () => {
       return [];
     }
 
-    const logs = allBattleLog.reduce((acc, cur) => {
+    const logs = (allBattleLog ?? []).reduce((acc, cur) => {
       const logs = (cur?.logs ?? []).filter((log) => {
         return log.c1 === charInfo.state?.id || log.c2 === charInfo.state?.id;
       });

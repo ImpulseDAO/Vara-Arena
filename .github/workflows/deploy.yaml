@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 
 env:
-  CI: true
+  CI: false
 
 jobs:
   deploy:

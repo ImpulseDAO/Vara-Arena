@@ -5,6 +5,9 @@ use gmeta::{InOut, Metadata};
 use gstd::{prelude::*, ActorId, CodeId, TypeInfo};
 
 const MAX_LEVEL: usize = 9;
+const MAX_STRENGTH: usize = 9;
+const MAX_AGILITY: usize = 9;
+const MAX_STAMINA: usize = 9;
 
 const XP_GAIN: [u32; MAX_LEVEL + 1] = [
     300, 600, 600, 1350, 3240, 8100, 18225, 48600, 131220, 328050,
@@ -30,21 +33,44 @@ pub struct CharacterAttributes {
     pub level: u8,
     pub experience: u32,
 }
+#[derive(Encode, Decode, TypeInfo, Clone)]
+pub enum AttributeChoice {
+    Strength,
+    Agility,
+    Stamina,
+    Level,
+}
 
 impl CharacterAttributes {
     pub fn increase_xp(&mut self) {
         self.experience = self.experience.saturating_add(XP_GAIN[self.level as usize]);
     }
 
-    pub fn level_up(&mut self) {
-        assert!(self.level != MAX_LEVEL as u8, "max level");
-
+    pub fn level_up(&mut self, attr: AttributeChoice) {
         let xp_consume = LEVEL_XP[self.level as usize];
 
         assert!(self.experience >= xp_consume, "not enough experience");
 
+        match attr {
+            AttributeChoice::Strength => {
+                assert!(self.strength != MAX_STRENGTH as u8, "max level");
+                self.strength = self.strength + 1;
+            }
+            AttributeChoice::Agility => {
+                assert!(self.level != MAX_AGILITY as u8, "max level");
+                self.agility = self.agility + 1;
+            }
+            AttributeChoice::Stamina => {
+                assert!(self.level != MAX_STAMINA as u8, "max level");
+                self.stamina = self.stamina + 1;
+            }
+            AttributeChoice::Level => {
+                assert!(self.level != MAX_LEVEL as u8, "max level");
+                self.level = self.level + 1
+            }
+        }
+
         self.experience = self.experience - xp_consume;
-        self.level = self.level + 1;
     }
 }
 
@@ -70,6 +96,9 @@ pub enum MintAction {
     },
     SetArena {
         arena_id: ActorId,
+    },
+    LevelUp {
+        attr: AttributeChoice,
     },
 }
 

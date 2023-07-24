@@ -33,12 +33,12 @@ pub struct CharacterAttributes {
     pub level: u8,
     pub experience: u32,
 }
+
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub enum AttributeChoice {
     Strength,
     Agility,
     Stamina,
-    Level,
 }
 
 impl CharacterAttributes {
@@ -50,6 +50,9 @@ impl CharacterAttributes {
         let xp_consume = LEVEL_XP[self.level as usize];
 
         assert!(self.experience >= xp_consume, "not enough experience");
+
+        assert!(self.level != MAX_LEVEL as u8, "max level");
+        self.level = self.level + 1;
 
         match attr {
             AttributeChoice::Strength => {
@@ -63,10 +66,6 @@ impl CharacterAttributes {
             AttributeChoice::Stamina => {
                 assert!(self.level != MAX_STAMINA as u8, "max level");
                 self.stamina = self.stamina + 1;
-            }
-            AttributeChoice::Level => {
-                assert!(self.level != MAX_LEVEL as u8, "max level");
-                self.level = self.level + 1
             }
         }
 

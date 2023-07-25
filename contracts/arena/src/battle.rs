@@ -37,7 +37,45 @@ impl Battle {
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
 
+        let mut round: u8 = 0;
+
         loop {
+            let c1_movable = {
+                if round < self.c1.attributes.stamina {
+                    true
+                } else {
+                    false
+                }
+            };
+            let c2_movable = {
+                if round < self.c2.attributes.stamina {
+                    true
+                } else {
+                    false
+                }
+            };
+            if !c1_movable || !c2_movable {
+                let winner = {
+                    if c1_movable {
+                        self.c1.id
+                    } else if c2_movable {
+                        self.c2.id
+                    } else {
+                        if self.c1.hp > self.c2.hp {
+                            self.c1.id
+                        } else {
+                            self.c2.id
+                        }
+                    }
+                };
+                debug!("{:?} is the winner", winner);
+                return BattleLog {
+                    c1: self.c1.id,
+                    c2: self.c2.id,
+                    winner,
+                    turns,
+                };
+            }
             let turn = YourTurn {
                 you: CharacterState {
                     hp: self.c1.hp,
@@ -350,6 +388,8 @@ impl Battle {
                     });
                 }
             }
+
+            round = round + 1;
         }
     }
 }

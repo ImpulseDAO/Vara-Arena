@@ -1,7 +1,7 @@
 .queue {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../assets/images/waitingScreen.png');
+  background-image: url("../../assets/images/waitingScreen.png");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -85,6 +85,34 @@
         font-weight: bold;
       }
     }
+  }
+
+  @mixin button_common {
+    width: 200px;
+    height: 44px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 10px 18px;
+  }
+
+  .start_button {
+    @include button_common;
+    margin-top: 2rem;
+    color: white;
+    border: none;
+    background: #2c67ff;
+
+    &.disabled {
+      background: #656565;
+    }
+  }
+
+  .cancel_button {
+    @include button_common;
+    margin-top: 0.7rem;
+    border: 1px solid rgba(208, 213, 221, 1);
+    color: #344054;
   }
 }
 

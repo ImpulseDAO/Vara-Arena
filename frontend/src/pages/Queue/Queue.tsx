@@ -4,12 +4,7 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
-import {
-  useAccount,
-  useAlert,
-  useApi,
-  useReadWasmState,
-} from "@gear-js/react-hooks";
+import { useAlert, useApi } from "@gear-js/react-hooks";
 import { getProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 
@@ -19,7 +14,7 @@ import { logsStore } from "model/logs";
 import { isEmpty } from "lodash";
 import { UnsubscribePromise } from "@polkadot/api/types";
 import { battle } from "model/battleLogs";
-import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
 
 export type QueueProps = {};
 
@@ -59,7 +54,7 @@ const getRows = (
   return players.map((player) => ({
     id: (
       <div className="row_player">
-        <img src={AvatarIcon} />
+        <img src={AvatarIcon} alt="AvatarIcon" />
         <div>
           <p className="row_name">{player.name}</p>
         </div>
@@ -82,17 +77,18 @@ export const useWasmMetadata = (source: RequestInfo | URL) => {
         .then((buffer) => setData(buffer))
         .catch(({ message }: Error) => alert.error(`Fetch error: ${message}`));
     }
-  }, [source]);
+  }, [alert, source]);
 
   return { buffer: data };
 };
 
-export const Queue: FC<QueueProps> = ({}) => {
+export const Queue: FC<QueueProps> = () => {
   const [updateUsersReadyForBattle, setBattleLog] = useUnit([
     logsStore.updateUsersReadyForBattle,
     battle.setBattleLog,
   ]);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timer, setTimer] = useState(0);
   const navigate = useNavigate();
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
@@ -192,7 +188,11 @@ export const Queue: FC<QueueProps> = ({}) => {
       <div className="modal_queue">
         <div className="modal_loader">
           <p className="modal_tille">Tournament participants</p>
-          <img className={"modal_progress"} src={ProgressIcon} />
+          <img
+            className={"modal_progress"}
+            src={ProgressIcon}
+            alt="ProgressIcon"
+          />
           <p className="modal_info">Waiting players</p>
           <p className="modal_badge">{`${Math.floor(timer / 60)
             .toString()
@@ -203,6 +203,7 @@ export const Queue: FC<QueueProps> = ({}) => {
         <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />
         </div>
+        <PlayAndCancelButtons isPlayDisabled={players.length !== 2} />
       </div>
     </div>
   );

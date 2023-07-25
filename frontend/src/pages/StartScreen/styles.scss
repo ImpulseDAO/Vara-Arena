@@ -1,7 +1,7 @@
 .scr_start {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../assets/images/startScreen.png');
+  background-image: url("../../assets/images/startScreen.png");
   background-repeat: no-repeat;
   background-size: cover;
   padding-top: 130px;
@@ -12,7 +12,8 @@
 
   & > p {
     color: white;
-    font-size: 157px;
+    font-size: 160px;
+    font-family: "serpiente_display_triadisplay";
   }
 
   .button {

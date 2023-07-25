@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 
 const Container = styled.div`
   display: flex;
@@ -13,7 +13,7 @@ const Container = styled.div`
   border-bottom-right-radius: 12px;
 `;
 
-const Column = styled.div<{ position?: 'left' | 'right' | 'center' }>`
+const Column = styled.div<{ position?: "left" | "right" | "center" }>`
   display: flex;
   align-items: center;
   height: 16px;
@@ -26,7 +26,7 @@ const Column = styled.div<{ position?: 'left' | 'right' | 'center' }>`
 const ColumnText = styled.p<{ active: boolean; sortable: boolean }>`
   color: white;
   font-size: 12px;
-  font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
+  font-weight: ${({ active }) => (active ? "bold" : "normal")};
 `;
 
 // const ColumnIcon = styled.div<{ active: boolean; sortType: SortType }>`
@@ -71,11 +71,18 @@ const Row = styled.div`
   }
 `;
 
-const Cell = styled.div<{ position?: 'center' | 'left' | 'right' }>`
+const Cell = styled.div<{
+  position?: "center" | "left" | "right";
+  ableClick?: boolean;
+}>`
   display: flex;
   ${({ position }) => css`
     justify-content: ${position};
   `}
+
+  cursor: ${({ ableClick }) => {
+    return ableClick ? "pointer" : "default";
+  }};
 `;
 
 export const Styled = {

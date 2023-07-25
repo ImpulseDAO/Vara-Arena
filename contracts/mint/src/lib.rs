@@ -2,7 +2,9 @@
 
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
-use mint_io::{CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState};
+use mint_io::{
+    AttributeChoice, CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState,
+};
 
 type CharacterId = ActorId;
 
@@ -75,6 +77,15 @@ impl Mint {
 
         self.arena_contract = Some(arena_id);
     }
+
+    fn level_up(&mut self, owner_id: ActorId, attr: AttributeChoice) {
+        let character = self
+            .characters
+            .get_mut(&owner_id)
+            .expect("caller doesn't have a character");
+
+        character.attributes.level_up(attr);
+    }
 }
 
 #[no_mangle]
@@ -90,6 +101,8 @@ unsafe extern "C" fn init() {
 extern "C" fn handle() {
     let mint = unsafe { MINT.as_mut().unwrap() };
     let action: MintAction = msg::load().expect("unable to decode `MintAction`");
+    let caller = msg::source();
+
     match action {
         MintAction::CreateCharacter {
             code_id,
@@ -101,6 +114,7 @@ extern "C" fn handle() {
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
         MintAction::BattleResult { winner_id } => mint.increase_xp(winner_id),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
+        MintAction::LevelUp { attr } => mint.level_up(caller, attr),
     }
 }
 

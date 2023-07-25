@@ -14,10 +14,10 @@
 .header_nav {
   position: absolute;
   right: calc(50% - 195px);
-  width: 390px;
+  width: 500px;
   font-size: 18px;
   display: flex;
-  gap: 32px;
+  gap: 20px;
   justify-content: space-between;
   & > a {
     color: white;
@@ -29,7 +29,8 @@
 }
 
 .header_title {
-  font-size: 32px;
+  font-family: "serpiente_display_triadisplay";
+  font-size: 40px;
   font-weight: bold;
   color: white;
   cursor: pointer;

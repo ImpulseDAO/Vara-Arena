@@ -1,17 +1,18 @@
-import React, { FC, useState } from 'react';
-import { Styled } from './styles';
-import { TableColumnsType } from './types';
-import { SortType } from './constants';
-import { useSortRows } from './hook/useSortRows';
-import { useGetRowItems } from './hook/useGetRowItems';
-import { useClickSort } from './hook/useClickSort';
+import React, { FC, useState } from "react";
+import { Styled } from "./styles";
+import { TableColumnsType } from "./types";
+import { SortType } from "./constants";
+import { useSortRows } from "./hook/useSortRows";
+import { useGetRowItems } from "./hook/useGetRowItems";
+import { useClickSort } from "./hook/useClickSort";
 
 export type TableUIProps = {
   columns: TableColumnsType[];
   rows: object[];
+  cellClick?: (arg?: object) => void;
 };
 
-export const TableUI: FC<TableUIProps> = ({ columns, rows }) => {
+export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
   const [sortedColumn, setSortedColumn] = useState<{
     field: string | undefined;
     sortName?: boolean;
@@ -19,7 +20,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows }) => {
   }>({ field: undefined, sortType: SortType.default });
 
   const sortedRows = useSortRows({ rows, sortedColumn });
-  const RowItems = useGetRowItems({ columns, rows: sortedRows });
+  const RowItems = useGetRowItems({ columns, rows: sortedRows, cellClick });
   const onClickSort = useClickSort(setSortedColumn);
 
   return (

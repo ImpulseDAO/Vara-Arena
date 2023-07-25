@@ -5,9 +5,6 @@ import StepForward from "../../assets/svg/step_forward.svg";
 import Forward from "../../assets/svg/forward.svg";
 import Back from "../../assets/svg/back.svg";
 import { Button } from "components/Button";
-import { useUnit } from "effector-react";
-import { logsStore } from "model/logs";
-import { battle } from "model/battleLogs";
 import { textMap } from "./components/textMap";
 import { BattleUser } from "./components/BattleUser";
 
@@ -32,32 +29,20 @@ export type BattleLogs = {
 };
 
 export const Battle: FC<BattleProps> = () => {
-  const [
-    ,// usersOnBattle,
-    // battleLogs,
-    // logs, battleIds, battleFinishedIndex, playerWon
-  ] = useUnit([
-    logsStore.$usersOnBattle,
-    battle.$battleLogs,
-    // logsStore.$logs,
-    // logsStore.$battleIds,
-    // logsStore.$battleFinishedIndex,
-    // logsStore.$playerWon,
-  ]);
   const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue"));
   const battleLogs = JSON.parse(
     localStorage.getItem("battleLog")
   ) as BattleLogs;
-  // const gearAlert = useAlert();
-  // const user = useUnit(userStore.$user);
   const [curBattleIndex, setCurrentBattleIndex] = useState(0);
   const [curTurnIndex, setCurTurnIndex] = useState(0);
 
   console.log("battleLogs", battleLogs);
+
   console.log("usersOnBattle", usersOnBattle);
 
   const nextBattleLog = () => {
     const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
     setCurrentBattleIndex((prev) => {
       if (prev + 1 === count) {
         return 0;
@@ -68,6 +53,7 @@ export const Battle: FC<BattleProps> = () => {
 
   const prevBattleLog = () => {
     const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
     setCurrentBattleIndex((prev) => {
       if (prev === 0) {
         return count - 1;

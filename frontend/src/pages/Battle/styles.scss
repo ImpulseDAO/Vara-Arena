@@ -1,3 +1,11 @@
+@mixin transparent-background {
+  background: rgba(0, 0, 0, 0.7);
+}
+@mixin border-round($width: 1px) {
+  border-radius: 8px;
+  border: $width solid white;
+}
+
 .battle {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
@@ -8,7 +16,15 @@
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
+  padding-bottom: 2rem;
   // justify-content: center;
+
+  .battle_winner_info {
+    padding-block: 0.7rem;
+    padding-inline: 2rem;
+    @include transparent-background;
+    @include border-round(2px);
+  }
 
   .battle_users {
     display: flex;
@@ -16,11 +32,11 @@
   }
 
   .battle_data {
+    @include transparent-background;
+    @include border-round(2px);
     box-sizing: border-box;
     width: 210px;
-    background: rgba(0, 0, 0, 0.7);
     border-radius: 8px;
-    border: 2px solid white;
     position: relative;
     padding: 14px 24.5px 26px;
 
@@ -86,9 +102,9 @@
     position: relative;
     width: 375px;
     height: 442px;
-    background: rgba($color: #000000, $alpha: 0.7);
+    @include transparent-background;
     padding: 14px 24px 26px;
-    border: 1px solid white;
+    @include border-round;
     border-radius: 8px;
 
     .Wrapper {
@@ -200,14 +216,25 @@
   .battle_logs {
     width: 1298px;
     font-size: 18px;
-    border: 2px solid white;
+    @include border-round(2px);
     border-radius: 8px;
-    background: rgba($color: #000000, $alpha: 0.7);
+    @include transparent-background;
 
     .battle_logs_content {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      //
+      &,
+      & tr,
+      & td {
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-collapse: collapse;
+        cursor: default;
+        vertical-align: top;
+      }
+
+      td {
+        padding-inline: 0.6rem;
+        padding-block: 0.4rem;
+      }
     }
 
     .battle_area {
@@ -253,8 +280,6 @@
     }
 
     .battle_log {
-      display: flex;
-      gap: 8px;
       height: 30px;
 
       &.active {
@@ -263,13 +288,13 @@
 
       &:hover {
         box-sizing: border-box;
-        background: #2c67ff;
+        background: rgba(100, 100, 100, 0.5);
         border-bottom: 1px solid white;
       }
 
       .battle_player_name {
-        padding: 4px 8px;
-        background: #2c67ff;
+        min-width: 200px;
+        // background: #2c67ff;
       }
     }
 

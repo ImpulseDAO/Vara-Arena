@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { SortType } from '../constants';
+import { useEffect, useState } from "react";
+import { SortType } from "../constants";
 
 type UseSortRowsType = (props: {
   sortedColumn: {
@@ -20,8 +20,7 @@ export const useSortRows: UseSortRowsType = ({ sortedColumn, rows }) => {
     if (field) {
       if (sortedColumn.sortType === SortType.ascending) {
         cpRows.sort((a, b) => {
-          const name = sortName ? 'sortName' : field;
-          console.log('name', name, sortName, field);
+          const name = sortName ? "sortName" : field;
           const cpA = a[name].toUpperCase();
           const cpB = b[name].toUpperCase();
 
@@ -36,7 +35,7 @@ export const useSortRows: UseSortRowsType = ({ sortedColumn, rows }) => {
       }
       if (sortedColumn.sortType === SortType.descending) {
         cpRows.sort((a, b) => {
-          const name = sortName ? 'sortName' : field;
+          const name = sortName ? "sortName" : field;
           const cpA = a[name].toUpperCase();
           const cpB = b[name].toUpperCase();
 

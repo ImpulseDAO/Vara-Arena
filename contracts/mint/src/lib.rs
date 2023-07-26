@@ -32,6 +32,7 @@ impl Mint {
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 level: 0,
+                tier: 0,
                 experience: 0,
             },
         };
@@ -79,7 +80,7 @@ impl Mint {
     }
 
     fn level_up(&mut self, owner_id: ActorId, attr: AttributeChoice) {
-        let character = self
+        let character: &mut CharacterInfo = self
             .characters
             .get_mut(&owner_id)
             .expect("caller doesn't have a character");

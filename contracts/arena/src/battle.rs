@@ -36,37 +36,21 @@ impl Battle {
 
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
-        let mut round: u32 = 0;
 
         loop {
-            let player1 = {
-                if round % 2 == 0 {
-                    self.c1
-                } else {
-                    self.c2
-                }
-            };
-            let player2 = {
-                if round % 2 == 0 {
-                    &self.c2
-                } else {
-                    &self.c1
-                }
-            };
-
             let turn = YourTurn {
                 you: CharacterState {
-                    hp: player1.hp,
-                    position: player1.position,
-                    energy: player1.energy,
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                    energy: self.c1.energy,
                 },
                 enemy: CharacterState {
-                    hp: player2.hp,
-                    position: player2.position,
-                    energy: player2.energy,
+                    hp: self.c2.hp,
+                    position: self.c2.position,
+                    energy: self.c2.energy,
                 },
             };
-            let action: BattleAction = msg::send_for_reply_as(player1.id, turn, 0, 0)
+            let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0, 0)
                 .expect("unable to send message")
                 .await
                 .expect("unable to receive `BattleAction`");
@@ -74,143 +58,298 @@ impl Battle {
                 BattleAction::Attack { kind } => {
                     match kind {
                         AttackKind::Quick => {
-                            if let Some(_energy) = player1.energy.checked_sub(20) {
-                                player1.energy = _energy;
-                                let move_ = MOVE[usize::from(player1.attributes.agility)];
-                                player1.position =
-                                    min(player1.position + move_, player2.position - 1);
-                                if player1.position + 1 == player2.position {
+                            if let Some(_energy) = self.c1.energy.checked_sub(20) {
+                                self.c1.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                                self.c1.position =
+                                    min(self.c1.position + move_, self.c2.position - 1);
+                                if self.c1.position + 1 == self.c2.position {
                                     let success = rng.gen_ratio(75, 100);
                                     if success {
                                         let damage =
-                                            QUICK_DAMAGE[usize::from(player1.attributes.strength)];
-                                        player2.hp = player2.hp.saturating_sub(damage);
+                                            QUICK_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                        self.c2.hp = self.c2.hp.saturating_sub(damage);
                                         turns.push(TurnResult::Attack {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                             damage,
                                         });
                                     } else {
                                         turns.push(TurnResult::Miss {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                         });
                                     }
                                 } else {
                                     turns.push(TurnResult::Miss {
-                                        position: player1.position,
+                                        position: self.c1.position,
                                     });
                                 }
                             } else {
                                 turns.push(TurnResult::NotEnoughEnergy);
-                                debug!("player {:?} has not enough energy for quick attack. skipping the turn...", player1.id);
+                                debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c1.id);
                             }
                         }
                         AttackKind::Normal => {
-                            if let Some(_energy) = player1.energy.checked_sub(26) {
-                                player1.energy = _energy;
-                                let move_ = MOVE[usize::from(player1.attributes.agility)];
-                                player1.position =
-                                    min(player1.position + move_, player2.position - 1);
-                                if player1.position + 1 == player2.position {
+                            if let Some(_energy) = self.c1.energy.checked_sub(26) {
+                                self.c1.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                                self.c1.position =
+                                    min(self.c1.position + move_, self.c2.position - 1);
+                                if self.c1.position + 1 == self.c2.position {
                                     let success = rng.gen_ratio(33, 100);
                                     if success {
                                         let damage =
-                                            NORMAL_DAMAGE[usize::from(player1.attributes.strength)];
-                                        player2.hp = player2.hp.saturating_sub(damage);
+                                            NORMAL_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                        self.c2.hp = self.c2.hp.saturating_sub(damage);
                                         turns.push(TurnResult::Attack {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                             damage,
                                         });
                                     } else {
                                         turns.push(TurnResult::Miss {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                         });
                                     }
                                 } else {
                                     turns.push(TurnResult::Miss {
-                                        position: player1.position,
+                                        position: self.c1.position,
                                     });
                                 }
                             } else {
                                 turns.push(TurnResult::NotEnoughEnergy);
-                                debug!("player {:?} has not enough energy for normal attack. skipping the turn...", player1.id);
+                                debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c1.id);
                             }
                         }
                         AttackKind::Hard => {
-                            if let Some(_energy) = player1.energy.checked_sub(32) {
-                                player1.energy = _energy;
-                                let move_ = MOVE[usize::from(player1.attributes.agility)];
-                                player1.position =
-                                    min(player1.position + move_, player2.position - 1);
-                                if player1.position + 1 == player2.position {
+                            if let Some(_energy) = self.c1.energy.checked_sub(32) {
+                                self.c1.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                                self.c1.position =
+                                    min(self.c1.position + move_, self.c2.position - 1);
+                                if self.c1.position + 1 == self.c2.position {
                                     let success = rng.gen_ratio(17, 100);
                                     if success {
                                         let damage =
-                                            HARD_DAMAGE[usize::from(player1.attributes.strength)];
-                                        player2.hp = player2.hp.saturating_sub(damage);
+                                            HARD_DAMAGE[usize::from(self.c1.attributes.strength)];
+                                        self.c2.hp = self.c2.hp.saturating_sub(damage);
                                         turns.push(TurnResult::Attack {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                             damage,
                                         });
                                     } else {
                                         turns.push(TurnResult::Miss {
-                                            position: player1.position,
+                                            position: self.c1.position,
                                         });
                                     }
                                 } else {
                                     turns.push(TurnResult::Miss {
-                                        position: player1.position,
+                                        position: self.c1.position,
                                     });
                                 }
                             } else {
                                 turns.push(TurnResult::NotEnoughEnergy);
-                                debug!("player {:?} has not enough energy for hard attack. skipping the turn...", player1.id);
+                                debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c1.id);
                             }
                         }
                     }
-                    if player2.hp == 0 {
-                        debug!("{:?} is a winner", player1.id);
+                    if self.c2.hp == 0 {
+                        debug!("{:?} is a winner", self.c1.id);
                         return BattleLog {
-                            c1: player1.id,
-                            c2: player2.id,
-                            winner: player1.id,
+                            c1: self.c1.id,
+                            c2: self.c2.id,
+                            winner: self.c1.id,
                             turns,
                         };
                     }
                 }
                 BattleAction::MoveLeft => {
-                    if let Some(_energy) = player1.energy.checked_sub(3) {
-                        player1.energy = _energy;
-                        let move_ = MOVE[usize::from(player1.attributes.agility)];
-                        player1.position = max(player1.position - move_, MIN_POS);
+                    if let Some(_energy) = self.c1.energy.checked_sub(3) {
+                        self.c1.energy = _energy;
+                        let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                        self.c1.position = max(self.c1.position - move_, MIN_POS);
                         turns.push(TurnResult::Move {
-                            position: player1.position,
+                            position: self.c1.position,
                         });
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::MoveRight => {
-                    if let Some(_energy) = player1.energy.checked_sub(3) {
-                        player1.energy = _energy;
-                        let move_ = MOVE[usize::from(player1.attributes.agility)];
-                        player1.position = min(player1.position + move_, player2.position - 1);
+                    if let Some(_energy) = self.c1.energy.checked_sub(3) {
+                        self.c1.energy = _energy;
+                        let move_ = MOVE[usize::from(self.c1.attributes.agility)];
+                        self.c1.position = min(self.c1.position + move_, self.c2.position - 1);
                         turns.push(TurnResult::Move {
-                            position: player1.position,
+                            position: self.c1.position,
                         });
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
                 }
                 BattleAction::Rest => {
-                    let full_energy = ENERGY[usize::from(player1.attributes.stamina)];
-                    player1.energy = min(player1.energy + 10, full_energy);
+                    let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
+                    self.c1.energy = min(self.c1.energy + 10, full_energy);
                     turns.push(TurnResult::Rest {
-                        energy: player1.energy,
+                        energy: self.c1.energy,
                     });
                 }
             }
 
-            round = round + 1;
+            let turn = YourTurn {
+                you: CharacterState {
+                    hp: self.c2.hp,
+                    position: self.c2.position,
+                    energy: self.c2.energy,
+                },
+                enemy: CharacterState {
+                    hp: self.c1.hp,
+                    position: self.c1.position,
+                    energy: self.c1.energy,
+                },
+            };
+            let action = msg::send_for_reply_as(self.c2.id, turn, 0, 0)
+                .expect("unable to send message")
+                .await
+                .expect("unable to receive `BattleAction`");
+            match action {
+                BattleAction::Attack { kind } => {
+                    match kind {
+                        AttackKind::Quick => {
+                            if let Some(_energy) = self.c2.energy.checked_sub(20) {
+                                self.c2.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                                self.c2.position =
+                                    max(self.c2.position - move_, self.c1.position + 1);
+                                if self.c2.position - 1 == self.c1.position {
+                                    let success = rng.gen_ratio(75, 100);
+                                    if success {
+                                        let damage =
+                                            QUICK_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                        self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
+                                    } else {
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
+                                    }
+                                } else {
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
+                                }
+                            } else {
+                                turns.push(TurnResult::NotEnoughEnergy);
+                                debug!("player {:?} has not enough energy for quick attack. skipping the turn...", self.c2.id);
+                            }
+                        }
+                        AttackKind::Normal => {
+                            if let Some(_energy) = self.c2.energy.checked_sub(26) {
+                                self.c2.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                                self.c2.position =
+                                    max(self.c2.position - move_, self.c1.position + 1);
+                                if self.c2.position - 1 == self.c1.position {
+                                    let success = rng.gen_ratio(33, 100);
+                                    if success {
+                                        let damage =
+                                            NORMAL_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                        self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
+                                    } else {
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
+                                    }
+                                } else {
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
+                                }
+                            } else {
+                                turns.push(TurnResult::NotEnoughEnergy);
+                                debug!("player {:?} has not enough energy for normal attack. skipping the turn...", self.c2.id);
+                            }
+                        }
+                        AttackKind::Hard => {
+                            if let Some(_energy) = self.c2.energy.checked_sub(32) {
+                                self.c2.energy = _energy;
+                                let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                                self.c2.position =
+                                    max(self.c2.position - move_, self.c1.position + 1);
+                                if self.c2.position - 1 == self.c1.position {
+                                    let success = rng.gen_ratio(17, 100);
+                                    if success {
+                                        let damage =
+                                            HARD_DAMAGE[usize::from(self.c2.attributes.strength)];
+                                        self.c1.hp = self.c1.hp.saturating_sub(damage);
+                                        turns.push(TurnResult::Attack {
+                                            position: self.c2.position,
+                                            damage,
+                                        });
+                                    } else {
+                                        turns.push(TurnResult::Miss {
+                                            position: self.c2.position,
+                                        });
+                                    }
+                                } else {
+                                    turns.push(TurnResult::Miss {
+                                        position: self.c2.position,
+                                    });
+                                }
+                            } else {
+                                turns.push(TurnResult::NotEnoughEnergy);
+                                debug!("player {:?} has not enough energy for hard attack. skipping the turn...", self.c2.id);
+                            }
+                        }
+                    }
+                    if self.c1.hp == 0 {
+                        debug!("{:?} is a winner", self.c2.id);
+                        return BattleLog {
+                            c1: self.c1.id,
+                            c2: self.c2.id,
+                            winner: self.c2.id,
+                            turns,
+                        };
+                    }
+                }
+                BattleAction::MoveLeft => {
+                    if let Some(_energy) = self.c2.energy.checked_sub(3) {
+                        self.c2.energy = _energy;
+                        let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                        self.c2.position = max(self.c2.position - move_, self.c1.position + 1);
+                        turns.push(TurnResult::Move {
+                            position: self.c2.position,
+                        });
+                    } else {
+                        turns.push(TurnResult::NotEnoughEnergy);
+                    }
+                }
+                BattleAction::MoveRight => {
+                    if let Some(_energy) = self.c2.energy.checked_sub(3) {
+                        self.c2.energy = _energy;
+                        let move_ = MOVE[usize::from(self.c2.attributes.agility)];
+                        self.c2.position = min(self.c2.position + move_, MAX_POS);
+                        turns.push(TurnResult::Move {
+                            position: self.c2.position,
+                        });
+                    } else {
+                        turns.push(TurnResult::NotEnoughEnergy);
+                    }
+                }
+                BattleAction::Rest => {
+                    let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
+                    self.c2.energy = min(self.c2.energy + 10, full_energy);
+
+                    turns.push(TurnResult::Rest {
+                        energy: self.c2.energy,
+                    });
+                }
+            }
         }
     }
 }

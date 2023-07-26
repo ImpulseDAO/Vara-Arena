@@ -1,6 +1,6 @@
 #![no_std]
 
-use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent};
+use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent, SetTier};
 use battle::{Battle, ENERGY};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
@@ -9,11 +9,12 @@ mod battle;
 
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
-const GAS_FOR_BATTLE: u64 = 200_000_000_000;
+const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const NUMBER_OF_PLAYERS: usize = 4;
 
 #[derive(Default)]
 struct Arena {
+    current_tier: SetTier,
     characters: Vec<Character>,
     mint: ActorId,
     battles: Vec<Battle>,
@@ -107,7 +108,6 @@ impl Arena {
         if self.characters.len() == NUMBER_OF_PLAYERS {
             panic!("max number of players is already registered");
         }
-
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
@@ -123,9 +123,27 @@ impl Arena {
             position: 0,
             attributes: character_info.attributes,
         };
-
-        debug!("character {:?} registered on the arena", character.id);
-        self.characters.push(character);
+        // Identify character tier based on level
+        let character_tier = match character.attributes.level {
+            0 => SetTier::Tier5,
+            1 => SetTier::Tier4,
+            2..=4 => SetTier::Tier3,
+            5..=8 => SetTier::Tier2,
+            _ => SetTier::Tier1,
+        };
+        // TO DO set current tournament tier based on the first registered character's level
+        // Initialize current_tier based on the level of the first registered character
+        if let SetTier::Tier0 = self.current_tier {
+            self.current_tier = match character.attributes.level {
+                0 => SetTier::Tier5,
+                1 => SetTier::Tier4,
+                2..=4 => SetTier::Tier3,
+                5..=8 => SetTier::Tier2,
+                _ => SetTier::Tier1,
+            }
+        } else if character_tier = self.current_tier {
+            self.characters.push(character);
+        };
 
         msg::reply(
             GameEvent::RegisteredPlayers(

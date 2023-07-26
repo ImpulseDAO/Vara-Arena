@@ -40,6 +40,17 @@ pub enum GameEvent {
     GasReserved,
 }
 
+#[derive(Encode, Decode, Debug, Default)]
+pub enum SetTier {
+    #[default]
+    Tier0,
+    Tier5,
+    Tier4,
+    Tier3,
+    Tier2,
+    Tier1,
+}
+
 #[derive(Encode, Decode, Debug)]
 pub enum AttackKind {
     Quick,

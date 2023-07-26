@@ -1,10 +1,6 @@
-import React, {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  FC,
-} from 'react';
-import './styles.scss';
-import {Button} from "../Button";
+import React, { ButtonHTMLAttributes, DetailedHTMLProps, FC } from "react";
+import "./styles.scss";
+import { Button } from "../Button";
 
 export type ButtonGroupProps = {
   disabled?: boolean;
@@ -23,20 +19,26 @@ export type ButtonGroupProps = {
 };
 
 export const ButtonGroup: FC<ButtonGroupProps> = ({
-                                                    firstButton,
-                                                    secondButton,
-                                                    thirdButton,
-                                                    leftText,
-                                                    onClickFirstButton,
-                                                    onClickSecondButton,
-                                                    onClickThirdButton,
+  firstButton,
+  secondButton,
+  thirdButton,
+  leftText,
+  onClickFirstButton,
+  onClickSecondButton,
+  onClickThirdButton,
 }) => {
   return (
-      <div className={'pointButtonWrapper'}>
-        <div className={'buttonText'}>{leftText}</div>
-            <Button className={'pointButton'} onClick={onClickFirstButton}>{firstButton}</Button>
-            <Button className={'pointButton'} onClick={onClickSecondButton}>{secondButton}</Button>
-            <Button className={'pointButton'} onClick={onClickThirdButton}>{thirdButton}</Button>
-      </div>
+    <div className={"pointButtonWrapper"}>
+      <div className={"buttonText"}>{leftText}</div>
+      <Button className={"pointButton"} onClick={onClickFirstButton}>
+        {firstButton}
+      </Button>
+      <Button className={"pointButton"} onClick={onClickSecondButton}>
+        {secondButton}
+      </Button>
+      <Button className={"pointButton"} onClick={onClickThirdButton}>
+        {thirdButton}
+      </Button>
+    </div>
   );
 };

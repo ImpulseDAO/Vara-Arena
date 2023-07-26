@@ -4,7 +4,12 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
-import { useAlert, useApi } from "@gear-js/react-hooks";
+import {
+  useAccount,
+  useAlert,
+  useApi,
+  useReadWasmState,
+} from "@gear-js/react-hooks";
 import { getProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 
@@ -15,6 +20,7 @@ import { isEmpty } from "lodash";
 import { UnsubscribePromise } from "@polkadot/api/types";
 import { battle } from "model/battleLogs";
 import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
+import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 
 export type QueueProps = {};
 
@@ -87,6 +93,7 @@ export const Queue: FC<QueueProps> = () => {
     logsStore.updateUsersReadyForBattle,
     battle.setBattleLog,
   ]);
+  const { account } = useAccount();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timer, setTimer] = useState(0);
@@ -100,10 +107,39 @@ export const Queue: FC<QueueProps> = () => {
     return getRows(Object.values(players));
   }, [players]);
 
+  const { buffer } = useWasmMetadata(arenaMetaWasm);
+
+  const registered = useReadWasmState<
+    Array<{
+      attributes: {
+        strength: string;
+        agility: string;
+        vitality: string;
+        stamina: string;
+      };
+      energy: string;
+      hp: string;
+      id: string;
+      name: string;
+      owner: string;
+      position: string;
+    }>
+  >(ARENA_ID, buffer, "registered", account?.decodedAddress).state;
+
   useEffect(() => {
-    // reset();
-    // resetBattleIds();
-  }, []);
+    if (registered && !isEmpty(registered)) {
+      // const queue = JSON.parse(localStorage.getItem("usersOnQueue")) ?? {};
+      const usersOnQueue = registered.reduce((acc, cur) => {
+        return {
+          ...acc,
+          [`${cur.id}`]: cur,
+        };
+      }, {});
+      localStorage.setItem("usersOnQueue", JSON.stringify(usersOnQueue));
+      localStorage.setItem("players", JSON.stringify(registered));
+      updateUsersReadyForBattle(usersOnQueue);
+    }
+  }, [registered, updateUsersReadyForBattle]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -143,41 +179,7 @@ export const Queue: FC<QueueProps> = () => {
                 "allBattleLog",
                 JSON.stringify(allBattleLog.concat(result?.arenaLog ?? []))
               );
-
               navigate("/battle");
-            }
-
-            if (
-              !isEmpty(
-                //@ts-ignore
-                result.registeredPlayers
-              )
-            ) {
-              console.log(
-                "result?.registeredPlayers",
-                //@ts-ignore
-                result?.registeredPlayers
-              );
-
-              const usersOnQueue = [
-                //@ts-ignore
-                ...(result?.registeredPlayers || []),
-              ].reduce((acc, cur) => {
-                return {
-                  ...acc,
-                  [`${cur.id}`]: cur,
-                };
-              }, {});
-              localStorage.setItem(
-                "usersOnQueue",
-                JSON.stringify(usersOnQueue)
-              );
-              localStorage.setItem(
-                "players",
-                //@ts-ignore
-                JSON.stringify(result?.registeredPlayers)
-              );
-              updateUsersReadyForBattle(usersOnQueue);
             }
           }
         }

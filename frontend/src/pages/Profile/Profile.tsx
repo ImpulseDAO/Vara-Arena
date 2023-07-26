@@ -13,6 +13,9 @@ import { useWasmMetadata } from "pages/Queue";
 import { MINT_ID } from "pages/MintCharacter/constants";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
+import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
+import { ButtonGroup } from "components/ButtonGroup";
+import { useStats } from "./hooks/useStats";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -35,8 +38,6 @@ const ProfileResultBattleColumns: TableColumnsType[] = [
   },
 ];
 
-// 142
-
 export const Profile: FC = () => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const { id } = useParams<{ id: string }>();
@@ -49,9 +50,14 @@ export const Profile: FC = () => {
       agility: string;
       vitality: string;
       stamina: string;
+      experience: string;
+      level: string;
     };
     name: string;
   }>(MINT_ID, buffer, "character_info", id);
+
+  const { decrease, increase, stats, exp } = useStats(charInfo?.state);
+  console.log("exp", exp);
 
   const rows = useMemo(() => {
     const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));
@@ -123,6 +129,7 @@ export const Profile: FC = () => {
             <div className="profile_name">
               <p>{charInfo.state?.name}</p>
               {/* <p>@gladiator1299</p> */}
+              <ExperienceBar curXp="200" maxXp="300" />
               <p>
                 <span>Level</span>
                 <span>0</span>
@@ -134,22 +141,47 @@ export const Profile: FC = () => {
             <span>50</span>
           </div> */}
           <div className="profile_stats">
-            <p>
-              <span>Strength</span>
-              <span>{charInfo.state?.attributes.strength}</span>
-            </p>
-            <p>
-              <span>Agility</span>
-              <span>{charInfo.state?.attributes.agility}</span>
-            </p>
-            <p>
-              <span>Vitality</span>
-              <span>{charInfo.state?.attributes.vitality}</span>
-            </p>
-            <p>
-              <span>Stamina</span>
-              <span>{charInfo.state?.attributes.stamina}</span>
-            </p>
+            <div>
+              <span>Available points</span>
+              <span>{0}</span>
+            </div>
+
+            <ButtonGroup
+              leftText={"Strength"}
+              firstButton={"-"}
+              secondButton={stats.strength}
+              thirdButton={"+"}
+              onClickSecondButton={() => {}}
+              onClickFirstButton={() => decrease("strength")}
+              onClickThirdButton={() => increase("strength")}
+            />
+            <ButtonGroup
+              leftText={"Agility"}
+              firstButton={"-"}
+              secondButton={stats.agility}
+              thirdButton={"+"}
+              onClickSecondButton={() => {}}
+              onClickFirstButton={() => decrease("agility")}
+              onClickThirdButton={() => increase("agility")}
+            />
+            <ButtonGroup
+              leftText={"Vitality"}
+              firstButton={"-"}
+              secondButton={stats.vitality}
+              thirdButton={"+"}
+              onClickSecondButton={() => {}}
+              onClickFirstButton={() => decrease("vitality")}
+              onClickThirdButton={() => increase("vitality")}
+            />
+            <ButtonGroup
+              leftText={"Stamina"}
+              firstButton={"-"}
+              secondButton={stats.stamina}
+              thirdButton={"+"}
+              onClickSecondButton={() => {}}
+              onClickFirstButton={() => decrease("stamina")}
+              onClickThirdButton={() => increase("stamina")}
+            />
           </div>
         </div>
         <div className="profile_equip">

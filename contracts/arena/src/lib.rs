@@ -9,7 +9,7 @@ mod battle;
 
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;
-const GAS_FOR_BATTLE: u64 = 200_000_000_000;
+const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const NUMBER_OF_PLAYERS: usize = 4;
 
 #[derive(Default)]

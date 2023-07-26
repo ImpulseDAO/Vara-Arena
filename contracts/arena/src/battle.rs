@@ -37,18 +37,19 @@ impl Battle {
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
 
-        let mut round: u8 = 0;
+        let mut move1: u8 = 0; // number of moves: player 1
+        let mut move2: u8 = 0; // number of moves: player 2
 
         loop {
             let c1_movable = {
-                if round < self.c1.attributes.stamina {
+                if move1 < self.c1.attributes.stamina {
                     true
                 } else {
                     false
                 }
             };
             let c2_movable = {
-                if round < self.c2.attributes.stamina {
+                if move2 < self.c2.attributes.stamina {
                     true
                 } else {
                     false
@@ -210,6 +211,7 @@ impl Battle {
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
+                    move1 = move1 + 1;
                 }
                 BattleAction::MoveRight => {
                     if let Some(_energy) = self.c1.energy.checked_sub(3) {
@@ -222,6 +224,7 @@ impl Battle {
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
+                    move1 = move1 + 1;
                 }
                 BattleAction::Rest => {
                     let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
@@ -366,6 +369,7 @@ impl Battle {
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
+                    move2 = move2 + 1;
                 }
                 BattleAction::MoveRight => {
                     if let Some(_energy) = self.c2.energy.checked_sub(3) {
@@ -378,6 +382,7 @@ impl Battle {
                     } else {
                         turns.push(TurnResult::NotEnoughEnergy);
                     }
+                    move2 = move2 + 1;
                 }
                 BattleAction::Rest => {
                     let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
@@ -388,8 +393,6 @@ impl Battle {
                     });
                 }
             }
-
-            round = round + 1;
         }
     }
 }

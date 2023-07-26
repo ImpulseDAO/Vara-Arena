@@ -7,6 +7,7 @@ use gstd::{prelude::*, ActorId, CodeId, TypeInfo};
 const MAX_LEVEL: usize = 9;
 const MAX_STRENGTH: usize = 9;
 const MAX_AGILITY: usize = 9;
+const MAX_VITALITY: usize = 9;
 const MAX_STAMINA: usize = 9;
 
 const XP_GAIN: [u32; MAX_LEVEL + 1] = [
@@ -38,6 +39,7 @@ pub struct CharacterAttributes {
 pub enum AttributeChoice {
     Strength,
     Agility,
+    Vitality,
     Stamina,
 }
 
@@ -60,11 +62,15 @@ impl CharacterAttributes {
                 self.strength = self.strength + 1;
             }
             AttributeChoice::Agility => {
-                assert!(self.level != MAX_AGILITY as u8, "max level");
+                assert!(self.agility != MAX_AGILITY as u8, "max level");
                 self.agility = self.agility + 1;
             }
+            AttributeChoice::Vitality => {
+                assert!(self.vitality != MAX_VITALITY as u8, "max level");
+                self.vitality = self.vitality + 1;
+            }
             AttributeChoice::Stamina => {
-                assert!(self.level != MAX_STAMINA as u8, "max level");
+                assert!(self.stamina != MAX_STAMINA as u8, "max level");
                 self.stamina = self.stamina + 1;
             }
         }

@@ -1,284 +1,221 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import "./styles.scss";
-import { StatBar } from "components/StatBar";
-import LockSvg from "../../assets/svg/lock.svg";
-import CharSvg from "../../assets/svg/char.svg";
 import StepBack from "../../assets/svg/step_back.svg";
 import StepForward from "../../assets/svg/step_forward.svg";
 import Forward from "../../assets/svg/forward.svg";
 import Back from "../../assets/svg/back.svg";
 import { Button } from "components/Button";
-import { useUnit } from "effector-react";
-import { logsStore } from "model/logs";
-import { userStore } from "model/user";
-import { isEmpty } from "lodash";
-import { useAlert } from "@gear-js/react-hooks";
+import { textMap } from "./components/textMap";
+import { BattleUser } from "./components/BattleUser";
 
 export type BattleProps = {};
+
+type TurnTypes = "move" | "attack" | "miss" | "rest";
+type TurnGeneric<K extends TurnTypes, T> = { [key in K]: T };
+type Turn =
+  | TurnGeneric<"move", { position: number }>
+  | TurnGeneric<"attack", { damage: number; position: number }>
+  | TurnGeneric<"miss", { position: number }>
+  | TurnGeneric<"rest", { position: number }>;
+
+export type BattleLogs = {
+  logs: Array<{
+    c1: string;
+    c2: string;
+    turns: Turn[];
+    winner: string;
+  }>;
+  winner: string;
+};
+
 export const Battle: FC<BattleProps> = () => {
-  const [usersOnBattle, logs, battleIds, battleFinishedIndex, playerWon] =
-    useUnit([
-      logsStore.$usersOnBattle,
-      logsStore.$logs,
-      logsStore.$battleIds,
-      logsStore.$battleFinishedIndex,
-      logsStore.$playerWon,
-    ]);
-  const gearAlert = useAlert();
-  const user = useUnit(userStore.$user);
-  const [curBattle, setCurrentBattle] = useState(0);
-  const [ownerBattleIds, setOwnerBattleIds] = useState<string[][]>([]);
-  const [curLog, setCurLog] = useState(0);
-  const [pos, setPos] = useState({ pos1: 0, pos2: 20 });
-  const [hp, setHp] = useState({ hp1: "50", hp2: "50", pos: 0 });
+  const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue"));
+  const battleLogs = JSON.parse(
+    localStorage.getItem("battleLog")
+  ) as BattleLogs;
+  const [curBattleIndex, setCurrentBattleIndex] = useState(0);
+  const [curTurnIndex, setCurTurnIndex] = useState(0);
 
-  useEffect(() => {
-    if (playerWon) {
-      alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
-      gearAlert.success(
-        `Победил пользователь ${usersOnBattle[playerWon].name}`
-      );
-    }
-  }, [playerWon, usersOnBattle]);
+  console.log("battleLogs", battleLogs);
 
-  const [user1, user2] = useMemo(() => {
-    if (isEmpty(ownerBattleIds)) {
-      return [undefined, undefined];
-    }
-    return [
-      usersOnBattle[ownerBattleIds[curBattle][0]],
-      usersOnBattle[ownerBattleIds[curBattle][1]],
-    ];
-  }, [curBattle, ownerBattleIds, usersOnBattle]);
+  console.log("usersOnBattle", usersOnBattle);
 
-  useEffect(() => {
-    if (user1 && user2) {
-      // stats.vitality * 30 + 10
-      setHp({
-        hp1: (Number(user1.attributes.vitality) * 30 + 10).toString(),
-        hp2: (Number(user2.attributes.vitality) * 30 + 10).toString(),
-        pos: 0,
-      });
-    }
-  }, [user1, user2]);
-
-  useEffect(() => {
-    setOwnerBattleIds(battleIds.filter((ids) => ids.includes(user.id)));
-  }, [battleIds, setOwnerBattleIds, user]);
-
-  const handleOnNextBattle = () => {
-    setCurrentBattle((prev) => {
-      if (prev + 1 === ownerBattleIds.length) {
+  const nextBattleLog = () => {
+    const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
+    setCurrentBattleIndex((prev) => {
+      if (prev + 1 === count) {
         return 0;
       }
       return prev + 1;
     });
   };
 
-  const handleOnPrevBattle = () => {
-    setCurrentBattle((prev) => {
+  const prevBattleLog = () => {
+    const count = battleLogs.logs.length;
+    setCurTurnIndex(0);
+    setCurrentBattleIndex((prev) => {
       if (prev === 0) {
-        return ownerBattleIds.length - 1;
+        return count - 1;
       }
       return prev - 1;
     });
   };
 
-  const handleOnNextLog = () => {
-    setCurLog((prev) => {
-      if (
-        prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
-        +battleFinishedIndex[curBattle].index
-      ) {
-        return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
-      }
-      return prev + 1 + +(battleFinishedIndex[curBattle - 1]?.index ?? "0");
-    });
-  };
+  const currentBattleLog = useMemo(() => {
+    const curBattle = battleLogs.logs[curBattleIndex];
+    let plPos1 = 0,
+      plPos2 =
+        "move" in curBattle.turns[1] ? curBattle.turns[1].move.position : 0;
+    let pl1SumAttacked = 0,
+      pl2SumAttacked = 0;
 
-  const handleOnPrevLog = () => {
-    setCurLog((prev) => {
-      if (prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") === 0) {
+    const turns = curBattle.turns.map((turn, i) => {
+      const action = Object.keys(turn)[0] as TurnTypes;
+      const id = i % 2 === 0 ? curBattle.c1 : curBattle.c2;
+
+      if ("move" in turn) {
+        const { position } = turn.move;
+        if (i % 2 === 0) {
+          plPos1 = position;
+        } else {
+          plPos2 = position;
+        }
+      }
+
+      if ("attack" in turn) {
+        const { damage } = turn.attack;
+
+        if (i % 2 === 0) {
+          pl1SumAttacked += damage;
+        } else {
+          pl2SumAttacked += damage;
+        }
+      }
+
+      return {
+        action,
+        pl1SumAttacked,
+        pl2SumAttacked,
+        pl2Pos:
+          action === "move" && i % 2 !== 0
+            ? Object.values(turn)[0].position
+            : plPos2,
+        pl1Pos:
+          action === "move" && i % 2 === 0
+            ? Object.values(turn)[0].position
+            : plPos1,
+        isPl1Turn: i % 2 === 0,
+        isAttack: action === "attack",
+        isMiss: action === "miss",
+        isMove: action === "move",
+        isRest: action === "rest",
+        value: Object.values(turn)[0],
+        id,
+      };
+    });
+
+    return {
+      plId1: curBattle.c1,
+      plId2: curBattle.c2,
+      battleWinner: curBattle.winner,
+      turns,
+    };
+  }, [battleLogs, curBattleIndex]);
+
+  console.log("currentBattleLog", currentBattleLog);
+
+  // useEffect(() => {
+  //   if (playerWon) {
+  //     alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
+  //     gearAlert.success(
+  //       `Победил пользователь ${usersOnBattle[playerWon].name}`
+  //     );
+  //   }
+  // }, [playerWon, usersOnBattle]);
+
+  const [user1, user2] = useMemo(() => {
+    const curBattle = battleLogs.logs[curBattleIndex];
+    if (usersOnBattle && curBattle) {
+      return [usersOnBattle[curBattle.c1], usersOnBattle[curBattle.c2]];
+    }
+  }, [battleLogs.logs, curBattleIndex, usersOnBattle]);
+
+  const nextBattleTurn = () => {
+    setCurTurnIndex((prev) => {
+      if (prev + 1 === currentBattleLog.turns.length) {
         return prev;
       }
-      return prev + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") - 1;
+      return prev + 1;
     });
   };
 
-  useEffect(() => {
-    const log = logs[curLog];
-    const action = Object.keys(JSON.parse(log?.text))[0];
-    const value = JSON.parse(log?.text)[action];
-    if (action === "move") {
-      if (user1?.id === log?.id) {
-        setPos((prev) => ({
-          ...prev,
-          pos1: value.position,
-        }));
-      } else if (user2?.id === log?.id) {
-        setPos((prev) => ({
-          ...prev,
-          pos2: value.position,
-        }));
+  const prevBattleTurn = () => {
+    setCurTurnIndex((prev) => {
+      if (prev === 0) {
+        return prev;
       }
-    }
+      return prev - 1;
+    });
+  };
 
-    if (action === "attack") {
-      if (user1?.id === log?.id) {
-        setHp((prev) => {
-          return {
-            ...prev,
-            hp2: (
-              +prev.hp2 -
-              +value.damage * (curLog < prev.pos ? -1 : 1)
-            ).toString(),
-            pos: curLog,
-          };
-        });
-      } else if (user2?.id === log?.id) {
-        setHp((prev) => {
-          return {
-            ...prev,
-            hp1: (
-              +prev.hp1 -
-              +value.damage * (curLog < prev.pos ? -1 : 1)
-            ).toString(),
-            pos: curLog,
-          };
-        });
-      }
-    }
-  }, [curLog, logs, user1, user2]);
+  const pl1Health =
+    usersOnBattle[currentBattleLog.plId1].attributes.vitality * 30 +
+      10 -
+      currentBattleLog.turns[curTurnIndex].pl2SumAttacked >
+    0
+      ? usersOnBattle[currentBattleLog.plId1].attributes.vitality * 30 +
+        10 -
+        currentBattleLog.turns[curTurnIndex].pl2SumAttacked
+      : 0;
+
+  const pl2Health =
+    usersOnBattle[currentBattleLog.plId2].attributes.vitality * 30 +
+      10 -
+      currentBattleLog.turns[curTurnIndex].pl1SumAttacked >
+    0
+      ? usersOnBattle[currentBattleLog.plId2].attributes.vitality * 30 +
+        10 -
+        currentBattleLog.turns[curTurnIndex].pl1SumAttacked
+      : 0;
 
   return (
     <div className="battle">
+      <h2 className="battle_winner_info">
+        {currentBattleLog.battleWinner === currentBattleLog.plId1
+          ? user1?.name
+          : user2?.name}{" "}
+        won
+      </h2>
+
       <div className="battle_users">
-        <div className="battle_user1">
-          <div className="battle_data">
-            <div className="battle_user">
-              <div className="battle_name">
-                <p>{user1?.name}</p>
-                <p>
-                  <span>Level</span>
-                  <span>1</span>
-                </p>
-              </div>
-            </div>
-            <div className="battle_armour">
-              <span>Armour</span>
-              <span>0</span>
-            </div>
-            <div className="battle_stats">
-              <p>
-                <span>Strength</span>
-                <span>{user1?.attributes.strength}</span>
-              </p>
-
-              <p>
-                <span>Agility</span>
-                <span>{user1?.attributes.agility}</span>
-              </p>
-              <p>
-                <span>Vitality</span>
-                <span>{user1?.attributes.vitality}</span>
-              </p>
-              <p>
-                <span>Stamina</span>
-                <span>{user1?.attributes.stamina}</span>
-              </p>
-            </div>
-          </div>
-          <div className="battle_equip">
-            <StatBar health={hp.hp1} />
-            <div className={"img_wrapper"}>
-              <img className={"lock_img1"} src={LockSvg} />
-              <img className={"lock_img2"} src={LockSvg} />
-              <img className={"lock_img3"} src={LockSvg} />
-              <img className={"lock_img4"} src={LockSvg} />
-              <img className={"lock_img5"} src={LockSvg} />
-              <img className={"char_svg"} src={CharSvg} />
-              <img className={"lock_img6"} src={LockSvg} />
-              <img className={"lock_img7"} src={LockSvg} />
-              <img className={"lock_img8"} src={LockSvg} />
-              <img className={"lock_img9"} src={LockSvg} />
-            </div>
-          </div>
-        </div>
-        <div className="battle_user2">
-          <div className="battle_data">
-            <div className="battle_user">
-              <div className="battle_name">
-                <p>{user2?.name}</p>
-                <p>
-                  <span>Level</span>
-                  <span>1</span>
-                </p>
-              </div>
-            </div>
-            <div className="battle_armour">
-              <span>Armour</span>
-              <span>0</span>
-            </div>
-            <div className="battle_stats">
-              <p>
-                <span>Strength</span>
-                <span>{user2?.attributes.strength}</span>
-              </p>
-
-              <p>
-                <span>Agility</span>
-                <span>{user2?.attributes.agility}</span>
-              </p>
-              <p>
-                <span>Vitality</span>
-                <span>{user2?.attributes.vitality}</span>
-              </p>
-              <p>
-                <span>Stamina</span>
-                <span>{user2?.attributes.stamina}</span>
-              </p>
-            </div>
-          </div>
-          <div className="battle_equip">
-            <StatBar health={hp.hp2} />
-            <div className={"img_wrapper"}>
-              <img className={"lock_img1"} src={LockSvg} />
-              <img className={"lock_img2"} src={LockSvg} />
-              <img className={"lock_img3"} src={LockSvg} />
-              <img className={"lock_img4"} src={LockSvg} />
-              <img className={"lock_img5"} src={LockSvg} />
-              <img className={"char_svg"} src={CharSvg} />
-              <img className={"lock_img6"} src={LockSvg} />
-              <img className={"lock_img7"} src={LockSvg} />
-              <img className={"lock_img8"} src={LockSvg} />
-              <img className={"lock_img9"} src={LockSvg} />
-            </div>
-          </div>
-        </div>
+        <BattleUser user={user1} userIndex={1} health={pl1Health} />
+        <BattleUser user={user2} userIndex={2} health={pl2Health} />
       </div>
       <div className="battle_actions">
-        <Button className={"battle_button prev"} onClick={handleOnPrevBattle}>
-          <img src={Back} /> Previous battle
-        </Button>
         <Button
-          className={"battle_button step_left"}
-          disabled
-          onClick={handleOnPrevLog}
+          disabled={battleLogs.logs.length <= 1}
+          className={"battle_button prev"}
+          onClick={prevBattleLog}
         >
-          <img src={StepBack} />
+          <img src={Back} alt=" Previous battle" /> Previous battle
         </Button>
-        <Button className={"battle_button play"} disabled onClick={() => {}}>
+        <Button className={"battle_button step_left"} onClick={prevBattleTurn}>
+          <img src={StepBack} alt="Step back" />
+        </Button>
+        <Button disabled className={"battle_button play"} onClick={() => {}}>
           Play battle
         </Button>
-        <Button
-          className={"battle_button step_right"}
-          onClick={handleOnNextLog}
-        >
-          <img src={StepForward} />
+        <Button className={"battle_button step_right"} onClick={nextBattleTurn}>
+          <img src={StepForward} alt="Step forward" />
         </Button>
-        <Button className={"battle_button next"} onClick={handleOnNextBattle}>
+        <Button
+          disabled={battleLogs.logs.length <= 1}
+          className={"battle_button next"}
+          onClick={nextBattleLog}
+        >
           Next battle
-          <img src={Forward} />
+          <img src={Forward} alt="Next battle" />
         </Button>
       </div>
       <div className="battle_logs">
@@ -287,48 +224,70 @@ export const Battle: FC<BattleProps> = () => {
             <div
               className="battle_line_user1"
               style={{
-                left: `${pos.pos1 * 5 + 1}%`,
+                left: `${currentBattleLog.turns[curTurnIndex].pl1Pos * 5 + 1}%`,
               }}
             />
             <div
               className="battle_line_user2"
-              style={{ left: `${pos.pos2 * 5 - 1}%` }}
+              style={{
+                left: `${currentBattleLog.turns[curTurnIndex].pl2Pos * 5 + 1}%`,
+              }}
             />
             <div className="battle_axis" />
           </div>
         </div>
-        <div className="battle_logs_content">
-          {logs.map((player, i) => {
-            const message = JSON.parse(player.text);
-            const action = Object.keys(message)[0];
-            const value = JSON.stringify(message[action]);
+        <table className="battle_logs_content">
+          {(currentBattleLog.turns ?? []).map((currentTurn, i, arr) => {
+            const { isPl1Turn, isMove, isAttack, isMiss, isRest, value } =
+              currentTurn;
 
-            if (
-              i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") >=
-              +battleFinishedIndex[curBattle].index
-            ) {
-              return null;
-            }
+            const name = usersOnBattle[currentTurn.id].name;
+
             return (
-              <div
-                className={`battle_log ${
-                  i + +(battleFinishedIndex[curBattle - 1]?.index ?? "0") ===
-                  curLog
-                    ? "active"
-                    : ""
-                }`}
+              <tr
+                className={`battle_log ${i === curTurnIndex ? "active" : ""}`}
               >
-                <p className={"battle_player_name"}>
-                  №{i - +(battleFinishedIndex[curBattle - 1]?.index ?? "0")}:{" "}
-                  {`${usersOnBattle[player.id].name}`}
-                </p>
-                <p>
-                  action: {action}, value = {value}
-                </p>
-              </div>
+                {/* Turn number */}
+                <td>
+                  <center>{i + 1}</center>
+                </td>
+
+                {/* Player Name */}
+                <td className={"battle_player_name"}>{` ${name}`}</td>
+
+                {/* Type */}
+                <td className={"battle_turn_type"}>
+                  <center>
+                    {isMove
+                      ? "Move"
+                      : isAttack
+                      ? "Attack"
+                      : isMiss
+                      ? "Miss"
+                      : ""}
+                  </center>
+                </td>
+
+                {/* Description */}
+                {isMove ? (
+                  <td>{textMap[isPl1Turn ? "moveRight" : "moveLeft"](name)}</td>
+                ) : isAttack ? (
+                  <td>
+                    {textMap.normalAttack.success(name)}
+                    <br />
+                    Damage: {"damage" in value ? (value.damage as number) : 0}
+                  </td>
+                ) : isMiss ? (
+                  <td>{textMap.normalAttack.fail(name)}</td>
+                ) : isRest ? (
+                  <td>{textMap.rest(name)}</td>
+                ) : (
+                  <td></td>
+                )}
+              </tr>
             );
           })}
-        </div>
+        </table>
       </div>
     </div>
   );

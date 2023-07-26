@@ -3,3 +3,18 @@
     margin-bottom: 16px;
   }
 }
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  height: 50px;
+  background: black;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.logout {
+}

@@ -1,13 +1,12 @@
 .leaderboard {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../assets/images/leader.png');
+  background-image: url("../../assets/images/leader.png");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 
   .back_button {
     position: absolute;
@@ -83,4 +82,9 @@
       }
     }
   }
+}
+
+.row_ownerId {
+  border-bottom: 1px solid #35b5d4;
+  color: #35b5d4;
 }

@@ -28,7 +28,7 @@ export const appRouter = createHashRouter([
         <Queue />
       </AuthorizedLayer>
     ),
-    path: "/arena/queue",
+    path: "/tournament",
   },
   {
     element: (
@@ -68,7 +68,7 @@ export const appRouter = createHashRouter([
         <Profile />
       </AuthorizedLayer>
     ),
-    path: "/my_profile",
+    path: "/profile/:id/",
   },
   {
     element: (

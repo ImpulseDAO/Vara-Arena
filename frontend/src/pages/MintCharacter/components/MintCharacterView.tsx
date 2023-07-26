@@ -53,12 +53,14 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                 onChange={onChange}
                 value={name}
                 placeholder="Enter character name"
+                name="name"
               />
               <Input
                 className={"input_container"}
                 onChange={onChange}
                 value={codeId}
                 placeholder="Enter code id"
+                name="codeId"
               />
             </div>
             <ButtonGroup

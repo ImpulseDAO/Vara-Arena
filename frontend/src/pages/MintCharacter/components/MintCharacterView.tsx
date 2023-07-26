@@ -7,6 +7,8 @@ import Table from "@mui/material/Table";
 import LockSvg from "../../../assets/svg/lock.svg";
 import CharSvg from "../../../assets/svg/char.svg";
 import "./styles.scss";
+import React from "react";
+import { StrategyInput } from "./StrategyInput";
 
 type MintCharacterViewProps = {
   stats: {
@@ -21,8 +23,10 @@ type MintCharacterViewProps = {
   disabled: boolean;
   onSubmit: VoidFunction;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-  name;
-  codeId;
+  onUploadCodeChange: (codeId: string) => void;
+  name: string;
+  codeId: string;
+  setCodeId: (codeId: string) => void;
 };
 
 export const MintCharacterView: FC<MintCharacterViewProps> = memo(
@@ -33,8 +37,10 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
     disabled,
     onSubmit,
     onChange,
-    codeId,
+    onUploadCodeChange,
     name,
+    codeId,
+    setCodeId,
   }) => {
     return (
       <div className="mint_char">
@@ -55,12 +61,10 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                 placeholder="Enter character name"
                 name="name"
               />
-              <Input
-                className={"input_container"}
-                onChange={onChange}
-                value={codeId}
-                placeholder="Enter code id"
-                name="codeId"
+              <StrategyInput
+                codeId={codeId}
+                setCodeId={setCodeId}
+                onUploadCodeChange={onUploadCodeChange}
               />
             </div>
             <ButtonGroup
@@ -112,9 +116,9 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
             />
             <div className={"imgWrapper"}>
               {Array.from({ length: 9 }, (_, i) => (
-                <img className={`lock_img${i}`} src={LockSvg} />
+                <img className={`lock_img${i}`} src={LockSvg} alt="LockSvg" />
               ))}
-              <img className={"char_svg"} src={CharSvg} />
+              <img className={"char_svg"} src={CharSvg} alt="CharSvg" />
             </div>
           </div>
           <div className={"buttonWrapper"}>

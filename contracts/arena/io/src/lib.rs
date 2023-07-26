@@ -40,7 +40,7 @@ pub enum GameEvent {
     GasReserved,
 }
 
-#[derive(Encode, Decode, Debug, Default)]
+#[derive(Encode, Decode, Debug, Default, Eq, PartialEq)]
 pub enum SetTier {
     #[default]
     Tier0,

@@ -124,7 +124,7 @@ impl Arena {
             attributes: character_info.attributes,
         };
         // Identify character tier based on level
-        let character_tier = match character.attributes.level {
+        let character_tier: SetTier = match character.attributes.level {
             0 => SetTier::Tier5,
             1 => SetTier::Tier4,
             2..=4 => SetTier::Tier3,
@@ -141,7 +141,7 @@ impl Arena {
                 5..=8 => SetTier::Tier2,
                 _ => SetTier::Tier1,
             }
-        } else if character_tier = self.current_tier {
+        } else if character_tier == self.current_tier {
             self.characters.push(character);
         };
 

@@ -32,7 +32,6 @@ impl Mint {
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 level: 0,
-                tier: 0,
                 experience: 0,
             },
         };

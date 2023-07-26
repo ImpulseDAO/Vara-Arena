@@ -16,6 +16,8 @@ export const PlayAndCancelButtons = ({
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
   const send = useSendMessage(ARENA_ID, meta);
 
+  const isUserHasPermissionToCancel = false;
+
   const handleStart = () => {
     console.log("Start the battle");
     send(
@@ -67,9 +69,11 @@ export const PlayAndCancelButtons = ({
       >
         Start battle
       </Button>
-      <Button className={"cancel_button"} onClick={handleCancel}>
-        Cancel
-      </Button>
+      {isUserHasPermissionToCancel ? (
+        <Button className={"cancel_button"} onClick={handleCancel}>
+          Cancel
+        </Button>
+      ) : null}
     </>
   );
 };

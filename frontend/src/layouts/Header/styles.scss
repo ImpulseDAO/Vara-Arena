@@ -12,8 +12,6 @@
 }
 
 .header_nav {
-  position: absolute;
-  right: calc(50% - 195px);
   width: 500px;
   font-size: 18px;
   display: flex;
@@ -25,6 +23,40 @@
     &.active {
       color: #2c67ff;
     }
+  }
+}
+
+@media screen and (max-width: 1250px) {
+  .header {
+    flex-wrap: wrap;
+    height: unset;
+  }
+  .header_nav {
+    position: unset;
+    right: unset;
+    margin-inline: auto;
+  }
+
+  .header_nav a,
+  .wallet_wrapper {
+    margin-block: 1rem;
+  }
+
+  .header_title {
+    margin-top: 2rem;
+  }
+
+  /*
+  * Order
+  */
+  .header_title {
+    order: 1;
+  }
+  .wallet_wrapper {
+    order: 2;
+  }
+  .header_nav {
+    order: 3;
   }
 }
 

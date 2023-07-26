@@ -1,5 +1,4 @@
 import { FC, memo, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { useUnit } from "effector-react";
 import { userStore } from "model/user";
@@ -10,8 +9,16 @@ import { MINT_ID } from "./constants";
 import { useOnSubmit } from "./hooks/useOnSubmit";
 import { useStats } from "./hooks/useStats";
 import { useOnChange } from "./hooks/useOnChange";
+import React from "react";
+import {
+  addCodeIdToLocalStorage,
+  getCodeIdsFromLocalStorage,
+} from "hooks/useUploadCode/useUploadCode";
 
 export type MintCharacterProps = {};
+
+export const STRATEGY_CODE_ID_HARDCODED =
+  "0x4b3f39e1e28263eebcde5423e75421dd18daf35dc3059e4a8f9b54d673a7f9a9";
 
 export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
@@ -28,10 +35,17 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
     name: string;
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
   const [data, setData] = useState({
-    codeId:
-      "0x4b3f39e1e28263eebcde5423e75421dd18daf35dc3059e4a8f9b54d673a7f9a9",
+    codeId: getCodeIdsFromLocalStorage()[0] ?? "",
     name: "",
   });
+
+  React.useEffect(() => {
+    const codeIdsArr = getCodeIdsFromLocalStorage();
+    if (codeIdsArr.length === 0) {
+      addCodeIdToLocalStorage(STRATEGY_CODE_ID_HARDCODED);
+      setData((prev) => ({ ...prev, codeId: STRATEGY_CODE_ID_HARDCODED }));
+    }
+  }, []);
 
   const { decrease, increase, stats } = useStats();
   const onSubmit = useOnSubmit({ ...data, stats });
@@ -46,12 +60,14 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   return (
     <MintCharacterView
       codeId={data.codeId}
+      setCodeId={(codeId) => setData({ ...data, codeId })}
       name={data.name}
       disabled={!!stats.points || !data.name}
       decrease={decrease}
       increase={increase}
       onChange={onChangeInput}
       onSubmit={onSubmit}
+      onUploadCodeChange={(codeId) => setData({ ...data, codeId })}
       stats={stats}
     />
   );

@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, useMemo } from "react";
 import "./styles.scss";
 import { StatBar } from "components/StatBar";
 import LockSvg from "../../assets/svg/lock.svg";
@@ -6,7 +6,7 @@ import CharSvg from "../../assets/svg/char.svg";
 import AvatarIcon from "../../assets/images/AvatarV2.png";
 import LogoIcon from "../../assets/images/avatar.png";
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { useWasmMetadata } from "pages/Queue";
@@ -38,13 +38,9 @@ const ProfileResultBattleColumns: TableColumnsType[] = [
 // 142
 
 export const Profile: FC = () => {
-  const navigate = useNavigate();
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const { id } = useParams<{ id: string }>();
   const { account } = useAccount();
-  const goBack = useCallback(() => {
-    navigate("/arena");
-  }, [navigate]);
 
   const charInfo = useReadWasmState<{
     id: string;
@@ -72,31 +68,33 @@ export const Profile: FC = () => {
       return acc.concat(logs);
     }, []);
 
-    const rowsInfo = logs.map((log) => {
-      let id;
+    const rowsInfo = logs
+      .map((log) => {
+        let id;
 
-      if (log.c1 !== charInfo.state?.id) {
-        id = log.c1;
-      }
+        if (log.c1 !== charInfo.state?.id) {
+          id = log.c1;
+        }
 
-      if (log.c2 !== charInfo.state?.id) {
-        id = log.c2;
-      }
+        if (log.c2 !== charInfo.state?.id) {
+          id = log.c2;
+        }
 
-      const name = usersOnQueue[id].name;
+        const name = usersOnQueue[id]?.name;
 
-      return {
-        id,
-        name,
-        isWinner: log.winner === charInfo.state?.id,
-      };
-    });
+        return {
+          id,
+          name,
+          isWinner: log.winner === charInfo.state?.id,
+        };
+      })
+      .filter(({ name }) => name != null);
 
     return rowsInfo.map((row) => {
       return {
         id: (
           <div className="row_player">
-            <img src={LogoIcon} />
+            <img src={LogoIcon} alt="LogoIcon" />
             <div>
               <p className="row_name">{row.name}</p>
             </div>
@@ -114,14 +112,14 @@ export const Profile: FC = () => {
         level: <p className="row_lvl">0 LVL</p>,
       };
     });
-  }, [charInfo.state]);
+  }, [account?.decodedAddress, charInfo.state?.id, id]);
 
   return (
     <div className="profile">
       <div className="profile_char">
         <div className="profile_data">
           <div className="profile_user">
-            <img className="profile_avatar" src={AvatarIcon} />
+            <img className="profile_avatar" src={AvatarIcon} alt="AvatarIcon" />
             <div className="profile_name">
               <p>{charInfo.state?.name}</p>
               {/* <p>@gladiator1299</p> */}
@@ -159,21 +157,21 @@ export const Profile: FC = () => {
             health={Number(charInfo.state?.attributes.vitality) * 30 + 10}
           />
           <div className={"imgWrapper"}>
-            <img className={"lock_img1"} src={LockSvg} />
-            <img className={"lock_img2"} src={LockSvg} />
-            <img className={"lock_img3"} src={LockSvg} />
-            <img className={"lock_img4"} src={LockSvg} />
-            <img className={"lock_img5"} src={LockSvg} />
-            <img className={"char_svg"} src={CharSvg} />
-            <img className={"lock_img6"} src={LockSvg} />
-            <img className={"lock_img7"} src={LockSvg} />
-            <img className={"lock_img8"} src={LockSvg} />
-            <img className={"lock_img9"} src={LockSvg} />
+            <img className={"lock_img1"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img2"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img3"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img4"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img5"} src={LockSvg} alt="LockSvg" />
+            <img className={"char_svg"} src={CharSvg} alt="CharSvg" />
+            <img className={"lock_img6"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img7"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img8"} src={LockSvg} alt="LockSvg" />
+            <img className={"lock_img9"} src={LockSvg} alt="LockSvg" />
           </div>
         </div>
       </div>
       <div className="profile_story">
-        {id === account?.decodedAddress ? (
+        {id === account?.decodedAddress && rows.length > 0 ? (
           <TableUI rows={rows} columns={ProfileResultBattleColumns} />
         ) : null}
       </div>

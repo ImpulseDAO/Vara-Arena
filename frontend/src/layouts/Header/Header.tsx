@@ -46,12 +46,14 @@ export const Header: FC<HeaderProps> = () => {
         </NavLink>
       </div>
       {account && (
-        <Wallet
-          balance={account.balance}
-          address={account.address}
-          name={account.meta.name}
-          onClick={toggle}
-        />
+        <div className="wallet_wrapper">
+          <Wallet
+            balance={account.balance}
+            address={account.address}
+            name={account.meta.name}
+            onClick={toggle}
+          />
+        </div>
       )}
       {visible && (
         <AccountsModal

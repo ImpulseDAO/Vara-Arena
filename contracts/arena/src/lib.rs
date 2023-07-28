@@ -64,7 +64,7 @@ impl Arena {
                 msg::send(
                     self.mint,
                     MintAction::BattleResult {
-                        winner_id: winner.id,
+                        owner_id: winner.owner,
                     },
                     0,
                 )

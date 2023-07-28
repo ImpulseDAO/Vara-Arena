@@ -97,7 +97,7 @@ pub enum MintAction {
         owner_id: ActorId,
     },
     BattleResult {
-        winner_id: ActorId,
+        owner_id: ActorId,
     },
     SetArena {
         arena_id: ActorId,

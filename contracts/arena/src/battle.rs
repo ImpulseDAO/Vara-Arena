@@ -23,6 +23,13 @@ pub struct Battle {
     pub c1: Character,
     pub c2: Character,
 }
+fn energy_regeneration(stamina: u8) -> u8 {
+    match stamina {
+        1..=3 => 15, // Low stamina regenerates slowly
+        4..=7 => 40, // Moderate stamina regenerates at a moderate rate
+        _ => 100,     // High stamina regenerates faster
+    }
+}
 
 impl Battle {
     pub fn new(mut c1: Character, mut c2: Character) -> Battle {
@@ -36,7 +43,10 @@ impl Battle {
 
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
-
+        let mut player1_energy_reg_counter = 0;
+        let mut player2_energy_reg_counter = 0;
+        let player1_stamina = self.c1.attributes.stamina;
+        let player2_stamina = self.c2.attributes.stamina;
         loop {
             let turn = YourTurn {
                 you: CharacterState {
@@ -186,11 +196,22 @@ impl Battle {
                     }
                 }
                 BattleAction::Rest => {
-                    let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
-                    self.c1.energy = min(self.c1.energy + 10, full_energy);
-                    turns.push(TurnResult::Rest {
-                        energy: self.c1.energy,
-                    });
+                    if player1_energy_reg_counter < 3 {
+                        let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
+
+                        self.c1.energy = min(
+                            self.c1.energy + energy_regeneration(player1_stamina),
+                            full_energy,
+                        );
+                        player1_energy_reg_counter += 1;
+                    } else {
+                        let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
+                        self.c1.energy = min(self.c1.energy + 10, full_energy);
+                        turns.push(TurnResult::Rest {
+                            energy: self.c1.energy,
+                        });
+                        player1_energy_reg_counter += 1; // TODO: we could reset on here
+                    }
                 }
             }
 
@@ -342,12 +363,23 @@ impl Battle {
                     }
                 }
                 BattleAction::Rest => {
-                    let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
-                    self.c2.energy = min(self.c2.energy + 10, full_energy);
+                    if player2_energy_reg_counter < 3 {
+                        let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
 
-                    turns.push(TurnResult::Rest {
-                        energy: self.c2.energy,
-                    });
+                        self.c2.energy = min(
+                            self.c2.energy + energy_regeneration(player2_stamina),
+                            full_energy,
+                        );
+                        player2_energy_reg_counter += 1;
+                    } else {
+                        let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
+                        self.c2.energy = min(self.c2.energy + 10, full_energy);
+
+                        turns.push(TurnResult::Rest {
+                            energy: self.c2.energy,
+                        });
+                        player2_energy_reg_counter += 1; // TODO: we could reset on here
+                    }
                 }
             }
         }

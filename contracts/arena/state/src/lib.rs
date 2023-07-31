@@ -9,10 +9,10 @@ pub mod metafns {
     pub type State = <ArenaMetadata as Metadata>::State;
 
     pub fn registered(state: State) -> Vec<Character> {
-        state.characters.clone()
+        state.characters
     }
 
     pub fn leaderboard(state: State) -> BTreeMap<ActorId, u32> {
-        state.leaderboard.clone()
+        state.leaderboard
     }
 }

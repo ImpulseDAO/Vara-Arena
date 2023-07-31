@@ -54,28 +54,28 @@ impl CharacterAttributes {
         assert!(self.experience >= xp_consume, "not enough experience");
 
         assert!(self.level != MAX_LEVEL as u8, "max level");
-        self.level = self.level + 1;
+        self.level += 1;
 
         match attr {
             AttributeChoice::Strength => {
                 assert!(self.strength != MAX_STRENGTH as u8, "max level");
-                self.strength = self.strength + 1;
+                self.strength += 1;
             }
             AttributeChoice::Agility => {
                 assert!(self.agility != MAX_AGILITY as u8, "max level");
-                self.agility = self.agility + 1;
+                self.agility += 1;
             }
             AttributeChoice::Vitality => {
                 assert!(self.vitality != MAX_VITALITY as u8, "max level");
-                self.vitality = self.vitality + 1;
+                self.vitality += 1;
             }
             AttributeChoice::Stamina => {
                 assert!(self.stamina != MAX_STAMINA as u8, "max level");
-                self.stamina = self.stamina + 1;
+                self.stamina += 1;
             }
         }
 
-        self.experience = self.experience - xp_consume;
+        self.experience -= xp_consume;
     }
 }
 

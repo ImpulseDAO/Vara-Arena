@@ -2,7 +2,7 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
-use gstd::{prelude::*, ActorId, CodeId, TypeInfo};
+use gstd::{prelude::*, ActorId, CodeId, Debug, TypeInfo};
 
 const MAX_LEVEL: usize = 9;
 const MAX_STRENGTH: usize = 9;
@@ -25,7 +25,7 @@ pub struct InitialAttributes {
     pub stamina: u8,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone, Default)]
+#[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]
 pub struct CharacterAttributes {
     pub strength: u8,
     pub agility: u8,
@@ -35,7 +35,7 @@ pub struct CharacterAttributes {
     pub experience: u32,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Debug, Decode, TypeInfo, Clone)]
 pub enum AttributeChoice {
     Strength,
     Agility,
@@ -46,6 +46,8 @@ pub enum AttributeChoice {
 impl CharacterAttributes {
     pub fn increase_xp(&mut self) {
         self.experience = self.experience.saturating_add(XP_GAIN[self.level as usize]);
+        use gstd::debug;
+        debug!("Adding Experience!!!{:#?}", self.experience);
     }
 
     pub fn level_up(&mut self, attr: AttributeChoice) {
@@ -54,28 +56,30 @@ impl CharacterAttributes {
         assert!(self.experience >= xp_consume, "not enough experience");
 
         assert!(self.level != MAX_LEVEL as u8, "max level");
-        self.level += 1;
+        self.level = self.level + 1;
 
         match attr {
             AttributeChoice::Strength => {
                 assert!(self.strength != MAX_STRENGTH as u8, "max level");
-                self.strength += 1;
+                self.strength = self.strength + 1;
+                use gstd::debug;
+                debug!("Adding STR!!!");
             }
             AttributeChoice::Agility => {
                 assert!(self.agility != MAX_AGILITY as u8, "max level");
-                self.agility += 1;
+                self.agility = self.agility + 1;
             }
             AttributeChoice::Vitality => {
                 assert!(self.vitality != MAX_VITALITY as u8, "max level");
-                self.vitality += 1;
+                self.vitality = self.vitality + 1;
             }
             AttributeChoice::Stamina => {
                 assert!(self.stamina != MAX_STAMINA as u8, "max level");
-                self.stamina += 1;
+                self.stamina = self.stamina + 1;
             }
         }
 
-        self.experience -= xp_consume;
+        self.experience = self.experience - xp_consume;
     }
 }
 

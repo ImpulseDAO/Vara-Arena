@@ -73,7 +73,8 @@ impl Mint {
             "only the owner can set address of arena contract"
         );
 
-        assert!(self.arena_contract.is_none(), "arena contract already set");
+        // let owner to change the current Arena contract
+        // assert!(self.arena_contract.is_none(), "arena contract already set");
 
         self.arena_contract = Some(arena_id);
     }

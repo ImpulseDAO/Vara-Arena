@@ -51,20 +51,21 @@ impl Arena {
                     .find(|c| c.id == self.winners[0])
                     .unwrap();
                 debug!("{:?} is an arena winner", winner.owner);
+
                 msg::send(
-                    source,
-                    GameEvent::ArenaLog {
-                        winner: winner.id,
-                        logs: self.logs.drain(..).collect(),
+                    self.mint,
+                    MintAction::BattleResult {
+                        owner_id: winner.owner,
                     },
                     0,
                 )
                 .expect("unable to reply");
 
                 msg::send(
-                    self.mint,
-                    MintAction::BattleResult {
-                        owner_id: winner.owner,
+                    source,
+                    GameEvent::ArenaLog {
+                        winner: winner.id,
+                        logs: self.logs.drain(..).collect(),
                     },
                     0,
                 )
@@ -108,6 +109,7 @@ impl Arena {
         if self.characters.len() == NUMBER_OF_PLAYERS {
             panic!("max number of players is already registered");
         }
+
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
@@ -123,6 +125,13 @@ impl Arena {
             position: 0,
             attributes: character_info.attributes,
         };
+
+        // Check whether player already registered
+        if self.characters.iter().any(|c| c.owner == owner_id) {
+            panic!("already registered");
+        }
+
+        debug!("Current tier is {:#?}", self.current_tier);
         // Identify character tier based on level
         let character_tier: SetTier = match character.attributes.level {
             0 => SetTier::Tier5,
@@ -131,7 +140,8 @@ impl Arena {
             5..=8 => SetTier::Tier2,
             _ => SetTier::Tier1,
         };
-        // TO DO set current tournament tier based on the first registered character's level
+        debug!("Character tier is {:#?}", character_tier);
+        // set current tournament tier based on the first registered character's level
         // Initialize current_tier based on the level of the first registered character
         if let SetTier::Tier0 = self.current_tier {
             self.current_tier = match character.attributes.level {
@@ -141,9 +151,16 @@ impl Arena {
                 5..=8 => SetTier::Tier2,
                 _ => SetTier::Tier1,
             }
-        } else if character_tier == self.current_tier {
-            self.characters.push(character);
         };
+        if character_tier == self.current_tier {
+            self.characters.push(character);
+            // add if can't register send the error message ("Wrong Tier") && test it
+        } else {
+            panic!("Can't Register for this Tier");
+        };
+
+        debug!("Current tier after registration {:#?}", self.current_tier);
+        debug!("Registered participants{:?}", self.characters);
 
         msg::reply(
             GameEvent::RegisteredPlayers(
@@ -169,6 +186,7 @@ impl Arena {
     }
 
     fn clean_state(&mut self) {
+        self.current_tier = SetTier::Tier0;
         self.winners = vec![];
         self.characters = vec![];
         self.reservations = vec![];
@@ -216,6 +234,7 @@ extern "C" fn state() {
 
     msg::reply(
         ArenaState {
+            current_tier: arena.current_tier.clone(),
             mint: arena.mint,
             characters: arena.characters.clone(),
             reservations: arena.reservations.clone(),

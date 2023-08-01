@@ -31,11 +31,24 @@ impl Battle {
         Battle { c1, c2 }
     }
 
+    fn energy_regeneration(stamina: u8) -> u8 {
+        match stamina {
+            1..=3 => 15, // Low stamina regenerates slowly
+            4..=7 => 40, // Moderate stamina regenerates at a moderate rate
+            _ => 100,    // High stamina regenerates faster
+        }
+    }
+
     pub async fn fight(mut self) -> BattleLog {
         let mut turns = vec![];
 
         let block_timestamp = exec::block_timestamp();
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
+
+        let mut player1_energy_reg_counter = 0;
+        let mut player2_energy_reg_counter = 0;
+        let player1_stamina = self.c1.attributes.stamina;
+        let player2_stamina = self.c2.attributes.stamina;
 
         loop {
             let turn = YourTurn {
@@ -50,6 +63,41 @@ impl Battle {
                     energy: self.c2.energy,
                 },
             };
+
+            let p1_cant_rest = {
+                if player1_energy_reg_counter == 3 {
+                    true
+                } else {
+                    false
+                }
+            };
+
+            let p2_cant_rest = {
+                if player2_energy_reg_counter == 3 {
+                    true
+                } else {
+                    false
+                }
+            };
+
+            if p1_cant_rest && p2_cant_rest || turns.len() > 25 {
+                debug!("New GAMEPLAY!");
+                debug!("p1 = {} hp x p2 = {} hp!", self.c1.hp, self.c2.hp);
+                let winner = {
+                    if self.c1.hp > self.c2.hp {
+                        self.c1.id
+                    } else {
+                        self.c2.id
+                    }
+                };
+                return BattleLog {
+                    c1: self.c1.id,
+                    c2: self.c2.id,
+                    winner: winner,
+                    turns,
+                };
+            };
+
             let action: BattleAction = msg::send_for_reply_as(self.c1.id, turn, 0, 0)
                 .expect("unable to send message")
                 .await
@@ -186,11 +234,20 @@ impl Battle {
                     }
                 }
                 BattleAction::Rest => {
-                    let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
-                    self.c1.energy = min(self.c1.energy + 10, full_energy);
-                    turns.push(TurnResult::Rest {
-                        energy: self.c1.energy,
-                    });
+                    if player1_energy_reg_counter < 3 {
+                        let full_energy = ENERGY[usize::from(self.c1.attributes.stamina)];
+                        let reg_tick = Battle::energy_regeneration(player1_stamina) - 5;
+
+                        self.c1.energy = min(self.c1.energy + reg_tick, full_energy);
+                        player1_energy_reg_counter += 1;
+                        turns.push(TurnResult::Rest { energy: (reg_tick) });
+                        debug!("p1 reg counter = {:?}", player1_energy_reg_counter);
+                    }
+                    // TODO: we could reset on here;
+                    else {
+                        debug!("p1 energy now = {:?}", self.c1.energy);
+                        turns.push(TurnResult::NotEnoughEnergy);
+                    }
                 }
             }
 
@@ -342,12 +399,18 @@ impl Battle {
                     }
                 }
                 BattleAction::Rest => {
-                    let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
-                    self.c2.energy = min(self.c2.energy + 10, full_energy);
+                    if player2_energy_reg_counter < 3 {
+                        let full_energy = ENERGY[usize::from(self.c2.attributes.stamina)];
+                        let reg_tick = Battle::energy_regeneration(player2_stamina) - 5;
 
-                    turns.push(TurnResult::Rest {
-                        energy: self.c2.energy,
-                    });
+                        self.c2.energy = min(self.c2.energy + reg_tick, full_energy);
+                        player2_energy_reg_counter += 1;
+                        turns.push(TurnResult::Rest { energy: (reg_tick) });
+                        debug!("p2 reg counter = {:?}", player2_energy_reg_counter);
+                    } else {
+                        debug!("p2 energy now = {:?}", self.c2.energy);
+                        turns.push(TurnResult::NotEnoughEnergy);
+                    };
                 }
             }
         }

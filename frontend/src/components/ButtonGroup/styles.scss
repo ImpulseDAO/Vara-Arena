@@ -1,7 +1,7 @@
 .buttonText {
 }
 
-.pointButtonWrapper{
+.pointButtonWrapper {
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -12,20 +12,22 @@
   & > :nth-child(1) {
     margin-right: auto;
   }
-  & > .pointButton:last-child  {
+  & > .pointButton:last-child {
     border-radius: 0 8px 8px 0;
   }
-  & > .pointButton:nth-child(2)  {
+  & > .pointButton:nth-child(2) {
     border-radius: 8px 0 0 8px;
   }
 }
 
 .pointButton {
-  height: 40px;
-  width: 40px;
+  height: 30px;
+  width: 30px;
   border: 1px solid rgba(208, 213, 221, 1);
-  font-size: 16px;
+  font-size: 12px;
   box-sizing: border-box;
-  padding: 10px 18px;
-  color: #344054;
+  padding: 0px;
+  background: #664d3573;
+  color: white;
+  cursor: pointer;
 }

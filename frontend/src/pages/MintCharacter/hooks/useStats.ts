@@ -1,13 +1,23 @@
 import { useState } from "react";
 
-export const useStats = () => {
-  const [stats, setStats] = useState({
-    strength: 6,
+export type CharacterStats = {
+  strength: number;
+  agility: number;
+  vitality: number;
+  stamina: number;
+  points: number;
+};
+
+export const useStats = (
+  initialStats: CharacterStats = {
+    strength: 1,
     agility: 1,
     vitality: 1,
     stamina: 1,
-    points: 0,
-  });
+    points: 5,
+  }
+) => {
+  const [stats, setStats] = useState(initialStats);
   const increase = (name) => {
     if (stats.points > 0) {
       setStats((prevStats) => ({

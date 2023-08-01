@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, DetailedHTMLProps, FC } from "react";
+import React, { FC } from "react";
 import "./styles.scss";
 
 export type StatBarProps = {

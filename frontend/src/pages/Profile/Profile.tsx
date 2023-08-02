@@ -16,6 +16,7 @@ import { TableColumnsType } from "components/Table/types";
 import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
 import { ButtonGroup } from "components/ButtonGroup";
 import { useStats } from "./hooks/useStats";
+import { Alert } from "components/Alert/Alert";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -56,8 +57,9 @@ export const Profile: FC = () => {
     name: string;
   }>(MINT_ID, buffer, "character_info", id);
 
-  const { decrease, increase, stats, exp } = useStats(charInfo?.state);
-  console.log("exp", exp);
+  const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
+    charInfo?.state
+  );
 
   const rows = useMemo(() => {
     const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));
@@ -119,9 +121,27 @@ export const Profile: FC = () => {
       };
     });
   }, [account?.decodedAddress, charInfo.state?.id, id]);
+  console.log("stats.points ", +stats.points ? "1" : "2");
 
   return (
     <div className="profile">
+      {alertVisible && (
+        <Alert
+          title="Confirm changes?"
+          buttonsSlot={[
+            {
+              className: "profile_alert_cancel",
+              children: "Cancel",
+              onClick: cancel,
+            },
+            {
+              className: "profile_alert_accept",
+              children: "Accept",
+              onClick: accept,
+            },
+          ]}
+        />
+      )}
       <div className="profile_char">
         <div className="profile_data">
           <div className="profile_user">
@@ -129,10 +149,10 @@ export const Profile: FC = () => {
             <div className="profile_name">
               <p>{charInfo.state?.name}</p>
               {/* <p>@gladiator1299</p> */}
-              <ExperienceBar curXp="200" maxXp="300" />
+              <ExperienceBar curXp={stats.experience} maxXp={stats.maxExp} />
               <p>
                 <span>Level</span>
-                <span>0</span>
+                <span>{stats.level}</span>
               </p>
             </div>
           </div>
@@ -143,44 +163,44 @@ export const Profile: FC = () => {
           <div className="profile_stats">
             <div>
               <span>Available points</span>
-              <span>{0}</span>
+              <span>{stats.points}</span>
             </div>
 
             <ButtonGroup
               leftText={"Strength"}
-              firstButton={"-"}
               secondButton={stats.strength}
               thirdButton={"+"}
               onClickSecondButton={() => {}}
-              onClickFirstButton={() => decrease("strength")}
-              onClickThirdButton={() => increase("strength")}
+              onClickThirdButton={
+                +stats.points ? () => selectAttr("Strength") : undefined
+              }
             />
             <ButtonGroup
               leftText={"Agility"}
-              firstButton={"-"}
               secondButton={stats.agility}
               thirdButton={"+"}
               onClickSecondButton={() => {}}
-              onClickFirstButton={() => decrease("agility")}
-              onClickThirdButton={() => increase("agility")}
+              onClickThirdButton={
+                +stats.points ? () => selectAttr("Agility") : undefined
+              }
             />
             <ButtonGroup
               leftText={"Vitality"}
-              firstButton={"-"}
               secondButton={stats.vitality}
               thirdButton={"+"}
               onClickSecondButton={() => {}}
-              onClickFirstButton={() => decrease("vitality")}
-              onClickThirdButton={() => increase("vitality")}
+              onClickThirdButton={
+                +stats.points ? () => selectAttr("Vitality") : undefined
+              }
             />
             <ButtonGroup
               leftText={"Stamina"}
-              firstButton={"-"}
               secondButton={stats.stamina}
               thirdButton={"+"}
               onClickSecondButton={() => {}}
-              onClickFirstButton={() => decrease("stamina")}
-              onClickThirdButton={() => increase("stamina")}
+              onClickThirdButton={
+                +stats.points ? () => selectAttr("Stamina") : undefined
+              }
             />
           </div>
         </div>

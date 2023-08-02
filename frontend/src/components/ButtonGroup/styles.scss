@@ -30,4 +30,8 @@
   background: #664d3573;
   color: white;
   cursor: pointer;
+
+  &.secondBtn {
+    border-radius: 0 !important;
+  }
 }

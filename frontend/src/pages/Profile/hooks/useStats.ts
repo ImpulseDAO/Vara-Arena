@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import { getProgramMetadata } from "@gear-js/api";
+import { useSendMessage } from "@gear-js/react-hooks";
+import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
+import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 const LEVEL_XP = [
   300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
 ];
@@ -27,51 +30,62 @@ export const useStats = (
     points: "0",
     level: "0",
     experience: "0",
+    maxExp: "0",
   });
+  const [attr, setAttr] = useState("");
 
-  const [exp, setExp] = useState({
-    curExp: 0,
-    maxExp: 0,
-  });
+  const [alertVisible, toggleVisible] = useReducer((state) => !state, false);
+
+  const selectAttr = useCallback((attrName: string) => {
+    setAttr(attrName);
+    toggleVisible();
+  }, []);
+
+  const meta = useMemo(() => getProgramMetadata(METADATA), []);
+  const send = useSendMessage(MINT_ID, meta);
+  const accept = useCallback(() => {
+    if (attr) {
+      console.log("attr", attr);
+      toggleVisible();
+      send(
+        {
+          LevelUp: {
+            attr,
+          },
+        },
+        {
+          onSuccess: () => {
+            console.log("success");
+          },
+          onError: () => {
+            console.log("error");
+          },
+        }
+      );
+    }
+  }, [attr, send]);
 
   useEffect(() => {
     if (charInfo?.attributes) {
-      const curLevel = LEVEL_XP.findIndex(
+      const expectedLevel = LEVEL_XP.findIndex(
         (lvlExp) => lvlExp > +charInfo.attributes.experience
       );
-      const points = (curLevel - +charInfo.attributes.level).toString();
+      const isAvailableLvlUp = expectedLevel - +charInfo.attributes.level > 0;
 
-      setExp({
-        curExp: +charInfo.attributes.experience,
-        maxExp: LEVEL_XP[curLevel],
-      });
-      setStats((prev) => ({ ...prev, ...charInfo.attributes, points }));
+      setStats((prev) => ({
+        ...prev,
+        ...charInfo.attributes,
+        maxExp: LEVEL_XP[charInfo.attributes.level],
+        points: isAvailableLvlUp ? "1" : "0",
+      }));
     }
   }, [charInfo]);
 
-  const increase = (name: string) => {
-    if (+stats.points > 0) {
-      setStats((prevStats) => ({
-        ...prevStats,
-        [name]: (+prevStats[name] + 1).toString(),
-        points: (+prevStats["points"] - 1).toString(),
-      }));
-    }
-  };
-  const decrease = (name: string) => {
-    if (+stats[name] > 1) {
-      setStats((prevStats) => ({
-        ...prevStats,
-        [name]: (+prevStats[name] - 1).toString(),
-        points: (+prevStats["points"] + 1).toString(),
-      }));
-    }
-  };
-
   return {
-    decrease,
-    increase,
+    selectAttr,
     stats,
-    exp,
+    alertVisible,
+    accept,
+    cancel: toggleVisible,
   };
 };

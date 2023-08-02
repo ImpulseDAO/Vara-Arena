@@ -9,6 +9,29 @@
   flex-direction: column;
   align-items: center;
 
+  .profile_alert_cancel,
+  .profile_alert_accept {
+    background: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    color: red;
+    border: none;
+    font-size: 16px;
+
+    &:active {
+      color: rgb(168, 0, 0);
+    }
+  }
+
+  .profile_alert_accept {
+    color: rgb(51, 111, 251);
+
+    &:active {
+      color: rgb(0, 50, 168);
+    }
+  }
+
   .back_button {
     position: absolute;
     top: 162px;

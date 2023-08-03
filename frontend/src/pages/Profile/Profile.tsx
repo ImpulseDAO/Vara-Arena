@@ -121,7 +121,6 @@ export const Profile: FC = () => {
       };
     });
   }, [account?.decodedAddress, charInfo.state?.id, id]);
-  console.log("stats.points ", +stats.points ? "1" : "2");
 
   return (
     <div className="profile">

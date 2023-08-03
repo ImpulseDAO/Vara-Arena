@@ -73,7 +73,8 @@ impl Mint {
             "only the owner can set address of arena contract"
         );
 
-        assert!(self.arena_contract.is_none(), "arena contract already set");
+        // let owner to change the current Arena contract
+        // assert!(self.arena_contract.is_none(), "arena contract already set");
 
         self.arena_contract = Some(arena_id);
     }
@@ -112,7 +113,7 @@ extern "C" fn handle() {
             mint.create_character(code_id, name, attributes);
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
-        MintAction::BattleResult { winner_id } => mint.increase_xp(winner_id),
+        MintAction::BattleResult { owner_id } => mint.increase_xp(owner_id),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
     }

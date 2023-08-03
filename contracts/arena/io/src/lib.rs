@@ -40,7 +40,7 @@ pub enum GameEvent {
     GasReserved,
 }
 
-#[derive(Encode, Decode, Debug, Default, Eq, PartialEq)]
+#[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, TypeInfo)]
 pub enum SetTier {
     #[default]
     Tier0,
@@ -79,7 +79,7 @@ pub struct YourTurn {
     pub enemy: CharacterState,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct Character {
     pub owner: ActorId,
     pub id: ActorId,
@@ -98,6 +98,7 @@ pub struct BattleState {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
+    pub current_tier: SetTier,
     pub characters: Vec<Character>,
     pub mint: ActorId,
     pub battles: Vec<BattleState>,

@@ -29,6 +29,7 @@ export const StartFight = memo(() => {
     };
     name: string;
   }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
+  console.log("charInfo", charInfo, account?.decodedAddress);
 
   return (
     <StartFightView

@@ -1,0 +1,44 @@
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.7);
+
+  .alert_window {
+    width: 300px;
+    height: 150px;
+    background: black;
+    border-radius: 8px;
+    border: 2px solid white;
+    padding: 20px 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+  }
+
+  .alert_title {
+    font-size: 18px;
+    color: white;
+    text-align: center;
+    flex: 1;
+  }
+
+  .alert_buttons {
+    border-top: 1px solid white;
+    flex: 0;
+    display: flex;
+  }
+
+  .alert_divider {
+    height: 100%;
+    width: 1px;
+    border-left: 1px solid rgba(255, 255, 255, 0.587);
+  }
+}

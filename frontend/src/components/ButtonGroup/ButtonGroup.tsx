@@ -10,12 +10,12 @@ export type ButtonGroupProps = {
     HTMLButtonElement
   >;
   leftText?: string;
-  firstButton: string;
+  firstButton?: string;
   secondButton: string | number;
-  thirdButton: string;
-  onClickFirstButton: VoidFunction;
+  thirdButton?: string;
+  onClickFirstButton?: VoidFunction;
   onClickSecondButton: VoidFunction;
-  onClickThirdButton: VoidFunction;
+  onClickThirdButton?: VoidFunction;
 };
 
 export const ButtonGroup: FC<ButtonGroupProps> = ({
@@ -30,15 +30,19 @@ export const ButtonGroup: FC<ButtonGroupProps> = ({
   return (
     <div className={"pointButtonWrapper"}>
       <div className={"buttonText"}>{leftText}</div>
-      <Button className={"pointButton"} onClick={onClickFirstButton}>
-        {firstButton}
-      </Button>
-      <Button className={"pointButton"} onClick={onClickSecondButton}>
+      {onClickFirstButton && (
+        <Button className={"pointButton"} onClick={onClickFirstButton}>
+          {firstButton}
+        </Button>
+      )}
+      <Button className={"pointButton secondBtn"} onClick={onClickSecondButton}>
         {secondButton}
       </Button>
-      <Button className={"pointButton"} onClick={onClickThirdButton}>
-        {thirdButton}
-      </Button>
+      {onClickThirdButton && (
+        <Button className={"pointButton"} onClick={onClickThirdButton}>
+          {thirdButton}
+        </Button>
+      )}
     </div>
   );
 };

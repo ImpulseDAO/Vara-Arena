@@ -166,6 +166,8 @@ export const Queue: FC<QueueProps> = () => {
 
             if (typeof result !== "object") return;
 
+            console.log("result", result);
+
             if ("arenaLog" in result) {
               setBattleLog(result.arenaLog);
               const allBattleLog =

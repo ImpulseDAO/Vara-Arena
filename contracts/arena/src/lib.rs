@@ -109,7 +109,6 @@ impl Arena {
         if self.characters.len() == NUMBER_OF_PLAYERS {
             panic!("max number of players is already registered");
         }
-
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")

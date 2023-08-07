@@ -186,6 +186,7 @@ export const Battle: FC<BattleProps> = () => {
       </h2>
 
       <div className="battle_users">
+        git
         <BattleUser user={user1} userIndex={1} health={pl1Health} />
         <BattleUser user={user2} userIndex={2} health={pl2Health} />
       </div>

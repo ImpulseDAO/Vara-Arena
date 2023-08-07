@@ -36,10 +36,6 @@ export const Battle: FC<BattleProps> = () => {
   const [curBattleIndex, setCurrentBattleIndex] = useState(0);
   const [curTurnIndex, setCurTurnIndex] = useState(0);
 
-  console.log("battleLogs", battleLogs);
-
-  console.log("usersOnBattle", usersOnBattle);
-
   const nextBattleLog = () => {
     const count = battleLogs.logs.length;
     setCurTurnIndex(0);
@@ -182,6 +178,7 @@ export const Battle: FC<BattleProps> = () => {
   return (
     <div className="battle">
       <h2 className="battle_winner_info">
+        №{curBattleIndex}{" "}
         {currentBattleLog.battleWinner === currentBattleLog.plId1
           ? user1?.name
           : user2?.name}{" "}

@@ -148,7 +148,9 @@ export const Profile: FC = () => {
             <div className="profile_name">
               <p>{charInfo.state?.name}</p>
               {/* <p>@gladiator1299</p> */}
-              <ExperienceBar curXp={stats.experience} maxXp={stats.maxExp} />
+              {id === account?.decodedAddress && (
+                <ExperienceBar curXp={stats.experience} maxXp={stats.maxExp} />
+              )}
               <p>
                 <span>Level</span>
                 <span>{stats.level}</span>
@@ -160,10 +162,12 @@ export const Profile: FC = () => {
             <span>50</span>
           </div> */}
           <div className="profile_stats">
-            <div>
-              <span>Available points</span>
-              <span>{stats.points}</span>
-            </div>
+            {id === account?.decodedAddress && (
+              <div>
+                <span>Available points</span>
+                <span>{stats.points}</span>
+              </div>
+            )}
 
             <ButtonGroup
               leftText={"Strength"}
@@ -171,7 +175,9 @@ export const Profile: FC = () => {
               thirdButton={"+"}
               onClickSecondButton={() => {}}
               onClickThirdButton={
-                +stats.points ? () => selectAttr("Strength") : undefined
+                id === account?.decodedAddress && +stats.points
+                  ? () => selectAttr("Strength")
+                  : undefined
               }
             />
             <ButtonGroup
@@ -180,7 +186,9 @@ export const Profile: FC = () => {
               thirdButton={"+"}
               onClickSecondButton={() => {}}
               onClickThirdButton={
-                +stats.points ? () => selectAttr("Agility") : undefined
+                id === account?.decodedAddress && +stats.points
+                  ? () => selectAttr("Agility")
+                  : undefined
               }
             />
             <ButtonGroup
@@ -189,7 +197,9 @@ export const Profile: FC = () => {
               thirdButton={"+"}
               onClickSecondButton={() => {}}
               onClickThirdButton={
-                +stats.points ? () => selectAttr("Vitality") : undefined
+                id === account?.decodedAddress && +stats.points
+                  ? () => selectAttr("Vitality")
+                  : undefined
               }
             />
             <ButtonGroup
@@ -198,7 +208,9 @@ export const Profile: FC = () => {
               thirdButton={"+"}
               onClickSecondButton={() => {}}
               onClickThirdButton={
-                +stats.points ? () => selectAttr("Stamina") : undefined
+                id === account?.decodedAddress && +stats.points
+                  ? () => selectAttr("Stamina")
+                  : undefined
               }
             />
           </div>

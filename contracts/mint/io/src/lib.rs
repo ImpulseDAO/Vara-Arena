@@ -17,19 +17,6 @@ const LEVEL_XP: [u32; MAX_LEVEL + 1] = [
     300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
 ];
 
-const MAX_LEVEL: usize = 9;
-const MAX_STRENGTH: usize = 9;
-const MAX_AGILITY: usize = 9;
-const MAX_VITALITY: usize = 9;
-const MAX_STAMINA: usize = 9;
-
-const XP_GAIN: [u32; MAX_LEVEL + 1] = [
-    300, 600, 600, 1350, 3240, 8100, 18225, 48600, 131220, 328050,
-];
-const LEVEL_XP: [u32; MAX_LEVEL + 1] = [
-    300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
-];
-
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct InitialAttributes {
     pub strength: u8,

@@ -113,6 +113,11 @@
       display: flex;
       justify-content: space-between;
 
+      span:last-child {
+        color: #2c67ff;
+        border-bottom: 2px solid #2c67ff;
+      }
+
       & > div {
         display: flex;
         gap: 10px;

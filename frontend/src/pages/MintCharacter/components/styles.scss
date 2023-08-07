@@ -1,7 +1,7 @@
 .mint_char {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../../assets/images/mintCharacterScreen.png');
+  background-image: url("../../../assets/images/mintCharacterScreen.png");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -94,27 +94,29 @@
     // padding: 24px 24px 16px;
     // flex-wrap: wrap;
     //& > :nth-child(5) {align-self: center}
-    .lock_img1 {
+
+    .lock_img0 {
       position: absolute;
       top: 0px;
       left: calc(50% - 35px);
     }
-    .lock_img2 {
+    .lock_img1 {
       position: absolute;
       top: 30px;
-      left: 0px;
+      left: 0;
     }
-    .lock_img3 {
+
+    .lock_img2 {
       position: absolute;
       top: 105px;
       left: 0px;
     }
-    .lock_img4 {
+    .lock_img3 {
       position: absolute;
       top: 180px;
       left: 0px;
     }
-    .lock_img5 {
+    .lock_img4 {
       position: absolute;
       top: 255px;
       left: 0px;
@@ -124,19 +126,24 @@
       top: 87px;
       left: calc(50% - 69.5px);
     }
-    .lock_img6 {
+    .lock_img5 {
       position: absolute;
       top: 30px;
       right: 0px;
     }
-    .lock_img7 {
+    .lock_img6 {
       position: absolute;
       top: 105px;
       right: 0px;
     }
-    .lock_img8 {
+    .lock_img7 {
       position: absolute;
       top: 180px;
+      right: 0px;
+    }
+    .lock_img8 {
+      position: absolute;
+      top: 255px;
       right: 0px;
     }
     .lock_img9 {

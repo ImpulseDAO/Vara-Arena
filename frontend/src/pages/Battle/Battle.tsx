@@ -178,7 +178,7 @@ export const Battle: FC<BattleProps> = () => {
   return (
     <div className="battle">
       <h2 className="battle_winner_info">
-        №{curBattleIndex}{" "}
+        №{curBattleIndex + 1}{" "}
         {currentBattleLog.battleWinner === currentBattleLog.plId1
           ? user1?.name
           : user2?.name}{" "}

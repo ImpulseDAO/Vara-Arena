@@ -15,7 +15,6 @@
     "@mantine/form": "6.0.8",
     "@mantine/hooks": "^6.0.17",
     "@mantine/modals": "^6.0.17",
-    "@mui/material": "^5.13.5",
     "@polkadot/api": "10.9.1",
     "@polkadot/extension-dapp": "0.46.5",
     "@polkadot/react-identicon": "3.1.4",

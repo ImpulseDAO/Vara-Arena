@@ -3,12 +3,12 @@ import { Button } from "components/Button";
 import { ButtonGroup } from "components/ButtonGroup";
 import { StatBar } from "components/StatBar";
 import { FC, memo } from "react";
-import Table from "@mui/material/Table";
 import LockSvg from "../../../assets/svg/lock.svg";
 import CharSvg from "../../../assets/svg/char.svg";
 import "./styles.scss";
 import React from "react";
 import { StrategyInput } from "./StrategyInput";
+import { Table } from "@mantine/core";
 
 type MintCharacterViewProps = {
   stats: {

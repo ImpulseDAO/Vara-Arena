@@ -106,7 +106,9 @@ export const PlayAndCancelButtons = ({
   return (
     <>
       <Button
-        className={"action_button"}
+        className={["action_button", isPlayDisabled && "disabled"]
+          .filter(Boolean)
+          .join(" ")}
         onClick={handleStart}
         disabled={isPlayDisabled}
         loading={isLoading}

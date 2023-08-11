@@ -213,7 +213,10 @@ export const Queue: FC<QueueProps> = () => {
         <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />
         </div>
-        <PlayAndCancelButtons isPlayDisabled={players?.length < 2} />
+        <PlayAndCancelButtons
+          isPlayDisabled={players?.length < 2}
+          isDoubleReservationNeeded={players?.length > 2}
+        />
       </div>
     </div>
   );

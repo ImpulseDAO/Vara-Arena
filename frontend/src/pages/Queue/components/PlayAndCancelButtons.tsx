@@ -1,16 +1,20 @@
 import "../styles.scss";
-import { Button } from "components/Button";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { getProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 import { useNavigate } from "react-router-dom";
+import { Button, Text } from "@mantine/core";
+
+// type States = "initial" | "reserved_once" | "reserved_twice" | "starting";
 
 export const PlayAndCancelButtons = ({
   isPlayDisabled = false,
+  isDoubleReservationNeeded = false,
 }: {
   isPlayDisabled?: boolean;
+  isDoubleReservationNeeded?: boolean;
 }) => {
   const navigate = useNavigate();
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
@@ -18,31 +22,70 @@ export const PlayAndCancelButtons = ({
 
   const isUserHasPermissionToCancel = false;
 
-  const handleStart = () => {
-    console.log("Start the battle");
-    send(
-      {
-        ReserveGas: null,
-      },
-      {
-        onSuccess: () => console.log("successfully reserved gas"),
-        onError: () => console.log("error while reserving gas"),
-      }
-    );
+  const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-    const WAIT_DURATION_MS = 3000;
-    setTimeout(() => {
-      console.log("Wait for 3 seconds");
+  const btnText = (() => {
+    if (gasReservedTimes === 0) return "Reserve Gas";
+    if (gasReservedTimes === 1) {
+      if (isDoubleReservationNeeded) return "Reserve Gas";
+      return "Start Battle";
+    }
+
+    if (gasReservedTimes === 2) return "Start Battle";
+  })();
+
+  const reserveGas = React.useCallback(() => {
+    return new Promise((resolve) => {
+      send(
+        {
+          ReserveGas: null,
+        },
+        {
+          onSuccess: () => {
+            console.log("successfully reserved gas");
+            resolve("successfully reserved gas");
+            setGasReservedTimes((t) => t + 1);
+          },
+          onError: () => console.log("error while reserving gas"),
+        }
+      );
+    });
+  }, [send]);
+
+  const startBattle = React.useCallback(() => {
+    return new Promise((resolve) => {
       send(
         {
           Play: null,
         },
         {
-          onSuccess: () => console.log("successfully started the battle"),
+          onSuccess: () => {
+            localStorage.setItem("players", JSON.stringify([]));
+            console.log("successfully started the battle");
+          },
           onError: () => console.log("error while starting the battle"),
         }
       );
-    }, WAIT_DURATION_MS);
+    });
+  }, [send]);
+
+  const handleStart = async () => {
+    setIsLoading(true);
+
+    if (gasReservedTimes === 0) {
+      await reserveGas();
+    } else if (gasReservedTimes === 1) {
+      if (isDoubleReservationNeeded) {
+        await reserveGas();
+      } else {
+        await startBattle();
+      }
+    } else if (gasReservedTimes === 2) {
+      await startBattle();
+    }
+
+    setIsLoading(false);
   };
 
   const handleCancel = () => {
@@ -63,12 +106,18 @@ export const PlayAndCancelButtons = ({
   return (
     <>
       <Button
-        className={"start_button"}
+        className={["action_button", isPlayDisabled && "disabled"]
+          .filter(Boolean)
+          .join(" ")}
         onClick={handleStart}
         disabled={isPlayDisabled}
+        loading={isLoading}
       >
-        Start battle
+        {btnText}
       </Button>
+      <Text size="xs" mt={3}>
+        {`Gas reserved ${gasReservedTimes} time(s)`}
+      </Text>
       {isUserHasPermissionToCancel ? (
         <Button className={"cancel_button"} onClick={handleCancel}>
           Cancel

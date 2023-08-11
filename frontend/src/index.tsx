@@ -12,6 +12,7 @@ import { ADDRESS } from "consts";
 import { ProviderProps } from "@gear-js/react-hooks/dist/esm/types";
 import { RouterProvider } from "react-router-dom";
 import { appRouter } from "app/AppRouter";
+import { MantineProvider } from "app/mantineProvider/MantineProvider";
 
 const ApiProvider = memo(({ children }: ProviderProps) => {
   return (
@@ -34,7 +35,9 @@ root.render(
   <AlertProvider>
     <ApiProvider>
       <AccountProvider>
-        <RouterProvider router={appRouter} />
+        <MantineProvider>
+          <RouterProvider router={appRouter} />
+        </MantineProvider>
       </AccountProvider>
     </ApiProvider>
   </AlertProvider>

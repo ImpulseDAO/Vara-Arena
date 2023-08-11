@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/AArena/static/css/main.9c63315c.css",
-    "main.js": "/AArena/static/js/main.4808090f.js",
+    "main.css": "/AArena/static/css/main.606ae5d6.css",
+    "main.js": "/AArena/static/js/main.d7241e4c.js",
     "static/media/startScreen.png": "/AArena/static/media/startScreen.de8d9b2609c0773b4d70.png",
     "static/media/waitingScreen.png": "/AArena/static/media/waitingScreen.42a40f42109b41834b60.png",
     "static/media/battle.png": "/AArena/static/media/battle.223eb032fa4314bd2b9f.png",
@@ -23,11 +23,11 @@
     "static/media/back.svg": "/AArena/static/media/back.8de93fbe4e80fb9e36206bd1063f6702.svg",
     "index.html": "/AArena/index.html",
     "static/media/progress.svg": "/AArena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
-    "main.9c63315c.css.map": "/AArena/static/css/main.9c63315c.css.map",
-    "main.4808090f.js.map": "/AArena/static/js/main.4808090f.js.map"
+    "main.606ae5d6.css.map": "/AArena/static/css/main.606ae5d6.css.map",
+    "main.d7241e4c.js.map": "/AArena/static/js/main.d7241e4c.js.map"
   },
   "entrypoints": [
-    "static/css/main.9c63315c.css",
-    "static/js/main.4808090f.js"
+    "static/css/main.606ae5d6.css",
+    "static/js/main.d7241e4c.js"
   ]
 }

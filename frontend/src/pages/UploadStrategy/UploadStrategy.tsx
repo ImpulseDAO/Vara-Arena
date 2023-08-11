@@ -1,14 +1,13 @@
-import { useAccount, useApi, useCreateHandler } from "@gear-js/react-hooks";
+import { useAccount, useApi } from "@gear-js/react-hooks";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import Table from "@mui/material/Table";
 import { Input } from "../../components";
 import { Button } from "../../components/Button";
 import UploadIcon from "../../assets/svg/upload_icon.svg";
 
 import "./styles.scss";
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { HexString } from "@polkadot/util/types";
 import { useNavigate } from "react-router-dom";
+import { Table } from "@mantine/core";
 
 export const UploadStrategy = () => {
   const [programName, setProgramName] = useState("");

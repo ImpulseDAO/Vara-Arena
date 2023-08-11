@@ -3,10 +3,9 @@ import React, {
   DetailedHTMLProps,
   FC,
   ReactNode,
-} from 'react';
-import Icon from '@mui/material/Icon';
-import './styles.scss';
-import clsx from 'clsx';
+} from "react";
+import "./styles.scss";
+import clsx from "clsx";
 
 export type ButtonProps = {
   onClick: VoidFunction;
@@ -27,7 +26,7 @@ export const Button: FC<ButtonProps> = ({
   buttonProps,
   className,
 }) => {
-  const classes = clsx('button', className, { disabled });
+  const classes = clsx("button", className, { disabled });
   return (
     <button
       {...buttonProps}

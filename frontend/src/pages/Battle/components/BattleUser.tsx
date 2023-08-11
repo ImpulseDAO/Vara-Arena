@@ -6,10 +6,12 @@ export const BattleUser = ({
   user,
   userIndex,
   health,
+  energy,
 }: {
   user: any;
   userIndex: 1 | 2;
   health: string | number;
+  energy: string | number;
 }) => {
   return (
     <div className={`battle_user${userIndex}`}>
@@ -48,7 +50,7 @@ export const BattleUser = ({
         </div>
       </div>
       <div className="battle_equip">
-        <StatBar health={health} />
+        <StatBar health={health} energy={energy} />
         <div className={"img_wrapper"}>
           {[
             "lock_img1",

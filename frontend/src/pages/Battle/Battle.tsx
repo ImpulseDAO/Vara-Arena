@@ -7,6 +7,8 @@ import Back from "../../assets/svg/back.svg";
 import { Button } from "components/Button";
 import { textMap } from "./components/textMap";
 import { BattleUser } from "./components/BattleUser";
+import { getTypeAttack } from "./utils/getTypeAttack";
+import { ENERGY } from "../../app/constants";
 
 export type BattleProps = {};
 
@@ -66,6 +68,9 @@ export const Battle: FC<BattleProps> = () => {
     let pl1SumAttacked = 0,
       pl2SumAttacked = 0;
 
+    // let pl1EnegryCost = 0,
+    //   pl2EnegryCost = 0;
+
     const turns = curBattle.turns.map((turn, i) => {
       const action = Object.keys(turn)[0] as TurnTypes;
       const id = i % 2 === 0 ? curBattle.c1 : curBattle.c2;
@@ -74,8 +79,10 @@ export const Battle: FC<BattleProps> = () => {
         const { position } = turn.move;
         if (i % 2 === 0) {
           plPos1 = position;
+          // pl1EnegryCost += 3;
         } else {
           plPos2 = position;
+          // pl2EnegryCost += 3;
         }
       }
 
@@ -84,10 +91,34 @@ export const Battle: FC<BattleProps> = () => {
 
         if (i % 2 === 0) {
           pl1SumAttacked += damage;
+          // pl1EnegryCost += getTypeAttack(
+          //   usersOnBattle[id].attributes.stamina,
+          //   damage
+          // ).costEnergy;
         } else {
           pl2SumAttacked += damage;
+          // pl2EnegryCost += getTypeAttack(
+          //   usersOnBattle[id].attributes.stamina,
+          //   damage
+          // ).costEnergy;
         }
       }
+
+      // if ("rest" in turn) {
+      //   if (i % 2 === 0) {
+      //     pl1SumAttacked += damage;
+      //     pl1EnegryCost += getTypeAttack(
+      //       usersOnBattle[id].attributes.stamina,
+      //       damage
+      //     ).costEnergy;
+      //   } else {
+      //     pl2SumAttacked += damage;
+      //     pl2EnegryCost += getTypeAttack(
+      //       usersOnBattle[id].attributes.stamina,
+      //       damage
+      //     ).costEnergy;
+      //   }
+      // }
 
       return {
         action,
@@ -107,6 +138,8 @@ export const Battle: FC<BattleProps> = () => {
         isMove: action === "move",
         isRest: action === "rest",
         value: Object.values(turn)[0],
+        // pl2EnegryCost,
+        // pl1EnegryCost,
         id,
       };
     });
@@ -120,15 +153,6 @@ export const Battle: FC<BattleProps> = () => {
   }, [battleLogs, curBattleIndex]);
 
   console.log("currentBattleLog", currentBattleLog);
-
-  // useEffect(() => {
-  //   if (playerWon) {
-  //     alert(`Победил пользователь ${usersOnBattle[playerWon].name}`);
-  //     gearAlert.success(
-  //       `Победил пользователь ${usersOnBattle[playerWon].name}`
-  //     );
-  //   }
-  // }, [playerWon, usersOnBattle]);
 
   const [user1, user2] = useMemo(() => {
     const curBattle = battleLogs.logs[curBattleIndex];
@@ -187,8 +211,18 @@ export const Battle: FC<BattleProps> = () => {
 
       <div className="battle_users">
         git
-        <BattleUser user={user1} userIndex={1} health={pl1Health} />
-        <BattleUser user={user2} userIndex={2} health={pl2Health} />
+        <BattleUser
+          user={user1}
+          userIndex={1}
+          health={pl1Health}
+          energy={ENERGY[user1.attributes.stamina]}
+        />
+        <BattleUser
+          user={user2}
+          userIndex={2}
+          health={pl2Health}
+          energy={ENERGY[user2.attributes.stamina]}
+        />
       </div>
       <div className="battle_actions">
         <Button

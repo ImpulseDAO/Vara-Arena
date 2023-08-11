@@ -5,8 +5,8 @@ import { useOnSubmit } from "./hooks/useOnSubmit";
 import { StartFightView } from "./components/StartFightView";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { MINT_ID } from "pages/MintCharacter/constants";
-import { useWasmMetadata } from "pages/Queue";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 
 export const colourOptions = [
   { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },

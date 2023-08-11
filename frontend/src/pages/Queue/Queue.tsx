@@ -21,6 +21,8 @@ import { UnsubscribePromise } from "@polkadot/api/types";
 import { battle } from "model/battleLogs";
 import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
+import { log } from "console";
 
 export type QueueProps = {};
 
@@ -49,10 +51,12 @@ const getRows = (
   players: Array<{
     id: string;
     attributes: {
-      strength: string;
       agility: string;
-      vitality: string;
+      experience: string;
+      level: string;
       stamina: string;
+      strength: string;
+      vitality: string;
     };
     name: string;
   }>
@@ -67,25 +71,8 @@ const getRows = (
       </div>
     ),
     NB: "0",
-    level: <span className="row_lvl">1LVL</span>,
+    level: <span className="row_lvl">{player.attributes.level}LVL</span>,
   }));
-};
-
-export const useWasmMetadata = (source: RequestInfo | URL) => {
-  const alert = useAlert();
-  const [data, setData] = useState<Buffer>();
-
-  useEffect(() => {
-    if (source) {
-      fetch(source)
-        .then((response) => response.arrayBuffer())
-        .then((array) => Buffer.from(array))
-        .then((buffer) => setData(buffer))
-        .catch(({ message }: Error) => alert.error(`Fetch error: ${message}`));
-    }
-  }, [alert, source]);
-
-  return { buffer: data };
 };
 
 export const Queue: FC<QueueProps> = () => {
@@ -97,9 +84,10 @@ export const Queue: FC<QueueProps> = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timer, setTimer] = useState(0);
+  const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
   const meta = useMemo(() => getProgramMetadata(METADATA), []);
-  const players = JSON.parse(localStorage.getItem("players"));
+
   const inProgressRows = useMemo(() => {
     if (!players || isEmpty(Object.values(players))) {
       return [];
@@ -127,6 +115,15 @@ export const Queue: FC<QueueProps> = () => {
   >(ARENA_ID, buffer, "registered", account?.decodedAddress).state;
 
   useEffect(() => {
+    setPlayers(JSON.parse(localStorage.getItem("players")));
+  }, [setPlayers]);
+
+  useEffect(() => {
+    if (registered) {
+      setPlayers(registered);
+      localStorage.setItem("players", JSON.stringify(registered));
+    }
+
     if (registered && !isEmpty(registered)) {
       // const queue = JSON.parse(localStorage.getItem("usersOnQueue")) ?? {};
       const usersOnQueue = registered.reduce((acc, cur) => {
@@ -136,7 +133,6 @@ export const Queue: FC<QueueProps> = () => {
         };
       }, {});
       localStorage.setItem("usersOnQueue", JSON.stringify(usersOnQueue));
-      localStorage.setItem("players", JSON.stringify(registered));
       updateUsersReadyForBattle(usersOnQueue);
     }
   }, [registered, updateUsersReadyForBattle]);

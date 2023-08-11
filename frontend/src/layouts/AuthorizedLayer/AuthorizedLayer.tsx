@@ -3,9 +3,9 @@ import { FC, ReactNode, memo, useEffect } from "react";
 import "./styles.scss";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { useNavigate } from "react-router-dom";
-import { useWasmMetadata } from "pages/Queue";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { MINT_ID } from "pages/MintCharacter/constants";
+import { useWasmMetadata } from "../../pages/MintCharacter/hooks/useWasmMetadata";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;

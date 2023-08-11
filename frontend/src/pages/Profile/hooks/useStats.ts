@@ -67,9 +67,8 @@ export const useStats = (
 
   useEffect(() => {
     if (charInfo?.attributes) {
-      const expectedLevel = LEVEL_XP.findIndex(
-        (lvlExp) => lvlExp > +charInfo.attributes.experience
-      );
+      const exp = charInfo.attributes.experience.replaceAll(",", "");
+      const expectedLevel = LEVEL_XP.findIndex((lvlExp) => lvlExp > +exp);
       const isAvailableLvlUp = expectedLevel - +charInfo.attributes.level > 0;
 
       setStats((prev) => ({
@@ -77,6 +76,7 @@ export const useStats = (
         ...charInfo.attributes,
         maxExp: LEVEL_XP[charInfo.attributes.level],
         points: isAvailableLvlUp ? "1" : "0",
+        experience: exp,
       }));
     }
   }, [charInfo]);

@@ -110,7 +110,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
           <div className={"modal_right"}>
             <StatBar
               health={stats.vitality * 30 + 10}
-              stamina={
+              energy={
                 [0, 110, 120, 130, 140, 150, 160, 170, 180, 190][stats.stamina]
               }
             />

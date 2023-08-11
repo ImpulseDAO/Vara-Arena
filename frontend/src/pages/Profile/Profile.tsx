@@ -9,7 +9,6 @@ import LogoIcon from "../../assets/images/avatar.png";
 import { useParams } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { useWasmMetadata } from "pages/Queue";
 import { MINT_ID } from "pages/MintCharacter/constants";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
@@ -17,6 +16,8 @@ import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
 import { ButtonGroup } from "components/ButtonGroup";
 import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
+import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
+import { ENERGY } from "../../app/constants";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -218,6 +219,7 @@ export const Profile: FC = () => {
         <div className="profile_equip">
           <StatBar
             health={Number(charInfo.state?.attributes.vitality) * 30 + 10}
+            energy={ENERGY[Number(charInfo.state?.attributes.stamina ?? 1)]}
           />
           <div className={"imgWrapper"}>
             <img className={"lock_img1"} src={LockSvg} alt="LockSvg" />

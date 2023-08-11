@@ -7,8 +7,12 @@ export type ExperienceBarProp = {
 };
 
 export const ExperienceBar: FC<ExperienceBarProp> = memo(({ curXp, maxXp }) => {
+  console.log("curXp, maxXp", curXp, maxXp);
+
   const percentage =
-    curXp > maxXp ? 100 : ((Number(curXp) / Number(maxXp)) * 100).toFixed(2);
+    Number(curXp) > Number(maxXp)
+      ? 100
+      : ((Number(curXp) / Number(maxXp)) * 100).toFixed(2);
   return (
     <div className="experienceBar_contaier">
       <p>XP</p>

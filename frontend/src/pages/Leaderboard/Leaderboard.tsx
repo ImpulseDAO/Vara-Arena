@@ -4,9 +4,9 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { useWasmMetadata } from "pages/Queue";
 import { ARENA_ID } from "pages/StartFight/constants";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 
 export type LeaderboardProps = {};
 

@@ -3,10 +3,10 @@ import "./styles.scss";
 
 export type StatBarProps = {
   health?: number | string;
-  stamina?: number | string;
+  energy?: number | string;
 };
 
-export const StatBar: FC<StatBarProps> = ({ health = 50, stamina = 50 }) => {
+export const StatBar: FC<StatBarProps> = ({ health = 50, energy = 50 }) => {
   return (
     <div>
       <div className={"Wrapper"}>
@@ -17,7 +17,7 @@ export const StatBar: FC<StatBarProps> = ({ health = 50, stamina = 50 }) => {
       <div className={"Wrapper"}>
         <div className={"leftText"}>Energy</div>
         <div className={"energyBar"} />
-        <div className={"number"}>{stamina}</div>
+        <div className={"number"}>{energy}</div>
       </div>
     </div>
   );

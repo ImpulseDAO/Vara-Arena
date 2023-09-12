@@ -6,8 +6,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@gear-js/api": "0.33.1",
-    "@gear-js/react-hooks": "0.6.3",
+    "@gear-js/api": "0.33.2",
+    "@gear-js/react-hooks": "0.6.4",
     "@gear-js/ui": "0.5.19",
     "@mantine/core": "^6.0.17",
     "@mantine/dates": "^6.0.17",

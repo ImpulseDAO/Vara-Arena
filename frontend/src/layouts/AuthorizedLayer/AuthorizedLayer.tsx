@@ -1,10 +1,11 @@
 import { Header } from "layouts/Header";
-import { FC, ReactNode, memo, useEffect } from "react";
+import { FC, ReactNode, memo, useEffect, useMemo } from "react";
 import "./styles.scss";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { useNavigate } from "react-router-dom";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { MINT_ID } from "pages/MintCharacter/constants";
+import { ProgramMetadata } from "@gear-js/api";
+import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import { useWasmMetadata } from "../../pages/MintCharacter/hooks/useWasmMetadata";
 
 export type AuthorizedLayerProps = {
@@ -16,6 +17,8 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
     const { account } = useAccount();
     const navigate = useNavigate();
     const { buffer } = useWasmMetadata(stateMetaWasm);
+    const meta = ProgramMetadata.from(METADATA);
+
 
     const charInfo = useReadWasmState<{
       id: string;
@@ -26,7 +29,7 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
         stamina: string;
       };
       name: string;
-    }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
+    }>({ programId: MINT_ID, programMetadata: meta, wasm: buffer, functionName: "character_info", argument: account?.decodedAddress });
 
     console.log("charInfo", charInfo);
 

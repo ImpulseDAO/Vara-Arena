@@ -31,10 +31,13 @@ export const Leaderboard = () => {
   const { buffer } = useWasmMetadata(arenaMetaWasm);
 
   const leaderBoard = useReadWasmState(
-    ARENA_ID,
-    buffer,
-    "leaderboard",
-    account?.decodedAddress
+    {
+      programId: ARENA_ID,
+      programMetadata: undefined,
+      wasm: buffer,
+      functionName: "leaderboard",
+      payload: account?.decodedAddress,
+    }
   ).state;
 
   const inProgressRows = useMemo(() => {

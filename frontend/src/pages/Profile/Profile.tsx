@@ -9,7 +9,8 @@ import LogoIcon from "../../assets/images/avatar.png";
 import { useParams } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { MINT_ID } from "pages/MintCharacter/constants";
+import { ProgramMetadata } from "@gear-js/api";
+import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
@@ -18,6 +19,8 @@ import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ENERGY } from "../../app/constants";
+
+
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -44,6 +47,7 @@ export const Profile: FC = () => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const { id } = useParams<{ id: string }>();
   const { account } = useAccount();
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
 
   const charInfo = useReadWasmState<{
     id: string;
@@ -56,7 +60,14 @@ export const Profile: FC = () => {
       level: string;
     };
     name: string;
-  }>(MINT_ID, buffer, "character_info", id);
+  }>({
+    programId: MINT_ID,
+    programMetadata: meta,
+    wasm: buffer,
+    functionName: "character_info",
+    argument: id
+  }
+  );
 
   const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
     charInfo?.state
@@ -174,7 +185,7 @@ export const Profile: FC = () => {
               leftText={"Strength"}
               secondButton={stats.strength}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Strength")
@@ -185,7 +196,7 @@ export const Profile: FC = () => {
               leftText={"Agility"}
               secondButton={stats.agility}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Agility")
@@ -196,7 +207,7 @@ export const Profile: FC = () => {
               leftText={"Vitality"}
               secondButton={stats.vitality}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Vitality")
@@ -207,7 +218,7 @@ export const Profile: FC = () => {
               leftText={"Stamina"}
               secondButton={stats.stamina}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Stamina")

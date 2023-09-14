@@ -1,4 +1,4 @@
-import { getProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
@@ -9,17 +9,17 @@ const LEVEL_XP = [
 export const useStats = (
   charInfo:
     | {
-        id: string;
-        attributes: {
-          strength: string;
-          agility: string;
-          vitality: string;
-          stamina: string;
-          experience: string;
-          level: string;
-        };
-        name: string;
-      }
+      id: string;
+      attributes: {
+        strength: string;
+        agility: string;
+        vitality: string;
+        stamina: string;
+        experience: string;
+        level: string;
+      };
+      name: string;
+    }
     | undefined
 ) => {
   const [stats, setStats] = useState({
@@ -41,7 +41,7 @@ export const useStats = (
     toggleVisible();
   }, []);
 
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const send = useSendMessage(MINT_ID, meta);
   const accept = useCallback(() => {
     if (attr) {

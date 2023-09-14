@@ -1,7 +1,7 @@
 import { useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
-import { getProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
 
 export const useOnSubmit = ({
@@ -19,7 +19,7 @@ export const useOnSubmit = ({
     points: number;
   };
 }): VoidFunction => {
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const send = useSendMessage(MINT_ID, meta);
   const navigate = useNavigate();
   return useCallback(() => {

@@ -10,7 +10,7 @@ import {
   useApi,
   useReadWasmState,
 } from "@gear-js/react-hooks";
-import { getProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 
 import { useUnit } from "effector-react";
@@ -86,7 +86,7 @@ export const Queue: FC<QueueProps> = () => {
   const [timer, setTimer] = useState(0);
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
 
   const inProgressRows = useMemo(() => {
     if (!players || isEmpty(Object.values(players))) {
@@ -112,7 +112,13 @@ export const Queue: FC<QueueProps> = () => {
       owner: string;
       position: string;
     }>
-  >(ARENA_ID, buffer, "registered", account?.decodedAddress).state;
+  >({
+    programId: ARENA_ID,
+    programMetadata: undefined,
+    wasm: buffer,
+    functionName: "registered",
+    argument: account?.decodedAddress
+  }).state;
 
   useEffect(() => {
     setPlayers(JSON.parse(localStorage.getItem("players")));
@@ -203,8 +209,8 @@ export const Queue: FC<QueueProps> = () => {
           <p className="modal_badge">{`${Math.floor(timer / 60)
             .toString()
             .padStart(2, "0")}:${(timer - Math.floor(timer / 60) * 60)
-            .toString()
-            .padStart(2, "0")}`}</p>
+              .toString()
+              .padStart(2, "0")}`}</p>
         </div>
         <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />

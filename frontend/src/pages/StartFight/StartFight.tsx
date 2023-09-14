@@ -1,10 +1,11 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 import { useStore } from "effector-react";
 import { userStore } from "model/user";
+import { ProgramMetadata } from "@gear-js/api";
 import { useOnSubmit } from "./hooks/useOnSubmit";
 import { StartFightView } from "./components/StartFightView";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { MINT_ID } from "pages/MintCharacter/constants";
+import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 
@@ -16,6 +17,8 @@ export const StartFight = memo(() => {
   const [user, setUser] = useState(undefined);
   const { account } = useAccount();
   const { buffer } = useWasmMetadata(stateMetaWasm);
+  const meta = ProgramMetadata.from(METADATA);
+
   // const charInfo = JSON.parse(localStorage.getItem("charInfo"));
   const handleSubmit = useOnSubmit();
 
@@ -28,7 +31,14 @@ export const StartFight = memo(() => {
       stamina: string;
     };
     name: string;
-  }>(MINT_ID, buffer, "character_info", account?.decodedAddress);
+  }>({
+    programId: MINT_ID,
+    programMetadata: meta,
+    wasm: buffer,
+    functionName: "character_info",
+    argument: account?.decodedAddress
+  }
+  );
   console.log("charInfo", charInfo, account?.decodedAddress);
 
   return (

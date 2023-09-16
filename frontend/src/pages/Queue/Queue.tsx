@@ -121,17 +121,6 @@ export const Queue: FC<QueueProps> = () => {
     }>
   >(metaWasmData).state;
 
-  const leaderBoard = useReadWasmState({
-    programId: ARENA_ID,
-    programMetadata: meta,
-    wasm: buffer,
-    functionName: "leaderboard",
-    payload: account?.decodedAddress,
-  }).state;
-
-  console.log("leaderBoard _ 4213 :>> ", leaderBoard);
-  console.log("registered _ 4213 :>> ", registered);
-
   useEffect(() => {
     setPlayers(JSON.parse(localStorage.getItem("players")));
   }, [setPlayers]);

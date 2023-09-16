@@ -3,23 +3,32 @@ import { useSendMessage } from "@gear-js/react-hooks";
 import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 const LEVEL_XP = [
-  300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
+  300,
+  600,
+  1800,
+  5400,
+  16200,
+  48600,
+  145800,
+  437400,
+  1312200,
+  3936600,
 ];
 
 export const useStats = (
   charInfo:
     | {
-      id: string;
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-        experience: string;
-        level: string;
-      };
-      name: string;
-    }
+        id: string;
+        attributes: {
+          strength: string;
+          agility: string;
+          vitality: string;
+          stamina: string;
+          experience: string;
+          level: string;
+        };
+        name: string;
+      }
     | undefined
 ) => {
   const [stats, setStats] = useState({
@@ -45,7 +54,6 @@ export const useStats = (
   const send = useSendMessage(MINT_ID, meta);
   const accept = useCallback(() => {
     if (attr) {
-      console.log("attr", attr);
       toggleVisible();
       send(
         {

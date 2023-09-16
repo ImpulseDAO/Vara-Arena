@@ -34,8 +34,6 @@ export const StartFight = memo(() => {
     [account?.decodedAddress, meta, buffer]
   );
 
-  console.log("metaWasmData :>> ", metaWasmData);
-
   const charInfo = useReadWasmState<{
     id: string;
     attributes: {

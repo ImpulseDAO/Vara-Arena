@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
+import { ARENA_ID } from "pages/StartFight/constants";
 
 export const useOnSubmit = ({
   codeId,
@@ -22,9 +23,12 @@ export const useOnSubmit = ({
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const send = useSendMessage(MINT_ID, meta);
   const navigate = useNavigate();
-  return useCallback(() => {
-    send(
-      {
+  const data = useMemo(
+    () => ({
+      destination: MINT_ID,
+      gasLimit: 18,
+      value: 0,
+      payload: {
         CreateCharacter: {
           code_id: codeId,
           attributes: {
@@ -36,15 +40,19 @@ export const useOnSubmit = ({
           name,
         },
       },
-      {
-        onSuccess: () => {
-          console.log("success");
-          navigate("/arena");
-        },
-        onError: () => {
-          console.log("error");
-        },
-      }
-    );
+    }),
+    []
+  );
+
+  return useCallback(() => {
+    send(data, {
+      onSuccess: () => {
+        console.log("success");
+        navigate("/arena");
+      },
+      onError: () => {
+        console.log("error");
+      },
+    });
   }, [codeId, name, navigate, send, stats]);
 };

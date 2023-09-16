@@ -40,14 +40,12 @@ export const Leaderboard = () => {
       programMetadata: meta,
       wasm: buffer,
       functionName: "leaderboard",
-      payload: account?.decodedAddress,
+      argument: account?.decodedAddress,
     }),
     [buffer, account?.decodedAddress, meta]
   );
 
   const leaderBoard = useReadWasmState(metaWasmData).state;
-  console.log("leaderBoard :>> ", leaderBoard, useReadWasmState(metaWasmData));
-  console.log("metaWasmData_1 :>> ", metaWasmData);
   const inProgressRows = useMemo(() => {
     if (leaderBoard) {
       return Object.keys(leaderBoard)

@@ -86,7 +86,7 @@ export const Queue: FC<QueueProps> = () => {
   const [timer, setTimer] = useState(0);
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const meta = ProgramMetadata.from(METADATA);
 
   const inProgressRows = useMemo(() => {
     if (!players || isEmpty(Object.values(players))) {
@@ -114,7 +114,7 @@ export const Queue: FC<QueueProps> = () => {
     }>
   >({
     programId: ARENA_ID,
-    programMetadata: undefined,
+    programMetadata: meta,
     wasm: buffer,
     functionName: "registered",
     argument: account?.decodedAddress

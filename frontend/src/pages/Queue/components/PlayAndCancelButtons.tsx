@@ -17,7 +17,7 @@ export const PlayAndCancelButtons = ({
   isDoubleReservationNeeded?: boolean;
 }) => {
   const navigate = useNavigate();
-  const meta = ProgramMetadata.from(METADATA);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const send = useSendMessage(ARENA_ID, meta);
 
   const isUserHasPermissionToCancel = false;

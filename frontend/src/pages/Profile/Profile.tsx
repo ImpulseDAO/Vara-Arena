@@ -19,8 +19,7 @@ import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ENERGY } from "../../app/constants";
-
-
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -49,6 +48,17 @@ export const Profile: FC = () => {
   const { account } = useAccount();
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
 
+  const metaWasmData: MetaWasmDataType = useMemo(
+    () => ({
+      programId: MINT_ID,
+      programMetadata: meta,
+      wasm: buffer,
+      functionName: "character_info",
+      argument: id,
+    }),
+    [id, meta, buffer]
+  );
+
   const charInfo = useReadWasmState<{
     id: string;
     attributes: {
@@ -60,14 +70,7 @@ export const Profile: FC = () => {
       level: string;
     };
     name: string;
-  }>({
-    programId: MINT_ID,
-    programMetadata: meta,
-    wasm: buffer,
-    functionName: "character_info",
-    argument: id
-  }
-  );
+  }>(metaWasmData);
 
   const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
     charInfo?.state
@@ -185,7 +188,7 @@ export const Profile: FC = () => {
               leftText={"Strength"}
               secondButton={stats.strength}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
+              onClickSecondButton={() => {}}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Strength")
@@ -196,7 +199,7 @@ export const Profile: FC = () => {
               leftText={"Agility"}
               secondButton={stats.agility}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
+              onClickSecondButton={() => {}}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Agility")
@@ -207,7 +210,7 @@ export const Profile: FC = () => {
               leftText={"Vitality"}
               secondButton={stats.vitality}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
+              onClickSecondButton={() => {}}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Vitality")
@@ -218,7 +221,7 @@ export const Profile: FC = () => {
               leftText={"Stamina"}
               secondButton={stats.stamina}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
+              onClickSecondButton={() => {}}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Stamina")

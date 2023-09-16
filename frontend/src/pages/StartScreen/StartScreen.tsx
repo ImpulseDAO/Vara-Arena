@@ -3,7 +3,7 @@ import "./styles.scss";
 import { Button } from "components/Button";
 import { AccountsModal } from "components/AccountsModal";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { useAccount, useAlert, useReadWasmState } from "@gear-js/react-hooks";
+import { useAccount, useAlert } from "@gear-js/react-hooks";
 import { MINT_ID } from "pages/MintCharacter/constants";
 import { Outlet, useNavigate } from "react-router-dom";
 

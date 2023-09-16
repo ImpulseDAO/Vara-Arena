@@ -7,6 +7,7 @@ import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { ProgramMetadata } from "@gear-js/api";
 import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import { useWasmMetadata } from "../../pages/MintCharacter/hooks/useWasmMetadata";
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;
@@ -19,6 +20,16 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
     const { buffer } = useWasmMetadata(stateMetaWasm);
     const meta = ProgramMetadata.from(METADATA);
 
+    const metaWasmData: MetaWasmDataType = useMemo(
+      () => ({
+        programId: MINT_ID,
+        programMetadata: meta,
+        wasm: buffer,
+        functionName: "character_info",
+        argument: account?.decodedAddress,
+      }),
+      [meta, buffer, account?.decodedAddress]
+    );
 
     const charInfo = useReadWasmState<{
       id: string;
@@ -29,9 +40,7 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
         stamina: string;
       };
       name: string;
-    }>({ programId: MINT_ID, programMetadata: meta, wasm: buffer, functionName: "character_info", argument: account?.decodedAddress });
-
-    console.log("charInfo", charInfo);
+    }>(metaWasmData);
 
     useEffect(() => {
       if (charInfo.state) {

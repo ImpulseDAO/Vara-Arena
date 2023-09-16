@@ -15,17 +15,30 @@ import {
   addCodeIdToLocalStorage,
   getCodeIdsFromLocalStorage,
 } from "hooks/useUploadCode/useUploadCode";
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type MintCharacterProps = {};
 
 export const STRATEGY_CODE_ID_HARDCODED =
-  "0xfb63a322fb1836b112fc102d9ae966e0614afdf80e9f19e231e4a28328d0a989";
+  "0x25c002d7c488d8117a6c003c3ed04f11da6eb95f912dda39e31c4a634cd1f79f";
+// "0xfb63a322fb1836b112fc102d9ae966e0614afdf80e9f19e231e4a28328d0a989";
 
 export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const setUserName = useUnit(userStore.setName);
   const { account } = useAccount();
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+
+  const metaWasmData: MetaWasmDataType = useMemo(
+    () => ({
+      programId: MINT_ID,
+      programMetadata: meta,
+      wasm: buffer,
+      functionName: "character_info",
+      argument: account?.decodedAddress,
+    }),
+    [meta, buffer, account?.decodedAddress]
+  );
 
   const charInfo = useReadWasmState<{
     id: string;
@@ -36,14 +49,8 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
       stamina: string;
     };
     name: string;
-  }>(
-    {
-      programId: MINT_ID,
-      programMetadata: meta,
-      wasm: buffer,
-      functionName: "character_info",
-      argument: account?.decodedAddress
-    });
+  }>(metaWasmData);
+
   const [data, setData] = useState({
     codeId: getCodeIdsFromLocalStorage()[0] ?? "",
     name: "",

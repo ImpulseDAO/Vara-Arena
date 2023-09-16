@@ -27,7 +27,12 @@ export const useOnSubmit = ({
       {
         CreateCharacter: {
           code_id: codeId,
-          attributes: stats,
+          attributes: {
+            agility: stats.agility,
+            stamina: stats.stamina,
+            strength: stats.strength,
+            vitality: stats.vitality,
+          },
           name,
         },
       },

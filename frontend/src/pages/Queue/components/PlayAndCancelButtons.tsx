@@ -38,9 +38,7 @@ export const PlayAndCancelButtons = ({
   const reserveGas = React.useCallback(() => {
     return new Promise((resolve) => {
       send(
-        {
-          ReserveGas: null,
-        },
+        { ReserveGas: null },
         {
           onSuccess: () => {
             console.log("successfully reserved gas");

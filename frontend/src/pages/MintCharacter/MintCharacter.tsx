@@ -1,5 +1,5 @@
 import { FC, memo, useEffect, useState, useMemo } from "react";
-import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
+import { useAccount, useApi, useReadWasmState } from "@gear-js/react-hooks";
 import { useUnit } from "effector-react";
 import { ProgramMetadata } from "@gear-js/api";
 import { userStore } from "model/user";

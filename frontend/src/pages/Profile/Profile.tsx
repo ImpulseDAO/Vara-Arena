@@ -76,6 +76,8 @@ export const Profile: FC = () => {
     charInfo?.state
   );
 
+  console.log("charInfo?.state :>> ", charInfo?.state);
+
   const rows = useMemo(() => {
     const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));
     const usersOnQueue = JSON.parse(localStorage.getItem("usersOnQueue"));

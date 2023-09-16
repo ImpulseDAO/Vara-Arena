@@ -208,7 +208,6 @@ export const Battle: FC<BattleProps> = () => {
       </h2>
 
       <div className="battle_users">
-        git
         <BattleUser
           user={user1}
           userIndex={1}

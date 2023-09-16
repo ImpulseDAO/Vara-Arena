@@ -1,4 +1,4 @@
-import { useSendMessage } from "@gear-js/react-hooks";
+import { useApi, useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
 import { ProgramMetadata } from "@gear-js/api";
@@ -21,14 +21,14 @@ export const useOnSubmit = ({
   };
 }): VoidFunction => {
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const { api } = useApi();
+
   const send = useSendMessage(MINT_ID, meta);
   const navigate = useNavigate();
-  const data = useMemo(
-    () => ({
-      destination: MINT_ID,
-      gasLimit: 18,
-      value: 0,
-      payload: {
+
+  return useCallback(() => {
+    send(
+      {
         CreateCharacter: {
           code_id: codeId,
           attributes: {
@@ -40,19 +40,15 @@ export const useOnSubmit = ({
           name,
         },
       },
-    }),
-    []
-  );
-
-  return useCallback(() => {
-    send(data, {
-      onSuccess: () => {
-        console.log("success");
-        navigate("/arena");
-      },
-      onError: () => {
-        console.log("error");
-      },
-    });
+      {
+        onSuccess: () => {
+          console.log("success");
+          navigate("/arena");
+        },
+        onError: () => {
+          console.log("error");
+        },
+      }
+    );
   }, [codeId, name, navigate, send, stats]);
 };

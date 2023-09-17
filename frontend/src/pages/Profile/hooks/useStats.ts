@@ -51,7 +51,7 @@ export const useStats = (
   }, []);
 
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const send = useSendMessage(MINT_ID, meta);
+  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
   const accept = useCallback(() => {
     if (attr) {
       toggleVisible();

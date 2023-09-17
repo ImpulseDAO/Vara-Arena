@@ -18,7 +18,7 @@ export const PlayAndCancelButtons = ({
 }) => {
   const navigate = useNavigate();
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta);
+  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
 
   const isUserHasPermissionToCancel = false;
 

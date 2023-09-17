@@ -1,7 +1,11 @@
 import { useApi, useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
-import { ProgramMetadata } from "@gear-js/api";
+import {
+  IMessageSendOptions,
+  IMessageSendReplyOptions,
+  ProgramMetadata,
+} from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
 import { ARENA_ID } from "pages/StartFight/constants";
 
@@ -23,10 +27,10 @@ export const useOnSubmit = ({
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const { api } = useApi();
 
-  const send = useSendMessage(MINT_ID, meta);
+  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
   const navigate = useNavigate();
 
-  return useCallback(() => {
+  return useCallback(async () => {
     send(
       {
         CreateCharacter: {

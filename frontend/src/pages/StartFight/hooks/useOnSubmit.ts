@@ -9,7 +9,7 @@ export const useOnSubmit = (): VoidFunction => {
   const { account } = useAccount();
 
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta);
+  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
 
   return useCallback(() => {
     navigate("/tournament");

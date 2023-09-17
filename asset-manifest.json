@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/AArena/static/css/main.606ae5d6.css",
-    "main.js": "/AArena/static/js/main.d7241e4c.js",
+    "main.css": "/AArena/static/css/main.044d3656.css",
+    "main.js": "/AArena/static/js/main.88d9aefd.js",
     "static/media/startScreen.png": "/AArena/static/media/startScreen.de8d9b2609c0773b4d70.png",
     "static/media/waitingScreen.png": "/AArena/static/media/waitingScreen.42a40f42109b41834b60.png",
     "static/media/battle.png": "/AArena/static/media/battle.223eb032fa4314bd2b9f.png",
@@ -12,7 +12,7 @@
     "static/media/char.svg": "/AArena/static/media/char.5255214121e3ec6268337e3e63fb4001.svg",
     "static/media/lock.svg": "/AArena/static/media/lock.a1f997e58c55e973d33c830990ccca4f.svg",
     "static/media/arena_state.meta.wasm": "/AArena/static/media/arena_state.meta.5bf86d6e4c72bcadcd28.wasm",
-    "static/media/mint_state.meta.wasm": "/AArena/static/media/mint_state.meta.38d096289afb4db86601.wasm",
+    "static/media/mint_state.meta.wasm": "/AArena/static/media/mint_state.meta.8b4a94fde8f7ba509656.wasm",
     "static/media/serpiente-display-medium-trial-webfont.woff": "/AArena/static/media/serpiente-display-medium-trial-webfont.7145994df7117cf2ef32.woff",
     "static/media/serpiente-display-medium-trial-webfont.woff2": "/AArena/static/media/serpiente-display-medium-trial-webfont.1db6494657661cc760b4.woff2",
     "static/media/upload_icon.svg": "/AArena/static/media/upload_icon.8ab4b61f0f1776acb298ba937057eecf.svg",
@@ -23,11 +23,11 @@
     "static/media/back.svg": "/AArena/static/media/back.8de93fbe4e80fb9e36206bd1063f6702.svg",
     "index.html": "/AArena/index.html",
     "static/media/progress.svg": "/AArena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
-    "main.606ae5d6.css.map": "/AArena/static/css/main.606ae5d6.css.map",
-    "main.d7241e4c.js.map": "/AArena/static/js/main.d7241e4c.js.map"
+    "main.044d3656.css.map": "/AArena/static/css/main.044d3656.css.map",
+    "main.88d9aefd.js.map": "/AArena/static/js/main.88d9aefd.js.map"
   },
   "entrypoints": [
-    "static/css/main.606ae5d6.css",
-    "static/js/main.d7241e4c.js"
+    "static/css/main.044d3656.css",
+    "static/js/main.88d9aefd.js"
   ]
 }

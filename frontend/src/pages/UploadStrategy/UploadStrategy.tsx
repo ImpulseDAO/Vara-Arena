@@ -53,7 +53,6 @@ export const UploadStrategy = () => {
       if (fileContent) {
         //@ts-ignore
         const { codeHash } = await api.code.upload(fileContent);
-        console.log("codeHash", codeHash);
 
         setHash(codeHash);
 

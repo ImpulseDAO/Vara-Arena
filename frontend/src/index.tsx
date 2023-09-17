@@ -7,7 +7,6 @@ import {
   AlertProvider as GearAlertProvider,
 } from "@gear-js/react-hooks";
 import { Alert, alertStyles } from "@gear-js/ui";
-
 import { ADDRESS } from "consts";
 import { ProviderProps } from "@gear-js/react-hooks/dist/esm/types";
 import { RouterProvider } from "react-router-dom";

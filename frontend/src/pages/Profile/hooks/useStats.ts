@@ -1,9 +1,18 @@
-import { getProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 const LEVEL_XP = [
-  300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
+  300,
+  600,
+  1800,
+  5400,
+  16200,
+  48600,
+  145800,
+  437400,
+  1312200,
+  3936600,
 ];
 
 export const useStats = (
@@ -41,11 +50,10 @@ export const useStats = (
     toggleVisible();
   }, []);
 
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
-  const send = useSendMessage(MINT_ID, meta);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
   const accept = useCallback(() => {
     if (attr) {
-      console.log("attr", attr);
       toggleVisible();
       send(
         {

@@ -1,8 +1,13 @@
-import { useSendMessage } from "@gear-js/react-hooks";
+import { useApi, useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
-import { getProgramMetadata } from "@gear-js/api";
+import {
+  IMessageSendOptions,
+  IMessageSendReplyOptions,
+  ProgramMetadata,
+} from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
+import { ARENA_ID } from "pages/StartFight/constants";
 
 export const useOnSubmit = ({
   codeId,
@@ -19,15 +24,23 @@ export const useOnSubmit = ({
     points: number;
   };
 }): VoidFunction => {
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
-  const send = useSendMessage(MINT_ID, meta);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const { api } = useApi();
+
+  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
   const navigate = useNavigate();
-  return useCallback(() => {
+
+  return useCallback(async () => {
     send(
       {
         CreateCharacter: {
           code_id: codeId,
-          attributes: stats,
+          attributes: {
+            agility: stats.agility,
+            stamina: stats.stamina,
+            strength: stats.strength,
+            vitality: stats.vitality,
+          },
           name,
         },
       },

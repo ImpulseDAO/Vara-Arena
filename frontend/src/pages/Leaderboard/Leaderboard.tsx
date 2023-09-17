@@ -4,9 +4,12 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { ARENA_ID } from "pages/StartFight/constants";
+import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
+import { ProgramMetadata } from "@gear-js/api";
+import { colors } from "react-select/dist/declarations/src/theme";
 
 export type LeaderboardProps = {};
 
@@ -29,14 +32,20 @@ export const Leaderboard = () => {
   const navigate = useNavigate();
   const { account } = useAccount();
   const { buffer } = useWasmMetadata(arenaMetaWasm);
+  const meta = ProgramMetadata.from(METADATA);
 
-  const leaderBoard = useReadWasmState(
-    ARENA_ID,
-    buffer,
-    "leaderboard",
-    account?.decodedAddress
-  ).state;
+  const metaWasmData: MetaWasmDataType = useMemo(
+    () => ({
+      programId: ARENA_ID,
+      programMetadata: meta,
+      wasm: buffer,
+      functionName: "leaderboard",
+      argument: account?.decodedAddress,
+    }),
+    [buffer, account?.decodedAddress, meta]
+  );
 
+  const leaderBoard = useReadWasmState(metaWasmData).state;
   const inProgressRows = useMemo(() => {
     if (leaderBoard) {
       return Object.keys(leaderBoard)

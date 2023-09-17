@@ -4,13 +4,8 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
-import {
-  useAccount,
-  useAlert,
-  useApi,
-  useReadWasmState,
-} from "@gear-js/react-hooks";
-import { getProgramMetadata } from "@gear-js/api";
+import { useAccount, useApi, useReadWasmState } from "@gear-js/react-hooks";
+import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 
 import { useUnit } from "effector-react";
@@ -23,6 +18,7 @@ import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { log } from "console";
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type QueueProps = {};
 
@@ -86,7 +82,7 @@ export const Queue: FC<QueueProps> = () => {
   const [timer, setTimer] = useState(0);
   const [players, setPlayers] = useState([]);
   const navigate = useNavigate();
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
 
   const inProgressRows = useMemo(() => {
     if (!players || isEmpty(Object.values(players))) {
@@ -96,6 +92,17 @@ export const Queue: FC<QueueProps> = () => {
   }, [players]);
 
   const { buffer } = useWasmMetadata(arenaMetaWasm);
+
+  const metaWasmData: MetaWasmDataType = useMemo(
+    () => ({
+      programId: ARENA_ID,
+      programMetadata: meta,
+      wasm: buffer,
+      functionName: "registered",
+      argument: account?.decodedAddress,
+    }),
+    [account?.decodedAddress, meta, buffer]
+  );
 
   const registered = useReadWasmState<
     Array<{
@@ -112,7 +119,7 @@ export const Queue: FC<QueueProps> = () => {
       owner: string;
       position: string;
     }>
-  >(ARENA_ID, buffer, "registered", account?.decodedAddress).state;
+  >(metaWasmData).state;
 
   useEffect(() => {
     setPlayers(JSON.parse(localStorage.getItem("players")));

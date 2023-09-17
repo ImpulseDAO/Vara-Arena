@@ -9,7 +9,8 @@ import LogoIcon from "../../assets/images/avatar.png";
 import { useParams } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { MINT_ID } from "pages/MintCharacter/constants";
+import { ProgramMetadata } from "@gear-js/api";
+import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
@@ -18,6 +19,7 @@ import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ENERGY } from "../../app/constants";
+import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -44,6 +46,18 @@ export const Profile: FC = () => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const { id } = useParams<{ id: string }>();
   const { account } = useAccount();
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+
+  const metaWasmData: MetaWasmDataType = useMemo(
+    () => ({
+      programId: MINT_ID,
+      programMetadata: meta,
+      wasm: buffer,
+      functionName: "character_info",
+      argument: id,
+    }),
+    [id, meta, buffer]
+  );
 
   const charInfo = useReadWasmState<{
     id: string;
@@ -56,11 +70,13 @@ export const Profile: FC = () => {
       level: string;
     };
     name: string;
-  }>(MINT_ID, buffer, "character_info", id);
+  }>(metaWasmData);
 
   const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
     charInfo?.state
   );
+
+  console.log("charInfo?.state :>> ", charInfo?.state);
 
   const rows = useMemo(() => {
     const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));

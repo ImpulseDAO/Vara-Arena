@@ -152,8 +152,6 @@ export const Battle: FC<BattleProps> = () => {
     };
   }, [battleLogs, curBattleIndex]);
 
-  console.log("currentBattleLog", currentBattleLog);
-
   const [user1, user2] = useMemo(() => {
     const curBattle = battleLogs.logs[curBattleIndex];
     if (usersOnBattle && curBattle) {
@@ -210,7 +208,6 @@ export const Battle: FC<BattleProps> = () => {
       </h2>
 
       <div className="battle_users">
-        git
         <BattleUser
           user={user1}
           userIndex={1}
@@ -270,8 +267,14 @@ export const Battle: FC<BattleProps> = () => {
         </div>
         <table className="battle_logs_content">
           {(currentBattleLog.turns ?? []).map((currentTurn, i, arr) => {
-            const { isPl1Turn, isMove, isAttack, isMiss, isRest, value } =
-              currentTurn;
+            const {
+              isPl1Turn,
+              isMove,
+              isAttack,
+              isMiss,
+              isRest,
+              value,
+            } = currentTurn;
 
             const name = usersOnBattle[currentTurn.id].name;
 

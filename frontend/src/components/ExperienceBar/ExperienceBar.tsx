@@ -7,8 +7,6 @@ export type ExperienceBarProp = {
 };
 
 export const ExperienceBar: FC<ExperienceBarProp> = memo(({ curXp, maxXp }) => {
-  console.log("curXp, maxXp", curXp, maxXp);
-
   const percentage =
     Number(curXp) > Number(maxXp)
       ? 100

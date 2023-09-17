@@ -128,7 +128,6 @@ const useCodeUpload = () => {
           web3FromSource(meta.source),
         ]);
 
-        console.log("codeId", codeId);
         addCodeIdToLocalStorage(codeId);
         resolve(codeId);
 

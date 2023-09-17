@@ -30,8 +30,6 @@ export const StrategyInput = ({
     };
   });
 
-  console.log("selectData", selectData);
-
   const inputFileRef = React.useRef<HTMLInputElement>();
 
   const uploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,7 +62,6 @@ export const StrategyInput = ({
   };
 
   const handleClickAndUpload = () => {
-    console.log("handleClickAndUpload");
     if (inputFileRef.current) {
       inputFileRef.current.click();
     }

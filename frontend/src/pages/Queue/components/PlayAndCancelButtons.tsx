@@ -2,7 +2,7 @@ import "../styles.scss";
 
 import React, { useMemo } from "react";
 import { useSendMessage } from "@gear-js/react-hooks";
-import { getProgramMetadata } from "@gear-js/api";
+import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 import { useNavigate } from "react-router-dom";
 import { Button, Text } from "@mantine/core";
@@ -17,8 +17,8 @@ export const PlayAndCancelButtons = ({
   isDoubleReservationNeeded?: boolean;
 }) => {
   const navigate = useNavigate();
-  const meta = useMemo(() => getProgramMetadata(METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta);
+  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
 
   const isUserHasPermissionToCancel = false;
 
@@ -38,9 +38,7 @@ export const PlayAndCancelButtons = ({
   const reserveGas = React.useCallback(() => {
     return new Promise((resolve) => {
       send(
-        {
-          ReserveGas: null,
-        },
+        { ReserveGas: null },
         {
           onSuccess: () => {
             console.log("successfully reserved gas");

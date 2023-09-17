@@ -3,6 +3,7 @@ import { Accounts } from "../accounts";
 import { useAccount } from "@gear-js/react-hooks";
 import { Account } from "@gear-js/react-hooks/dist/esm/types";
 import styles from "./AccountsModal.module.scss";
+import { memo } from "react";
 
 type Props = {
   close: () => void;
@@ -10,7 +11,7 @@ type Props = {
   account?: Account;
 };
 
-export const AccountsModal = ({ close, userChoose, account }: Props) => {
+export const AccountsModal = memo(({ close, userChoose, account }: Props) => {
   const { accounts, logout } = useAccount();
   return (
     <Modal heading="Connect" close={close}>
@@ -39,4 +40,4 @@ export const AccountsModal = ({ close, userChoose, account }: Props) => {
       ) : null}
     </Modal>
   );
-};
+});

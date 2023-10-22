@@ -14,7 +14,13 @@ pub enum GameAction {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum TurnResult {
+pub struct TurnResult {
+    pub character: ActorId,
+    pub action: TurnAction,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum TurnAction {
     NotEnoughEnergy,
     Miss { position: u8 },
     Attack { position: u8, damage: u8 },
@@ -54,8 +60,8 @@ pub enum SetTier {
 #[derive(Encode, Decode, Debug)]
 pub enum AttackKind {
     Quick,
-    Normal,
-    Hard,
+    Precise,
+    Heavy,
 }
 
 #[derive(Encode, Decode, Debug)]
@@ -64,6 +70,20 @@ pub enum BattleAction {
     MoveRight,
     MoveLeft,
     Rest,
+}
+
+impl BattleAction {
+    pub fn initiative(&self) -> u8 {
+        match self {
+            BattleAction::Attack { kind } => match kind {
+                AttackKind::Quick => 1,
+                AttackKind::Precise => 2,
+                AttackKind::Heavy => 3,
+            },
+            BattleAction::MoveLeft | BattleAction::MoveRight => 2,
+            _ => todo!(),
+        }
+    }
 }
 
 #[derive(Encode, Decode)]

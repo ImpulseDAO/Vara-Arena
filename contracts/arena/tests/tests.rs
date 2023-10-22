@@ -4,6 +4,11 @@ use gtest::{Program, System};
 use mint_io::{InitialAttributes, MintAction};
 
 const USER_ID: u64 = 10;
+const USER2_ID: u64 = 20;
+const USER3_ID: u64 = 30;
+const USER4_ID: u64 = 40;
+
+const ARENA_ID: u64 = 2;
 
 #[test]
 fn game() {
@@ -22,8 +27,15 @@ fn game() {
     );
     arena.send(USER_ID, mint.id());
 
+    mint.send(
+        USER_ID,
+        MintAction::SetArena {
+            arena_id: (ARENA_ID.into()),
+        },
+    );
+
     let hash: [u8; 32] = system
-        .submit_code("../../target/wasm32-unknown-unknown/release/character.wasm")
+        .submit_code("../../target/wasm32-unknown-unknown/release/berserk.wasm")
         .into();
     let code_id = CodeId::from(hash);
 
@@ -31,14 +43,16 @@ fn game() {
         code_id,
         name: "Oleg".to_string(),
         attributes: InitialAttributes {
-            agility: 1,
-            strength: 1,
+            agility: 2,
+            strength: 3,
             stamina: 1,
-            vitality: 1,
+            vitality: 2,
         },
     };
     mint.send(USER_ID, payload.clone());
-    mint.send(USER_ID, payload);
+    mint.send(USER2_ID, payload.clone());
+    mint.send(USER3_ID, payload.clone());
+    mint.send(USER4_ID, payload.clone());
 
     arena.send(
         USER_ID,
@@ -53,15 +67,22 @@ fn game() {
         },
     );
     arena.send(
-        USER_ID,
+        USER2_ID,
         GameAction::Register {
-            owner_id: USER_ID.into(),
+            owner_id: USER2_ID.into(),
         },
     );
     arena.send(
-        USER_ID,
+        USER3_ID,
         GameAction::Register {
-            owner_id: USER_ID.into(),
+            owner_id: USER3_ID.into(),
+        },
+    );
+
+    arena.send(
+        USER4_ID,
+        GameAction::Register {
+            owner_id: USER4_ID.into(),
         },
     );
 
@@ -69,4 +90,81 @@ fn game() {
     arena.send(USER_ID, GameAction::ReserveGas);
 
     arena.send(USER_ID, GameAction::Play);
+
+    arena.send(USER_ID, GameAction::CleanState);
+
+    mint.send(
+        USER_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+    mint.send(
+        USER2_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+
+    mint.send(
+        USER3_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+
+    arena.send(
+        USER_ID,
+        GameAction::Register {
+            owner_id: USER_ID.into(),
+        },
+    );
+    arena.send(
+        USER2_ID,
+        GameAction::Register {
+            owner_id: USER2_ID.into(),
+        },
+    );
+    arena.send(
+        USER3_ID,
+        GameAction::Register {
+            owner_id: USER3_ID.into(),
+        },
+    );
+    arena.send(
+        USER4_ID,
+        GameAction::Register {
+            owner_id: USER4_ID.into(),
+        },
+    );
+    arena.send(USER_ID, GameAction::ReserveGas);
+    arena.send(USER_ID, GameAction::ReserveGas);
+
+    arena.send(USER_ID, GameAction::Play);
+
+    mint.send(
+        USER_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+    mint.send(
+        USER2_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+
+    mint.send(
+        USER3_ID,
+        MintAction::LevelUp {
+            attr: (mint_io::AttributeChoice::Strength),
+        },
+    );
+    arena.send(
+        USER_ID,
+        GameAction::Register {
+            owner_id: USER_ID.into(),
+        },
+    );
 }

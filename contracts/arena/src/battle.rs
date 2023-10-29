@@ -50,8 +50,8 @@ impl Battle {
         let mut p2_energy_reg_counter = 0;
         let p1_stamina = self.c1.attributes.stamina;
         let p2_stamina = self.c2.attributes.stamina;
-        let p1_initiative_incr = 0;
-        let p2_initiative_incr = 0;
+        let mut p1_initiative_incr = 0;
+        let mut p2_initiative_incr = 0;
 
         loop {
             let p1_cant_rest = p1_energy_reg_counter == 3;
@@ -110,12 +110,17 @@ impl Battle {
             let p1_initiative = p1_action.initiative() + p1_initiative_incr;
             let p2_initiative = p2_action.initiative() + p2_initiative_incr;
 
+            p1_initiative_incr = 0;
+            p2_initiative_incr = 0;
+
             if p1_initiative > p2_initiative {
-                let result = self.execute_action(
+                let result = Battle::execute_action(
                     &p1_action,
                     &mut self.c1,
                     &mut self.c2,
                     &mut p1_energy_reg_counter,
+                    &mut p2_initiative_incr,
+                    false,
                 );
                 turns.push(result);
                 if self.c2.hp == 0 {
@@ -128,11 +133,13 @@ impl Battle {
                     };
                 }
 
-                let result = self.execute_action(
+                let result = Battle::execute_action(
                     &p2_action,
                     &mut self.c2,
                     &mut self.c1,
                     &mut p2_energy_reg_counter,
+                    &mut p1_initiative_incr,
+                    matches!(&p1_action, BattleAction::Parry),
                 );
                 turns.push(result);
                 if self.c1.hp == 0 {
@@ -145,11 +152,13 @@ impl Battle {
                     };
                 }
             } else {
-                let result = self.execute_action(
+                let result = Battle::execute_action(
                     &p2_action,
                     &mut self.c2,
                     &mut self.c1,
                     &mut p2_energy_reg_counter,
+                    &mut p1_initiative_incr,
+                    false,
                 );
                 turns.push(result);
                 if self.c1.hp == 0 {
@@ -162,11 +171,13 @@ impl Battle {
                     };
                 }
 
-                let result = self.execute_action(
+                let result = Battle::execute_action(
                     &p1_action,
                     &mut self.c1,
                     &mut self.c2,
                     &mut p1_energy_reg_counter,
+                    &mut p2_initiative_incr,
+                    matches!(&p2_action, BattleAction::Parry),
                 );
                 turns.push(result);
                 if self.c2.hp == 0 {
@@ -183,23 +194,31 @@ impl Battle {
     }
 
     fn execute_action(
-        &self,
         action: &BattleAction,
         player: &mut Character,
         enemy: &mut Character,
-        &mut reg_counter: i32,
+        reg_counter: &mut i32,
+        enemy_initiative_incr: &mut u8,
+        enemy_parry: bool,
     ) -> TurnResult {
-        match action {
+        let action = match action {
             BattleAction::Attack { kind } => match kind {
                 AttackKind::Quick => {
                     if let Some(energy) = player.energy.checked_sub(10) {
                         player.energy = energy;
                         if player.position.abs_diff(enemy.position) == 1 {
-                            let damage = QUICK_DAMAGE[usize::from(player.attributes.strength)];
-                            enemy.hp = enemy.hp.saturating_sub(damage);
-                            TurnAction::Attack {
-                                position: player.position,
-                                damage,
+                            if enemy_parry {
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage: 0,
+                                }
+                            } else {
+                                let damage = QUICK_DAMAGE[usize::from(player.attributes.strength)];
+                                enemy.hp = enemy.hp.saturating_sub(damage);
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage,
+                                }
                             }
                         } else {
                             TurnAction::Miss {
@@ -218,11 +237,19 @@ impl Battle {
                     if let Some(energy) = player.energy.checked_sub(20) {
                         player.energy = energy;
                         if player.position.abs_diff(enemy.position) == 1 {
-                            let damage = PRESIZE_DAMAGE[usize::from(player.attributes.strength)];
-                            enemy.hp = enemy.hp.saturating_sub(damage);
-                            TurnAction::Attack {
-                                position: player.position,
-                                damage,
+                            if enemy_parry {
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage: 0,
+                                }
+                            } else {
+                                let damage =
+                                    PRESIZE_DAMAGE[usize::from(player.attributes.strength)];
+                                enemy.hp = enemy.hp.saturating_sub(damage);
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage,
+                                }
                             }
                         } else {
                             TurnAction::Miss {
@@ -241,11 +268,18 @@ impl Battle {
                     if let Some(energy) = player.energy.checked_sub(30) {
                         player.energy = energy;
                         if player.position.abs_diff(enemy.position) == 1 {
-                            let damage = HEAVY_DAMAGE[usize::from(player.attributes.strength)];
-                            enemy.hp = enemy.hp.saturating_sub(damage);
-                            TurnAction::Attack {
-                                position: player.position,
-                                damage,
+                            if enemy_parry {
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage: 0,
+                                }
+                            } else {
+                                let damage = HEAVY_DAMAGE[usize::from(player.attributes.strength)];
+                                enemy.hp = enemy.hp.saturating_sub(damage);
+                                TurnAction::Attack {
+                                    position: player.position,
+                                    damage,
+                                }
                             }
                         } else {
                             TurnAction::Miss {
@@ -294,7 +328,7 @@ impl Battle {
                 }
             }
             BattleAction::Rest => {
-                if reg_counter < 3 {
+                if *reg_counter < 3 {
                     let full_energy = ENERGY[usize::from(player.attributes.stamina)];
                     let reg_tick = Battle::energy_regeneration(player.attributes.stamina) - 5;
                     player.energy = min(player.energy + reg_tick, full_energy);
@@ -306,6 +340,20 @@ impl Battle {
                     TurnAction::NotEnoughEnergy
                 }
             }
+            BattleAction::Parry => {
+                if let Some(energy) = player.energy.checked_sub(10) {
+                    player.energy = energy;
+                    *enemy_initiative_incr += 1;
+                    TurnAction::Parry
+                } else {
+                    TurnAction::NotEnoughEnergy
+                }
+            }
+        };
+
+        TurnResult {
+            character: player.id,
+            action,
         }
     }
 }

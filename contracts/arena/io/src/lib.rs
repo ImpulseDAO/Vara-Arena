@@ -27,6 +27,7 @@ pub enum TurnAction {
     Move { position: u8 },
     Rest { energy: u8 },
     Parry,
+    Guardbreak,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -72,6 +73,7 @@ pub enum BattleAction {
     MoveLeft,
     Rest,
     Parry,
+    Guardbreak,
 }
 
 impl BattleAction {
@@ -84,6 +86,7 @@ impl BattleAction {
             },
             BattleAction::MoveLeft | BattleAction::MoveRight => 2,
             BattleAction::Parry => 1,
+            BattleAction::Guardbreak => 2,
             _ => todo!(),
         }
     }

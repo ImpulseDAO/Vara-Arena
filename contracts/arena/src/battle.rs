@@ -349,6 +349,14 @@ impl Battle {
                     TurnAction::NotEnoughEnergy
                 }
             }
+            BattleAction::Guardbreak => {
+                if let Some(energy) = player.energy.checked_sub(15) {
+                    player.energy = energy;
+                    TurnAction::Guardbreak
+                } else {
+                    TurnAction::NotEnoughEnergy
+                }
+            }
         };
 
         TurnResult {

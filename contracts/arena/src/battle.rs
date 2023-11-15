@@ -1,5 +1,6 @@
 use core::cmp::{max, min};
 
+use crate::spell::execute_cast_spell;
 use arena_io::{
     AttackKind, BattleAction, BattleLog, Character, CharacterState, TurnAction, TurnResult,
     YourTurn,
@@ -357,6 +358,7 @@ impl Battle {
                     TurnAction::NotEnoughEnergy
                 }
             }
+            BattleAction::CastSpell { spell } => execute_cast_spell(player, enemy, spell),
         };
 
         TurnResult {

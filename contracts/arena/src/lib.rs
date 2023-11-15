@@ -6,6 +6,7 @@ use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
 mod battle;
+mod spell;
 
 const HP_MULTIPLIER: u8 = 30;
 const BASE_HP: u8 = 10;

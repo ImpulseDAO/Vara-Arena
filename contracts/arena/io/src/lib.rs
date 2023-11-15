@@ -28,6 +28,7 @@ pub enum TurnAction {
     Rest { energy: u8 },
     Parry,
     Guardbreak,
+    CastSpell,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -67,6 +68,21 @@ pub enum AttackKind {
 }
 
 #[derive(Encode, Decode, Debug)]
+pub enum Spell {
+    Fireball,
+    EarthCatapult,
+    WaterBurst,
+}
+
+impl Spell {
+    pub fn initiative(&self) -> u8 {
+        match self {
+            Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 2,
+        }
+    }
+}
+
+#[derive(Encode, Decode, Debug)]
 pub enum BattleAction {
     Attack { kind: AttackKind },
     MoveRight,
@@ -74,6 +90,7 @@ pub enum BattleAction {
     Rest,
     Parry,
     Guardbreak,
+    CastSpell { spell: Spell },
 }
 
 impl BattleAction {
@@ -87,6 +104,7 @@ impl BattleAction {
             BattleAction::MoveLeft | BattleAction::MoveRight => 2,
             BattleAction::Parry => 1,
             BattleAction::Guardbreak => 2,
+            BattleAction::CastSpell { spell } => spell.initiative(),
             _ => todo!(),
         }
     }

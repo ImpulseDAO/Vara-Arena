@@ -31,6 +31,7 @@ impl Mint {
                 agility: attributes.agility,
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
+                intelligence: attributes.willpower,
                 level: 0,
                 experience: 0,
             },

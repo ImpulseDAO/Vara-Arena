@@ -72,12 +72,14 @@ pub enum Spell {
     Fireball,
     EarthCatapult,
     WaterBurst,
+    WaterRestoration,
 }
 
 impl Spell {
     pub fn initiative(&self) -> u8 {
         match self {
             Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 2,
+            _ => 2,
         }
     }
 }
@@ -132,6 +134,17 @@ pub struct Character {
     pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
+
+    // battle specific fields
+    // store them here to avoid using extra structs
+    #[codec(skip)]
+    pub lower_hit_chance: bool,
+    #[codec(skip)]
+    pub parry: bool,
+    #[codec(skip)]
+    pub energy_reg_counter: u8,
+    #[codec(skip)]
+    pub initiative_incr: u8,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

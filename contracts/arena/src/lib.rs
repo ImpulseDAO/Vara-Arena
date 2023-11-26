@@ -1,11 +1,13 @@
 #![no_std]
 
 use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent, SetTier};
-use battle::{Battle, ENERGY};
+use battle::Battle;
+use execute::ENERGY;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
 mod battle;
+mod execute;
 mod spell;
 
 const HP_MULTIPLIER: u8 = 30;
@@ -124,6 +126,10 @@ impl Arena {
             energy: ENERGY[usize::from(character_info.attributes.stamina)],
             position: 0,
             attributes: character_info.attributes,
+            lower_hit_chance: false,
+            parry: false,
+            energy_reg_counter: 0,
+            initiative_incr: 0,
         };
 
         // Check whether player already registered

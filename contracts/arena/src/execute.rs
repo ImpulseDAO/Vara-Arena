@@ -2,7 +2,7 @@ use crate::spell::execute_cast_spell;
 use arena_io::{AttackKind, BattleAction, Character, TurnAction, TurnResult};
 use core::cmp::{max, min};
 use gstd::debug;
-use rand::rngs::SmallRng;
+use rand::{rngs::SmallRng, Rng};
 
 const MIN_POS: u8 = 1;
 const MAX_POS: u8 = 15;

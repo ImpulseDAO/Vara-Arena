@@ -1,7 +1,7 @@
 use crate::execute::execute_action;
 use arena_io::{BattleAction, BattleLog, Character, CharacterState, YourTurn};
 use gstd::{debug, exec, msg, prelude::*};
-use rand::{rngs::SmallRng, Rng, SeedableRng};
+use rand::{rngs::SmallRng, SeedableRng};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;

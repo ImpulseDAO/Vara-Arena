@@ -3,8 +3,8 @@ use arena_io::{BattleAction, BattleLog, Character, CharacterState, YourTurn};
 use gstd::{debug, exec, msg, prelude::*};
 use rand::{rngs::SmallRng, Rng, SeedableRng};
 
-const FIRST_POS: u8 = 4;
-const SECOND_POS: u8 = 15;
+const FIRST_POS: u8 = 6;
+const SECOND_POS: u8 = 10;
 
 pub struct Battle {
     pub c1: Character,

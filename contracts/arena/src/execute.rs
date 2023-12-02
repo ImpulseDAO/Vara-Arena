@@ -4,8 +4,8 @@ use core::cmp::{max, min};
 use gstd::debug;
 use rand::rngs::SmallRng;
 
-const MIN_POS: u8 = 0;
-const MAX_POS: u8 = 20;
+const MIN_POS: u8 = 1;
+const MAX_POS: u8 = 15;
 
 const QUICK_DAMAGE: [u8; 10] = [0, 10, 10, 15, 20, 25, 30, 35, 40, 45];
 const PRECISE_DAMAGE: [u8; 10] = [0, 15, 15, 20, 26, 33, 39, 46, 52, 59];

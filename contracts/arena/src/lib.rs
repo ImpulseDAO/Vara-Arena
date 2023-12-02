@@ -10,8 +10,8 @@ mod battle;
 mod execute;
 mod spell;
 
-const HP_MULTIPLIER: u8 = 30;
-const BASE_HP: u8 = 10;
+const HP_MULTIPLIER: u8 = 10;
+const BASE_HP: u8 = 90;
 const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const NUMBER_OF_PLAYERS: usize = 4;
 

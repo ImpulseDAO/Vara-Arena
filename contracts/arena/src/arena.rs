@@ -1,11 +1,9 @@
 use crate::battle::Battle;
-use crate::execute::ENERGY;
+use crate::utils;
 use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent, SetTier};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
-const HP_MULTIPLIER: u8 = 10;
-const BASE_HP: u8 = 90;
 const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const NUMBER_OF_PLAYERS: usize = 4;
 
@@ -123,8 +121,8 @@ impl Arena {
             owner: owner_id,
             id: character_info.id,
             name: character_info.name,
-            hp: character_info.attributes.vitality * HP_MULTIPLIER + BASE_HP,
-            energy: ENERGY[usize::from(character_info.attributes.stamina)],
+            hp: utils::full_hp(character_info.attributes.vitality),
+            energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,
             lower_hit_chance: false,

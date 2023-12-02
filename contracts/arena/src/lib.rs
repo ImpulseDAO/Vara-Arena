@@ -8,6 +8,7 @@ mod arena;
 mod battle;
 mod execute;
 mod spell;
+mod utils;
 
 static mut ARENA: Option<Arena> = None;
 

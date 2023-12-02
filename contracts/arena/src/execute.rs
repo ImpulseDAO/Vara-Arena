@@ -1,4 +1,5 @@
 use crate::spell::execute_cast_spell;
+use crate::utils;
 use arena_io::{AttackKind, BattleAction, Character, TurnAction, TurnResult};
 use core::cmp::{max, min};
 use gstd::debug;
@@ -7,13 +8,7 @@ use rand::{rngs::SmallRng, Rng};
 const MIN_POS: u8 = 1;
 const MAX_POS: u8 = 15;
 
-const QUICK_DAMAGE: [u8; 10] = [0, 10, 10, 15, 20, 25, 30, 35, 40, 45];
-const PRECISE_DAMAGE: [u8; 10] = [0, 15, 15, 20, 26, 33, 39, 46, 52, 59];
-const HEAVY_DAMAGE: [u8; 10] = [0, 20, 20, 24, 32, 40, 48, 56, 64, 72];
-
 const MOVE: [u8; 10] = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5];
-
-pub const ENERGY: [u8; 10] = [0, 110, 120, 130, 140, 150, 160, 170, 180, 190];
 
 fn energy_regeneration(stamina: u8) -> u8 {
     match stamina {
@@ -31,7 +26,7 @@ fn execute_attack(
 ) -> TurnAction {
     match kind {
         AttackKind::Quick => {
-            if let Some(energy) = player.energy.checked_sub(10) {
+            if let Some(energy) = player.energy.checked_sub(2) {
                 player.energy = energy;
                 if player.position.abs_diff(enemy.position) == 1 {
                     if enemy.parry {
@@ -40,9 +35,10 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let success = rng.gen_ratio(80, 100);
+                        let hit_chance = 80 + player.attributes.agility * 2;
+                        let success = rng.gen_ratio(hit_chance, 100);
                         if success {
-                            let damage = QUICK_DAMAGE[usize::from(player.attributes.strength)];
+                            let damage = 5 + player.attributes.strength * 2;
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -68,7 +64,7 @@ fn execute_attack(
             }
         }
         AttackKind::Precise => {
-            if let Some(energy) = player.energy.checked_sub(20) {
+            if let Some(energy) = player.energy.checked_sub(4) {
                 player.energy = energy;
                 if player.position.abs_diff(enemy.position) == 1 {
                     if enemy.parry {
@@ -77,9 +73,10 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let success = rng.gen_ratio(60, 100);
+                        let hit_chance = 60 + player.attributes.agility * 2;
+                        let success = rng.gen_ratio(hit_chance, 100);
                         if success {
-                            let damage = PRECISE_DAMAGE[usize::from(player.attributes.strength)];
+                            let damage = 10 + player.attributes.strength * 3;
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -105,7 +102,7 @@ fn execute_attack(
             }
         }
         AttackKind::Heavy => {
-            if let Some(energy) = player.energy.checked_sub(30) {
+            if let Some(energy) = player.energy.checked_sub(6) {
                 player.energy = energy;
                 if player.position.abs_diff(enemy.position) == 1 {
                     if enemy.parry {
@@ -114,9 +111,10 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let success = rng.gen_ratio(35, 100);
+                        let hit_chance = 35 + player.attributes.agility * 2;
+                        let success = rng.gen_ratio(hit_chance, 100);
                         if success {
-                            let damage = HEAVY_DAMAGE[usize::from(player.attributes.strength)];
+                            let damage = 20 + player.attributes.strength * 4;
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -186,7 +184,7 @@ pub fn execute_action(
         }
         BattleAction::Rest => {
             if player.energy_reg_counter < 3 {
-                let full_energy = ENERGY[usize::from(player.attributes.stamina)];
+                let full_energy = utils::full_energy(player.attributes.stamina);
                 let reg_tick = energy_regeneration(player.attributes.stamina) - 5;
                 player.energy = min(player.energy + reg_tick, full_energy);
                 player.energy_reg_counter += 1;

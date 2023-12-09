@@ -69,19 +69,15 @@ pub enum AttackKind {
 
 #[derive(Encode, Decode, Debug)]
 pub enum Spell {
+    FireWall,
+    EarthSkin,
+    WaterRestoration,
     Fireball,
     EarthCatapult,
     WaterBurst,
-    WaterRestoration,
-}
-
-impl Spell {
-    pub fn initiative(&self) -> u8 {
-        match self {
-            Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 2,
-            _ => 2,
-        }
-    }
+    FireHaste,
+    EarthSmites,
+    ChillingTouch,
 }
 
 #[derive(Encode, Decode, Debug)]
@@ -93,23 +89,6 @@ pub enum BattleAction {
     Parry,
     Guardbreak,
     CastSpell { spell: Spell },
-}
-
-impl BattleAction {
-    pub fn initiative(&self) -> u8 {
-        match self {
-            BattleAction::Attack { kind } => match kind {
-                AttackKind::Quick => 1,
-                AttackKind::Precise => 2,
-                AttackKind::Heavy => 3,
-            },
-            BattleAction::MoveLeft | BattleAction::MoveRight => 2,
-            BattleAction::Parry => 1,
-            BattleAction::Guardbreak => 2,
-            BattleAction::CastSpell { spell } => spell.initiative(),
-            _ => todo!(),
-        }
-    }
 }
 
 #[derive(Encode, Decode)]
@@ -144,7 +123,7 @@ pub struct Character {
     #[codec(skip)]
     pub energy_reg_counter: u8,
     #[codec(skip)]
-    pub initiative_incr: u8,
+    pub disable_agiim: bool,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

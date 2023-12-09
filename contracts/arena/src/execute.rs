@@ -201,7 +201,6 @@ pub fn execute_action(
         BattleAction::Parry => {
             if let Some(energy) = player.energy.checked_sub(10) {
                 player.energy = energy;
-                enemy.initiative_incr += 1;
                 TurnAction::Parry
             } else {
                 TurnAction::NotEnoughEnergy
@@ -210,6 +209,9 @@ pub fn execute_action(
         BattleAction::Guardbreak => {
             if let Some(energy) = player.energy.checked_sub(15) {
                 player.energy = energy;
+                if enemy.parry {
+                    enemy.disable_agiim = true;
+                }
                 TurnAction::Guardbreak
             } else {
                 TurnAction::NotEnoughEnergy

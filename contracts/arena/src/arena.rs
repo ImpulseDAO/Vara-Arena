@@ -128,7 +128,7 @@ impl Arena {
             lower_hit_chance: false,
             parry: false,
             energy_reg_counter: 0,
-            initiative_incr: 0,
+            disable_agiim: false,
         };
 
         // Check whether player already registered

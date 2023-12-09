@@ -1,10 +1,12 @@
 use crate::execute::execute_action;
-use arena_io::{BattleAction, BattleLog, Character, CharacterState, YourTurn};
+use arena_io::{BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
 use gstd::{debug, exec, msg, prelude::*};
 use rand::{rngs::SmallRng, SeedableRng};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
+
+const INITIATIVE_MODIFIER: u8 = 125;
 
 pub struct Battle {
     pub c1: Character,
@@ -78,11 +80,11 @@ impl Battle {
                 .await
                 .expect("unable to receive `BattleAction`");
 
-            let p1_initiative = p1_action.initiative() + self.c1.initiative_incr;
-            let p2_initiative = p2_action.initiative() + self.c2.initiative_incr;
+            let p1_initiative = player_initiative(&p1_action, &self.c1);
+            let p2_initiative = player_initiative(&p2_action, &self.c2);
 
-            self.c1.initiative_incr = 0;
-            self.c2.initiative_incr = 0;
+            self.c1.disable_agiim = false;
+            self.c2.disable_agiim = false;
 
             if p1_initiative > p2_initiative {
                 self.c1.parry = matches!(&p1_action, BattleAction::Parry);
@@ -140,5 +142,36 @@ impl Battle {
                 }
             }
         }
+    }
+}
+
+fn spell_initiative(spell: &Spell) -> u8 {
+    match spell {
+        Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 10,
+        Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 16,
+        Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 20,
+    }
+}
+
+fn action_initiative(action: &BattleAction) -> u8 {
+    match action {
+        BattleAction::Attack { kind } => match kind {
+            AttackKind::Quick => 10,
+            AttackKind::Precise => 15,
+            AttackKind::Heavy => 20,
+        },
+        BattleAction::MoveLeft | BattleAction::MoveRight | BattleAction::Rest => 8,
+        BattleAction::Parry => 12,
+        BattleAction::Guardbreak => 18,
+        BattleAction::CastSpell { spell } => spell_initiative(spell),
+    }
+}
+
+fn player_initiative(player: &Character, action: &BattleAction) -> u16 {
+    let base_initiative: u16 = action_initiative(action) * 100;
+    if player.disable_agiim {
+        base_initiative
+    } else {
+        base_initiative - (player.attributes.agility * INITIATIVE_MODIFIER)
     }
 }

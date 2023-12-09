@@ -1,12 +1,12 @@
 use crate::execute::execute_action;
-use arena_io::{BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
+use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
 use gstd::{debug, exec, msg, prelude::*};
 use rand::{rngs::SmallRng, SeedableRng};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
 
-const INITIATIVE_MODIFIER: u8 = 125;
+const INITIATIVE_MODIFIER: u16 = 125;
 
 pub struct Battle {
     pub c1: Character,
@@ -80,8 +80,8 @@ impl Battle {
                 .await
                 .expect("unable to receive `BattleAction`");
 
-            let p1_initiative = player_initiative(&p1_action, &self.c1);
-            let p2_initiative = player_initiative(&p2_action, &self.c2);
+            let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
+            let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);
 
             self.c1.disable_agiim = false;
             self.c2.disable_agiim = false;
@@ -141,11 +141,14 @@ impl Battle {
                     };
                 }
             }
+
+            update_effects(&mut self.c1);
+            update_effects(&mut self.c2);
         }
     }
 }
 
-fn spell_initiative(spell: &Spell) -> u8 {
+fn spell_initiative(spell: &Spell) -> u16 {
     match spell {
         Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 10,
         Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 16,
@@ -153,7 +156,7 @@ fn spell_initiative(spell: &Spell) -> u8 {
     }
 }
 
-fn action_initiative(action: &BattleAction) -> u8 {
+fn action_initiative(action: &BattleAction) -> u16 {
     match action {
         BattleAction::Attack { kind } => match kind {
             AttackKind::Quick => 10,
@@ -167,11 +170,43 @@ fn action_initiative(action: &BattleAction) -> u8 {
     }
 }
 
-fn player_initiative(player: &Character, action: &BattleAction) -> u16 {
-    let base_initiative: u16 = action_initiative(action) * 100;
+fn player_initiative(player: &Character, enemy: &Character, action: &BattleAction) -> u16 {
+    let base_initiative = action_initiative(action) * 100;
+    let mut modifier = INITIATIVE_MODIFIER;
+
+    if player.fire_haste > 0 {
+        modifier += INITIATIVE_MODIFIER / 9 * u16::from(player.attributes.intelligence);
+    }
+
+    if player.chilling_touch > 0 {
+        modifier -= INITIATIVE_MODIFIER / 9 * u16::from(enemy.attributes.intelligence);
+    }
+
     if player.disable_agiim {
         base_initiative
     } else {
-        base_initiative - (player.attributes.agility * INITIATIVE_MODIFIER)
+        base_initiative - (u16::from(player.attributes.agility) * modifier)
+    }
+}
+
+fn update_effects(player: &mut Character) {
+    if player.earth_skin.0 != 0 {
+        player.earth_skin.0 -= 1;
+    }
+
+    if player.chilling_touch != 0 {
+        player.chilling_touch -= 1;
+    }
+
+    if player.water_burst != 0 {
+        player.water_burst -= 1;
+    }
+
+    if player.fire_haste != 0 {
+        player.fire_haste -= 1;
+    }
+
+    if player.earth_smites != 0 {
+        player.earth_smites -= 1;
     }
 }

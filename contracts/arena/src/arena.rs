@@ -125,10 +125,14 @@ impl Arena {
             energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,
-            lower_hit_chance: false,
             parry: false,
             energy_reg_counter: 0,
             disable_agiim: false,
+            earth_skin: (0, 0),
+            chilling_touch: 0,
+            earth_smites: 0,
+            fire_haste: 0,
+            water_burst: 0,
         };
 
         // Check whether player already registered

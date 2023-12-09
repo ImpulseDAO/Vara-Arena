@@ -35,10 +35,26 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let hit_chance = 80 + player.attributes.agility * 2;
-                        let success = rng.gen_ratio(hit_chance, 100);
+                        let hit_chance = if player.water_burst == 0 {
+                            80 + player.attributes.agility * 2
+                        } else {
+                            80
+                        };
+                        let success = rng.gen_ratio(hit_chance.into(), 100);
                         if success {
-                            let damage = 5 + player.attributes.strength * 2;
+                            let mut damage = 5 + player.attributes.strength * 2;
+                            if player.earth_smites > 0 {
+                                damage += player.attributes.intelligence * 3;
+                            }
+                            if enemy.earth_skin.0 > 0 {
+                                if enemy.earth_skin.1 > damage {
+                                    damage = 0;
+                                    enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
+                                } else {
+                                    damage = damage - enemy.earth_skin.1;
+                                    enemy.earth_skin = (0, 0);
+                                }
+                            }
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -73,10 +89,26 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let hit_chance = 60 + player.attributes.agility * 2;
-                        let success = rng.gen_ratio(hit_chance, 100);
+                        let hit_chance = if player.water_burst == 0 {
+                            60 + player.attributes.agility * 2
+                        } else {
+                            60
+                        };
+                        let success = rng.gen_ratio(hit_chance.into(), 100);
                         if success {
-                            let damage = 10 + player.attributes.strength * 3;
+                            let mut damage = 10 + player.attributes.strength * 3;
+                            if player.earth_smites > 0 {
+                                damage += player.attributes.intelligence * 3;
+                            }
+                            if enemy.earth_skin.0 > 0 {
+                                if enemy.earth_skin.1 > damage {
+                                    damage = 0;
+                                    enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
+                                } else {
+                                    damage = damage - enemy.earth_skin.1;
+                                    enemy.earth_skin = (0, 0);
+                                }
+                            }
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -111,10 +143,26 @@ fn execute_attack(
                             damage: 0,
                         }
                     } else {
-                        let hit_chance = 35 + player.attributes.agility * 2;
-                        let success = rng.gen_ratio(hit_chance, 100);
+                        let hit_chance = if player.water_burst == 0 {
+                            35 + player.attributes.agility * 2
+                        } else {
+                            35
+                        };
+                        let success = rng.gen_ratio(hit_chance.into(), 100);
                         if success {
-                            let damage = 20 + player.attributes.strength * 4;
+                            let mut damage = 20 + player.attributes.strength * 4;
+                            if player.earth_smites > 0 {
+                                damage += player.attributes.intelligence * 3;
+                            }
+                            if enemy.earth_skin.0 > 0 {
+                                if enemy.earth_skin.1 > damage {
+                                    damage = 0;
+                                    enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
+                                } else {
+                                    damage = damage - enemy.earth_skin.1;
+                                    enemy.earth_skin = (0, 0);
+                                }
+                            }
                             enemy.hp = enemy.hp.saturating_sub(damage);
                             TurnAction::Attack {
                                 position: player.position,
@@ -151,7 +199,7 @@ pub fn execute_action(
     let action = match action {
         BattleAction::Attack { kind } => execute_attack(player, enemy, kind, rng),
         BattleAction::MoveLeft => {
-            if let Some(energy) = player.energy.checked_sub(3) {
+            if let Some(energy) = player.energy.checked_sub(1) {
                 player.energy = energy;
                 let move_ = MOVE[usize::from(player.attributes.agility)];
                 if player.position < enemy.position {
@@ -167,7 +215,7 @@ pub fn execute_action(
             }
         }
         BattleAction::MoveRight => {
-            if let Some(energy) = player.energy.checked_sub(3) {
+            if let Some(energy) = player.energy.checked_sub(1) {
                 player.energy = energy;
                 let move_ = MOVE[usize::from(player.attributes.agility)];
                 if player.position < enemy.position {
@@ -199,7 +247,7 @@ pub fn execute_action(
             }
         }
         BattleAction::Parry => {
-            if let Some(energy) = player.energy.checked_sub(10) {
+            if let Some(energy) = player.energy.checked_sub(2) {
                 player.energy = energy;
                 TurnAction::Parry
             } else {
@@ -207,7 +255,7 @@ pub fn execute_action(
             }
         }
         BattleAction::Guardbreak => {
-            if let Some(energy) = player.energy.checked_sub(15) {
+            if let Some(energy) = player.energy.checked_sub(2) {
                 player.energy = energy;
                 if enemy.parry {
                     enemy.disable_agiim = true;

@@ -117,13 +117,22 @@ pub struct Character {
     // battle specific fields
     // store them here to avoid using extra structs
     #[codec(skip)]
-    pub lower_hit_chance: bool,
-    #[codec(skip)]
     pub parry: bool,
     #[codec(skip)]
     pub energy_reg_counter: u8,
     #[codec(skip)]
     pub disable_agiim: bool,
+    // spell effects
+    #[codec(skip)]
+    pub earth_skin: (u8, u8),
+    #[codec(skip)]
+    pub chilling_touch: u8,
+    #[codec(skip)]
+    pub water_burst: u8,
+    #[codec(skip)]
+    pub fire_haste: u8,
+    #[codec(skip)]
+    pub earth_smites: u8,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

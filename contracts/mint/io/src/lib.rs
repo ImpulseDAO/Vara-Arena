@@ -23,7 +23,7 @@ pub struct InitialAttributes {
     pub agility: u8,
     pub vitality: u8,
     pub stamina: u8,
-    pub willpower: u8,
+    pub intelligence: u8,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]

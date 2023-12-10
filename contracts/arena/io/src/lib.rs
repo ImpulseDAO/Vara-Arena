@@ -2,15 +2,16 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
-use gstd::{prelude::*, ActorId, ReservationId, TypeInfo};
+use gstd::{prelude::*, ActorId, TypeInfo};
 use mint_io::{CharacterAttributes, CharacterInfo};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
-    Register { owner_id: ActorId },
-    Play,
-    ReserveGas,
-    CleanState,
+    CreateLobby,
+    Register { lobby_id: u128, owner_id: ActorId },
+    Play { lobby_id: u128 },
+    ReserveGas { lobby_id: u128 },
+    CleanState { lobby_id: u128 },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -41,6 +42,9 @@ pub struct BattleLog {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameEvent {
+    LobbyCreated {
+        id: u128,
+    },
     RegisteredPlayers(Vec<CharacterInfo>),
     ArenaLog {
         winner: ActorId,
@@ -143,13 +147,9 @@ pub struct BattleState {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
-    pub current_tier: SetTier,
-    pub characters: Vec<Character>,
     pub mint: ActorId,
-    pub battles: Vec<BattleState>,
-    pub winners: Vec<ActorId>,
-    pub reservations: Vec<ReservationId>,
     pub leaderboard: BTreeMap<ActorId, u32>,
+    pub lobby_count: u128,
 }
 
 pub struct ArenaMetadata;

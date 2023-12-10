@@ -1,6 +1,6 @@
 use crate::battle::Battle;
 use crate::utils;
-use arena_io::{ArenaState, BattleLog, BattleState, Character, GameAction, GameEvent, SetTier};
+use arena_io::{ArenaState, BattleLog, Character, GameAction, GameEvent, SetTier};
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
@@ -8,16 +8,23 @@ const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const NUMBER_OF_PLAYERS: usize = 4;
 
 #[derive(Default)]
-pub struct Arena {
+pub struct Lobby {
+    id: u128,
     current_tier: SetTier,
     characters: Vec<Character>,
-    mint: ActorId,
+    source: Option<ActorId>, // original play sender
+    reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
     winners: Vec<ActorId>,
-    reservations: Vec<ReservationId>,
-    source: Option<ActorId>, // original play sender
     logs: Vec<BattleLog>,
+}
+
+#[derive(Default)]
+pub struct Arena {
+    mint: ActorId,
     leaderboard: BTreeMap<ActorId, u32>,
+    lobby_count: u128,
+    lobbys: HashMap<u128, Lobby>,
 }
 
 impl Arena {
@@ -28,29 +35,48 @@ impl Arena {
         }
     }
 
-    pub async fn play(&mut self) {
-        if self.battles.is_empty() {
+    pub fn create_lobby(&mut self) {
+        self.lobby_count += 1;
+        let lobby = Lobby {
+            id: self.lobby_count,
+            ..Default::default()
+        };
+        self.lobbys.insert(lobby.id, lobby);
+
+        msg::reply(
+            GameEvent::LobbyCreated {
+                id: self.lobby_count,
+            },
+            0,
+        )
+        .expect("unable to reply");
+    }
+
+    pub async fn play(&mut self, lobby_id: u128) {
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+
+        if lobby.battles.is_empty() {
             debug!("starting the battle");
-            self.source = Some(msg::source());
-            self.battles = self
+            lobby.source = Some(msg::source());
+            lobby.battles = lobby
                 .characters
                 .chunks_exact(2)
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
         }
-        let source = self.source.expect("original sender is not specified");
+        let source = lobby.source.expect("original sender is not specified");
 
-        let battle = self.battles.pop().unwrap();
+        let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
-        self.winners.push(log.winner);
-        self.logs.push(log);
+        lobby.winners.push(log.winner);
+        lobby.logs.push(log);
 
-        if self.battles.is_empty() {
-            if self.winners.len() == 1 {
-                let winner = self
+        if lobby.battles.is_empty() {
+            if lobby.winners.len() == 1 {
+                let winner = lobby
                     .characters
                     .iter()
-                    .find(|c| c.id == self.winners[0])
+                    .find(|c| c.id == lobby.winners[0])
                     .unwrap();
                 debug!("{:?} is an arena winner", winner.owner);
 
@@ -67,27 +93,29 @@ impl Arena {
                     source,
                     GameEvent::ArenaLog {
                         winner: winner.id,
-                        logs: self.logs.drain(..).collect(),
+                        logs: lobby.logs.drain(..).collect(),
                     },
                     0,
                 )
                 .expect("unable to reply");
 
-                self.tournament_winners(winner.owner);
-                self.clean_state();
+                Arena::tournament_winners(&mut self.leaderboard, winner.owner);
+                self.clean_state(lobby_id);
                 return;
             } else {
-                self.battles = self
+                lobby.battles = lobby
                     .winners
                     .chunks_exact(2)
                     .map(|characters| {
                         Battle::new(
-                            self.characters
+                            lobby
+                                .characters
                                 .iter()
                                 .find(|c| c.id == characters[0])
                                 .unwrap()
                                 .clone(),
-                            self.characters
+                            lobby
+                                .characters
                                 .iter()
                                 .find(|c| c.id == characters[1])
                                 .unwrap()
@@ -95,20 +123,21 @@ impl Arena {
                         )
                     })
                     .collect();
-                self.winners = vec![];
+                lobby.winners = vec![];
             }
         }
 
-        if let Some(id) = self.reservations.pop() {
-            msg::send_from_reservation(id, exec::program_id(), GameAction::Play, 0)
+        if let Some(id) = lobby.reservations.pop() {
+            msg::send_from_reservation(id, exec::program_id(), GameAction::Play { lobby_id }, 0)
                 .expect("unable to send");
         } else {
             panic!("more gas is required");
         }
     }
 
-    pub async fn register(&mut self, owner_id: ActorId) {
-        if self.characters.len() == NUMBER_OF_PLAYERS {
+    pub async fn register(&mut self, lobby_id: u128, owner_id: ActorId) {
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+        if lobby.characters.len() == NUMBER_OF_PLAYERS {
             panic!("max number of players is already registered");
         }
         let payload = MintAction::CharacterInfo { owner_id };
@@ -136,11 +165,11 @@ impl Arena {
         };
 
         // Check whether player already registered
-        if self.characters.iter().any(|c| c.owner == owner_id) {
+        if lobby.characters.iter().any(|c| c.owner == owner_id) {
             panic!("already registered");
         }
 
-        debug!("Current tier is {:#?}", self.current_tier);
+        debug!("Current tier is {:#?}", lobby.current_tier);
         // Identify character tier based on level
         let character_tier: SetTier = match character.attributes.level {
             0 => SetTier::Tier5,
@@ -152,8 +181,8 @@ impl Arena {
         debug!("Character tier is {:#?}", character_tier);
         // set current tournament tier based on the first registered character's level
         // Initialize current_tier based on the level of the first registered character
-        if let SetTier::Tier0 = self.current_tier {
-            self.current_tier = match character.attributes.level {
+        if let SetTier::Tier0 = lobby.current_tier {
+            lobby.current_tier = match character.attributes.level {
                 0 => SetTier::Tier5,
                 1 => SetTier::Tier4,
                 2..=4 => SetTier::Tier3,
@@ -161,19 +190,20 @@ impl Arena {
                 _ => SetTier::Tier1,
             }
         };
-        if character_tier == self.current_tier {
-            self.characters.push(character);
+        if character_tier == lobby.current_tier {
+            lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
         } else {
             panic!("Can't Register for this Tier");
         };
 
-        debug!("Current tier after registration {:#?}", self.current_tier);
-        debug!("Registered participants{:?}", self.characters);
+        debug!("Current tier after registration {:#?}", lobby.current_tier);
+        debug!("Registered participants{:?}", lobby.characters);
 
         msg::reply(
             GameEvent::RegisteredPlayers(
-                self.characters
+                lobby
+                    .characters
                     .iter()
                     .map(|character| CharacterInfo {
                         id: character.id,
@@ -187,25 +217,27 @@ impl Arena {
         .expect("unable to reply");
     }
 
-    pub fn reserve_gas(&mut self) {
+    pub fn reserve_gas(&mut self, lobby_id: u128) {
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
         let reservation_id =
             ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
-        self.reservations.push(reservation_id);
+        lobby.reservations.push(reservation_id);
         msg::reply(GameEvent::GasReserved, 0).expect("unable to reply");
     }
 
-    pub fn clean_state(&mut self) {
-        self.current_tier = SetTier::Tier0;
-        self.winners = vec![];
-        self.characters = vec![];
-        self.reservations = vec![];
-        self.battles = vec![];
-        self.logs = vec![];
-        self.source = None;
+    pub fn clean_state(&mut self, lobby_id: u128) {
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+        lobby.current_tier = SetTier::Tier0;
+        lobby.winners = vec![];
+        lobby.characters = vec![];
+        lobby.reservations = vec![];
+        lobby.battles = vec![];
+        lobby.logs = vec![];
+        lobby.source = None;
     }
 
-    pub fn tournament_winners(&mut self, winner: ActorId) {
-        self.leaderboard
+    pub fn tournament_winners(leaderboard: &mut BTreeMap<ActorId, u32>, winner: ActorId) {
+        leaderboard
             .entry(winner)
             .and_modify(|value| *value += 1)
             .or_insert(1);
@@ -213,20 +245,9 @@ impl Arena {
 
     pub fn state(&self) -> ArenaState {
         ArenaState {
-            current_tier: self.current_tier.clone(),
             mint: self.mint,
-            characters: self.characters.clone(),
-            reservations: self.reservations.clone(),
-            winners: self.winners.clone(),
-            battles: self
-                .battles
-                .iter()
-                .map(|battle| BattleState {
-                    c1: battle.c1.clone(),
-                    c2: battle.c2.clone(),
-                })
-                .collect(),
             leaderboard: self.leaderboard.clone(),
+            lobby_count: self.lobby_count,
         }
     }
 }

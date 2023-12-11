@@ -24,7 +24,7 @@ async fn main() {
         debug!("attaking");
         msg::reply(
             BattleAction::Attack {
-                kind: AttackKind::Hard,
+                kind: AttackKind::Heavy,
             },
             0,
         )

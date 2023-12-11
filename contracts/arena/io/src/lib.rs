@@ -2,24 +2,34 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata};
-use gstd::{prelude::*, ActorId, ReservationId, TypeInfo};
+use gstd::{prelude::*, ActorId, TypeInfo};
 use mint_io::{CharacterAttributes, CharacterInfo};
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameAction {
-    Register { owner_id: ActorId },
-    Play,
-    ReserveGas,
-    CleanState,
+    CreateLobby,
+    Register { lobby_id: u128, owner_id: ActorId },
+    Play { lobby_id: u128 },
+    ReserveGas { lobby_id: u128 },
+    CleanState { lobby_id: u128 },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum TurnResult {
+pub struct TurnResult {
+    pub character: ActorId,
+    pub action: TurnAction,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum TurnAction {
     NotEnoughEnergy,
     Miss { position: u8 },
     Attack { position: u8, damage: u8 },
     Move { position: u8 },
     Rest { energy: u8 },
+    Parry,
+    Guardbreak,
+    CastSpell,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -32,6 +42,9 @@ pub struct BattleLog {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum GameEvent {
+    LobbyCreated {
+        id: u128,
+    },
     RegisteredPlayers(Vec<CharacterInfo>),
     ArenaLog {
         winner: ActorId,
@@ -54,8 +67,21 @@ pub enum SetTier {
 #[derive(Encode, Decode, Debug)]
 pub enum AttackKind {
     Quick,
-    Normal,
-    Hard,
+    Precise,
+    Heavy,
+}
+
+#[derive(Encode, Decode, Debug)]
+pub enum Spell {
+    FireWall,
+    EarthSkin,
+    WaterRestoration,
+    Fireball,
+    EarthCatapult,
+    WaterBurst,
+    FireHaste,
+    EarthSmites,
+    ChillingTouch,
 }
 
 #[derive(Encode, Decode, Debug)]
@@ -64,6 +90,9 @@ pub enum BattleAction {
     MoveRight,
     MoveLeft,
     Rest,
+    Parry,
+    Guardbreak,
+    CastSpell { spell: Spell },
 }
 
 #[derive(Encode, Decode)]
@@ -88,6 +117,28 @@ pub struct Character {
     pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
+
+    // battle specific fields
+    // store them here to avoid using extra structs
+    #[codec(skip)]
+    pub parry: bool,
+    #[codec(skip)]
+    pub rest_count: u8,
+    #[codec(skip)]
+    pub disable_agiim: bool,
+    // spell effects
+    #[codec(skip)]
+    pub fire_wall: u8,
+    #[codec(skip)]
+    pub earth_skin: (u8, u8),
+    #[codec(skip)]
+    pub chilling_touch: u8,
+    #[codec(skip)]
+    pub water_burst: u8,
+    #[codec(skip)]
+    pub fire_haste: u8,
+    #[codec(skip)]
+    pub earth_smites: u8,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
@@ -98,13 +149,9 @@ pub struct BattleState {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
-    pub current_tier: SetTier,
-    pub characters: Vec<Character>,
     pub mint: ActorId,
-    pub battles: Vec<BattleState>,
-    pub winners: Vec<ActorId>,
-    pub reservations: Vec<ReservationId>,
     pub leaderboard: BTreeMap<ActorId, u32>,
+    pub lobby_count: u128,
 }
 
 pub struct ArenaMetadata;

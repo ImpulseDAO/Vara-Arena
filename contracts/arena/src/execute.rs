@@ -48,6 +48,10 @@ fn execute_attack(
                                 }
                             }
                             enemy.hp = enemy.hp.saturating_sub(damage);
+                            if enemy.fire_wall != 0 && enemy.hp != 0 {
+                                let damage = enemy.attributes.intelligence * 3;
+                                player.hp = player.hp.saturating_sub(damage);
+                            }
                             TurnAction::Attack {
                                 position: player.position,
                                 damage,
@@ -224,7 +228,7 @@ pub fn execute_action(
         }
         BattleAction::Rest => {
             let full_energy = utils::full_energy(player.attributes.stamina);
-            let reg_tick = 5.saturating_sub(player.rest_count);
+            let reg_tick = 5u8.saturating_sub(player.rest_count);
             player.energy = min(player.energy + reg_tick, full_energy);
             player.rest_count += 1;
             debug!(

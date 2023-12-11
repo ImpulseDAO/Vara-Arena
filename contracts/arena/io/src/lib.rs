@@ -128,6 +128,8 @@ pub struct Character {
     pub disable_agiim: bool,
     // spell effects
     #[codec(skip)]
+    pub fire_wall: u8,
+    #[codec(skip)]
     pub earth_skin: (u8, u8),
     #[codec(skip)]
     pub chilling_touch: u8,

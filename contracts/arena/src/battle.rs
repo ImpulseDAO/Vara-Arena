@@ -1,6 +1,6 @@
 use crate::execute::execute_action;
 use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
-use gstd::{debug, exec, msg, prelude::*};
+use gstd::{debug, exec, msg, prelude::*, ActorId};
 use rand::{rngs::SmallRng, SeedableRng};
 
 const FIRST_POS: u8 = 6;
@@ -89,24 +89,24 @@ impl Battle {
 
                 let result = execute_action(&p1_action, &mut self.c1, &mut self.c2, &mut rng);
                 turns.push(result);
-                if self.c2.hp == 0 {
-                    debug!("{:?} is a winner", self.c1.id);
+                if let Some(winner) = self.check_winner() {
+                    debug!("{:?} is a winner", winner);
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner: self.c1.id,
+                        winner,
                         turns,
                     };
                 }
 
                 let result = execute_action(&p2_action, &mut self.c2, &mut self.c1, &mut rng);
                 turns.push(result);
-                if self.c1.hp == 0 {
-                    debug!("{:?} is a winner", self.c2.id);
+                if let Some(winner) = self.check_winner() {
+                    debug!("{:?} is a winner", winner);
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner: self.c2.id,
+                        winner,
                         turns,
                     };
                 }
@@ -116,24 +116,24 @@ impl Battle {
 
                 let result = execute_action(&p2_action, &mut self.c2, &mut self.c1, &mut rng);
                 turns.push(result);
-                if self.c1.hp == 0 {
-                    debug!("{:?} is a winner", self.c2.id);
+                if let Some(winner) = self.check_winner() {
+                    debug!("{:?} is a winner", winner);
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner: self.c2.id,
+                        winner,
                         turns,
                     };
                 }
 
                 let result = execute_action(&p1_action, &mut self.c1, &mut self.c2, &mut rng);
                 turns.push(result);
-                if self.c2.hp == 0 {
-                    debug!("{:?} is a winner", self.c1.id);
+                if let Some(winner) = self.check_winner() {
+                    debug!("{:?} is a winner", winner);
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner: self.c1.id,
+                        winner,
                         turns,
                     };
                 }
@@ -141,6 +141,16 @@ impl Battle {
 
             update_effects(&mut self.c1);
             update_effects(&mut self.c2);
+        }
+    }
+
+    fn check_winner(&self) -> Option<ActorId> {
+        if self.c1.hp == 0 {
+            Some(self.c2.id)
+        } else if self.c2.hp == 0 {
+            Some(self.c1.id)
+        } else {
+            None
         }
     }
 }
@@ -187,6 +197,10 @@ fn player_initiative(player: &Character, enemy: &Character, action: &BattleActio
 }
 
 fn update_effects(player: &mut Character) {
+    if player.fire_wall != 0 {
+        player.fire_wall -= 1;
+    }
+
     if player.earth_skin.0 != 0 {
         player.earth_skin.0 -= 1;
     }

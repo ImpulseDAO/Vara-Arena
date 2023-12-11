@@ -10,7 +10,7 @@ pub fn execute_cast_spell(
         Spell::FireWall => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                todo!();
+                player.fire_wall = 3;
             } else {
                 return TurnAction::NotEnoughEnergy;
             }

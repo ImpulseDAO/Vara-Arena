@@ -155,7 +155,7 @@ impl Arena {
             position: 0,
             attributes: character_info.attributes,
             parry: false,
-            energy_reg_counter: 0,
+            rest_count: 0,
             disable_agiim: false,
             earth_skin: (0, 0),
             chilling_touch: 0,

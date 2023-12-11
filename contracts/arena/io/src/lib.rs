@@ -123,7 +123,7 @@ pub struct Character {
     #[codec(skip)]
     pub parry: bool,
     #[codec(skip)]
-    pub energy_reg_counter: u8,
+    pub rest_count: u8,
     #[codec(skip)]
     pub disable_agiim: bool,
     // spell effects

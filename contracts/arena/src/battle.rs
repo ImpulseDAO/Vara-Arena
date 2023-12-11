@@ -27,10 +27,7 @@ impl Battle {
         let mut rng = SmallRng::seed_from_u64(block_timestamp);
 
         loop {
-            let p1_cant_rest = self.c1.energy_reg_counter == 3;
-            let p2_cant_rest = self.c2.energy_reg_counter == 3;
-
-            if p1_cant_rest && p2_cant_rest || turns.len() > 25 {
+            if turns.len() > 25 {
                 debug!("New GAMEPLAY!");
                 debug!("p1 = {} hp x p2 = {} hp!", self.c1.hp, self.c2.hp);
                 let winner = if self.c1.hp > self.c2.hp {

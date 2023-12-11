@@ -10,14 +10,6 @@ const MAX_POS: u8 = 15;
 
 const MOVE: [u8; 10] = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
-fn energy_regeneration(stamina: u8) -> u8 {
-    match stamina {
-        1..=3 => 15, // Low stamina regenerates slowly
-        4..=7 => 40, // Moderate stamina regenerates at a moderate rate
-        _ => 100,    // High stamina regenerates faster
-    }
-}
-
 fn execute_attack(
     player: &mut Character,
     enemy: &mut Character,
@@ -231,20 +223,15 @@ pub fn execute_action(
             }
         }
         BattleAction::Rest => {
-            if player.energy_reg_counter < 3 {
-                let full_energy = utils::full_energy(player.attributes.stamina);
-                let reg_tick = energy_regeneration(player.attributes.stamina) - 5;
-                player.energy = min(player.energy + reg_tick, full_energy);
-                player.energy_reg_counter += 1;
-                debug!(
-                    "player {:?} reg counter = {:?}",
-                    player.id, player.energy_reg_counter
-                );
-                TurnAction::Rest { energy: reg_tick }
-            } else {
-                debug!("player {:?} energy now = {:?}", player.id, player.energy);
-                TurnAction::NotEnoughEnergy
-            }
+            let full_energy = utils::full_energy(player.attributes.stamina);
+            let reg_tick = 5.saturating_sub(player.rest_count);
+            player.energy = min(player.energy + reg_tick, full_energy);
+            player.rest_count += 1;
+            debug!(
+                "player {:?} reg counter = {:?}",
+                player.id, player.rest_count
+            );
+            TurnAction::Rest { energy: reg_tick }
         }
         BattleAction::Parry => {
             if let Some(energy) = player.energy.checked_sub(2) {

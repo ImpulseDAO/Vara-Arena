@@ -1,7 +1,6 @@
 use crate::execute::execute_action;
 use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
-use gstd::{debug, exec, msg, prelude::*, ActorId};
-use rand::{rngs::SmallRng, SeedableRng};
+use gstd::{debug, msg, prelude::*, ActorId};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
@@ -22,9 +21,6 @@ impl Battle {
 
     pub async fn fight(mut self) -> BattleLog {
         let mut turns = vec![];
-
-        let block_timestamp = exec::block_timestamp();
-        let mut rng = SmallRng::seed_from_u64(block_timestamp);
 
         loop {
             if turns.len() > 25 {
@@ -87,7 +83,7 @@ impl Battle {
                 self.c1.parry = matches!(&p1_action, BattleAction::Parry);
                 self.c2.parry = false;
 
-                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2, &mut rng);
+                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2);
                 turns.push(result);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
@@ -99,7 +95,7 @@ impl Battle {
                     };
                 }
 
-                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1, &mut rng);
+                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1);
                 turns.push(result);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
@@ -114,7 +110,7 @@ impl Battle {
                 self.c1.parry = false;
                 self.c2.parry = matches!(&p2_action, BattleAction::Parry);
 
-                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1, &mut rng);
+                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1);
                 turns.push(result);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
@@ -126,7 +122,7 @@ impl Battle {
                     };
                 }
 
-                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2, &mut rng);
+                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2);
                 turns.push(result);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);

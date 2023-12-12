@@ -10,7 +10,6 @@ gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], re
 codec = { package = "parity-scale-codec", version = "3.6.0", default-features = false }
 arena-io = { path = "./io" }
 mint-io = { path = "../mint/io" }
-rand = { version = "0.8", features = ["small_rng"], default-features = false }
 
 [build-dependencies]
 gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", rev = "946ac47" }

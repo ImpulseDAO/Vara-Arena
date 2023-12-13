@@ -1,7 +1,8 @@
 #![no_std]
 
 use codec::{Decode, Encode};
-use gmeta::{InOut, Metadata};
+use gmeta::{InOut, Metadata, Out};
+use gstd::collections::BTreeMap;
 use gstd::{prelude::*, ActorId, CodeId, Debug, TypeInfo};
 
 const MAX_LEVEL: usize = 9;
@@ -126,5 +127,5 @@ impl Metadata for MintMetadata {
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();
-    type State = MintState;
+    type State = Out<MintState>;
 }

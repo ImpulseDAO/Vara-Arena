@@ -1,5 +1,6 @@
 #![no_std]
 
+use gstd::collections::BTreeMap;
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
 use mint_io::{

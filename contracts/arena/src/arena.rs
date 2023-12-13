@@ -1,6 +1,7 @@
 use crate::battle::Battle;
 use crate::utils;
 use arena_io::{ArenaState, BattleLog, Character, GameAction, GameEvent, SetTier};
+use gstd::collections::BTreeMap;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
@@ -24,7 +25,7 @@ pub struct Arena {
     mint: ActorId,
     leaderboard: BTreeMap<ActorId, u32>,
     lobby_count: u128,
-    lobbys: HashMap<u128, Lobby>,
+    lobbys: BTreeMap<u128, Lobby>,
 }
 
 impl Arena {

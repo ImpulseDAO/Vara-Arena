@@ -1,7 +1,8 @@
 #![no_std]
 
 use codec::{Decode, Encode};
-use gmeta::{InOut, Metadata};
+use gmeta::{InOut, Metadata, Out};
+use gstd::collections::BTreeMap;
 use gstd::{prelude::*, ActorId, TypeInfo};
 use mint_io::{CharacterAttributes, CharacterInfo};
 
@@ -162,5 +163,5 @@ impl Metadata for ArenaMetadata {
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();
-    type State = ArenaState;
+    type State = Out<ArenaState>;
 }

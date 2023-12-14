@@ -39,17 +39,36 @@ impl Battle {
                 };
             };
 
+            let p1_state = CharacterState {
+                hp: self.c1.hp,
+                position: self.c1.position,
+                energy: self.c1.energy,
+                rest_count: self.c1.rest_count,
+                disable_agiim: self.c1.disable_agiim,
+                chilling_touch: self.c1.chilling_touch,
+                earth_skin: self.c1.earth_skin,
+                earth_smites: self.c1.earth_smites,
+                fire_haste: self.c1.fire_haste,
+                fire_wall: self.c1.fire_wall,
+                water_burst: self.c1.water_burst,
+            };
+            let p2_state = CharacterState {
+                hp: self.c2.hp,
+                position: self.c2.position,
+                energy: self.c2.energy,
+                rest_count: self.c2.rest_count,
+                disable_agiim: self.c2.disable_agiim,
+                chilling_touch: self.c2.chilling_touch,
+                earth_skin: self.c2.earth_skin,
+                earth_smites: self.c2.earth_smites,
+                fire_haste: self.c2.fire_haste,
+                fire_wall: self.c2.fire_wall,
+                water_burst: self.c2.water_burst,
+            };
+
             let p1_turn = YourTurn {
-                you: CharacterState {
-                    hp: self.c1.hp,
-                    position: self.c1.position,
-                    energy: self.c1.energy,
-                },
-                enemy: CharacterState {
-                    hp: self.c2.hp,
-                    position: self.c2.position,
-                    energy: self.c2.energy,
-                },
+                you: p1_state.clone(),
+                enemy: p2_state.clone(),
             };
             let p1_action: BattleAction = msg::send_for_reply_as(self.c1.id, p1_turn, 0, 0)
                 .expect("unable to send message")
@@ -57,16 +76,8 @@ impl Battle {
                 .expect("unable to receive `BattleAction`");
 
             let p2_turn = YourTurn {
-                you: CharacterState {
-                    hp: self.c2.hp,
-                    position: self.c2.position,
-                    energy: self.c2.energy,
-                },
-                enemy: CharacterState {
-                    hp: self.c1.hp,
-                    position: self.c1.position,
-                    energy: self.c1.energy,
-                },
+                you: p2_state,
+                enemy: p1_state,
             };
             let p2_action: BattleAction = msg::send_for_reply_as(self.c2.id, p2_turn, 0, 0)
                 .expect("unable to send message")
@@ -193,8 +204,8 @@ fn player_initiative(player: &Character, enemy: &Character, action: &BattleActio
 }
 
 fn update_effects(player: &mut Character) {
-    if player.fire_wall != 0 {
-        player.fire_wall -= 1;
+    if player.fire_wall.0 != 0 {
+        player.fire_wall.0 -= 1;
     }
 
     if player.earth_skin.0 != 0 {
@@ -213,7 +224,7 @@ fn update_effects(player: &mut Character) {
         player.fire_haste -= 1;
     }
 
-    if player.earth_smites != 0 {
-        player.earth_smites -= 1;
+    if player.earth_smites.0 != 0 {
+        player.earth_smites.0 -= 1;
     }
 }

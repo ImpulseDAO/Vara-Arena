@@ -3,7 +3,7 @@
 use arena_io::{AttackKind, BattleAction, YourTurn};
 use gstd::{debug, msg};
 
-const QUICK_ATTAK_ENERGY: u8 = 20;
+const QUICK_ATTAK_ENERGY: u8 = 2;
 
 #[gstd::async_main]
 async fn main() {

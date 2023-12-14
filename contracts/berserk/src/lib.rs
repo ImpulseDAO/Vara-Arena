@@ -3,7 +3,7 @@
 use arena_io::{AttackKind, BattleAction, YourTurn};
 use gstd::{debug, msg};
 
-const HARD_ATTAK_ENERGY: u8 = 32;
+const HEAVY_ATTAK_ENERGY: u8 = 6;
 
 #[gstd::async_main]
 async fn main() {
@@ -20,7 +20,7 @@ async fn main() {
         return;
     }
 
-    if turn.you.energy >= HARD_ATTAK_ENERGY {
+    if turn.you.energy >= HEAVY_ATTAK_ENERGY {
         debug!("attaking");
         msg::reply(
             BattleAction::Attack {

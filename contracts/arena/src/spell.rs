@@ -10,7 +10,7 @@ pub fn execute_cast_spell(
         Spell::FireWall => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                player.fire_wall = 3;
+                player.fire_wall = (3, player.attributes.intelligence * 3);
             } else {
                 return TurnAction::NotEnoughEnergy;
             }
@@ -76,7 +76,7 @@ pub fn execute_cast_spell(
         Spell::EarthSmites => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                player.earth_smites = 3;
+                player.earth_smites = (3, player.attributes.intelligence * 3);
             } else {
                 return TurnAction::NotEnoughEnergy;
             }

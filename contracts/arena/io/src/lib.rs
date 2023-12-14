@@ -96,11 +96,20 @@ pub enum BattleAction {
     CastSpell { spell: Spell },
 }
 
-#[derive(Encode, Decode)]
+#[derive(Encode, Decode, Clone)]
 pub struct CharacterState {
     pub hp: u8,
     pub position: u8,
     pub energy: u8,
+    pub rest_count: u8,
+    pub disable_agiim: bool,
+    // spell effects
+    pub fire_wall: (u8, u8),
+    pub earth_skin: (u8, u8),
+    pub chilling_touch: u8,
+    pub water_burst: u8,
+    pub fire_haste: u8,
+    pub earth_smites: (u8, u8),
 }
 
 #[derive(Encode, Decode)]
@@ -129,7 +138,7 @@ pub struct Character {
     pub disable_agiim: bool,
     // spell effects
     #[codec(skip)]
-    pub fire_wall: u8,
+    pub fire_wall: (u8, u8),
     #[codec(skip)]
     pub earth_skin: (u8, u8),
     #[codec(skip)]
@@ -139,7 +148,7 @@ pub struct Character {
     #[codec(skip)]
     pub fire_haste: u8,
     #[codec(skip)]
-    pub earth_smites: u8,
+    pub earth_smites: (u8, u8),
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

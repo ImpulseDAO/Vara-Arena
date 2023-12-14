@@ -37,8 +37,8 @@ fn execute_attack_kind(
                 let success = is_attack_successful(hit_chance);
                 if success {
                     let mut damage = base_damage + player.attributes.strength * 2;
-                    if player.earth_smites > 0 {
-                        damage += player.attributes.intelligence * 3;
+                    if player.earth_smites.0 > 0 {
+                        damage += player.earth_smites.1;
                     }
                     if enemy.earth_skin.0 > 0 {
                         if enemy.earth_skin.1 > damage {
@@ -50,8 +50,8 @@ fn execute_attack_kind(
                         }
                     }
                     enemy.hp = enemy.hp.saturating_sub(damage);
-                    if enemy.fire_wall != 0 && enemy.hp != 0 {
-                        let damage = enemy.attributes.intelligence * 3;
+                    if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
+                        let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
                     }
                     TurnAction::Attack {

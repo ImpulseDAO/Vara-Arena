@@ -158,10 +158,10 @@ impl Arena {
             parry: false,
             rest_count: 0,
             disable_agiim: false,
-            fire_wall: 0,
+            fire_wall: (0, 0),
             earth_skin: (0, 0),
             chilling_touch: 0,
-            earth_smites: 0,
+            earth_smites: (0, 0),
             fire_haste: 0,
             water_burst: 0,
         };

@@ -1,18 +1,18 @@
-use arena_io::{Character, Spell, TurnAction};
+use arena_io::{Character, Spell, TurnEvent};
 use core::cmp::max;
 
 pub fn execute_cast_spell(
     player: &mut Character,
     enemy: &mut Character,
     spell: &Spell,
-) -> TurnAction {
+) -> TurnEvent {
     match spell {
         Spell::FireWall => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
                 player.fire_wall = (3, player.attributes.intelligence * 3);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::EarthSkin => {
@@ -20,7 +20,7 @@ pub fn execute_cast_spell(
                 player.energy = energy;
                 player.earth_skin = (3, player.attributes.intelligence * 3);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::WaterRestoration => {
@@ -29,7 +29,7 @@ pub fn execute_cast_spell(
                 let heal = player.attributes.intelligence * 3;
                 enemy.hp = enemy.hp.saturating_sub(heal);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::Fireball => {
@@ -38,7 +38,7 @@ pub fn execute_cast_spell(
                 let damage = player.attributes.intelligence * 3;
                 enemy.hp = enemy.hp.saturating_sub(damage);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::EarthCatapult => {
@@ -52,7 +52,7 @@ pub fn execute_cast_spell(
                     enemy.position = max(enemy.position + 2, 15);
                 }
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::WaterBurst => {
@@ -62,7 +62,7 @@ pub fn execute_cast_spell(
                 enemy.water_burst = 3;
                 enemy.hp = enemy.hp.saturating_sub(damage);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::FireHaste => {
@@ -70,7 +70,7 @@ pub fn execute_cast_spell(
                 player.energy = energy;
                 player.fire_haste = 3;
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::EarthSmites => {
@@ -78,7 +78,7 @@ pub fn execute_cast_spell(
                 player.energy = energy;
                 player.earth_smites = (3, player.attributes.intelligence * 3);
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
         Spell::ChillingTouch => {
@@ -86,10 +86,10 @@ pub fn execute_cast_spell(
                 player.energy = energy;
                 enemy.chilling_touch = 3;
             } else {
-                return TurnAction::NotEnoughEnergy;
+                return TurnEvent::NotEnoughEnergy;
             }
         }
     }
 
-    TurnAction::CastSpell
+    TurnEvent::CastSpell
 }

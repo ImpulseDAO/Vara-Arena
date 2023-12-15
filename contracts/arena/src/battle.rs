@@ -34,7 +34,7 @@ impl Battle {
                 return BattleLog {
                     c1: self.c1.id,
                     c2: self.c2.id,
-                    winner: winner,
+                    winner_id: winner,
                     turns,
                 };
             };
@@ -101,7 +101,7 @@ impl Battle {
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner,
+                        winner_id: winner,
                         turns,
                     };
                 }
@@ -113,7 +113,7 @@ impl Battle {
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner,
+                        winner_id: winner,
                         turns,
                     };
                 }
@@ -128,7 +128,7 @@ impl Battle {
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner,
+                        winner_id: winner,
                         turns,
                     };
                 }
@@ -140,7 +140,7 @@ impl Battle {
                     return BattleLog {
                         c1: self.c1.id,
                         c2: self.c2.id,
-                        winner,
+                        winner_id: winner,
                         turns,
                     };
                 }

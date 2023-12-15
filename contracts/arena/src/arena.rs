@@ -1,6 +1,6 @@
 use crate::battle::Battle;
 use crate::utils;
-use arena_io::{ArenaState, BattleLog, Character, GameAction, GameEvent, SetTier};
+use arena_io::{ArenaAction, ArenaEvent, ArenaState, BattleLog, Character, SetTier};
 use gstd::collections::BTreeMap;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
@@ -45,8 +45,8 @@ impl Arena {
         self.lobbys.insert(lobby.id, lobby);
 
         msg::reply(
-            GameEvent::LobbyCreated {
-                id: self.lobby_count,
+            ArenaEvent::LobbyCreated {
+                lobby_id: self.lobby_count,
             },
             0,
         )
@@ -69,7 +69,7 @@ impl Arena {
 
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
-        lobby.winners.push(log.winner);
+        lobby.winners.push(log.winner_id);
         lobby.logs.push(log);
 
         if lobby.battles.is_empty() {
@@ -92,8 +92,9 @@ impl Arena {
 
                 msg::send(
                     source,
-                    GameEvent::ArenaLog {
-                        winner: winner.id,
+                    ArenaEvent::LobbyBattleLog {
+                        lobby_id,
+                        winner_id: winner.id,
                         logs: lobby.logs.drain(..).collect(),
                     },
                     0,
@@ -129,7 +130,7 @@ impl Arena {
         }
 
         if let Some(id) = lobby.reservations.pop() {
-            msg::send_from_reservation(id, exec::program_id(), GameAction::Play { lobby_id }, 0)
+            msg::send_from_reservation(id, exec::program_id(), ArenaAction::Play { lobby_id }, 0)
                 .expect("unable to send");
         } else {
             panic!("more gas is required");
@@ -203,17 +204,10 @@ impl Arena {
         debug!("Registered participants{:?}", lobby.characters);
 
         msg::reply(
-            GameEvent::RegisteredPlayers(
-                lobby
-                    .characters
-                    .iter()
-                    .map(|character| CharacterInfo {
-                        id: character.id,
-                        name: character.name.clone(),
-                        attributes: character.attributes.clone(),
-                    })
-                    .collect(),
-            ),
+            ArenaEvent::PlayerRegistered {
+                lobby_id,
+                player_id: character_info.id,
+            },
             0,
         )
         .expect("unable to reply");
@@ -224,7 +218,7 @@ impl Arena {
         let reservation_id =
             ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
         lobby.reservations.push(reservation_id);
-        msg::reply(GameEvent::GasReserved, 0).expect("unable to reply");
+        msg::reply(ArenaEvent::GasReserved { lobby_id }, 0).expect("unable to reply");
     }
 
     pub fn clean_state(&mut self, lobby_id: u128) {

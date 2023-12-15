@@ -1,4 +1,4 @@
-use arena_io::GameAction;
+use arena_io::ArenaAction;
 use gstd::CodeId;
 use gtest::{Program, System};
 use mint_io::{InitialAttributes, MintAction};
@@ -56,42 +56,42 @@ fn game() {
 
     arena.send(
         USER_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER_ID.into(),
         },
     );
     arena.send(
         USER_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER_ID.into(),
         },
     );
     arena.send(
         USER2_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER2_ID.into(),
         },
     );
     arena.send(
         USER3_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER3_ID.into(),
         },
     );
 
     arena.send(
         USER4_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER4_ID.into(),
         },
     );
 
-    arena.send(USER_ID, GameAction::ReserveGas);
-    arena.send(USER_ID, GameAction::ReserveGas);
+    arena.send(USER_ID, ArenaAction::ReserveGas);
+    arena.send(USER_ID, ArenaAction::ReserveGas);
 
-    arena.send(USER_ID, GameAction::Play);
+    arena.send(USER_ID, ArenaAction::Play);
 
-    arena.send(USER_ID, GameAction::CleanState);
+    arena.send(USER_ID, ArenaAction::CleanState);
 
     mint.send(
         USER_ID,
@@ -115,32 +115,32 @@ fn game() {
 
     arena.send(
         USER_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER_ID.into(),
         },
     );
     arena.send(
         USER2_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER2_ID.into(),
         },
     );
     arena.send(
         USER3_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER3_ID.into(),
         },
     );
     arena.send(
         USER4_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER4_ID.into(),
         },
     );
-    arena.send(USER_ID, GameAction::ReserveGas);
-    arena.send(USER_ID, GameAction::ReserveGas);
+    arena.send(USER_ID, ArenaAction::ReserveGas);
+    arena.send(USER_ID, ArenaAction::ReserveGas);
 
-    arena.send(USER_ID, GameAction::Play);
+    arena.send(USER_ID, ArenaAction::Play);
 
     mint.send(
         USER_ID,
@@ -163,7 +163,7 @@ fn game() {
     );
     arena.send(
         USER_ID,
-        GameAction::Register {
+        ArenaAction::Register {
             owner_id: USER_ID.into(),
         },
     );

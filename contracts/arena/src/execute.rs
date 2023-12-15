@@ -1,6 +1,6 @@
 use crate::spell::execute_cast_spell;
 use crate::utils;
-use arena_io::{AttackKind, BattleAction, Character, TurnAction, TurnResult};
+use arena_io::{AttackKind, BattleAction, Character, TurnEvent, TurnLog};
 use core::cmp::{max, min};
 use gstd::debug;
 
@@ -19,12 +19,12 @@ fn execute_attack_kind(
     energy: u8,
     base_hit_chance: u8,
     base_damage: u8,
-) -> TurnAction {
+) -> TurnEvent {
     if let Some(energy) = player.energy.checked_sub(energy) {
         player.energy = energy;
         if player.position.abs_diff(enemy.position) == 1 {
             if enemy.parry {
-                TurnAction::Attack {
+                TurnEvent::Attack {
                     position: player.position,
                     damage: 0,
                 }
@@ -54,18 +54,18 @@ fn execute_attack_kind(
                         let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
                     }
-                    TurnAction::Attack {
+                    TurnEvent::Attack {
                         position: player.position,
                         damage,
                     }
                 } else {
-                    TurnAction::Miss {
+                    TurnEvent::Miss {
                         position: player.position,
                     }
                 }
             }
         } else {
-            TurnAction::Miss {
+            TurnEvent::Miss {
                 position: player.position,
             }
         }
@@ -74,11 +74,11 @@ fn execute_attack_kind(
             "player {:?} has not enough energy for quick attack. skipping the turn...",
             player.id
         );
-        TurnAction::NotEnoughEnergy
+        TurnEvent::NotEnoughEnergy
     }
 }
 
-fn execute_attack(player: &mut Character, enemy: &mut Character, kind: &AttackKind) -> TurnAction {
+fn execute_attack(player: &mut Character, enemy: &mut Character, kind: &AttackKind) -> TurnEvent {
     match kind {
         AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5),
         AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10),
@@ -90,7 +90,7 @@ pub fn execute_action(
     action: &BattleAction,
     player: &mut Character,
     enemy: &mut Character,
-) -> TurnResult {
+) -> TurnLog {
     let action = match action {
         BattleAction::Attack { kind } => execute_attack(player, enemy, kind),
         BattleAction::MoveLeft => {
@@ -102,11 +102,11 @@ pub fn execute_action(
                 } else {
                     player.position = max(player.position - move_, enemy.position + 1);
                 }
-                TurnAction::Move {
+                TurnEvent::Move {
                     position: player.position,
                 }
             } else {
-                TurnAction::NotEnoughEnergy
+                TurnEvent::NotEnoughEnergy
             }
         }
         BattleAction::MoveRight => {
@@ -118,11 +118,11 @@ pub fn execute_action(
                 } else {
                     player.position = min(player.position + move_, MAX_POS);
                 }
-                TurnAction::Move {
+                TurnEvent::Move {
                     position: player.position,
                 }
             } else {
-                TurnAction::NotEnoughEnergy
+                TurnEvent::NotEnoughEnergy
             }
         }
         BattleAction::Rest => {
@@ -134,14 +134,14 @@ pub fn execute_action(
                 "player {:?} reg counter = {:?}",
                 player.id, player.rest_count
             );
-            TurnAction::Rest { energy: reg_tick }
+            TurnEvent::Rest { energy: reg_tick }
         }
         BattleAction::Parry => {
             if let Some(energy) = player.energy.checked_sub(2) {
                 player.energy = energy;
-                TurnAction::Parry
+                TurnEvent::Parry
             } else {
-                TurnAction::NotEnoughEnergy
+                TurnEvent::NotEnoughEnergy
             }
         }
         BattleAction::Guardbreak => {
@@ -150,15 +150,15 @@ pub fn execute_action(
                 if enemy.parry {
                     enemy.disable_agiim = true;
                 }
-                TurnAction::Guardbreak
+                TurnEvent::Guardbreak
             } else {
-                TurnAction::NotEnoughEnergy
+                TurnEvent::NotEnoughEnergy
             }
         }
         BattleAction::CastSpell { spell } => execute_cast_spell(player, enemy, spell),
     };
 
-    TurnResult {
+    TurnLog {
         character: player.id,
         action,
     }

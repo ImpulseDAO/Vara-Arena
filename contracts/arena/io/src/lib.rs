@@ -4,10 +4,10 @@ use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata, Out};
 use gstd::collections::BTreeMap;
 use gstd::{prelude::*, ActorId, TypeInfo};
-use mint_io::{CharacterAttributes, CharacterInfo};
+use mint_io::CharacterAttributes;
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum GameAction {
+pub enum ArenaAction {
     CreateLobby,
     Register { lobby_id: u128, owner_id: ActorId },
     Play { lobby_id: u128 },
@@ -16,20 +16,20 @@ pub enum GameAction {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub struct TurnResult {
+pub struct TurnLog {
     pub character: ActorId,
-    pub action: TurnAction,
+    pub action: TurnEvent,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum TurnAction {
+pub enum TurnEvent {
     NotEnoughEnergy,
     Miss { position: u8 },
     Attack { position: u8, damage: u8 },
     Move { position: u8 },
     Rest { energy: u8 },
     Parry,
-    Guardbreak,
+    Guardbreak { success: bool },
     CastSpell,
 }
 
@@ -37,21 +37,27 @@ pub enum TurnAction {
 pub struct BattleLog {
     pub c1: ActorId,
     pub c2: ActorId,
-    pub winner: ActorId,
-    pub turns: Vec<TurnResult>,
+    pub winner_id: ActorId,
+    pub turns: Vec<Vec<TurnLog>>,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum GameEvent {
+pub enum ArenaEvent {
     LobbyCreated {
-        id: u128,
+        lobby_id: u128,
     },
-    RegisteredPlayers(Vec<CharacterInfo>),
-    ArenaLog {
-        winner: ActorId,
+    PlayerRegistered {
+        lobby_id: u128,
+        player_id: ActorId,
+    },
+    GasReserved {
+        lobby_id: u128,
+    },
+    LobbyBattleLog {
+        lobby_id: u128,
+        winner_id: ActorId,
         logs: Vec<BattleLog>,
     },
-    GasReserved,
 }
 
 #[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, TypeInfo)]
@@ -168,7 +174,7 @@ pub struct ArenaMetadata;
 
 impl Metadata for ArenaMetadata {
     type Init = InOut<ActorId, ()>;
-    type Handle = InOut<GameAction, GameEvent>;
+    type Handle = InOut<ArenaAction, ArenaEvent>;
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();

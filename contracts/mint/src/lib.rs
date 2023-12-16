@@ -4,8 +4,7 @@ use gstd::collections::BTreeMap;
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
 use mint_io::{
-    AttributeChoice, CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintEvent,
-    MintState,
+    AttributeChoice, CharacterAttributes, CharacterInfo, MintAction, MintEvent, MintState,
 };
 
 type CharacterId = ActorId;
@@ -20,7 +19,7 @@ struct Mint {
 static mut MINT: Option<Mint> = None;
 
 impl Mint {
-    fn create_character(&mut self, code_id: CodeId, name: String, attributes: InitialAttributes) {
+    fn create_character(&mut self, code_id: CodeId, name: String, attributes: CharacterAttributes) {
         let (_, character_id) =
             ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                 .unwrap();
@@ -34,9 +33,9 @@ impl Mint {
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 intelligence: attributes.intelligence,
-                level: 1,
-                experience: 0,
             },
+            level: 1,
+            experience: 0,
         };
 
         self.characters.insert(msg::source(), info.clone());
@@ -72,12 +71,12 @@ impl Mint {
             .characters
             .get_mut(&owner_id)
             .expect("invalid owner_id");
-        character.attributes.increase_xp();
+        character.increase_xp();
 
         msg::reply(
             MintEvent::XpIncreased {
                 character_id: character.id,
-                xp: character.attributes.experience,
+                xp: character.experience,
             },
             0,
         )
@@ -103,7 +102,7 @@ impl Mint {
             .get_mut(&owner_id)
             .expect("caller doesn't have a character");
 
-        character.attributes.level_up(&attr);
+        character.level_up(&attr);
 
         msg::reply(
             MintEvent::LevelUpdated {

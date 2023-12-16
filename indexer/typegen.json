@@ -1,0 +1,14 @@
+{
+  "outDir": "src/types",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/vara-testnet",
+  "pallets": {
+    "Gear": {
+      "events": [
+        "UserMessageSent"
+      ],
+      "calls": [],
+      "storage": [],
+      "constants": []
+    }
+  }
+}

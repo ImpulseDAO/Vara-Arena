@@ -1,0 +1,8 @@
+type Character @entity {
+  id: ID!
+  owner: String! @index
+  name: String!
+  attributes: JSON!
+  level: Int!
+  experience: Int!
+}

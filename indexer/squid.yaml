@@ -1,0 +1,14 @@
+manifestVersion: subsquid.io/v0.1
+name: arena-squid
+version: 1
+description: |-
+  Historical information about AArena battles
+build:
+
+deploy:
+  addons:
+    postgres:
+  processor:
+    cmd: [ "sqd", "process:prod" ]
+  api:
+    cmd: [ "sqd", "serve:prod" ]

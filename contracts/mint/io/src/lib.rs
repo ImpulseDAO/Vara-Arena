@@ -52,7 +52,7 @@ impl CharacterAttributes {
         debug!("Adding Experience!!!{:#?}", self.experience);
     }
 
-    pub fn level_up(&mut self, attr: AttributeChoice) {
+    pub fn level_up(&mut self, attr: &AttributeChoice) {
         let xp_consume = LEVEL_XP[self.level as usize];
 
         assert!(self.experience >= xp_consume, "not enough experience");
@@ -91,7 +91,7 @@ pub struct CharacterInfo {
     pub attributes: CharacterAttributes,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo)]
 pub enum MintAction {
     CreateCharacter {
         code_id: CodeId,
@@ -108,6 +108,21 @@ pub enum MintAction {
         arena_id: ActorId,
     },
     LevelUp {
+        attr: AttributeChoice,
+    },
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum MintEvent {
+    CharacterCreated {
+        character_info: CharacterInfo,
+    },
+    XpIncreased {
+        character_id: ActorId,
+        xp: u32,
+    },
+    LevelUpdated {
+        character_id: ActorId,
         attr: AttributeChoice,
     },
 }

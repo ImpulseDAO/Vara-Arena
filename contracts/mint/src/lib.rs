@@ -4,7 +4,8 @@ use gstd::collections::BTreeMap;
 use gstd::prog::ProgramGenerator;
 use gstd::{debug, msg, prelude::*, ActorId, CodeId};
 use mint_io::{
-    AttributeChoice, CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintState,
+    AttributeChoice, CharacterAttributes, CharacterInfo, InitialAttributes, MintAction, MintEvent,
+    MintState,
 };
 
 type CharacterId = ActorId;
@@ -38,9 +39,15 @@ impl Mint {
             },
         };
 
-        self.characters.insert(msg::source(), info);
+        self.characters.insert(msg::source(), info.clone());
         debug!("character {:?} minted", character_id);
-        msg::reply(character_id, 0).expect("unable to reply");
+        msg::reply(
+            MintEvent::CharacterCreated {
+                character_info: info,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn character_info(&self, owner_id: CharacterId) {
@@ -66,6 +73,15 @@ impl Mint {
             .get_mut(&owner_id)
             .expect("invalid owner_id");
         character.attributes.increase_xp();
+
+        msg::reply(
+            MintEvent::XpIncreased {
+                character_id: character.id,
+                xp: character.attributes.experience,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {
@@ -87,7 +103,16 @@ impl Mint {
             .get_mut(&owner_id)
             .expect("caller doesn't have a character");
 
-        character.attributes.level_up(attr);
+        character.attributes.level_up(&attr);
+
+        msg::reply(
+            MintEvent::LevelUpdated {
+                character_id: character.id,
+                attr,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 }
 

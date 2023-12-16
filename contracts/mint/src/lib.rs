@@ -33,7 +33,7 @@ impl Mint {
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 intelligence: attributes.intelligence,
-                level: 0,
+                level: 1,
                 experience: 0,
             },
         };

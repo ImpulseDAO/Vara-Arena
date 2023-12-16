@@ -175,10 +175,11 @@ impl Arena {
         debug!("Current tier is {:#?}", lobby.current_tier);
         // Identify character tier based on level
         let character_tier: SetTier = match character.attributes.level {
-            0 => SetTier::Tier5,
-            1 => SetTier::Tier4,
-            2..=4 => SetTier::Tier3,
-            5..=8 => SetTier::Tier2,
+            0 => unreachable!(),
+            1 => SetTier::Tier5,
+            2 => SetTier::Tier4,
+            3..=5 => SetTier::Tier3,
+            6..=9 => SetTier::Tier2,
             _ => SetTier::Tier1,
         };
         debug!("Character tier is {:#?}", character_tier);
@@ -186,10 +187,11 @@ impl Arena {
         // Initialize current_tier based on the level of the first registered character
         if let SetTier::Tier0 = lobby.current_tier {
             lobby.current_tier = match character.attributes.level {
-                0 => SetTier::Tier5,
-                1 => SetTier::Tier4,
-                2..=4 => SetTier::Tier3,
-                5..=8 => SetTier::Tier2,
+                0 => unreachable!(),
+                1 => SetTier::Tier5,
+                2 => SetTier::Tier4,
+                3..=5 => SetTier::Tier3,
+                6..=9 => SetTier::Tier2,
                 _ => SetTier::Tier1,
             }
         };

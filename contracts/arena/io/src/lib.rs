@@ -133,6 +133,7 @@ pub struct Character {
     pub energy: u8,
     pub position: u8,
     pub attributes: CharacterAttributes,
+    pub level: u8,
 
     // battle specific fields
     // store them here to avoid using extra structs

@@ -156,6 +156,7 @@ impl Arena {
             energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,
+            level: character_info.level,
             parry: false,
             rest_count: 0,
             disable_agiim: false,
@@ -174,7 +175,7 @@ impl Arena {
 
         debug!("Current tier is {:#?}", lobby.current_tier);
         // Identify character tier based on level
-        let character_tier: SetTier = match character.attributes.level {
+        let character_tier: SetTier = match character.level {
             0 => unreachable!(),
             1 => SetTier::Tier5,
             2 => SetTier::Tier4,
@@ -186,7 +187,7 @@ impl Arena {
         // set current tournament tier based on the first registered character's level
         // Initialize current_tier based on the level of the first registered character
         if let SetTier::Tier0 = lobby.current_tier {
-            lobby.current_tier = match character.attributes.level {
+            lobby.current_tier = match character.level {
                 0 => unreachable!(),
                 1 => SetTier::Tier5,
                 2 => SetTier::Tier4,

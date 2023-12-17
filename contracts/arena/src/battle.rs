@@ -39,6 +39,10 @@ impl Battle {
                 };
             };
 
+            turns.push(vec![]);
+            let index = turns.len() - 1;
+            let turn_logs = &mut turns[index];
+
             let p1_state = CharacterState {
                 hp: self.c1.hp,
                 position: self.c1.position,
@@ -94,8 +98,7 @@ impl Battle {
                 self.c1.parry = matches!(&p1_action, BattleAction::Parry);
                 self.c2.parry = false;
 
-                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2);
-                turns.push(result);
+                execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
                     return BattleLog {
@@ -106,8 +109,7 @@ impl Battle {
                     };
                 }
 
-                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1);
-                turns.push(result);
+                execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
                     return BattleLog {
@@ -121,8 +123,7 @@ impl Battle {
                 self.c1.parry = false;
                 self.c2.parry = matches!(&p2_action, BattleAction::Parry);
 
-                let result = execute_action(&p2_action, &mut self.c2, &mut self.c1);
-                turns.push(result);
+                execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
                     return BattleLog {
@@ -133,8 +134,7 @@ impl Battle {
                     };
                 }
 
-                let result = execute_action(&p1_action, &mut self.c1, &mut self.c2);
-                turns.push(result);
+                execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
                 if let Some(winner) = self.check_winner() {
                     debug!("{:?} is a winner", winner);
                     return BattleLog {

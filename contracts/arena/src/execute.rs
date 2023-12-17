@@ -2,7 +2,7 @@ use crate::spell::execute_cast_spell;
 use crate::utils;
 use arena_io::{AttackKind, BattleAction, Character, TurnEvent, TurnLog};
 use core::cmp::{max, min};
-use gstd::debug;
+use gstd::{debug, prelude::*};
 
 const MIN_POS: u8 = 1;
 const MAX_POS: u8 = 15;
@@ -19,15 +19,19 @@ fn execute_attack_kind(
     energy: u8,
     base_hit_chance: u8,
     base_damage: u8,
-) -> TurnEvent {
+    logs: &mut Vec<TurnLog>,
+) {
     if let Some(energy) = player.energy.checked_sub(energy) {
         player.energy = energy;
         if player.position.abs_diff(enemy.position) == 1 {
             if enemy.parry {
-                TurnEvent::Attack {
-                    position: player.position,
-                    damage: 0,
-                }
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::Attack {
+                        position: player.position,
+                        damage: 0,
+                    },
+                });
             } else {
                 let hit_chance = if player.water_burst == 0 {
                     base_hit_chance + player.attributes.agility * 2
@@ -53,36 +57,54 @@ fn execute_attack_kind(
                     if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
                         let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
+                        todo!("emmit fire wall damage event")
                     }
-                    TurnEvent::Attack {
-                        position: player.position,
-                        damage,
-                    }
+                    logs.push(TurnLog {
+                        character: player.id,
+                        action: TurnEvent::Attack {
+                            position: player.position,
+                            damage,
+                        },
+                    });
                 } else {
-                    TurnEvent::Miss {
-                        position: player.position,
-                    }
+                    logs.push(TurnLog {
+                        character: player.id,
+                        action: TurnEvent::Miss {
+                            position: player.position,
+                        },
+                    });
                 }
             }
         } else {
-            TurnEvent::Miss {
-                position: player.position,
-            }
+            logs.push(TurnLog {
+                character: player.id,
+                action: TurnEvent::Miss {
+                    position: player.position,
+                },
+            });
         }
     } else {
         debug!(
             "player {:?} has not enough energy for quick attack. skipping the turn...",
             player.id
         );
-        TurnEvent::NotEnoughEnergy
+        logs.push(TurnLog {
+            character: player.id,
+            action: TurnEvent::NotEnoughEnergy,
+        })
     }
 }
 
-fn execute_attack(player: &mut Character, enemy: &mut Character, kind: &AttackKind) -> TurnEvent {
+fn execute_attack(
+    player: &mut Character,
+    enemy: &mut Character,
+    kind: &AttackKind,
+    logs: &mut Vec<TurnLog>,
+) {
     match kind {
-        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5),
-        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10),
-        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20),
+        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, logs),
+        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, logs),
+        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20, logs),
     }
 }
 
@@ -90,9 +112,10 @@ pub fn execute_action(
     action: &BattleAction,
     player: &mut Character,
     enemy: &mut Character,
-) -> TurnLog {
-    let action = match action {
-        BattleAction::Attack { kind } => execute_attack(player, enemy, kind),
+    logs: &mut Vec<TurnLog>,
+) {
+    match action {
+        BattleAction::Attack { kind } => execute_attack(player, enemy, kind, logs),
         BattleAction::MoveLeft => {
             if let Some(energy) = player.energy.checked_sub(1) {
                 player.energy = energy;
@@ -102,11 +125,17 @@ pub fn execute_action(
                 } else {
                     player.position = max(player.position - move_, enemy.position + 1);
                 }
-                TurnEvent::Move {
-                    position: player.position,
-                }
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::Move {
+                        position: player.position,
+                    },
+                });
             } else {
-                TurnEvent::NotEnoughEnergy
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::NotEnoughEnergy,
+                });
             }
         }
         BattleAction::MoveRight => {
@@ -118,11 +147,17 @@ pub fn execute_action(
                 } else {
                     player.position = min(player.position + move_, MAX_POS);
                 }
-                TurnEvent::Move {
-                    position: player.position,
-                }
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::Move {
+                        position: player.position,
+                    },
+                });
             } else {
-                TurnEvent::NotEnoughEnergy
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::NotEnoughEnergy,
+                });
             }
         }
         BattleAction::Rest => {
@@ -134,14 +169,23 @@ pub fn execute_action(
                 "player {:?} reg counter = {:?}",
                 player.id, player.rest_count
             );
-            TurnEvent::Rest { energy: reg_tick }
+            logs.push(TurnLog {
+                character: player.id,
+                action: TurnEvent::Rest { energy: reg_tick },
+            });
         }
         BattleAction::Parry => {
             if let Some(energy) = player.energy.checked_sub(2) {
                 player.energy = energy;
-                TurnEvent::Parry
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::Parry,
+                });
             } else {
-                TurnEvent::NotEnoughEnergy
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::NotEnoughEnergy,
+                });
             }
         }
         BattleAction::Guardbreak => {
@@ -150,16 +194,25 @@ pub fn execute_action(
                 if enemy.parry {
                     enemy.disable_agiim = true;
                 }
-                TurnEvent::Guardbreak
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::Guardbreak {
+                        success: enemy.parry,
+                    },
+                });
             } else {
-                TurnEvent::NotEnoughEnergy
+                logs.push(TurnLog {
+                    character: player.id,
+                    action: TurnEvent::NotEnoughEnergy,
+                })
             }
         }
-        BattleAction::CastSpell { spell } => execute_cast_spell(player, enemy, spell),
+        BattleAction::CastSpell { spell } => {
+            let event = execute_cast_spell(player, enemy, spell);
+            logs.push(TurnLog {
+                character: player.id,
+                action: event,
+            });
+        }
     };
-
-    TurnLog {
-        character: player.id,
-        action,
-    }
 }

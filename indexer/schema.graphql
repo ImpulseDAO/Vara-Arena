@@ -6,3 +6,14 @@ type Character @entity {
   level: Int!
   experience: Int!
 }
+
+type Lobby @entity {
+  id: ID!
+  characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
+}
+
+type LobbyCharacter @entity {
+  id: ID!
+  lobby: Lobby!
+  character: Character!
+}

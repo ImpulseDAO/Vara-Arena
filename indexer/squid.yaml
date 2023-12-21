@@ -9,6 +9,8 @@ deploy:
   addons:
     postgres:
   processor:
+    env:
+      RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
     cmd: [ "sqd", "process:prod" ]
   api:
     cmd: [ "sqd", "serve:prod" ]

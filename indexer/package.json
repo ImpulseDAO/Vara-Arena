@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@gear-js/api": "^0.35.2",
-    "@polkadot/wasm-crypto": "^7.3.2",
     "@subsquid/archive-registry": "^3.3.0",
     "@subsquid/graphql-server": "^4.3.1",
     "@subsquid/ss58": "^2.0.1",

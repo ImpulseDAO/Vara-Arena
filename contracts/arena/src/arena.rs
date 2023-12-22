@@ -17,6 +17,7 @@ pub struct Lobby {
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
     winners: Vec<ActorId>,
+    losers: Vec<ActorId>,
     logs: Vec<BattleLog>,
 }
 
@@ -69,7 +70,13 @@ impl Arena {
 
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
+        let loser = lobby
+            .characters
+            .iter()
+            .find(|c| c.id == lobby.winners[0])
+            .unwrap();
         lobby.winners.push(log.winner_id);
+        lobby.losers.push(loser.owner);
         lobby.logs.push(log);
 
         if lobby.battles.is_empty() {
@@ -85,6 +92,7 @@ impl Arena {
                     self.mint,
                     MintAction::BattleResult {
                         owner_id: winner.owner,
+                        losers: lobby.losers.drain(..).collect(),
                     },
                     0,
                 )
@@ -102,7 +110,7 @@ impl Arena {
                 .expect("unable to reply");
 
                 Arena::tournament_winners(&mut self.leaderboard, winner.owner);
-                self.clean_state(lobby_id);
+                self.lobbys.remove(&lobby_id);
                 return;
             } else {
                 lobby.battles = lobby

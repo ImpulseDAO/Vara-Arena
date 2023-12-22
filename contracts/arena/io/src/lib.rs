@@ -35,9 +35,8 @@ pub enum TurnEvent {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct BattleLog {
-    pub c1: ActorId,
-    pub c2: ActorId,
     pub winner_id: ActorId,
+    pub loser_id: ActorId,
     pub turns: Vec<Vec<TurnLog>>,
 }
 

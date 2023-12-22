@@ -139,7 +139,10 @@ extern "C" fn handle() {
             mint.create_character(code_id, name, attributes);
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
-        MintAction::BattleResult { owner_id } => mint.increase_xp(owner_id),
+        MintAction::BattleResult {
+            owner_id,
+            losers: _,
+        } => mint.increase_xp(owner_id),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
     }

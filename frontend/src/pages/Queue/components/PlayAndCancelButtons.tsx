@@ -37,17 +37,16 @@ export const PlayAndCancelButtons = ({
 
   const reserveGas = React.useCallback(() => {
     return new Promise((resolve) => {
-      send(
-        { ReserveGas: null },
-        {
-          onSuccess: () => {
-            console.log("successfully reserved gas");
-            resolve("successfully reserved gas");
-            setGasReservedTimes((t) => t + 1);
-          },
-          onError: () => console.log("error while reserving gas"),
-        }
-      );
+      send({
+        payload: { ReserveGas: null },
+        gasLimit: Infinity,
+        onSuccess: () => {
+          console.log("successfully reserved gas");
+          resolve("successfully reserved gas");
+          setGasReservedTimes((t) => t + 1);
+        },
+        onError: () => console.log("error while reserving gas"),
+      });
     });
   }, [send]);
 
@@ -55,9 +54,10 @@ export const PlayAndCancelButtons = ({
     return new Promise((resolve) => {
       send(
         {
-          Play: null,
-        },
-        {
+          payload: {
+            Play: null,
+          },
+          gasLimit: Infinity,
           onSuccess: () => {
             localStorage.setItem("players", JSON.stringify([]));
             console.log("successfully started the battle");
@@ -88,10 +88,12 @@ export const PlayAndCancelButtons = ({
 
   const handleCancel = () => {
     send(
+
       {
-        CleanState: null,
-      },
-      {
+        payload: {
+          CleanState: null,
+        },
+        gasLimit: Infinity,
         onSuccess: () => {
           console.log("successfully cleaned the state");
           navigate("/arena");

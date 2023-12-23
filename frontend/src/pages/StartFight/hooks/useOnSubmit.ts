@@ -22,8 +22,6 @@ export const useOnSubmit = (): VoidFunction => {
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
   const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
 
-  // const charInfo = JSON.parse(localStorage.getItem("charInfo"));
-
   const arenaMetaWasmData: MetaWasmDataType = useMemo(
     () => ({
       programId: ARENA_ID,
@@ -56,21 +54,20 @@ export const useOnSubmit = (): VoidFunction => {
     if (registered !== undefined) {
       navigate("/tournament");
       if (registered.length < 2) {
-        send(
-          {
+        send({
+          payload: {
             Register: {
               owner_id: account.decodedAddress,
             },
           },
-          {
-            onSuccess: () => {
-              console.log("success");
-            },
-            onError: () => {
-              console.log("error");
-            },
-          }
-        );
+          gasLimit: Infinity,
+          onSuccess: () => {
+            console.log("success");
+          },
+          onError: () => {
+            console.log("error");
+          },
+        });
       } else {
         alert.error("Max tournament players = 2, work in progress 🏗");
       }

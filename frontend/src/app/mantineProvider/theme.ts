@@ -40,6 +40,7 @@ export const theme: MantineThemeOverride = {
   colors: {
     ...formatColors(customColors),
   },
+  fontFamily: "Inter, sans-serif",
   // these are default values of breakpoints
   // https://mantine.dev/styles/responsive/
   breakpoints: {
@@ -140,7 +141,7 @@ export const theme: MantineThemeOverride = {
       textDecoration: "none",
     },
     body: {
-      color: theme.black,
+      color: theme.white,
     },
   }),
 };

@@ -23,7 +23,7 @@ async fn main() {
     let arena = unsafe { ARENA.as_mut().unwrap() };
     let action: ArenaAction = msg::load().expect("unable to decode `GameAction`");
     match action {
-        ArenaAction::CreateLobby => arena.create_lobby(),
+        ArenaAction::CreateLobby { capacity } => arena.create_lobby(capacity),
         ArenaAction::Register { lobby_id, owner_id } => {
             arena.register(lobby_id, owner_id).await;
         }

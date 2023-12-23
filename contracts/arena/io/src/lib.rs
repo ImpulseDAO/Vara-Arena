@@ -8,7 +8,7 @@ use mint_io::CharacterAttributes;
 
 #[derive(Encode, Decode, TypeInfo)]
 pub enum ArenaAction {
-    CreateLobby,
+    CreateLobby { capacity: u8 },
     Register { lobby_id: u128, owner_id: ActorId },
     Play { lobby_id: u128 },
     ReserveGas { lobby_id: u128 },
@@ -44,6 +44,7 @@ pub struct BattleLog {
 pub enum ArenaEvent {
     LobbyCreated {
         lobby_id: u128,
+        capacity: u8,
     },
     PlayerRegistered {
         lobby_id: u128,

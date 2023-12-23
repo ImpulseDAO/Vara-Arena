@@ -6,7 +6,7 @@ use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
 const GAS_FOR_BATTLE: u64 = 245_000_000_000;
-const NUMBER_OF_PLAYERS: usize = 4;
+const LOBBY_CAPACITY: [u8; 3] = [2, 4, 8];
 
 #[derive(Default)]
 pub struct Lobby {
@@ -14,6 +14,7 @@ pub struct Lobby {
     current_tier: SetTier,
     characters: Vec<Character>,
     source: Option<ActorId>, // original play sender
+    capacity: u8,
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
     winners: Vec<ActorId>,
@@ -37,10 +38,15 @@ impl Arena {
         }
     }
 
-    pub fn create_lobby(&mut self) {
+    pub fn create_lobby(&mut self, capacity: u8) {
+        if !LOBBY_CAPACITY.contains(&capacity) {
+            panic!("lobby capacity out of range: {:?}", LOBBY_CAPACITY);
+        }
+
         self.lobby_count += 1;
         let lobby = Lobby {
             id: self.lobby_count,
+            capacity,
             ..Default::default()
         };
         self.lobbys.insert(lobby.id, lobby);
@@ -48,6 +54,7 @@ impl Arena {
         msg::reply(
             ArenaEvent::LobbyCreated {
                 lobby_id: self.lobby_count,
+                capacity,
             },
             0,
         )
@@ -56,6 +63,10 @@ impl Arena {
 
     pub async fn play(&mut self, lobby_id: u128) {
         let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+
+        if lobby.characters.len() != lobby.capacity.into() {
+            panic!("not enough players to start the battle");
+        }
 
         if lobby.battles.is_empty() {
             debug!("starting the battle");
@@ -147,7 +158,7 @@ impl Arena {
 
     pub async fn register(&mut self, lobby_id: u128, owner_id: ActorId) {
         let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
-        if lobby.characters.len() == NUMBER_OF_PLAYERS {
+        if lobby.characters.len() == lobby.capacity.into() {
             panic!("max number of players is already registered");
         }
         let payload = MintAction::CharacterInfo { owner_id };

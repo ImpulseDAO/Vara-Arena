@@ -9,6 +9,7 @@ type Character @entity {
 
 type Lobby @entity {
   id: ID!
+  capacity: Int!
   characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
 }
 

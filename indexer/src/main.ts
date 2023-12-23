@@ -57,7 +57,10 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
                     let data = arenaMeta.createType(assertNotNull(arenaMeta.types.handle.output), message.payload).toJSON() as any
 
                     if (data.lobbyCreated) {
-                        let lobby = new Lobby({ id: data.lobbyCreated.lobbyId })
+                        let lobby = new Lobby({
+                            id: data.lobbyCreated.lobbyId,
+                            capacity: data.lobbyCreated.capacity,
+                        })
                         lobbies.push(lobby)
                     } else if (data.playerRegistered) {
                         let lobbyCharacter = new LobbyCharacter({

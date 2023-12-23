@@ -10,6 +10,9 @@ export class Lobby {
     @PrimaryColumn_()
     id!: string
 
+    @Column_("int4", {nullable: false})
+    capacity!: number
+
     @OneToMany_(() => LobbyCharacter, e => e.lobby)
     characters!: LobbyCharacter[]
 }

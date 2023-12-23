@@ -68,7 +68,7 @@ pub fn execute_cast_spell(
         Spell::FireHaste => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                player.fire_haste = 3;
+                player.fire_haste = 4;
             } else {
                 return TurnEvent::NotEnoughEnergy;
             }
@@ -76,7 +76,7 @@ pub fn execute_cast_spell(
         Spell::EarthSmites => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                player.earth_smites = (3, player.attributes.intelligence * 3);
+                player.earth_smites = (4, player.attributes.intelligence * 3);
             } else {
                 return TurnEvent::NotEnoughEnergy;
             }
@@ -84,7 +84,7 @@ pub fn execute_cast_spell(
         Spell::ChillingTouch => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                enemy.chilling_touch = 3;
+                enemy.chilling_touch = 4;
             } else {
                 return TurnEvent::NotEnoughEnergy;
             }

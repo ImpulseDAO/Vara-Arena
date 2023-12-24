@@ -4,8 +4,28 @@ import { NavLink, useNavigate } from "react-router-dom";
 import "./styles.scss";
 import { useAccount, useBalance } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
+import { newRoutes } from "app/routes";
 
 export type HeaderProps = {};
+
+const navLinks = [
+  {
+    name: "Arena",
+    path: newRoutes.arena,
+  },
+  {
+    name: "My logs",
+    path: newRoutes.myLogs,
+  },
+  {
+    name: "Leaderboard",
+    path: newRoutes.leaderboard,
+  },
+  {
+    name: "My Profile",
+    path: newRoutes.myProfile,
+  },
+];
 
 export const Header: FC<HeaderProps> = () => {
   const { account, isAccountReady } = useAccount();
@@ -19,35 +39,20 @@ export const Header: FC<HeaderProps> = () => {
 
   return (
     <div className="header">
-      <p className={"header_title"} onClick={() => navigate("/arena")}>
+      <p className={"header_title"} onClick={() => navigate(newRoutes.lobby)}>
         Arena
       </p>
 
       <div className={"header_nav"}>
-        <NavLink
-          to="/mint-character"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Create New
-        </NavLink>
-        <NavLink
-          to="/tournament"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Tournament
-        </NavLink>
-        <NavLink
-          to="/leaderboard"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Leaderboard
-        </NavLink>
-        <NavLink
-          to={`/profile/${account?.decodedAddress}`}
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          My profile
-        </NavLink>
+        {navLinks.map(({ name, path }) => (
+          <NavLink
+            key={name}
+            to={path}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            {name}
+          </NavLink>
+        ))}
       </div>
       {account && (
         <div className="wallet_wrapper">

@@ -44,9 +44,15 @@ const ProfileResultBattleColumns: TableColumnsType[] = [
 
 export const Profile: FC = () => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<{ id: string | undefined; }>();
   const { account } = useAccount();
   const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+
+  /**
+   * uses id from params if it exists
+   * otherwise uses user's account id
+   */
+  const id = params.id ?? account?.decodedAddress;
 
   const metaWasmData: MetaWasmDataType = useMemo(
     () => ({
@@ -190,7 +196,7 @@ export const Profile: FC = () => {
               leftText={"Strength"}
               secondButton={stats.strength}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Strength")
@@ -201,7 +207,7 @@ export const Profile: FC = () => {
               leftText={"Agility"}
               secondButton={stats.agility}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Agility")
@@ -212,7 +218,7 @@ export const Profile: FC = () => {
               leftText={"Vitality"}
               secondButton={stats.vitality}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Vitality")
@@ -223,7 +229,7 @@ export const Profile: FC = () => {
               leftText={"Stamina"}
               secondButton={stats.stamina}
               thirdButton={"+"}
-              onClickSecondButton={() => {}}
+              onClickSecondButton={() => { }}
               onClickThirdButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Stamina")

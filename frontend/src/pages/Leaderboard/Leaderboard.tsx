@@ -9,7 +9,6 @@ import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { MetaWasmDataType } from "app/types/metaWasmDataType";
 import { ProgramMetadata } from "@gear-js/api";
-import { colors } from "react-select/dist/declarations/src/theme";
 
 export type LeaderboardProps = {};
 

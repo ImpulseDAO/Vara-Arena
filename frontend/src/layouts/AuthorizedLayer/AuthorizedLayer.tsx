@@ -15,7 +15,7 @@ export type AuthorizedLayerProps = {
 
 export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
   ({ children }) => {
-    const { account } = useAccount();
+    const { account, isAccountReady } = useAccount();
     const navigate = useNavigate();
     const { buffer } = useWasmMetadata(stateMetaWasm);
     const meta = ProgramMetadata.from(METADATA);
@@ -49,10 +49,13 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
     }, [charInfo.state]);
 
     useEffect(() => {
+      if (!isAccountReady) {
+        return; // do not do anything until account is ready
+      }
       if (!account) {
         navigate("/");
       }
-    }, [account, navigate]);
+    }, [account, isAccountReady, navigate]);
 
     return (
       <div className="app">

@@ -14,19 +14,22 @@
 .header_nav {
   width: 500px;
   font-size: 18px;
+  font-weight: 600;
   display: flex;
   gap: 20px;
+  padding-inline: 15px;
   justify-content: space-between;
   & > a {
     color: white;
     text-decoration: none;
+    text-wrap: nowrap;
     &.active {
       color: #2c67ff;
     }
   }
 }
 
-@media screen and (max-width: 1250px) {
+@media screen and (max-width: 1050px) {
   .header {
     flex-wrap: wrap;
     height: unset;

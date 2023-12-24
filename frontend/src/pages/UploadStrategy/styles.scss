@@ -1,7 +1,6 @@
 .upload {
-  height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url('../../assets/images/mintCharacterScreen.png');
+  background-image: url("../../assets/images/mintCharacterScreen.png");
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
@@ -64,17 +63,20 @@
   .imgWrapper {
     position: relative;
   }
-  .input_file_container {width: 570px;
+  .input_file_container {
+    width: 570px;
     height: 254px;
     background-color: white;
-    border: 1px dashed #EAECF0;
+    border: 1px dashed #eaecf0;
     border-radius: 8px;
     align-content: center;
     justify-content: center;
     display: flex;
   }
 
-  .input_file {display: none}
+  .input_file {
+    display: none;
+  }
 
   .modal_right {
     display: flex;
@@ -103,15 +105,21 @@
     font-size: 18px;
   }
 
-  .text {color: #667085;
-  font-size: 14px;}
+  .text {
+    color: #667085;
+    font-size: 14px;
+  }
 
-  .comment {color: #667085;
+  .comment {
+    color: #667085;
     font-size: 12px;
-  margin-top: 4px;}
+    margin-top: 4px;
+  }
 
-  .upload_icon { width: 40px;
-  height: 40px;}
+  .upload_icon {
+    width: 40px;
+    height: 40px;
+  }
 
   .buttonWrapper {
     display: flex;
@@ -153,8 +161,8 @@
     width: 572px;
     & > input {
       color: black;
-      background: #FFFFFF;
-      border: 1px solid #D0D5DD;
+      background: #ffffff;
+      border: 1px solid #d0d5dd;
       box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
       border-radius: 8px;
       font-size: 18px;

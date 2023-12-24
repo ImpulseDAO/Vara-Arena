@@ -1,5 +1,4 @@
 import { useWasmMetadata } from "./../../MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ARENA_ID, METADATA } from "../constants";

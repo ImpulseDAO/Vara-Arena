@@ -3,7 +3,7 @@ const ADDRESS = {
 };
 
 const LOCAL_STORAGE = {
-  ACCOUNT: 'account',
+  ACCOUNT: "account",
 };
 
 export { ADDRESS, LOCAL_STORAGE };

@@ -7,7 +7,6 @@ import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { ProgramMetadata } from "@gear-js/api";
 import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import { useWasmMetadata } from "../../pages/MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;

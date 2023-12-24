@@ -1,8 +1,8 @@
-import { AnyJson } from "@polkadot/types/types";
-import { ProgramMetadata } from "@gear-js/api";
-import { HexString } from "@polkadot/util/types";
+type HexString = import("@polkadot/util/types").HexString;
+type AnyJson = import("@polkadot/types/types").AnyJson;
+type ProgramMetadata = import("@gear-js/api").ProgramMetadata;
 
-export type MetaWasmDataType = {
+type MetaWasmDataType = {
   programId: HexString | undefined;
   wasm: Buffer | Uint8Array | undefined;
   programMetadata: ProgramMetadata | undefined;

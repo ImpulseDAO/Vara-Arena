@@ -15,7 +15,6 @@ import {
   addCodeIdToLocalStorage,
   getCodeIdsFromLocalStorage,
 } from "hooks/useUploadCode/useUploadCode";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type MintCharacterProps = {};
 
@@ -47,6 +46,7 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
       agility: string;
       vitality: string;
       stamina: string;
+      intelligence: string;
     };
     name: string;
   }>(metaWasmData);

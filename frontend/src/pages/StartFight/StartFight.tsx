@@ -8,7 +8,6 @@ import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 import { ARENA_ID, METADATA as ARENA_METADATA } from "./constants";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 

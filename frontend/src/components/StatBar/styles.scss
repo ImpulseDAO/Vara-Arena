@@ -1,8 +1,12 @@
+.outer-wrapper {
+  font-weight: 600;
+}
+
 .leftText {
   margin-right: auto;
 }
 
-.Wrapper {
+.flex-container {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -11,21 +15,45 @@
   font-size: 18px;
   flex-wrap: wrap;
   gap: 15px;
+  row-gap: 0;
   margin: 8px 0;
+
+  @media screen and (max-width: 400px) {
+    row-gap: 5px;
+    margin-bottom: 0.5rem;
+
+    .elem1 {
+      order: 1;
+    }
+    .elem2 {
+      order: 3;
+    }
+    .elem3 {
+      order: 2;
+    }
+  }
 }
 
 .healthBar {
-  background-color: red;
+  background-color: var(--color-red-health);
   border-radius: 4px;
-  width: 185px;
+  min-width: 185px;
   height: 8px;
+
+  @media screen and (max-width: 400px) {
+    width: 100%;
+  }
 }
 
 .energyBar {
-  background-color: blue;
+  background-color: var(--color-blue-energy);
   border-radius: 4px;
-  width: 185px;
+  min-width: 185px;
   height: 8px;
+
+  @media screen and (max-width: 400px) {
+    width: 100%;
+  }
 }
 
 .number {

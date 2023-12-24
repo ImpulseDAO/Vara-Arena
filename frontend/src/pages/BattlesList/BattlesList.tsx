@@ -28,11 +28,6 @@ export const BattlesList = () => {
     <BackgroundImage
       src={StartFightPng}
       pb={100}
-
-      sx={{
-        flex: 1,
-        height: '100%',
-      }}
     >
       <Grid m={'lg'} gutter={'md'}
         mx="auto"

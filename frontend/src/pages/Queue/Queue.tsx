@@ -17,8 +17,6 @@ import { battle } from "model/battleLogs";
 import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { log } from "console";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 export type QueueProps = {};
 
@@ -210,8 +208,8 @@ export const Queue: FC<QueueProps> = () => {
           <p className="modal_badge">{`${Math.floor(timer / 60)
             .toString()
             .padStart(2, "0")}:${(timer - Math.floor(timer / 60) * 60)
-            .toString()
-            .padStart(2, "0")}`}</p>
+              .toString()
+              .padStart(2, "0")}`}</p>
         </div>
         <div className="modal_table">
           <TableUI rows={inProgressRows} columns={inProgressColumns} />

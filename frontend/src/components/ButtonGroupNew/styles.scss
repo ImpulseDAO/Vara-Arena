@@ -1,0 +1,49 @@
+.buttonText {
+  font-weight: 600;
+}
+
+.pointButtonWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+  font-size: 18px;
+  border-radius: 8px;
+  & > :nth-child(1) {
+    margin-right: auto;
+  }
+  & > .pointButton:last-child {
+    border-radius: 0 8px 8px 0;
+  }
+  & > .pointButton:nth-child(2) {
+    border-radius: 8px 0 0 8px;
+  }
+}
+
+.pointButton {
+  height: 40px;
+  width: 40px;
+  border: 1px solid rgba(208, 213, 221, 1);
+  font-size: 12px;
+  box-sizing: border-box;
+  padding: 0px;
+  background: var(--Gray-50, #f9fafb);
+  color: var(--Gray-600, #475467);
+
+  &:hover:not(.secondBtn) {
+    background-color: var(--Gray-50, #adc3f5) !important;
+  }
+
+  &:active:not(.secondBtn) {
+    transform: none;
+  }
+}
+
+.secondBtn {
+  background: white;
+  border-radius: 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}

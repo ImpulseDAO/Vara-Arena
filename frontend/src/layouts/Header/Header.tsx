@@ -2,7 +2,7 @@ import { Wallet } from "components/wallet";
 import { FC, useReducer } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./styles.scss";
-import { useAccount, useBalance } from "@gear-js/react-hooks";
+import { useAccount, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
 import { newRoutes } from "app/routes";
 
@@ -31,6 +31,7 @@ export const Header: FC<HeaderProps> = () => {
   const { account, isAccountReady } = useAccount();
   const decodedAddress = account?.decodedAddress;
   const balance = useBalance(decodedAddress).balance?.toString() ?? '';
+  // const { value: balanceValue, unit: balanceUnit } = useBalanceFormat().getFormattedBalance(balance);
   const [visible, toggle] = useReducer((state) => !state, false);
   const [userChoosed, userChoose] = useReducer((state) => !state, false);
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export const Header: FC<HeaderProps> = () => {
 
   return (
     <div className="header">
-      <p className={"header_title"} onClick={() => navigate(newRoutes.lobby)}>
+      <p className={"header_title"} onClick={() => navigate(newRoutes.arena)}>
         Arena
       </p>
 
@@ -54,16 +55,15 @@ export const Header: FC<HeaderProps> = () => {
           </NavLink>
         ))}
       </div>
-      {account && (
-        <div className="wallet_wrapper">
-          <Wallet
-            balance={balance}
-            address={account.address}
-            name={account.meta.name}
-            onClick={toggle}
-          />
-        </div>
-      )}
+      <div className="wallet_wrapper" >
+        {account && <Wallet
+          balance={balance}
+          // unit={balanceUnit}
+          address={account.address}
+          name={account.meta.name}
+          onClick={toggle}
+        />}
+      </div>
       {visible && (
         <AccountsModal
           close={toggle}

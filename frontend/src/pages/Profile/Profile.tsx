@@ -19,7 +19,6 @@ import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ENERGY } from "../../app/constants";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -196,8 +195,7 @@ export const Profile: FC = () => {
               leftText={"Strength"}
               secondButton={stats.strength}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
-              onClickThirdButton={
+              onClickSecondButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Strength")
                   : undefined
@@ -207,8 +205,7 @@ export const Profile: FC = () => {
               leftText={"Agility"}
               secondButton={stats.agility}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
-              onClickThirdButton={
+              onClickSecondButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Agility")
                   : undefined
@@ -218,8 +215,7 @@ export const Profile: FC = () => {
               leftText={"Vitality"}
               secondButton={stats.vitality}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
-              onClickThirdButton={
+              onClickSecondButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Vitality")
                   : undefined
@@ -229,8 +225,7 @@ export const Profile: FC = () => {
               leftText={"Stamina"}
               secondButton={stats.stamina}
               thirdButton={"+"}
-              onClickSecondButton={() => { }}
-              onClickThirdButton={
+              onClickSecondButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Stamina")
                   : undefined

@@ -22,7 +22,7 @@ export const StrategyInput = ({
     const firstPart =
       codeId === STRATEGY_CODE_ID_HARDCODED
         ? "Default Strategy"
-        : `Strategy ${index + 1}`;
+        : `Strategy Class Hash: ${index + 1}`;
 
     return {
       value: codeId,
@@ -118,11 +118,11 @@ export const StrategyInput = ({
         nothingFound="Nothing found"
         creatable
         itemComponent={SelectItemCustom}
-        w="320px"
         styles={{
           input: {
             backgroundColor: "black",
             color: "white",
+            fontSize: "16px",
             height: "44px",
             borderRadius: "8px",
             "&:focus-within": {

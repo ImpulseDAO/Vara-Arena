@@ -6,6 +6,7 @@ export type CharacterStats = {
   vitality: number;
   stamina: number;
   points: number;
+  intelligence: number;
 };
 
 export const useStats = (
@@ -14,6 +15,7 @@ export const useStats = (
     agility: 1,
     vitality: 1,
     stamina: 1,
+    intelligence: 1,
     points: 5,
   }
 ) => {

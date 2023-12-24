@@ -7,7 +7,6 @@ import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 import { ProgramMetadata } from "@gear-js/api";
 
 export type LeaderboardProps = {};

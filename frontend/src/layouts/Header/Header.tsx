@@ -31,7 +31,7 @@ export const Header: FC<HeaderProps> = () => {
   const { account, isAccountReady } = useAccount();
   const decodedAddress = account?.decodedAddress;
   const balance = useBalance(decodedAddress).balance?.toString() ?? '';
-  // const { value: balanceValue, unit: balanceUnit } = useBalanceFormat().getFormattedBalance(balance);
+  const { value: balanceValue, unit: balanceUnit } = useBalanceFormat().getFormattedBalance(balance);
   const [visible, toggle] = useReducer((state) => !state, false);
   const [userChoosed, userChoose] = useReducer((state) => !state, false);
   const navigate = useNavigate();
@@ -57,8 +57,8 @@ export const Header: FC<HeaderProps> = () => {
       </div>
       <div className="wallet_wrapper" >
         {account && <Wallet
-          balance={balance}
-          // unit={balanceUnit}
+          balance={balanceValue}
+          unit={balanceUnit}
           address={account.address}
           name={account.meta.name}
           onClick={toggle}

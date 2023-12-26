@@ -6,6 +6,7 @@ import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, METADATA } from "pages/StartFight/constants";
 import { useNavigate } from "react-router-dom";
 import { Button, Text } from "@mantine/core";
+import { MAX_GAS_LIMIT } from "consts";
 
 // type States = "initial" | "reserved_once" | "reserved_twice" | "starting";
 
@@ -39,7 +40,7 @@ export const PlayAndCancelButtons = ({
     return new Promise((resolve) => {
       send({
         payload: { ReserveGas: null },
-        gasLimit: Infinity,
+        gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
           console.log("successfully reserved gas");
           resolve("successfully reserved gas");
@@ -57,7 +58,7 @@ export const PlayAndCancelButtons = ({
           payload: {
             Play: null,
           },
-          gasLimit: Infinity,
+          gasLimit: MAX_GAS_LIMIT,
           onSuccess: () => {
             localStorage.setItem("players", JSON.stringify([]));
             console.log("successfully started the battle");
@@ -93,7 +94,7 @@ export const PlayAndCancelButtons = ({
         payload: {
           CleanState: null,
         },
-        gasLimit: Infinity,
+        gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
           console.log("successfully cleaned the state");
           navigate("/arena");

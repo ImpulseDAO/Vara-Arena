@@ -3,6 +3,7 @@ import { useCallback, useMemo } from "react";
 import { METADATA, MINT_ID } from "../constants";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
+import { MAX_GAS_LIMIT } from "consts";
 
 export const useOnSubmit = ({
   codeId,
@@ -38,7 +39,7 @@ export const useOnSubmit = ({
           name,
         },
       },
-      gasLimit: Infinity,
+      gasLimit: MAX_GAS_LIMIT,
       onSuccess: () => {
         console.log("success");
         navigate("/arena");

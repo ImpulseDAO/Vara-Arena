@@ -10,6 +10,7 @@ import {
 } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import arenaMetaWasm from "../../../assets/arena_state.meta.wasm";
+import { MAX_GAS_LIMIT } from "consts";
 
 export const useOnSubmit = (): VoidFunction => {
   const navigate = useNavigate();
@@ -59,7 +60,7 @@ export const useOnSubmit = (): VoidFunction => {
               owner_id: account.decodedAddress,
             },
           },
-          gasLimit: Infinity,
+          gasLimit: MAX_GAS_LIMIT,
           onSuccess: () => {
             console.log("success");
           },

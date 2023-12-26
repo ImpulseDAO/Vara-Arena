@@ -50,6 +50,10 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    @media screen and (min-width: 600px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
   }
 
   .modal_wrapper {
@@ -103,48 +107,62 @@
     }
   }
 
-  .buttonWrapper {
-    display: flex;
+  .buttonsGrid {
     flex: 1;
-    flex-direction: row;
-    gap: 15px;
     margin-bottom: 35px;
+    //
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr auto auto 1fr;
+    grid-template-areas:
+      ". cancel mint text"
+      ". . . .";
 
-    @media screen and (max-width: 420px) {
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 2rem;
+    @media screen and (max-width: 750px) {
+      padding-inline: 1.5rem;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "cancel mint "
+        ". text ";
+    }
+
+    @media screen and (max-width: 550px) {
+      grid-gap: 0.5rem;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "cancel"
+        "mint"
+        "text ";
+
+      .cancelButton {
+        margin-bottom: 0.6rem;
+      }
+      .textWrapper {
+        text-align: center;
+      }
     }
   }
 
-  .spacer,
-  .textWrapper {
-    flex: 1;
+  .cancelButton {
+    grid-area: cancel;
   }
-
+  .mintButton {
+    grid-area: mint;
+  }
   .textWrapper {
-    color: #f0ff41;
-    padding-right: 0.8rem;
-    font-size: 14px;
-    text-transform: uppercase;
+    grid-area: text;
   }
 
   .cancelButton {
     border-radius: 8px;
     height: var(--button-height);
-    flex-basis: var(--button-width);
-    flex-shrink: 0;
+    min-width: var(--button-width);
     font-size: 16px;
     box-sizing: border-box;
     padding: 10px 18px;
     color: #344054;
     border: none;
     cursor: pointer;
-  }
-
-  .lock_img {
-    width: 70px;
-    height: 70px;
   }
 
   .mintButton {
@@ -154,8 +172,8 @@
 
     border-radius: 8px;
     height: var(--button-height);
-    flex-basis: var(--button-width);
-    flex-shrink: 0;
+    min-width: var(--button-width);
+
     font-size: 16px;
     box-sizing: border-box;
     padding: 10px 18px;
@@ -166,6 +184,13 @@
     &.disabled {
       background: #656565;
     }
+  }
+
+  .textWrapper {
+    color: #f0ff41;
+    padding-right: 0.8rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
   }
 
   .input_container {

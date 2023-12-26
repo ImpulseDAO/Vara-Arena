@@ -12,7 +12,7 @@ export const GearProviders = ({ children }: {
 }) => {
   return (
     <AlertProvider template={Alert} containerClassName={alertStyles.root}>
-      <ApiProvider providerAddress={ADDRESS.NODE}>
+      <ApiProvider initialArgs={{ endpoint: ADDRESS.NODE }}>
         <AccountProvider>
           {children}
         </AccountProvider>

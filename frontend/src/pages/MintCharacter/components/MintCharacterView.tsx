@@ -8,6 +8,7 @@ import { StrategyInput } from "./StrategyInput";
 import { Badge, Box, Table } from "@mantine/core";
 import { SchoolOfMagicChoice } from "./SchoolOfMagicChoice";
 import { TitleWithQuote } from "components/TitleWithQuote";
+import { capitalize } from "lodash";
 
 type MintCharacterViewProps = {
   stats: {
@@ -67,7 +68,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                   onUploadCodeChange={onUploadCodeChange}
                 />
               </div>
-              {/* <PointsLeft points={stats.points} /> */}
+              <PointsLeft points={stats.points} />
               {[
                 'strength',
                 'agility',
@@ -77,7 +78,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
               ].map((statName) => {
                 return (
                   <ButtonGroupNew
-                    leftText={statName}
+                    leftText={capitalize(statName)}
                     firstButton={"-"}
                     value={stats[statName]}
                     thirdButton={"+"}
@@ -103,8 +104,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
               <SchoolOfMagicChoice onChange={(element) => { }} />
             </div>
           </div>
-          <div className={"buttonWrapper"}>
-            <div className="spacer" />
+          <div className={"buttonsGrid"}>
             <Button className={"cancelButton"} onClick={() => { }}>
               Cancel
             </Button>

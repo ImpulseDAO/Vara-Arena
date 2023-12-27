@@ -18,6 +18,12 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
         for (let event of block.events) {
             if (events.gear.userMessageSent.v1000.is(event)) {
                 let { message } = events.gear.userMessageSent.v1000.decode(event)
+
+                if (message.details?.code.__kind != 'Success') {
+                    console.log('skipping unsuccessful message')
+                    continue
+                }
+
                 if (message.source == MINT_ADDRESS) {
                     let data = mintMeta.createType(assertNotNull(mintMeta.types.handle.output), message.payload).toJSON() as any
 

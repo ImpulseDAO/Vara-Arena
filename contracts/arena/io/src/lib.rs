@@ -22,15 +22,50 @@ pub struct TurnLog {
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum TurnEvent {
-    NotEnoughEnergy,
-    Miss { position: u8 },
-    Attack { position: u8, damage: u8 },
-    Move { position: u8 },
-    Rest { energy: u8 },
+pub enum AttackResult {
+    Damage(u8),
     Parry,
-    Guardbreak { success: bool },
-    CastSpell,
+    Miss,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum CastSpellResult {
+    FireWall,
+    EarthSkin { defence: u8 },
+    WaterRestoration { heal: u8 },
+    Fireball { damage: u8 },
+    EarthCatapult { damage: u8, enemy_position: u8 },
+    WaterBurst { damage: u8 },
+    FireHaste,
+    EarthSmites { damage: u8 },
+    ChillingTouch,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum TurnEvent {
+    NotEnoughEnergy {
+        action: BattleAction,
+    },
+    Attack {
+        kind: AttackKind,
+        result: AttackResult,
+    },
+    Move {
+        position: u8,
+    },
+    Rest {
+        energy: u8,
+    },
+    Parry,
+    Guardbreak {
+        success: bool,
+    },
+    CastSpell {
+        result: CastSpellResult,
+    },
+    FireWall {
+        damage: u8,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -71,14 +106,14 @@ pub enum SetTier {
     Tier1,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum AttackKind {
     Quick,
     Precise,
     Heavy,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum Spell {
     FireWall,
     EarthSkin,
@@ -91,7 +126,7 @@ pub enum Spell {
     ChillingTouch,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum BattleAction {
     Attack { kind: AttackKind },
     MoveRight,

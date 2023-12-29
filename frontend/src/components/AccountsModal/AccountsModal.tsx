@@ -7,16 +7,15 @@ import { memo } from "react";
 
 type Props = {
   close: () => void;
-  userChoose: VoidFunction;
   account?: Account;
 };
 
-export const AccountsModal = memo(({ close, userChoose, account }: Props) => {
+export const AccountsModal = memo(({ close, account }: Props) => {
   const { accounts, logout } = useAccount();
   return (
     <Modal heading="Connect" close={close}>
       {accounts ? (
-        <Accounts close={close} list={accounts} userChoose={userChoose} />
+        <Accounts close={close} list={accounts} />
       ) : (
         <p>
           Wallet extension was not found or disconnected. Please check how to

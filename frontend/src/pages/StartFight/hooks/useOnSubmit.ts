@@ -1,10 +1,8 @@
 import { useWasmMetadata } from "./../../MintCharacter/hooks/useWasmMetadata";
 import { useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { ARENA_ID, METADATA } from "../constants";
+import { ARENA_ID, ARENA_METADATA } from "../constants";
 import {
   useAccount,
-  useAlert,
   useReadWasmState,
   useSendMessage,
 } from "@gear-js/react-hooks";
@@ -12,14 +10,12 @@ import { ProgramMetadata } from "@gear-js/api";
 import arenaMetaWasm from "../../../assets/arena_state.meta.wasm";
 import { MAX_GAS_LIMIT } from "consts";
 
-export const useOnSubmit = (): VoidFunction => {
-  const navigate = useNavigate();
+export const useOnRegisterForBattle = () => {
   const { account } = useAccount();
-  const alert = useAlert();
 
   const { buffer } = useWasmMetadata(arenaMetaWasm);
 
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
   const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
 
   const arenaMetaWasmData: MetaWasmDataType = useMemo(
@@ -50,27 +46,28 @@ export const useOnSubmit = (): VoidFunction => {
     }>
   >(arenaMetaWasmData).state;
   console.log(`registered`, registered);
-  return useCallback(() => {
-    if (registered !== undefined) {
-      navigate("/tournament");
-      if (registered.length < 2) {
+  return useCallback(
+    async ({ lobbyId }: { lobbyId: string }) => {
+      return new Promise(async (resolve, reject) => {
         send({
           payload: {
             Register: {
-              owner_id: account.decodedAddress,
+              owner_id: account?.decodedAddress,
+              lobby_id: lobbyId,
             },
           },
           gasLimit: MAX_GAS_LIMIT,
           onSuccess: () => {
-            console.log("success");
+            console.log('"Register" message successfully sent');
+            resolve(undefined);
           },
           onError: () => {
             console.log("error");
+            reject();
           },
         });
-      } else {
-        alert.error("Max tournament players = 2, work in progress 🏗");
-      }
-    }
-  }, [account?.decodedAddress, navigate, send]);
+      });
+    },
+    [account?.decodedAddress, send]
+  );
 };

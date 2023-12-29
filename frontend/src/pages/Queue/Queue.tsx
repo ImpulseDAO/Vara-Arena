@@ -6,7 +6,7 @@ import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
 import { useAccount, useApi, useReadWasmState } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import { ARENA_ID, METADATA } from "pages/StartFight/constants";
+import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
 
 import { useUnit } from "effector-react";
 import { useNavigate } from "react-router-dom";
@@ -78,15 +78,15 @@ export const Queue: FC<QueueProps> = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timer, setTimer] = useState(0);
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<typeof registered>([]);
   const navigate = useNavigate();
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
 
   const inProgressRows = useMemo(() => {
     if (!players || isEmpty(Object.values(players))) {
       return [];
     }
-    return getRows(Object.values(players));
+    return getRows(players);
   }, [players]);
 
   const { buffer } = useWasmMetadata(arenaMetaWasm);
@@ -109,6 +109,8 @@ export const Queue: FC<QueueProps> = () => {
         agility: string;
         vitality: string;
         stamina: string;
+        experience: string;
+        level: string;
       };
       energy: string;
       hp: string;
@@ -120,7 +122,7 @@ export const Queue: FC<QueueProps> = () => {
   >(metaWasmData).state;
 
   useEffect(() => {
-    setPlayers(JSON.parse(localStorage.getItem("players")));
+    setPlayers(JSON.parse(localStorage.getItem("players") ?? '[]'));
   }, [setPlayers]);
 
   useEffect(() => {
@@ -130,7 +132,6 @@ export const Queue: FC<QueueProps> = () => {
     }
 
     if (registered && !isEmpty(registered)) {
-      // const queue = JSON.parse(localStorage.getItem("usersOnQueue")) ?? {};
       const usersOnQueue = registered.reduce((acc, cur) => {
         return {
           ...acc,
@@ -161,18 +162,22 @@ export const Queue: FC<QueueProps> = () => {
         "UserMessageSent",
         ({ data: { message } }) => {
           if (JSON.parse(message.toString()).source === ARENA_ID) {
-            const result = meta
-              .createType(meta.types.handle.output, message.payload)
-              .toJSON();
+
+
+            const result = meta.types.handle.output != null
+              ? meta
+                .createType(meta.types.handle.output, message.payload)
+                .toJSON()
+              : null;
 
             if (typeof result !== "object") return;
 
             console.log("result", result);
 
-            if ("arenaLog" in result) {
+            if (result && "arenaLog" in result) {
               setBattleLog(result.arenaLog);
               const allBattleLog =
-                JSON.parse(localStorage.getItem("allBattleLog")) ?? [];
+                JSON.parse(localStorage.getItem("allBattleLog") ?? '[]') ?? [];
               localStorage.setItem(
                 "battleLog",
                 JSON.stringify(result.arenaLog)
@@ -215,8 +220,8 @@ export const Queue: FC<QueueProps> = () => {
           <TableUI rows={inProgressRows} columns={inProgressColumns} />
         </div>
         <PlayAndCancelButtons
-          isPlayDisabled={players?.length < 2}
-          isDoubleReservationNeeded={players?.length > 2}
+          isPlayDisabled={(players?.length ?? 0) < 2}
+          isDoubleReservationNeeded={(players?.length ?? 0) > 2}
         />
       </div>
     </div>

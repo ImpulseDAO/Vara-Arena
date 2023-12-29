@@ -26,7 +26,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
   return (
     <Styled.Container>
       <Styled.Columns>
-        {columns.map((column) => (
+        {columns.map((column, index) => (
           <Styled.Column
             position={column.position}
             key={column.field}
@@ -38,7 +38,8 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
-              sortable={column.sortable}
+              sortable={column.sortable ?? false}
+              isLeftPadded={index === 0}
             >
               {column.headerName}
             </Styled.ColumnText>

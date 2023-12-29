@@ -8,6 +8,8 @@ export const TheButton = ({
 }: ButtonProps & ComponentPropsWithoutRef<typeof Button<'button'>>) => {
   return (
     <Button
+      onClick={onClick}
+      //
       radius="sm"
       h={44}
       bg="primary"

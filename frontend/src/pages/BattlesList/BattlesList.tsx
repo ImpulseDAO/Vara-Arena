@@ -1,29 +1,52 @@
-import { Title, Box, BackgroundImage, Flex, Grid, Image, Select, Stack, Badge, TitleProps, Text, FlexProps } from "@mantine/core";
+import { Title, Box, BackgroundImage, Grid, Image, Select, Stack, Badge, TitleProps, Text } from "@mantine/core";
 import ArenaPng from "assets/images/arena.png";
 import StartFightPng from "assets/images/startFightScreen.png";
 import { TheButton } from "components/new/TheButton";
-import { Panel } from "components/new/Panel";;
-
-const cards = [
-  {
-    tier: 1,
-    battleId: "#55465",
-    playersSize: 4,
-    playersJoined: 2,
-    gasNeeded: 2,
-    gasReserved: 1
-  },
-  {
-    tier: 2,
-    battleId: "#55466",
-    playersSize: 2,
-    playersJoined: 2,
-    gasNeeded: 2,
-    gasReserved: 2
-  },
-];
+import { Panel } from "components/new/Panel";
+import { useCreateLobby, useLobbies } from "app/api/lobbies";
+import { useNavigate } from "react-router-dom";
+import { newRoutes } from "app/routes";
+import { useMemo, useRef } from "react";
+import { GasReserved } from "components/GasReserved/GasReserved";
 
 export const BattlesList = () => {
+  const navigate = useNavigate();
+  const selectRef = useRef<HTMLInputElement | null>(null);
+
+  const { data: lobbiesData } = useLobbies();
+
+  const cards = useMemo(() => {
+    if (!lobbiesData) return [];
+
+    return lobbiesData?.lobbies.map(lobby => {
+      return {
+        tier: 'tier' in lobby ? lobby.tier as string : 'UNSET',
+        lobbyId: lobby.id,
+        playersSize: "HARDCODED",
+        playersJoined: lobby.characters.length,
+        gasNeeded: 0,
+        gasReserved: 0
+      };
+    });
+  }, [lobbiesData]);
+
+  /**
+   * Get handleJoinLobby
+   */
+  const handleJoinLobby = ({ lobbyId }: {
+    lobbyId: string;
+  }) => {
+    console.log('handleJoinLobby', lobbyId);
+
+    navigate(newRoutes.lobby(lobbyId));
+  };
+
+  /**
+   * 
+   */
+
+  const handleCreateLobby = useCreateLobby();
+
   return (
     <BackgroundImage
       src={StartFightPng}
@@ -47,6 +70,7 @@ export const BattlesList = () => {
 
               <Stack w="100%" mt="auto" >
                 <Select
+                  ref={selectRef}
                   label="Choose number of players"
                   styles={{
                     input: {
@@ -77,7 +101,13 @@ export const BattlesList = () => {
                     </svg>
                   }
                 />
-                <TheButton onClick={() => null}  >
+                <TheButton onClick={() => {
+                  const capacity = parseInt(selectRef.current?.value ?? '');
+
+                  if (isNaN(capacity)) return;
+
+                  handleCreateLobby({ capacity });
+                }}  >
                   Create
                 </TheButton>
               </Stack>
@@ -86,14 +116,18 @@ export const BattlesList = () => {
         </GridColumn>
 
         {cards.map((card, index) => (
-          <GridColumn key={`${index} - ${card.battleId}`}>
+          <GridColumn key={`${index} - ${card.lobbyId}`}>
             <Card
               tier={card.tier}
-              battleId={card.battleId}
+              lobbyId={card.lobbyId}
               playersSize={card.playersSize}
               playersJoined={card.playersJoined}
               gasNeeded={card.gasNeeded}
               gasReserved={card.gasReserved}
+              onJoin={() => {
+                console.log('onJoin');
+                handleJoinLobby({ lobbyId: card.lobbyId });
+              }}
             />
           </GridColumn>
         ))}
@@ -113,42 +147,22 @@ const GridColumn = ({ children }) => {
   );
 };
 
-const GasPoint = ({ filled }: { filled?: boolean; }) => {
-  return <Box bg={filled ? 'primary' : 'white'} w={20} h={8} sx={{
-    borderRadius: 4,
-  }} />;
-};
-
-const GasReserved = ({
-  gasNeeded,
-  gasReserved,
-  ...flexProps
-}: {
-  gasNeeded: number,
-  gasReserved: number,
-} & FlexProps) => {
-  return (
-    <Flex align={"center"} gap="xs" {...flexProps}>
-      <Flex gap={2.75}>
-        {
-          Array.from({ length: gasNeeded }).map((_, index) => (
-            <GasPoint filled={index < gasReserved} key={index} />
-          ))
-        }
-      </Flex>
-
-      <Text c="white" fw={600}>Gas Reserved</Text>
-    </Flex >
-  );
-};
-
 const Card = ({
   tier,
-  battleId,
+  lobbyId,
   playersSize,
   playersJoined,
   gasNeeded,
-  gasReserved
+  gasReserved,
+  onJoin
+}: {
+  tier: string,
+  lobbyId: string,
+  playersSize: number | string,
+  playersJoined: number,
+  gasNeeded: number,
+  gasReserved: number,
+  onJoin: () => void,
 }) => {
   return (
     <Panel h={370} pos="relative" >
@@ -163,7 +177,7 @@ const Card = ({
           sx={{
             borderRadius: 9999,
           }}
-        >Battle ID {battleId}</Text>
+        >Battle ID #{lobbyId}</Text>
       </Box>
 
       {/* Centered Content */}
@@ -184,7 +198,9 @@ const Card = ({
             gasReserved
           }} />
 
-        <TheButton onClick={() => null} w="100%" >
+        <TheButton onClick={() => {
+          setTimeout(onJoin, 200);
+        }} w="100%" >
           Join the Lobby
         </TheButton>
 

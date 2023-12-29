@@ -15,10 +15,10 @@ export type BattleProps = {};
 type TurnTypes = "move" | "attack" | "miss" | "rest";
 type TurnGeneric<K extends TurnTypes, T> = { [key in K]: T };
 type Turn =
-  | TurnGeneric<"move", { position: number }>
-  | TurnGeneric<"attack", { damage: number; position: number }>
-  | TurnGeneric<"miss", { position: number }>
-  | TurnGeneric<"rest", { position: number }>;
+  | TurnGeneric<"move", { position: number; }>
+  | TurnGeneric<"attack", { damage: number; position: number; }>
+  | TurnGeneric<"miss", { position: number; }>
+  | TurnGeneric<"rest", { position: number; }>;
 
 export type BattleLogs = {
   logs: Array<{
@@ -31,9 +31,9 @@ export type BattleLogs = {
 };
 
 export const Battle: FC<BattleProps> = () => {
-  const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue"));
+  const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue") ?? '[]');
   const battleLogs = JSON.parse(
-    localStorage.getItem("battleLog")
+    localStorage.getItem("battleLog") ?? '[]'
   ) as BattleLogs;
   const [curBattleIndex, setCurrentBattleIndex] = useState(0);
   const [curTurnIndex, setCurTurnIndex] = useState(0);
@@ -157,6 +157,7 @@ export const Battle: FC<BattleProps> = () => {
     if (usersOnBattle && curBattle) {
       return [usersOnBattle[curBattle.c1], usersOnBattle[curBattle.c2]];
     }
+    return [];
   }, [battleLogs.logs, curBattleIndex, usersOnBattle]);
 
   const nextBattleTurn = () => {
@@ -181,20 +182,20 @@ export const Battle: FC<BattleProps> = () => {
     usersOnBattle[currentBattleLog.plId1].attributes.vitality * 30 +
       10 -
       currentBattleLog.turns[curTurnIndex].pl2SumAttacked >
-    0
+      0
       ? usersOnBattle[currentBattleLog.plId1].attributes.vitality * 30 +
-        10 -
-        currentBattleLog.turns[curTurnIndex].pl2SumAttacked
+      10 -
+      currentBattleLog.turns[curTurnIndex].pl2SumAttacked
       : 0;
 
   const pl2Health =
     usersOnBattle[currentBattleLog.plId2].attributes.vitality * 30 +
       10 -
       currentBattleLog.turns[curTurnIndex].pl1SumAttacked >
-    0
+      0
       ? usersOnBattle[currentBattleLog.plId2].attributes.vitality * 30 +
-        10 -
-        currentBattleLog.turns[curTurnIndex].pl1SumAttacked
+      10 -
+      currentBattleLog.turns[curTurnIndex].pl1SumAttacked
       : 0;
 
   return (
@@ -232,7 +233,7 @@ export const Battle: FC<BattleProps> = () => {
         <Button className={"battle_button step_left"} onClick={prevBattleTurn}>
           <img src={StepBack} alt="Step back" />
         </Button>
-        <Button disabled className={"battle_button play"} onClick={() => {}}>
+        <Button disabled className={"battle_button play"} onClick={() => { }}>
           Play battle
         </Button>
         <Button className={"battle_button step_right"} onClick={nextBattleTurn}>
@@ -296,10 +297,10 @@ export const Battle: FC<BattleProps> = () => {
                     {isMove
                       ? "Move"
                       : isAttack
-                      ? "Attack"
-                      : isMiss
-                      ? "Miss"
-                      : ""}
+                        ? "Attack"
+                        : isMiss
+                          ? "Miss"
+                          : ""}
                   </center>
                 </td>
 

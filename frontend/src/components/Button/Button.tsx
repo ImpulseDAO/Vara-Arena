@@ -8,7 +8,7 @@ import "./styles.scss";
 import clsx from "clsx";
 
 export type ButtonProps = {
-  onClick: VoidFunction;
+  onClick?: VoidFunction;
   children: ReactNode;
   disabled?: boolean;
   value?: string;

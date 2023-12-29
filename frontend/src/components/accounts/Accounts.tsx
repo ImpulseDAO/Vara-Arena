@@ -4,33 +4,21 @@ import { isLoggedIn } from "utils";
 import { LOCAL_STORAGE } from "consts";
 import { AccountButton } from "../accountButton";
 import styles from "./Accounts.module.scss";
-import { Account } from "@gear-js/react-hooks/dist/esm/types";
 
 type Props = {
   list: InjectedAccountWithMeta[];
-  userChoose: VoidFunction;
   close: VoidFunction;
 };
 
-function Accounts({ list, userChoose, close }: Props) {
-  // const [isClicked, setIsClicked] = useState(false);
+function Accounts({ list, close }: Props) {
   const { login } = useAccount();
   const isAnyAccount = list.length > 0;
-  // const navigate = useNavigate();
 
   const handleAccountButtonClick = (account: InjectedAccountWithMeta) => {
-    // setIsClicked(true);
     login(account);
-    userChoose();
     localStorage.setItem(LOCAL_STORAGE.ACCOUNT, account.address);
     close();
   };
-
-  // useEffect(() => {
-  //   if (isClicked && account) {
-  //     navigate("/mint-character");
-  //   }
-  // }, [isClicked, account, navigate]);
 
   const getAccounts = () =>
     list.map((account) => (

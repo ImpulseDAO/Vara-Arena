@@ -14,7 +14,7 @@ export type ButtonGroupProps = {
   secondButton: string | number;
   thirdButton?: string;
   onClickFirstButton?: VoidFunction;
-  onClickSecondButton: VoidFunction;
+  onClickSecondButton?: VoidFunction;
   onClickThirdButton?: VoidFunction;
 };
 

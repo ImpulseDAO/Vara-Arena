@@ -6,12 +6,12 @@ import { newRoutes } from "./routes";
 import { Logs } from "pages/Logs";
 import { Queue } from "pages/Queue";
 import { Battle } from "pages/Battle";
-import { Profile } from "pages/Profile";
+import { MyProfile } from "pages/MyProfile";
 import { Leaderboard } from "pages/Leaderboard";
 import { UploadStrategy } from "pages/UploadStrategy";
-import { MintCharacter, StartScreen } from "pages";
-import { Lobby } from "pages/Lobby";
+import { MintCharacter, StartFight, StartScreen } from "pages";
 import { BattlesList } from "pages/BattlesList";
+import { Lobby } from "pages/Lobby";
 
 export const appRouter = createBrowserRouter(
   [
@@ -19,18 +19,19 @@ export const appRouter = createBrowserRouter(
     { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
     { element: <Queue />, path: routes.tournament, auth: true },
 
-    { element: <Logs />, path: routes.logs, auth: true },
     { element: <UploadStrategy />, path: routes.strategy, auth: true },
     // 
-    { element: <Profile />, path: routes.profileDynamic, auth: true },
+    { element: <MyProfile />, path: routes.profileDynamic, auth: true },
     { element: <Battle />, path: routes.battle, auth: true },
+    { element: < StartFight />, path: routes.startFightDynamic, auth: true },
     /**
      * NEW ROUTES:
-     */
-    { element: <Lobby />, path: newRoutes.lobby, auth: true },
+    */
+    { element: <Lobby />, path: newRoutes.lobbyDynamic, auth: true },
     { element: <BattlesList />, path: newRoutes.arena, auth: true },
-    { element: <Profile />, path: newRoutes.myProfile, auth: true },
+    { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
+    { element: <Logs />, path: newRoutes.myLogs, auth: true },
     /**
      * END NEW ROUTES
      */

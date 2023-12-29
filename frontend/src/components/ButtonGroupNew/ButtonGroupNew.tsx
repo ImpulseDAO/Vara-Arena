@@ -11,10 +11,9 @@ export type ButtonGroupNewProps = {
   leftText?: string;
   firstButton?: string;
   value: string | number;
-  thirdButton?: string;
+  secondButton?: string;
   onClickFirstButton?: VoidFunction;
-  onClickSecondButton: VoidFunction;
-  onClickThirdButton?: VoidFunction;
+  onClickSecondButton?: VoidFunction;
   //
   isFirstDisabled?: boolean;
   isSecondDisabled?: boolean;
@@ -23,7 +22,7 @@ export type ButtonGroupNewProps = {
 export const ButtonGroupNew: FC<ButtonGroupNewProps> = ({
   firstButton,
   value,
-  thirdButton,
+  secondButton,
   leftText,
   onClickFirstButton,
   onClickSecondButton,
@@ -57,7 +56,7 @@ export const ButtonGroupNew: FC<ButtonGroupNewProps> = ({
             onClick={onClickSecondButton}
             disabled={isSecondDisabled}
           >
-            {thirdButton}
+            {secondButton}
           </Button>
         )}
       </Button.Group>

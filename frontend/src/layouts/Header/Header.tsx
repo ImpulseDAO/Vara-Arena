@@ -2,7 +2,7 @@ import { Wallet } from "components/wallet";
 import { FC, useReducer } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import "./styles.scss";
-import { useAccount, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
+import { useAccount, useApi, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
 import { newRoutes } from "app/routes";
 
@@ -28,15 +28,17 @@ const navLinks = [
 ];
 
 export const Header: FC<HeaderProps> = () => {
+  const { isApiReady } = useApi();
   const { account, isAccountReady } = useAccount();
   const decodedAddress = account?.decodedAddress;
   const balance = useBalance(decodedAddress).balance?.toString() ?? '';
-  const { value: balanceValue, unit: balanceUnit } = useBalanceFormat().getFormattedBalance(balance);
+  const balanceFormat = useBalanceFormat();
   const [visible, toggle] = useReducer((state) => !state, false);
-  const [userChoosed, userChoose] = useReducer((state) => !state, false);
   const navigate = useNavigate();
 
-  if (!isAccountReady) return null;
+  if (!isAccountReady || !isApiReady) return null;
+  // we should wait until api is ready, thats why this line is below "if" block
+  const { value: balanceValue, unit: balanceUnit } = balanceFormat.getFormattedBalance(balance);
 
   return (
     <div className="header">
@@ -67,7 +69,6 @@ export const Header: FC<HeaderProps> = () => {
       {visible && (
         <AccountsModal
           close={toggle}
-          userChoose={userChoose}
           account={account}
         />
       )}

@@ -23,10 +23,15 @@ const Column = styled.div<{ position?: "left" | "right" | "center" }>`
   `}
 `;
 
-const ColumnText = styled.p<{ active: boolean; sortable: boolean }>`
+const ColumnText = styled.p<{
+  active: boolean;
+  sortable: boolean;
+  isLeftPadded?: boolean;
+}>`
   color: white;
   font-size: 12px;
   font-weight: ${({ active }) => (active ? "bold" : "normal")};
+  padding-left: ${({ isLeftPadded }) => (isLeftPadded ? "1.5rem" : "")};
 `;
 
 // const ColumnIcon = styled.div<{ active: boolean; sortType: SortType }>`
@@ -46,7 +51,7 @@ const Columns = styled.div`
   display: flex;
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
-  height: 68px;
+  height: 40px;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
 `;

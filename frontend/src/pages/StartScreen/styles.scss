@@ -1,8 +1,11 @@
 .scr_start {
   width: -webkit-fill-available;
+  height: 100lvh;
+
   background-image: url("../../assets/images/startScreen.png");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: 50%;
   padding-top: 130px;
   display: flex;
   flex-direction: column;
@@ -11,8 +14,15 @@
 
   & > p {
     color: white;
-    font-size: 160px;
+    font-size: 10rem;
     font-family: "serpiente_display_triadisplay";
+
+    @media screen and (max-width: 600px) {
+      font-size: 8rem;
+    }
+    @media screen and (max-width: 400px) {
+      font-size: 6rem;
+    }
   }
 
   .button {

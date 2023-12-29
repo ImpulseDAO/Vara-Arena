@@ -78,10 +78,11 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
               ].map((statName) => {
                 return (
                   <ButtonGroupNew
+                    key={statName}
                     leftText={capitalize(statName)}
                     firstButton={"-"}
                     value={stats[statName]}
-                    thirdButton={"+"}
+                    secondButton={"+"}
                     onClickFirstButton={() => decrease(statName)}
                     onClickSecondButton={() => increase(statName)}
                     isFirstDisabled={stats[statName] === initialStats.current[statName]}

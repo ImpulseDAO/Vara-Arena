@@ -19,12 +19,16 @@ import {
   TransactionStatus,
 } from "./types";
 
-const useCodeUpload = () => {
+const useUploadCode = () => {
   const { api } = useApi();
   const alert = useAlert();
   const { account } = useAccount();
 
   const submit = async (optBuffer: Buffer) => {
+    if (!api) {
+      throw new Error("Api is not initialized");
+    }
+
     const { codeHash } = await api.code.upload(optBuffer);
 
     return codeHash;
@@ -70,6 +74,10 @@ const useCodeUpload = () => {
     });
 
     try {
+      if (!api) {
+        throw new Error("Api is not initialized");
+      }
+
       await api.code.signAndSend(
         account!.address,
         { signer },
@@ -121,7 +129,7 @@ const useCodeUpload = () => {
          */
         // checkWallet(account);
 
-        const { address, meta } = account!;
+        const { meta } = account!;
 
         const [codeId, { signer }] = await Promise.all([
           submit(optBuffer),
@@ -131,7 +139,11 @@ const useCodeUpload = () => {
         addCodeIdToLocalStorage(codeId);
         resolve(codeId);
 
-        const { partialFee } = await api.code.paymentInfo(address, { signer });
+        if (!api) {
+          throw new Error("Api is not initialized");
+        }
+
+        // const { partialFee } = await api.code.paymentInfo(account.address, { signer });
 
         const handleConfirm = () =>
           signAndSend({ signer, name, codeId, metaHex, resolve });
@@ -162,7 +174,7 @@ const useCodeUpload = () => {
   return uploadCode;
 };
 
-export { useCodeUpload };
+export { useUploadCode };
 
 /**
  *  LocalStorage

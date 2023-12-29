@@ -19,6 +19,7 @@ import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ENERGY } from "../../app/constants";
+import { ButtonGroupNew } from "components/ButtonGroupNew";
 
 const ProfileResultBattleColumns: TableColumnsType[] = [
   {
@@ -41,7 +42,7 @@ const ProfileResultBattleColumns: TableColumnsType[] = [
   },
 ];
 
-export const Profile: FC = () => {
+export const MyProfile: FC = () => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const params = useParams<{ id: string | undefined; }>();
   const { account } = useAccount();
@@ -84,8 +85,8 @@ export const Profile: FC = () => {
   console.log("charInfo?.state :>> ", charInfo?.state);
 
   const rows = useMemo(() => {
-    const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog"));
-    const usersOnQueue = JSON.parse(localStorage.getItem("usersOnQueue"));
+    const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog") ?? '[]');
+    const usersOnQueue = JSON.parse(localStorage.getItem("usersOnQueue") ?? '[]');
 
     if (id !== account?.decodedAddress) {
       return [];
@@ -191,10 +192,10 @@ export const Profile: FC = () => {
               </div>
             )}
 
-            <ButtonGroup
+            <ButtonGroupNew
               leftText={"Strength"}
-              secondButton={stats.strength}
-              thirdButton={"+"}
+              value={stats.strength}
+              secondButton={"+"}
               onClickSecondButton={
                 id === account?.decodedAddress && +stats.points
                   ? () => selectAttr("Strength")

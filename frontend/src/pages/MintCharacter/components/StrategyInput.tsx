@@ -2,8 +2,8 @@ import "./styles.scss";
 import React from "react";
 import {
   getCodeIdsFromLocalStorage,
-  useCodeUpload,
-} from "hooks/useUploadCode/useUploadCode";
+  useUploadCode,
+} from "hooks/useUploadCode";
 import { Button, Select, Text } from "@mantine/core";
 import { STRATEGY_CODE_ID_HARDCODED } from "../MintCharacter";
 
@@ -13,10 +13,10 @@ export const StrategyInput = ({
   onUploadCodeChange,
 }: {
   codeId: string;
-  setCodeId: (codeId: string) => void;
+  setCodeId: (codeId: string | null) => void;
   onUploadCodeChange: (codeId: string) => void;
 }) => {
-  const uploadCode = useCodeUpload();
+  const uploadCode = useUploadCode();
 
   const selectData = getCodeIdsFromLocalStorage().map((codeId, index) => {
     const firstPart =
@@ -30,11 +30,11 @@ export const StrategyInput = ({
     };
   });
 
-  const inputFileRef = React.useRef<HTMLInputElement>();
+  const inputFileRef = React.useRef<HTMLInputElement>(null);
 
   const uploadFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileReader = new FileReader();
-    if (!event.target.files[0]) {
+    if (!event.target.files?.[0]) {
       alert("No file selected");
       return;
     }

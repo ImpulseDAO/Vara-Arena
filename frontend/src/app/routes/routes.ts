@@ -6,17 +6,23 @@ export const routes = {
   logs: "/logs",
   strategy: "/strategy",
   arena: "/arena",
-  profile: (profileId: string) => `/profile/${profileId}`,
+  //
   profileDynamic: "/profile/:profileId",
+  profile: (profileId: string) => `/profile/${profileId}`,
+  //
   battle: "/battle",
   wildcard: "/*",
+  //
+  startFightDynamic: `/start-fight/:lobbyId`,
+  startFight: (lobbyId: string) => `/start-fight/${lobbyId}`,
 };
 
 export const newRoutes = {
   home: "/",
   arena: "/arena",
   myLogs: "/my-logs",
-  lobby: "/lobby",
+  lobbyDynamic: "/lobby/:lobbyId",
+  lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",
   myProfile: "/my-profile",
 };

@@ -7,6 +7,10 @@ body,
   background-color: rgb(23, 25, 30);
 }
 
+/**
+ * Change the size of REM unit
+ * for more responsive typography
+ */
 @media screen and (max-width: 600px) {
   html {
     font-size: 15px;

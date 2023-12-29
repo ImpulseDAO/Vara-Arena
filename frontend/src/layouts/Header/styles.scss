@@ -10,6 +10,10 @@
   position: relative;
   z-index: 1;
 
+  @media screen and (max-width: 750px) {
+    padding: 0 3rem;
+  }
+
   @media screen and (max-width: 600px) {
     padding: 0 2rem;
   }
@@ -68,7 +72,7 @@
   }
 }
 
-@media screen and (max-width: 1050px) {
+@media screen and (max-width: 1000px) {
   .header {
     flex-wrap: wrap;
     height: unset;

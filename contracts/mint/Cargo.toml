@@ -6,10 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-gstd = { git = "https://github.com/gear-tech/gear.git", features = ["debug"], tag = "v1.0.2" }
-mint-io = { path = "./io" }
+gstd = { workspace = true, features = ["debug"] }
+mint-io.workspace = true
 
 [build-dependencies]
-gear-wasm-builder = { git = "https://github.com/gear-tech/gear.git", tag = "v1.0.2" }
-gmeta = { git = "https://github.com/gear-tech/gear", tag = "v1.0.2" }
-mint-io = { path = "./io" }
+gear-wasm-builder.workspace = true
+gmeta.workspace = true
+mint-io.workspace = true

@@ -71,7 +71,10 @@
     "extends": [
       "plugin:@tanstack/eslint-plugin-query/recommended",
       "react-app"
-    ]
+    ],
+    "rules": {
+      "no-alert": "error"
+    }
   },
   "browserslist": {
     "production": [

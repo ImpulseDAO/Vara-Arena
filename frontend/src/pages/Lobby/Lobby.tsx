@@ -7,11 +7,11 @@ import { ButtonJoinReservePlay } from "./components/ButtonJoinReservePlay";
 import { useLobby } from "app/api/lobbies";
 import { GasReserved } from "components/GasReserved/GasReserved";
 import { Badge } from "@mantine/core";
-import { useMyId } from "hooks/hooks";
+import { useMyAccountId } from "hooks/hooks";
 import { PlayersTable } from "./components/PlayersTable";
 
 export const Lobby = () => {
-  const myId = useMyId();
+  const myId = useMyAccountId();
 
   const { lobbyId } = useParams<{ lobbyId: string; }>();
 

@@ -10,8 +10,8 @@ export const BattleUser = ({
 }: {
   user: any;
   userIndex: 1 | 2;
-  health: string | number;
-  energy: string | number;
+  health: number;
+  energy: number;
 }) => {
   return (
     <div className={`battle_user${userIndex}`}>

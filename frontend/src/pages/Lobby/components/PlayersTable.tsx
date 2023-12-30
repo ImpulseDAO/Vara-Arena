@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
+import { getShortIdString } from "utils";
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -42,7 +43,7 @@ export const PlayersTable = ({
 
     return characters.map(({ name, id, level, isMyCharacter }) => ({
       name,
-      id: <Row name={name} id={`@${id.substring(0, 7)}...${id.substring(id.length - 3)}`} isSelected={isMyCharacter} />,
+      id: <Row name={name} id={getShortIdString(id)} isSelected={isMyCharacter} />,
       NB: 0,
       level: <span className="row_lvl">{level} LVL</span>,
       isMyCharacter,

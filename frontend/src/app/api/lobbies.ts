@@ -68,28 +68,32 @@ export const useCreateLobby = () => {
 
   if (!isAccountReady) {
     // no-op
-    return ({ capacity }: { capacity: number }) => Promise.resolve();
+    return ({ capacity }: { capacity: LobbyCapacity }) => Promise.resolve();
   }
 
-  return ({ capacity }: { capacity: number }) => {
+  return ({ capacity }: { capacity: LobbyCapacity }) => {
     if (capacity <= 0) {
       alert.error("Capacity must be greater than 0");
       return;
     }
 
-    return send({
-      payload: {
-        CreateLobby: {
-          capacity: `${capacity}`,
+    return new Promise((resolve, reject) => {
+      send({
+        payload: {
+          CreateLobby: {
+            capacity: `${capacity}`,
+          },
         },
-      },
-      gasLimit: MAX_GAS_LIMIT,
-      onSuccess: () => {
-        console.log("success");
-      },
-      onError: () => {
-        console.log("error");
-      },
+        gasLimit: MAX_GAS_LIMIT,
+        onSuccess: () => {
+          console.log("success");
+          resolve("success");
+        },
+        onError: () => {
+          console.log("error");
+          reject("error");
+        },
+      });
     });
   };
 };

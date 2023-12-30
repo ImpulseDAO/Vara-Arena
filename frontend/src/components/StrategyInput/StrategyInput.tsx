@@ -1,11 +1,10 @@
-import "./styles.scss";
-import React from "react";
 import {
   getCodeIdsFromLocalStorage,
   useUploadCode,
 } from "hooks/useUploadCode";
 import { Button, Select, Text } from "@mantine/core";
-import { STRATEGY_CODE_ID_HARDCODED } from "../MintCharacter";
+import React from "react";
+import { STRATEGY_CODE_ID_HARDCODED } from "pages/MintCharacter/MintCharacter";
 import { useAlert } from "@gear-js/react-hooks";
 
 export const StrategyInput = ({
@@ -31,6 +30,11 @@ export const StrategyInput = ({
       label: `${firstPart}: ${codeId.substring(0, 8)}...`,
     };
   });
+
+
+  /**
+   * 
+   */
 
   const inputFileRef = React.useRef<HTMLInputElement>(null);
 

@@ -1,6 +1,7 @@
 .header {
   width: 100%;
   height: 80px;
+  flex-shrink: 0;
   background: black;
   padding: 0px 120px;
   display: flex;

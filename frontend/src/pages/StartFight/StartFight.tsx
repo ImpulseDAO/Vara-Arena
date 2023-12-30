@@ -22,8 +22,8 @@ export const StartFight = memo(() => {
   /**
    * Get user
    */
-  const [user, setUser] = useState<typeof character>(undefined);
-  const character = useMyCharacter();
+  const [user, setUser] = useState<typeof character>();
+  const { data: character } = useMyCharacter();
   useEffect(() => {
     if (character) {
       setUser(character);

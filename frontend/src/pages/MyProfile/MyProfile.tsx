@@ -1,149 +1,77 @@
-import { FC, useMemo } from "react";
+import { useEffect, useState } from "react";
 import "./styles.scss";
 import { StatBar } from "components/StatBar";
+//
 import LockSvg from "../../assets/svg/lock.svg";
 import CharSvg from "../../assets/svg/char.svg";
 import AvatarIcon from "../../assets/images/AvatarV2.png";
-import LogoIcon from "../../assets/images/avatar.png";
-
-import { useParams } from "react-router-dom";
-import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { ProgramMetadata } from "@gear-js/api";
-import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
-import { TableUI } from "components/Table";
-import { TableColumnsType } from "components/Table/types";
-import { ExperienceBar } from "components/ExperienceBar/ExperienceBar";
-import { ButtonGroup } from "components/ButtonGroup";
+import GoldCoin from "../../assets/images/goldCoin.png";
+//
 import { useStats } from "./hooks/useStats";
 import { Alert } from "components/Alert/Alert";
-import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { ENERGY } from "../../app/constants";
-import { ButtonGroupNew } from "components/ButtonGroupNew";
+import { useCharacterById, useMyCharacter } from "app/api/characters";
+import { getShortIdString } from "utils";
+import { useParams } from "react-router-dom";
+import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
+import { StrategyInput } from "pages/MintCharacter/components/StrategyInput";
+import { Divider, Flex, FlexProps, Image, Text } from "@mantine/core";
+import { getFullEnergy, getFullHp } from "consts";
+import { SchoolOfMagic } from "components/SchoolOfMagic";
 
-const ProfileResultBattleColumns: TableColumnsType[] = [
-  {
-    field: "id",
-    headerName: "Player ID",
-    width: 248,
-    position: "center",
-  },
-  {
-    field: "result",
-    headerName: "Result",
-    width: 300,
-    position: "center",
-  },
-  {
-    field: "level",
-    headerName: "Level",
-    width: 212,
-    position: "center",
-  },
-];
+export const MyProfile = () => {
+  const { data: myCharacter } = useMyCharacter();
+  return <Profile character={myCharacter} />;
+};
 
-export const MyProfile: FC = () => {
-  const { buffer } = useWasmMetadata(stateMetaWasm);
-  const params = useParams<{ id: string | undefined; }>();
-  const { account } = useAccount();
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+export const ProfilePage = () => {
+  const params = useParams();
+
+  if (!params.id) {
+    throw new Error("No id provided");
+  }
+
+  const { data: character } = useCharacterById({ id: params.id });
+
+  if (!character) {
+    return null;
+  }
+
+  return <Profile character={character} />;
+
+};
+
+export const Profile = ({
+  character
+}: {
+  character: Character;
+}) => {
+  const { data: myCharacter } = useMyCharacter();
+  const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
+    character
+  );
 
   /**
-   * uses id from params if it exists
-   * otherwise uses user's account id
+   * Upload code 
    */
-  const id = params.id ?? account?.decodedAddress;
 
-  const metaWasmData: MetaWasmDataType = useMemo(
-    () => ({
-      programId: MINT_ID,
-      programMetadata: meta,
-      wasm: buffer,
-      functionName: "character_info",
-      argument: id,
-    }),
-    [id, meta, buffer]
-  );
+  const [data, setData] = useState({
+    codeId: getCodeIdsFromLocalStorage()[0] ?? "",
+    name: "",
+  });
 
-  const charInfo = useReadWasmState<{
-    id: string;
-    attributes: {
-      strength: string;
-      agility: string;
-      vitality: string;
-      stamina: string;
-      experience: string;
-      level: string;
-    };
-    name: string;
-  }>(metaWasmData);
+  const codeId = data.codeId;
+  const setCodeId = (codeId) => setData({ ...data, codeId });
+  const onUploadCodeChange = (codeId) => setData({ ...data, codeId });
 
-  const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
-    charInfo?.state
-  );
+  /**
+   * 
+   */
 
-  console.log("charInfo?.state :>> ", charInfo?.state);
+  if (!myCharacter) {
+    return null;
+  }
 
-  const rows = useMemo(() => {
-    const allBattleLog = JSON.parse(localStorage.getItem("allBattleLog") ?? '[]');
-    const usersOnQueue = JSON.parse(localStorage.getItem("usersOnQueue") ?? '[]');
-
-    if (id !== account?.decodedAddress) {
-      return [];
-    }
-
-    const logs = (allBattleLog ?? []).reduce((acc, cur) => {
-      const logs = (cur?.logs ?? []).filter((log) => {
-        return log.c1 === charInfo.state?.id || log.c2 === charInfo.state?.id;
-      });
-      return acc.concat(logs);
-    }, []);
-
-    const rowsInfo = logs
-      .map((log) => {
-        let id;
-
-        if (log.c1 !== charInfo.state?.id) {
-          id = log.c1;
-        }
-
-        if (log.c2 !== charInfo.state?.id) {
-          id = log.c2;
-        }
-
-        const name = usersOnQueue[id]?.name;
-
-        return {
-          id,
-          name,
-          isWinner: log.winner === charInfo.state?.id,
-        };
-      })
-      .filter(({ name }) => name != null);
-
-    return rowsInfo.map((row) => {
-      return {
-        id: (
-          <div className="row_player">
-            <img src={LogoIcon} alt="LogoIcon" />
-            <div>
-              <p className="row_name">{row.name}</p>
-            </div>
-          </div>
-        ),
-        result: (
-          <div>
-            {row.isWinner ? (
-              <span className="row_win">Win</span>
-            ) : (
-              <span className="row_lose">Lose</span>
-            )}
-          </div>
-        ),
-        level: <p className="row_lvl">0 LVL</p>,
-      };
-    });
-  }, [account?.decodedAddress, charInfo.state?.id, id]);
+  const isMyCharacter = character.id === myCharacter.id;
 
   return (
     <div className="profile">
@@ -167,78 +95,40 @@ export const MyProfile: FC = () => {
       <div className="profile_char">
         <div className="profile_data">
           <div className="profile_user">
-            <img className="profile_avatar" src={AvatarIcon} alt="AvatarIcon" />
+            <img className={`profile_avatar ${isMyCharacter ? 'my_avatar' : ''}`} src={AvatarIcon} alt="AvatarIcon" />
             <div className="profile_name">
-              <p>{charInfo.state?.name}</p>
-              {/* <p>@gladiator1299</p> */}
-              {id === account?.decodedAddress && (
-                <ExperienceBar curXp={stats.experience} maxXp={stats.maxExp} />
-              )}
-              <p>
-                <span>Level</span>
-                <span>{stats.level}</span>
-              </p>
+              <p>{character?.name}</p>
+              <p>{getShortIdString(character.id)}</p>
+
+              <LevelBar maxXp={stats.maxExp} curXp={stats.experience} level={stats.level} />
             </div>
           </div>
-          {/* <div className="profile_armour">
-            <span>Armour</span>
-            <span>50</span>
-          </div> */}
-          <div className="profile_stats">
-            {id === account?.decodedAddress && (
-              <div>
-                <span>Available points</span>
-                <span>{stats.points}</span>
-              </div>
-            )}
 
-            <ButtonGroupNew
-              leftText={"Strength"}
-              value={stats.strength}
-              secondButton={"+"}
-              onClickSecondButton={
-                id === account?.decodedAddress && +stats.points
-                  ? () => selectAttr("Strength")
-                  : undefined
-              }
-            />
-            <ButtonGroup
-              leftText={"Agility"}
-              secondButton={stats.agility}
-              thirdButton={"+"}
-              onClickSecondButton={
-                id === account?.decodedAddress && +stats.points
-                  ? () => selectAttr("Agility")
-                  : undefined
-              }
-            />
-            <ButtonGroup
-              leftText={"Vitality"}
-              secondButton={stats.vitality}
-              thirdButton={"+"}
-              onClickSecondButton={
-                id === account?.decodedAddress && +stats.points
-                  ? () => selectAttr("Vitality")
-                  : undefined
-              }
-            />
-            <ButtonGroup
-              leftText={"Stamina"}
-              secondButton={stats.stamina}
-              thirdButton={"+"}
-              onClickSecondButton={
-                id === account?.decodedAddress && +stats.points
-                  ? () => selectAttr("Stamina")
-                  : undefined
-              }
-            />
+          <StrategyInput
+            codeId={codeId}
+            setCodeId={setCodeId}
+            onUploadCodeChange={onUploadCodeChange}
+          />
+
+          <div className="profile_stats">
+            <Divider mt="sm" />
+            <Attribute attributeName="Rating" value={character.tier_rating ?? 0} my="lg" />
+            <Divider mb="xs" />
+            <Attribute attributeName="Strength" value={character.attributes.strength} my="sm" />
+            <Attribute attributeName="Agility" value={character.attributes.agility} my="sm" />
+            <Attribute attributeName="Vitality" value={character.attributes.vitality} my="sm" />
+            <Attribute attributeName="Stamina" value={character.attributes.stamina} my="sm" />
+            <Attribute attributeName="Intelligence" value={character.attributes.intelligence} my="sm" />
           </div>
         </div>
+
         <div className="profile_equip">
           <StatBar
-            health={Number(charInfo.state?.attributes.vitality) * 30 + 10}
-            energy={ENERGY[Number(charInfo.state?.attributes.stamina ?? 1)]}
+            lives={character.lives_count ?? 5}
+            health={getFullHp(character.attributes.vitality)}
+            energy={getFullEnergy(character.attributes.stamina)}
           />
+
           <div className={"imgWrapper"}>
             <img className={"lock_img1"} src={LockSvg} alt="LockSvg" />
             <img className={"lock_img2"} src={LockSvg} alt="LockSvg" />
@@ -251,13 +141,55 @@ export const MyProfile: FC = () => {
             <img className={"lock_img8"} src={LockSvg} alt="LockSvg" />
             <img className={"lock_img9"} src={LockSvg} alt="LockSvg" />
           </div>
+
+          <div className="school_and_gold">
+            <div className="one_half school_of_magic">
+              <p>School of magic:</p>
+              <SchoolOfMagic className="bottom_part" type={character.magicElement} size={48} />
+            </div>
+            <div className="one_half gold">
+              <p>Gold:</p>
+              <Flex className="bottom_part" gap="md" align="center" style={{ position: 'relative' }} >
+                <Image width={40} src={GoldCoin} />
+                <Text fw="600" c="white" >{character.balance ?? 0}</Text>
+              </Flex>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div className="profile_story">
-        {id === account?.decodedAddress && rows.length > 0 ? (
-          <TableUI rows={rows} columns={ProfileResultBattleColumns} />
-        ) : null}
+    </div >
+  );
+};
+
+const LevelBar = ({
+  maxXp,
+  curXp,
+  level,
+}: { maxXp: number; curXp: number; level: number; }) => {
+  const [percent, setPercent] = useState(0);
+  useEffect(() => {
+    setTimeout(() => setPercent((curXp / maxXp) * 100), 300);
+  });
+
+  return (
+    <div className="level_bar_wrapper">
+      <span className="level_bar_text">Level</span>
+
+      <div className="level_bar">
+        <div className="level_bar_progress" style={{ maxWidth: `${percent}%` }} />
       </div>
+
+      <span className="level_bar_level">{level}</span>
     </div>
+  );
+};
+
+const Attribute = ({ attributeName, value, ...flexProps }: { attributeName: string; value: number; } & FlexProps) => {
+  return (
+    <Flex justify={'space-between'} {...flexProps}>
+      <Text>{attributeName}</Text>
+      <Text fw="600">{value}</Text>
+    </Flex>
   );
 };

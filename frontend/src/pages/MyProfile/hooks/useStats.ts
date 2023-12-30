@@ -2,35 +2,26 @@ import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
-const LEVEL_XP = [
-  300, 600, 1800, 5400, 16200, 48600, 145800, 437400, 1312200, 3936600,
-];
 
-export const useStats = (
-  charInfo:
-    | {
-        id: string;
-        attributes: {
-          strength: string;
-          agility: string;
-          vitality: string;
-          stamina: string;
-          experience: string;
-          level: string;
-        };
-        name: string;
-      }
-    | undefined
-) => {
+const XP_NEEDED_FOR_LEVEL_UP_MAP = {
+  2: 300,
+  3: 600,
+  4: 1800,
+  5: 5400,
+  6: 16200,
+  7: 48600,
+  8: 145800,
+  9: 437400,
+  10: 1312200,
+};
+
+export const useStats = (character?: Character) => {
   const [stats, setStats] = useState({
-    strength: "1",
-    agility: "1",
-    vitality: "1",
-    stamina: "1",
-    points: "0",
-    level: "0",
-    experience: "0",
-    maxExp: "0",
+    ...character?.attributes,
+    points: 0,
+    level: character?.level ?? 0,
+    experience: 0,
+    maxExp: 0,
   });
   const [attr, setAttr] = useState("");
 
@@ -64,20 +55,28 @@ export const useStats = (
   }, [attr, send]);
 
   useEffect(() => {
-    if (charInfo?.attributes) {
-      const exp = charInfo.attributes.experience.replaceAll(",", "");
-      const expectedLevel = LEVEL_XP.findIndex((lvlExp) => lvlExp > +exp);
-      const isAvailableLvlUp = expectedLevel - +charInfo.attributes.level > 0;
+    if (character?.attributes) {
+      const exp = character.experience;
+      const currentLevel = character.level;
+      const nextLevel = currentLevel + 1;
+
+      /**
+       * Calculating if it's possible to level up
+       */
+      const expNeededForLevelUp = XP_NEEDED_FOR_LEVEL_UP_MAP[nextLevel];
+      const isAvailableLvlUp = exp >= expNeededForLevelUp;
 
       setStats((prev) => ({
         ...prev,
-        ...charInfo.attributes,
-        maxExp: LEVEL_XP[charInfo.attributes.level],
-        points: isAvailableLvlUp ? "1" : "0",
+        ...character.attributes,
+        maxExp: XP_NEEDED_FOR_LEVEL_UP_MAP[nextLevel],
+        points: isAvailableLvlUp ? 1 : 0,
         experience: exp,
       }));
     }
-  }, [charInfo]);
+  }, [character]);
+
+  console.log("stats", stats);
 
   return {
     selectAttr,

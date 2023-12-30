@@ -2,8 +2,8 @@ import React, { FC, memo } from "react";
 import "./styles.scss";
 
 export type ExperienceBarProp = {
-  curXp: string;
-  maxXp: string;
+  curXp: number;
+  maxXp: number;
 };
 
 export const ExperienceBar: FC<ExperienceBarProp> = memo(({ curXp, maxXp }) => {

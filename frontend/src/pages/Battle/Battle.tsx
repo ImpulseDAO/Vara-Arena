@@ -8,7 +8,7 @@ import { Button } from "components/Button";
 import { textMap } from "./components/textMap";
 import { BattleUser } from "./components/BattleUser";
 import { getTypeAttack } from "./utils/getTypeAttack";
-import { ENERGY } from "../../app/constants";
+import { getFullEnergy } from "consts";
 
 export type BattleProps = {};
 
@@ -213,13 +213,13 @@ export const Battle: FC<BattleProps> = () => {
           user={user1}
           userIndex={1}
           health={pl1Health}
-          energy={ENERGY[user1.attributes.stamina]}
+          energy={getFullEnergy(user1.attributes.stamina)}
         />
         <BattleUser
           user={user2}
           userIndex={2}
           health={pl2Health}
-          energy={ENERGY[user2.attributes.stamina]}
+          energy={getFullEnergy(user2.attributes.stamina)}
         />
       </div>
       <div className="battle_actions">

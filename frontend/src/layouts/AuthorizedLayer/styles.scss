@@ -1,6 +1,6 @@
 .app {
-  min-height: 100vh;
-  overflow: scroll;
+  height: 100vh;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -8,6 +8,7 @@
 .content {
   flex: 1;
   display: flex;
+  overflow: scroll;
 
   & > div {
     &::-webkit-scrollbar {

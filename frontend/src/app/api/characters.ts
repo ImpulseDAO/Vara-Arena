@@ -1,6 +1,7 @@
 import { useAccount } from "@gear-js/react-hooks";
 import { graphql } from "../../gql/gql";
 import { useGraphQL } from "app/providers/ReactQuery/useGraphQL";
+import { UseQueryResult } from "@tanstack/react-query";
 
 const allCharactersQueryDocument = graphql(/* GraphQL */ `
   query AllCharacters {
@@ -38,9 +39,35 @@ export const useMyCharacters = ({ owner_eq }: { owner_eq: string }) => {
 
 export const useMyCharacter = () => {
   const { account } = useAccount();
-  const { data: myCharacters } = useMyCharacters({
+  const queryResult = useMyCharacters({
     owner_eq: account?.decodedAddress ?? "",
   });
 
-  return myCharacters?.characters[myCharacters?.characters.length - 1];
+  const myCharacters = queryResult.data;
+
+  return {
+    ...queryResult,
+    data: myCharacters?.characters[
+      myCharacters?.characters.length - 1
+    ] as Character,
+  };
+};
+
+const characterByIdQueryDocument = graphql(/* GraphQL */ `
+  query CharacterById($character_id: String!) {
+    characterById(id: $character_id) {
+      attributes
+      experience
+      id
+      level
+      name
+      owner
+    }
+  }
+`);
+
+export const useCharacterById = ({ id }: { id: string }) => {
+  return useGraphQL(characterByIdQueryDocument, {
+    character_id: id,
+  }) as UseQueryResult<Character>;
 };

@@ -1,6 +1,5 @@
-import { Title, Box, BackgroundImage, Grid, Image, Select, Stack, Badge, TitleProps, Text } from "@mantine/core";
+import { Title, Box, Grid, Image, Select, Stack, Badge, TitleProps, Text, ScrollArea } from "@mantine/core";
 import ArenaPng from "assets/images/arena.png";
-import StartFightPng from "assets/images/startFightScreen.png";
 import { TheButton } from "components/new/TheButton";
 import { Panel } from "components/new/Panel";
 import { useCreateLobby, useLobbies } from "app/api/lobbies";
@@ -8,17 +7,19 @@ import { useNavigate } from "react-router-dom";
 import { newRoutes } from "app/routes";
 import { useMemo, useRef } from "react";
 import { GasReserved } from "components/GasReserved/GasReserved";
+import { useAlert } from "@gear-js/react-hooks";
 
 export const BattlesList = () => {
+  const alert = useAlert();
   const navigate = useNavigate();
   const selectRef = useRef<HTMLInputElement | null>(null);
 
-  const { data: lobbiesData } = useLobbies();
+  const { data: lobbiesData, refetch: refetchLobbies } = useLobbies();
 
   const cards = useMemo(() => {
     if (!lobbiesData) return [];
 
-    return lobbiesData?.lobbies.map(lobby => {
+    return [...lobbiesData?.lobbies].reverse().map(lobby => {
       return {
         tier: 'tier' in lobby ? lobby.tier as string : 'UNSET',
         lobbyId: lobby.id,
@@ -48,14 +49,12 @@ export const BattlesList = () => {
   const handleCreateLobby = useCreateLobby();
 
   return (
-    <BackgroundImage
-      src={StartFightPng}
-      pb={100}
-    >
+    <Box >
       <Grid m={'lg'} gutter={'md'}
         mx="auto"
-        sx={{
-          maxWidth: "min(1300px, 90%)"
+        pb={150}
+        style={{
+          maxWidth: "min(1300px, 90%)",
         }}
       >
         <GridColumn >
@@ -85,6 +84,7 @@ export const BattlesList = () => {
                     pb: 4
                   }}
                   data={[
+                    // can be only of type LobbyCapacity
                     { value: '2', label: '2', },
                     { value: '4', label: '4' },
                     { value: '8', label: '8' },
@@ -101,12 +101,19 @@ export const BattlesList = () => {
                     </svg>
                   }
                 />
-                <TheButton onClick={() => {
+                <TheButton onClick={async () => {
                   const capacity = parseInt(selectRef.current?.value ?? '');
 
-                  if (isNaN(capacity)) return;
+                  if (capacity !== 2 && capacity !== 4 && capacity !== 8) {
+                    alert.error('Invalid capacity');
+                    return;
+                  };
 
-                  handleCreateLobby({ capacity });
+                  await handleCreateLobby({ capacity });
+                  /**
+                   * Refetch lobbies after successful promise resolution
+                   */
+                  refetchLobbies();
                 }}  >
                   Create
                 </TheButton>
@@ -132,7 +139,7 @@ export const BattlesList = () => {
           </GridColumn>
         ))}
       </Grid>
-    </BackgroundImage >
+    </Box>
   );
 };
 

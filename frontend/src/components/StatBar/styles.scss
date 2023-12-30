@@ -1,9 +1,6 @@
 .outer-wrapper {
   font-weight: 600;
-}
-
-.leftText {
-  margin-right: auto;
+  margin-bottom: 0.7rem;
 }
 
 .flex-container {
@@ -13,10 +10,21 @@
   //justify-content: space-between;
   color: white;
   font-size: 18px;
-  flex-wrap: wrap;
+  // flex-wrap: wrap;
   gap: 15px;
   row-gap: 0;
   margin: 8px 0;
+
+  .elem1 {
+    flex: 6;
+  }
+  .elem2 {
+    flex: 10;
+  }
+  .elem3 {
+    flex: 3;
+    text-align: right;
+  }
 
   @media screen and (max-width: 400px) {
     row-gap: 5px;
@@ -34,11 +42,41 @@
   }
 }
 
-.healthBar {
-  background-color: var(--color-red-health);
+.livesContainer {
+  display: flex;
+  gap: 4px; // Можно изменить на нужное расстояние между индикаторами
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lifeIndicator {
+  width: 15%; // Можно изменить на нужный размер индикатора
+  height: 8px; // Можно изменить на нужный размер индикатора
+  background-color: #13dc4b; // Используйте переменную цвета или конкретный цвет
+  border-radius: 99999px; // Делает индикаторы круглыми
+
+  &.empty {
+    background-color: rgb(
+      255,
+      255,
+      255,
+      0.1
+    ); // Используйте переменную цвета или конкретный цвет
+  }
+}
+
+.elem2 {
   border-radius: 4px;
   min-width: 185px;
   height: 8px;
+
+  @media screen and (max-width: 400px) {
+    min-width: unset;
+  }
+}
+
+.healthBar {
+  background-color: var(--color-red-health);
 
   @media screen and (max-width: 400px) {
     width: 100%;
@@ -47,9 +85,6 @@
 
 .energyBar {
   background-color: var(--color-blue-energy);
-  border-radius: 4px;
-  min-width: 185px;
-  height: 8px;
 
   @media screen and (max-width: 400px) {
     width: 100%;

@@ -5,7 +5,7 @@
 
 import { useAccount } from "@gear-js/react-hooks";
 
-export const useMyId = () => {
+export const useMyAccountId = () => {
   const { account } = useAccount();
   return account?.decodedAddress;
 };

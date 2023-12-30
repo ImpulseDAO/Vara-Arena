@@ -20,7 +20,6 @@ export type MintCharacterProps = {};
 
 export const STRATEGY_CODE_ID_HARDCODED =
   "0x25c002d7c488d8117a6c003c3ed04f11da6eb95f912dda39e31c4a634cd1f79f";
-// "0xfb63a322fb1836b112fc102d9ae966e0614afdf80e9f19e231e4a28328d0a989";
 
 export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   const { buffer } = useWasmMetadata(stateMetaWasm);

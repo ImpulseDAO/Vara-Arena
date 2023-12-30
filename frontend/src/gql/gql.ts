@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query AllCharacters {\n    characters {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n": types.AllCharactersDocument,
     "\n  query CharactersByOwner($owner_eq: String!) {\n    characters(where: { owner_eq: $owner_eq }) {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n": types.CharactersByOwnerDocument,
+    "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n": types.CharacterByIdDocument,
     "\n  query Lobbies {\n    lobbies {\n      id\n      characters {\n        id\n        character {\n          name\n          owner\n          level\n          id\n          experience\n          attributes\n        }\n      }\n    }\n  }\n": types.LobbiesDocument,
     "\n  query LobbyById($id: String!) {\n    lobbyById(id: $id) {\n      id\n      characters {\n        character {\n          attributes\n          experience\n          id\n          level\n          name\n          owner\n        }\n        id\n      }\n    }\n  }\n": types.LobbyByIdDocument,
 };
@@ -41,6 +42,10 @@ export function graphql(source: "\n  query AllCharacters {\n    characters {\n  
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  query CharactersByOwner($owner_eq: String!) {\n    characters(where: { owner_eq: $owner_eq }) {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n"): (typeof documents)["\n  query CharactersByOwner($owner_eq: String!) {\n    characters(where: { owner_eq: $owner_eq }) {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n"): (typeof documents)["\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

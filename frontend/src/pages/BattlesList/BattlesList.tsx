@@ -1,7 +1,7 @@
 import { Title, Box, Grid, Image, Select, Stack, Badge, TitleProps, Text, ScrollArea } from "@mantine/core";
 import ArenaPng from "assets/images/arena.png";
-import { TheButton } from "components/new/TheButton";
-import { Panel } from "components/new/Panel";
+import { TheButton } from "components/TheButton";
+import { Panel } from "components/Panel";
 import { useCreateLobby, useLobbies } from "app/api/lobbies";
 import { useNavigate } from "react-router-dom";
 import { newRoutes } from "app/routes";

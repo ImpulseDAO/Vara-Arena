@@ -13,6 +13,18 @@ const LOCAL_STORAGE = {
 export const MAX_GAS_LIMIT = 750000000000;
 export const LIFES_INITIAL_QUANTITY = 5;
 
+export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
+  2: 300,
+  3: 600,
+  4: 1800,
+  5: 5400,
+  6: 16200,
+  7: 48600,
+  8: 145800,
+  9: 437400,
+  10: 1312200,
+};
+
 /**
  * Calculations
  */

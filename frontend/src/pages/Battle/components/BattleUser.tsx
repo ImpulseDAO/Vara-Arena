@@ -1,4 +1,4 @@
-import { StatBar } from "components/StatBar";
+import { StatBar } from "pages/@shared/StatBar";
 import LockSvg from "../../../assets/svg/lock.svg";
 import CharSvg from "../../../assets/svg/char.svg";
 

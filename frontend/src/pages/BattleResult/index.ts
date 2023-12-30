@@ -1,0 +1,1 @@
+export { BattleResult } from "./BattleResult";

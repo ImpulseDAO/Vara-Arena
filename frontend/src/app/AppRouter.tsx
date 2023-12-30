@@ -5,13 +5,14 @@ import { newRoutes } from "./routes";
 //
 import { Logs } from "pages/Logs";
 import { Queue } from "pages/Queue";
+import { Lobby } from "pages/Lobby";
 import { Battle } from "pages/Battle";
 import { MyProfile } from "pages/MyProfile";
+import { BattleResult } from "pages/BattleResult";
 import { Leaderboard } from "pages/Leaderboard";
+import { BattlesList } from "pages/BattlesList";
 import { UploadStrategy } from "pages/UploadStrategy";
 import { MintCharacter, StartFight, StartScreen } from "pages";
-import { BattlesList } from "pages/BattlesList";
-import { Lobby } from "pages/Lobby";
 
 export const appRouter = createBrowserRouter(
   [
@@ -32,6 +33,7 @@ export const appRouter = createBrowserRouter(
     { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
     { element: <Logs />, path: newRoutes.myLogs, auth: true },
+    { element: <BattleResult />, path: newRoutes.battleResultDynamic, auth: true },
     /**
      * END NEW ROUTES
      */

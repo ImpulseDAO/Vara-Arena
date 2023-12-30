@@ -12,6 +12,7 @@ export const Panel = ({ children, turnOffPadding = false, ...paperProps }: Paper
       radius={12}
       style={{
         border: "2px solid #eaecf0",
+        color: 'white'
       }}
       {...paperProps}
     >

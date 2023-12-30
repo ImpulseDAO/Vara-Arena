@@ -4,11 +4,23 @@ import { LIFES_INITIAL_QUANTITY } from "consts";
 
 export type StatBarProps = {
   lives?: number;
-  health?: number | undefined;
-  energy?: number | undefined;
+  health: number | undefined;
+  healthMax?: number | undefined;
+  energy: number | undefined;
+  energyMax?: number | undefined;
 };
 
-export const StatBar: FC<StatBarProps> = ({ lives, health, energy }) => {
+export const StatBar: FC<StatBarProps> = ({ lives, health, healthMax, energy, energyMax, }) => {
+
+  const healthPercent = healthMax ? (health ?? 0) / healthMax * 100 : 100;
+  const energyPercent = energyMax ? (energy ?? 0) / energyMax * 100 : 100;
+
+  console.log({
+    health,
+    healthMax,
+    healthPercent
+  });
+
   let livesIndicators: React.ReactNode[] = [];
 
   if (lives != null) {
@@ -33,19 +45,31 @@ export const StatBar: FC<StatBarProps> = ({ lives, health, energy }) => {
           <div className={"elem2 livesContainer"}>
             {livesIndicators}
           </div>
-          <div className={"elem3 number"}>{lives}/5</div>
+          <div className={"elem3 elem_number"}>{lives}/5</div>
         </div>
       )}
 
       <div className={"flex-container"}>
         <div className={"elem1 leftText"}>Health</div>
-        <div className={"elem2 healthBar"} />
-        <div className={"elem3 number"}>{health}</div>
+        <div className={"elem2 healthBar"} >
+          <div className={"healthBarInner"} style={{ maxWidth: `${healthPercent}%` }} />
+        </div>
+        <div className={"elem3 elem_number"}>{
+          healthMax
+            ? `${health}/${healthMax}`
+            : health
+        }</div>
       </div>
       <div className={"flex-container"}>
         <div className={"elem1 leftText"}>Energy</div>
-        <div className={"elem2 energyBar"} />
-        <div className={"elem3 number"}>{energy}</div>
+        <div className={"elem2 energyBar"} >
+          <div className={"energyBarInner"} style={{ maxWidth: `${energyPercent}%` }} />
+        </div>
+        <div className={"elem3 elem_number"}>{
+          energyMax
+            ? `${energy}/${energyMax}`
+            : energy
+        }</div>
       </div>
     </div>
   );

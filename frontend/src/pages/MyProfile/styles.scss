@@ -34,18 +34,6 @@
     }
   }
 
-  .back_button {
-    position: absolute;
-    top: 162px;
-    left: 206px;
-    color: white;
-    width: 86px;
-    height: 40px;
-    background: #000000;
-    border: 1px solid #ffffff;
-    border-radius: 8px;
-  }
-
   .profile_char {
     display: flex;
     gap: 15px;
@@ -68,80 +56,6 @@
     border: 2px solid white;
     position: relative;
     padding: 14px 24.5px 26px;
-  }
-
-  .profile_user {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    margin-bottom: 1rem;
-
-    .profile_avatar {
-      --size: 86px;
-      width: var(--size);
-      height: var(--size);
-      border-radius: 999999px;
-    }
-
-    .my_avatar {
-      border: 2px solid #2c67ff;
-    }
-
-    .profile_name {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      width: 100%;
-
-      & > p {
-        font-size: 18px;
-        &:first-child {
-          font-weight: bold;
-          font-size: 22px;
-          margin-bottom: 0.3rem;
-        }
-        &:last-child {
-          display: flex;
-          justify-content: space-between;
-          color: #2c67ff;
-        }
-      }
-    }
-
-    .level_bar_wrapper {
-      margin-top: 0.7rem;
-
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-
-      font-weight: bold;
-      font-size: 18px;
-
-      .level_bar {
-        flex: 1;
-        height: 10px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 99999px;
-        overflow: hidden;
-      }
-
-      .level_bar_progress {
-        height: 100%;
-        background-color: white;
-        transition: max-width 0.5s ease-in-out;
-      }
-    }
-  }
-
-  .profile_stats {
-    flex: 1;
-
-    display: flex;
-    flex-direction: column;
-
-    justify-content: flex-end;
   }
 
   .imgWrapper {
@@ -199,31 +113,6 @@
     top: 255px;
     right: 0px;
   }
-}
-
-.row_player {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.row_win {
-  color: #1ef01e;
-}
-.row_lose {
-  color: #ff4c4c;
-}
-
-.row_lvl {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  height: 22px;
-  border-radius: 16px;
-  background: white;
-  color: black;
-  padding: 2px 8px;
 }
 
 /**

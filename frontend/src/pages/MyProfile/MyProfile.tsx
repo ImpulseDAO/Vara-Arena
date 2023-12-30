@@ -1,22 +1,27 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useParams } from "react-router-dom";
+//
 import "./styles.scss";
-import { StatBar } from "components/StatBar";
 //
 import LockSvg from "../../assets/svg/lock.svg";
 import CharSvg from "../../assets/svg/char.svg";
-import AvatarIcon from "../../assets/images/AvatarV2.png";
 import GoldCoin from "../../assets/images/goldCoin.png";
 //
-import { useStats } from "./hooks/useStats";
-import { Alert } from "components/Alert/Alert";
-import { useCharacterById, useMyCharacter } from "app/api/characters";
 import { getShortIdString } from "utils";
-import { useParams } from "react-router-dom";
-import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
-import { StrategyInput } from "pages/MintCharacter/components/StrategyInput";
-import { Divider, Flex, FlexProps, Image, Text } from "@mantine/core";
 import { getFullEnergy, getFullHp } from "consts";
+import { useStats } from "./hooks/useStats";
+import { useCharacterById, useMyCharacter } from "app/api/characters";
+//
+import { Flex, Image, Text } from "@mantine/core";
+//
+import { Alert } from "components/Alert/Alert";
+import { StatBar } from "pages/@shared/StatBar";
+import { CharInfo } from "pages/@shared/CharInfo";
+import { CharStats } from "pages/@shared/CharStats/CharStats";
+import { StrategyInput } from "components/StrategyInput";
+import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
 import { SchoolOfMagic } from "components/SchoolOfMagic";
+
 
 export const MyProfile = () => {
   const { data: myCharacter } = useMyCharacter();
@@ -94,15 +99,16 @@ export const Profile = ({
       )}
       <div className="profile_char">
         <div className="profile_data">
-          <div className="profile_user">
-            <img className={`profile_avatar ${isMyCharacter ? 'my_avatar' : ''}`} src={AvatarIcon} alt="AvatarIcon" />
-            <div className="profile_name">
-              <p>{character?.name}</p>
-              <p>{getShortIdString(character.id)}</p>
 
-              <LevelBar maxXp={stats.maxExp} curXp={stats.experience} level={stats.level} />
-            </div>
-          </div>
+          <CharInfo
+            isMyCharacter={isMyCharacter}
+            name={character.name}
+            shortId={getShortIdString(character.id)}
+            //
+            exp={stats.experience}
+            maxExp={stats.maxExp}
+            level={stats.level}
+          />
 
           <StrategyInput
             codeId={codeId}
@@ -110,16 +116,8 @@ export const Profile = ({
             onUploadCodeChange={onUploadCodeChange}
           />
 
-          <div className="profile_stats">
-            <Divider mt="sm" />
-            <Attribute attributeName="Rating" value={character.tier_rating ?? 0} my="lg" />
-            <Divider mb="xs" />
-            <Attribute attributeName="Strength" value={character.attributes.strength} my="sm" />
-            <Attribute attributeName="Agility" value={character.attributes.agility} my="sm" />
-            <Attribute attributeName="Vitality" value={character.attributes.vitality} my="sm" />
-            <Attribute attributeName="Stamina" value={character.attributes.stamina} my="sm" />
-            <Attribute attributeName="Intelligence" value={character.attributes.intelligence} my="sm" />
-          </div>
+          <CharStats character={character} />
+
         </div>
 
         <div className="profile_equip">
@@ -159,37 +157,5 @@ export const Profile = ({
         </div>
       </div>
     </div >
-  );
-};
-
-const LevelBar = ({
-  maxXp,
-  curXp,
-  level,
-}: { maxXp: number; curXp: number; level: number; }) => {
-  const [percent, setPercent] = useState(0);
-  useEffect(() => {
-    setTimeout(() => setPercent((curXp / maxXp) * 100), 300);
-  });
-
-  return (
-    <div className="level_bar_wrapper">
-      <span className="level_bar_text">Level</span>
-
-      <div className="level_bar">
-        <div className="level_bar_progress" style={{ maxWidth: `${percent}%` }} />
-      </div>
-
-      <span className="level_bar_level">{level}</span>
-    </div>
-  );
-};
-
-const Attribute = ({ attributeName, value, ...flexProps }: { attributeName: string; value: number; } & FlexProps) => {
-  return (
-    <Flex justify={'space-between'} {...flexProps}>
-      <Text>{attributeName}</Text>
-      <Text fw="600">{value}</Text>
-    </Flex>
   );
 };

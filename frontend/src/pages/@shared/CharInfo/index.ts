@@ -1,0 +1,1 @@
+export { CharInfo } from "./CharInfo";

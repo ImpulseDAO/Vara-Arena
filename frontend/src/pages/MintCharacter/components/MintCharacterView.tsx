@@ -1,14 +1,14 @@
 import { Input } from "components";
 import { Button } from "components/Button";
 import { ButtonGroupNew } from "components/ButtonGroupNew";
-import { StatBar } from "components/StatBar";
+import { StatBar } from "pages/@shared/StatBar";
 import { FC, memo, useRef } from "react";
 import "./styles.scss";
-import { StrategyInput } from "./StrategyInput";
 import { Badge, Box, Table } from "@mantine/core";
 import { SchoolOfMagicChoice } from "./SchoolOfMagicChoice";
 import { TitleWithQuote } from "components/TitleWithQuote";
 import { capitalize } from "lodash";
+import { StrategyInput } from "components/StrategyInput";
 
 type MintCharacterViewProps = {
   stats: {

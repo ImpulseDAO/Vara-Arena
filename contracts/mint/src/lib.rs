@@ -118,11 +118,12 @@ impl Mint {
         self.characters.insert(owner_id, character.clone());
 
         for character_id in losers {
-            // self.characters.entry(character_id).and_modify(|_| {});
             if let Entry::Occupied(mut character_info) = self.characters.entry(character_id) {
                 character_info.get_mut().attributes.lives_count -= 1;
                 if character_info.get().attributes.lives_count == 0 {
                     character_info.remove_entry();
+                    msg::reply(MintEvent::CharacterDied { character_id }, 0)
+                        .expect("unable to reply");
                 }
             }
         }
@@ -247,7 +248,7 @@ impl Mint {
 
 #[no_mangle]
 unsafe extern "C" fn init() {
-    let config: Config = msg::load().expect("Unable to decode Condig");
+    let config: Config = msg::load().expect("Unable to decode Config");
     let contract_owner = msg::source();
     MINT = Some(Mint {
         admins: BTreeSet::from([contract_owner]),

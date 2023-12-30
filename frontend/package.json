@@ -5,7 +5,7 @@
   "homepage": "https://impulsedao.github.io/AArena",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "npm gh-pages -d build",
+    "deploy": "gh-pages -d build",
     "codegen": "graphql-codegen --watch",
     "start": "react-app-rewired start",
     "dev": "concurrently \"npm run codegen\" \"npm run start\"",

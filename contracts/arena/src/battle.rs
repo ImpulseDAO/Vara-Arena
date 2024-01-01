@@ -26,18 +26,10 @@ impl Battle {
             if turns.len() > 25 {
                 debug!("New GAMEPLAY!");
                 debug!("p1 = {} hp x p2 = {} hp!", self.c1.hp, self.c2.hp);
-                if self.c1.hp > self.c2.hp {
-                    return BattleLog {
-                        winner_id: self.c1.id,
-                        loser_id: self.c2.id,
-                        turns,
-                    };
-                } else {
-                    return BattleLog {
-                        winner_id: self.c2.id,
-                        loser_id: self.c1.id,
-                        turns,
-                    };
+                return BattleLog {
+                    character1: (self.c1.id, self.c1.hp > self.c2.hp),
+                    character2: (self.c2.id, self.c2.hp > self.c1.hp),
+                    turns,
                 };
             };
 
@@ -101,21 +93,19 @@ impl Battle {
                 self.c2.parry = false;
 
                 execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
 
                 execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
@@ -124,21 +114,19 @@ impl Battle {
                 self.c2.parry = matches!(&p2_action, BattleAction::Parry);
 
                 execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
 
                 execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
@@ -149,11 +137,11 @@ impl Battle {
         }
     }
 
-    fn check_winner(&self) -> Option<(ActorId, ActorId)> {
+    fn check_winner(&self) -> Option<((ActorId, bool), (ActorId, bool))> {
         if self.c1.hp == 0 {
-            Some((self.c2.id, self.c1.id))
+            Some(((self.c1.id, false), (self.c2.id, true)))
         } else if self.c2.hp == 0 {
-            Some((self.c1.id, self.c2.id))
+            Some(((self.c1.id, true), (self.c2.id, false)))
         } else {
             None
         }

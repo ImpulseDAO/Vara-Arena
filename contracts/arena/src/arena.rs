@@ -81,13 +81,24 @@ impl Arena {
 
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
-        let loser = lobby
-            .characters
-            .iter()
-            .find(|c| c.id == lobby.winners[0])
-            .unwrap();
-        lobby.winners.push(log.winner_id);
-        lobby.losers.push(loser.owner);
+
+        if log.character1.1 {
+            let loser = lobby
+                .characters
+                .iter()
+                .find(|c| c.id == log.character2.0)
+                .unwrap();
+            lobby.winners.push(log.character1.0);
+            lobby.losers.push(loser.owner);
+        } else {
+            let loser = lobby
+                .characters
+                .iter()
+                .find(|c| c.id == log.character1.0)
+                .unwrap();
+            lobby.winners.push(log.character2.0);
+            lobby.losers.push(loser.owner);
+        }
         lobby.logs.push(log);
 
         if lobby.battles.is_empty() {

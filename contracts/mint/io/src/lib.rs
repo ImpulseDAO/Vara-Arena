@@ -10,6 +10,7 @@ const MAX_STRENGTH: usize = 9;
 const MAX_AGILITY: usize = 9;
 const MAX_VITALITY: usize = 9;
 const MAX_STAMINA: usize = 9;
+const MAX_INTELLIGENCE: usize = 9;
 
 const XP_GAIN: [u32; MAX_LEVEL + 1] = [
     0, 300, 600, 600, 1350, 3240, 8100, 18225, 48600, 131220, 328050,
@@ -34,8 +35,6 @@ pub struct CharacterAttributes {
     pub vitality: u8,
     pub stamina: u8,
     pub intelligence: u8,
-    pub level: u8,
-    pub experience: u32,
     pub lives_count: u8,
     pub tier_rating: u128,
     pub balance: u128,
@@ -67,6 +66,7 @@ pub enum AttributeChoice {
     Agility,
     Vitality,
     Stamina,
+    Intelligence,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
@@ -78,15 +78,12 @@ pub struct CharacterInfo {
     pub experience: u32,
 }
 
-impl CharacterAttributes {
+impl CharacterInfo {
     pub fn increase_xp(&mut self) {
         self.experience = self.experience.saturating_add(XP_GAIN[self.level as usize]);
         debug!("Adding Experience!!!{:#?}", self.experience);
     }
 
-    pub fn increase_rating(&mut self, earned_rating: u128) {
-        self.tier_rating = self.tier_rating.saturating_add(earned_rating);
-    }
     pub fn level_up(&mut self, attr: &AttributeChoice) {
         let xp_consume = LEVEL_XP[self.level as usize];
 
@@ -97,25 +94,38 @@ impl CharacterAttributes {
 
         match attr {
             AttributeChoice::Strength => {
-                assert!(self.strength != MAX_STRENGTH as u8, "max level");
-                self.strength = self.strength + 1;
+                assert!(self.attributes.strength != MAX_STRENGTH as u8, "max level");
+                self.attributes.strength = self.attributes.strength + 1;
                 debug!("Adding STR!!!");
             }
             AttributeChoice::Agility => {
-                assert!(self.agility != MAX_AGILITY as u8, "max level");
-                self.agility = self.agility + 1;
+                assert!(self.attributes.agility != MAX_AGILITY as u8, "max level");
+                self.attributes.agility = self.attributes.agility + 1;
             }
             AttributeChoice::Vitality => {
-                assert!(self.vitality != MAX_VITALITY as u8, "max level");
-                self.vitality = self.vitality + 1;
+                assert!(self.attributes.vitality != MAX_VITALITY as u8, "max level");
+                self.attributes.vitality = self.attributes.vitality + 1;
             }
             AttributeChoice::Stamina => {
-                assert!(self.stamina != MAX_STAMINA as u8, "max level");
-                self.stamina = self.stamina + 1;
+                assert!(self.attributes.stamina != MAX_STAMINA as u8, "max level");
+                self.attributes.stamina = self.attributes.stamina + 1;
+            }
+            AttributeChoice::Intelligence => {
+                assert!(
+                    self.attributes.intelligence != MAX_INTELLIGENCE as u8,
+                    "max level"
+                );
+                self.attributes.intelligence = self.attributes.intelligence + 1;
             }
         }
 
         self.experience = self.experience - xp_consume;
+    }
+}
+
+impl CharacterAttributes {
+    pub fn increase_rating(&mut self, earned_rating: u128) {
+        self.tier_rating = self.tier_rating.saturating_add(earned_rating);
     }
 }
 
@@ -178,7 +188,7 @@ pub struct MintMetadata;
 
 impl Metadata for MintMetadata {
     type Init = InOut<Config, ()>;
-    type Handle = InOut<MintAction, ()>;
+    type Handle = InOut<MintAction, MintEvent>;
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;
     type Signal = ();

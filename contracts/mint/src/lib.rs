@@ -58,8 +58,6 @@ impl Mint {
                 vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 intelligence: attributes.intelligence,
-                level: 0,
-                experience: 0,
                 lives_count: self.config.lives_count,
                 tier_rating: 0,
                 balance: 0,
@@ -110,7 +108,7 @@ impl Mint {
             4 => 10,
             _ => 5,
         };
-        character.attributes.increase_xp();
+        character.increase_xp();
 
         character.attributes.increase_rating(earned_rating);
         let character_id = character.id;
@@ -144,7 +142,7 @@ impl Mint {
             .get_mut(&owner_id)
             .expect("caller doesn't have a character");
 
-        character.attributes.level_up(&attr);
+        character.level_up(&attr);
 
         msg::reply(
             MintEvent::LevelUpdated {

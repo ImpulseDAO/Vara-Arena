@@ -106,7 +106,8 @@ export const ButtonJoinReservePlay = ({
 
   const registerForBattle = useOnRegisterForBattle();
 
-  const handleStart = async () => {
+
+  const handleReserveOrStart = async () => {
     setIsLoading(true);
 
     if (!hasPlayerJoined) {
@@ -141,6 +142,24 @@ export const ButtonJoinReservePlay = ({
     setIsLoading(false);
   };
 
+  const handleOnlyStart = async () => {
+    setIsLoading(true);
+
+    if (!hasPlayerJoined) {
+      const message = "You are not registered for the battle";
+      console.error(message);
+      alert.error(message);
+      return;
+    }
+
+    try {
+      await startBattle();
+    }
+    finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleCancel = () => {
     send(
       {
@@ -163,11 +182,19 @@ export const ButtonJoinReservePlay = ({
         className={["action_button", isPlayDisabled && "disabled"]
           .filter(Boolean)
           .join(" ")}
-        onClick={handleStart}
+        onClick={handleReserveOrStart}
         disabled={isPlayDisabled}
         loading={isLoading}
       >
         {btnText}
+      </Button>
+      {/* Only START button */}
+      <Button
+        className={["action_button"].join(" ")}
+        onClick={handleOnlyStart}
+        loading={isLoading}
+      >
+        {'Start battle'}
       </Button>
       {
         hasPlayerJoined

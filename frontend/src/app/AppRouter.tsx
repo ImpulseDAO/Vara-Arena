@@ -15,7 +15,9 @@ import { UploadStrategy } from "pages/UploadStrategy";
 import { MintCharacter, StartFight, StartScreen } from "pages";
 
 const options: Parameters<typeof createBrowserRouter>[1] = {
-  basename: "/Vara-Arena"
+  // see more https://github.com/rafgraph/spa-github-pages
+  // also this is related to the `homepage` field in package.json
+  basename: "/Vara-Arena",
 };
 
 export const appRouter = createBrowserRouter(

@@ -7,7 +7,7 @@ import {
   useSendMessage,
 } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import arenaMetaWasm from "../../../assets/arena_state.meta.wasm";
+import arenaMetaWasm from "../../../assets/arena.opt.wasm";
 import { MAX_GAS_LIMIT } from "consts";
 
 export const useOnRegisterForBattle = () => {

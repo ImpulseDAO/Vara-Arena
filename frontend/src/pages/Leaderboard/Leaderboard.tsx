@@ -5,7 +5,7 @@ import { TableColumnsType } from "components/Table/types";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
-import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import arenaMetaWasm from "../../assets/arena.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ProgramMetadata } from "@gear-js/api";
 

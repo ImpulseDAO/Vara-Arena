@@ -1,4 +1,4 @@
-import { Title, Box, Grid, Image, Select, Stack, Badge, TitleProps, Text, ScrollArea } from "@mantine/core";
+import { Title, Box, Grid, Image, Select, Stack, Badge, TitleProps, Text, ScrollArea, Flex } from "@mantine/core";
 import ArenaPng from "assets/images/arena.png";
 import { TheButton } from "components/TheButton";
 import { Panel } from "components/Panel";
@@ -23,7 +23,7 @@ export const BattlesList = () => {
       return {
         tier: 'tier' in lobby ? lobby.tier as string : 'UNSET',
         lobbyId: lobby.id,
-        playersSize: "HARDCODED",
+        playersSize: lobby.capacity,
         playersJoined: lobby.characters.length,
         gasNeeded: 0,
         gasReserved: 0
@@ -49,11 +49,13 @@ export const BattlesList = () => {
   const handleCreateLobby = useCreateLobby();
 
   return (
-    <Box >
+    <Flex sx={{
+      flex: 1,
+    }} >
       <Grid m={'lg'} gutter={'md'}
-        mx="auto"
         pb={150}
         style={{
+          flex: 1,
           maxWidth: "min(1300px, 90%)",
         }}
       >
@@ -63,7 +65,7 @@ export const BattlesList = () => {
             bg="black"
           >
             <Stack align="center" h="100%" spacing={0}>
-              <Swords />
+              <SwordsImage />
 
               <TitleText>Create a lobby</TitleText>
 
@@ -139,11 +141,11 @@ export const BattlesList = () => {
           </GridColumn>
         ))}
       </Grid>
-    </Box>
+    </Flex>
   );
 };
 
-const Swords = () => <Image maw={105} src={ArenaPng} mb={14} />;
+const SwordsImage = () => <Image maw={105} src={ArenaPng} mb={14} />;
 const TitleText = ({ children, ...titleProps }: TitleProps) => <Title order={2} c={'white'} {...titleProps} >{children}</Title>;
 
 const GridColumn = ({ children }) => {
@@ -189,7 +191,7 @@ const Card = ({
 
       {/* Centered Content */}
       <Stack align="center" h="100%" spacing={0}>
-        <Swords />
+        <SwordsImage />
 
         <TitleText mb="sm">Tier {tier}</TitleText>
 

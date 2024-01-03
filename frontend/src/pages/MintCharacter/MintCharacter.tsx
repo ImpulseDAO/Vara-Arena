@@ -3,7 +3,7 @@ import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
 import { useUnit } from "effector-react";
 import { ProgramMetadata } from "@gear-js/api";
 import { userStore } from "model/user";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import stateMetaWasm from "../../assets/mint.opt.wasm";
 import { MintCharacterView } from "./components/MintCharacterView";
 import { useWasmMetadata } from "./hooks/useWasmMetadata";
 import { MINT_ID, METADATA } from "./constants";
@@ -83,6 +83,7 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
       increase={increase}
       onChange={onChangeInput}
       onSubmit={onSubmit}
+      onShoolOfMagicChange={(element) => { }}
       onUploadCodeChange={(codeId) => setData({ ...data, codeId })}
       stats={stats}
     />

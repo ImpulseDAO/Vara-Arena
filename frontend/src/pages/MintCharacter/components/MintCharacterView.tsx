@@ -24,6 +24,7 @@ type MintCharacterViewProps = {
   disabled: boolean;
   onSubmit: VoidFunction;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onShoolOfMagicChange: (element: MagicElement) => void;
   onUploadCodeChange: (codeId: string) => void;
   name: string;
   codeId: string;
@@ -38,6 +39,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
     disabled,
     onSubmit,
     onChange,
+    onShoolOfMagicChange,
     onUploadCodeChange,
     name,
     codeId,
@@ -102,7 +104,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                 />
               </Box>
 
-              <SchoolOfMagicChoice onChange={(element) => { }} />
+              <SchoolOfMagicChoice onChange={onShoolOfMagicChange} />
             </div>
           </div>
           <div className={"buttonsGrid"}>

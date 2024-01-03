@@ -7,9 +7,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+
+  padding-inline: 2rem;
 
   .modal_leaderboard {
+    min-width: 500px;
+
     margin-top: 42px;
     overflow-y: scroll;
     &::-webkit-scrollbar {
@@ -17,25 +20,32 @@
     }
   }
 
-  .scroll_container {
-    margin-top: 68px;
-  }
-
   .header {
-    position: absolute;
-    width: 769px;
     height: 68px;
     background: black;
-    border-top: 2px solid white;
-    border-left: 2px solid white;
-    border-right: 2px solid white;
-    border-bottom: 2px solid white;
+
+    border: 2px solid white;
+
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
     color: white;
     display: flex;
     justify-content: center;
     font-size: 18px;
+  }
+
+  .modal_table {
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+    & * {
+      color: white;
+    }
   }
 
   .row_position {

@@ -12,6 +12,7 @@ const lobbiesQueryDocument = graphql(/* GraphQL */ `
   query Lobbies {
     lobbies {
       id
+      capacity
       characters {
         id
         character {
@@ -37,6 +38,7 @@ const lobbyByIdQueryDocument = graphql(/* GraphQL */ `
   query LobbyById($id: String!) {
     lobbyById(id: $id) {
       id
+      capacity
       characters {
         character {
           attributes

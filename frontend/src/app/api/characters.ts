@@ -1,7 +1,11 @@
 import { useAccount } from "@gear-js/react-hooks";
-import { graphql } from "../../gql/gql";
-import { useGraphQL } from "app/providers/ReactQuery/useGraphQL";
+import { graphql } from "gql/gql";
+import {
+  getGraphQLPrimaryKey,
+  useGraphQL,
+} from "app/providers/ReactQuery/useGraphQL";
 import { UseQueryResult } from "@tanstack/react-query";
+import { queryClient } from "app/providers/ReactQuery";
 
 const allCharactersQueryDocument = graphql(/* GraphQL */ `
   query AllCharacters {
@@ -30,6 +34,12 @@ const charactersByOwnerQueryDocument = graphql(/* GraphQL */ `
     }
   }
 `);
+
+export const resetUseMyCharacrersQuery = () => {
+  const primaryKey = getGraphQLPrimaryKey(charactersByOwnerQueryDocument);
+
+  queryClient.invalidateQueries({ queryKey: [primaryKey] });
+};
 
 export const useMyCharacters = ({ owner_eq }: { owner_eq: string }) => {
   return useGraphQL(charactersByOwnerQueryDocument, {

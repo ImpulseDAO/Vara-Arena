@@ -15,7 +15,7 @@ import { isEmpty } from "lodash";
 import { UnsubscribePromise } from "@polkadot/api/types";
 import { battle } from "model/battleLogs";
 import { PlayAndCancelButtons } from "./components/PlayAndCancelButtons";
-import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import arenaMetaWasm from "../../assets/arena.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 
 export type QueueProps = {};

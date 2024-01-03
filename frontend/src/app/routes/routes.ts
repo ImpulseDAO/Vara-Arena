@@ -25,6 +25,6 @@ export const newRoutes = {
   lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",
   myProfile: "/my-profile",
-  battleResultDynamic: "/battle-result/:lobbyId",
+  battleResultDynamic: "/battle-result/:battleId",
   battleResult: (lobbyId: string) => `/battle-result/${lobbyId}`,
 };

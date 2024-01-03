@@ -1,3 +1,12 @@
+switch (true) {
+  case process.env.REACT_APP_IS_TESTNET == null:
+    throw new Error("REACT_APP_IS_TESTNET env variable is not set");
+  case process.env.REACT_APP_NODE_ADDRESS == null:
+    throw new Error("REACT_APP_NODE_ADDRESS env variable is not set");
+  default:
+    break;
+}
+
 const ADDRESS = {
   NODE: process.env.REACT_APP_NODE_ADDRESS as string,
 };
@@ -6,12 +15,18 @@ const LOCAL_STORAGE = {
   ACCOUNT: "account",
 };
 
+export const IS_TESTNET = process.env.REACT_APP_IS_TESTNET;
+console.log("IS_TESTNET", IS_TESTNET);
+
 /**
  *
  */
 
-export const MAX_GAS_LIMIT = 750000000000;
+export const MAX_GAS_LIMIT = 750_000_000_000;
 export const LIFES_INITIAL_QUANTITY = 5;
+export const PAYMENT_FOR_MINTING = IS_TESTNET
+  ? 10_000_000_000_000
+  : 100_000_000_000_000;
 
 export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
   2: 300,
@@ -22,7 +37,7 @@ export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
   7: 48600,
   8: 145800,
   9: 437400,
-  10: 1312200,
+  10: 1_312_200,
 };
 
 /**

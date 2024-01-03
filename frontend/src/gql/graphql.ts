@@ -18,6 +18,133 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type BattleLog = {
+  __typename?: 'BattleLog';
+  battleIndex: Scalars['Int']['output'];
+  character1: CharacterState;
+  character2: CharacterState;
+  id: Scalars['String']['output'];
+  lobby: Lobby;
+  turns: Array<BattleTurn>;
+};
+
+export type BattleLogEdge = {
+  __typename?: 'BattleLogEdge';
+  cursor: Scalars['String']['output'];
+  node: BattleLog;
+};
+
+export enum BattleLogOrderByInput {
+  BattleIndexAsc = 'battleIndex_ASC',
+  BattleIndexAscNullsFirst = 'battleIndex_ASC_NULLS_FIRST',
+  BattleIndexDesc = 'battleIndex_DESC',
+  BattleIndexDescNullsLast = 'battleIndex_DESC_NULLS_LAST',
+  Character1CharacterAsc = 'character1_character_ASC',
+  Character1CharacterAscNullsFirst = 'character1_character_ASC_NULLS_FIRST',
+  Character1CharacterDesc = 'character1_character_DESC',
+  Character1CharacterDescNullsLast = 'character1_character_DESC_NULLS_LAST',
+  Character1ExperienceAsc = 'character1_experience_ASC',
+  Character1ExperienceAscNullsFirst = 'character1_experience_ASC_NULLS_FIRST',
+  Character1ExperienceDesc = 'character1_experience_DESC',
+  Character1ExperienceDescNullsLast = 'character1_experience_DESC_NULLS_LAST',
+  Character1LevelAsc = 'character1_level_ASC',
+  Character1LevelAscNullsFirst = 'character1_level_ASC_NULLS_FIRST',
+  Character1LevelDesc = 'character1_level_DESC',
+  Character1LevelDescNullsLast = 'character1_level_DESC_NULLS_LAST',
+  Character1RatingAsc = 'character1_rating_ASC',
+  Character1RatingAscNullsFirst = 'character1_rating_ASC_NULLS_FIRST',
+  Character1RatingDesc = 'character1_rating_DESC',
+  Character1RatingDescNullsLast = 'character1_rating_DESC_NULLS_LAST',
+  Character1WinnerAsc = 'character1_winner_ASC',
+  Character1WinnerAscNullsFirst = 'character1_winner_ASC_NULLS_FIRST',
+  Character1WinnerDesc = 'character1_winner_DESC',
+  Character1WinnerDescNullsLast = 'character1_winner_DESC_NULLS_LAST',
+  Character2CharacterAsc = 'character2_character_ASC',
+  Character2CharacterAscNullsFirst = 'character2_character_ASC_NULLS_FIRST',
+  Character2CharacterDesc = 'character2_character_DESC',
+  Character2CharacterDescNullsLast = 'character2_character_DESC_NULLS_LAST',
+  Character2ExperienceAsc = 'character2_experience_ASC',
+  Character2ExperienceAscNullsFirst = 'character2_experience_ASC_NULLS_FIRST',
+  Character2ExperienceDesc = 'character2_experience_DESC',
+  Character2ExperienceDescNullsLast = 'character2_experience_DESC_NULLS_LAST',
+  Character2LevelAsc = 'character2_level_ASC',
+  Character2LevelAscNullsFirst = 'character2_level_ASC_NULLS_FIRST',
+  Character2LevelDesc = 'character2_level_DESC',
+  Character2LevelDescNullsLast = 'character2_level_DESC_NULLS_LAST',
+  Character2RatingAsc = 'character2_rating_ASC',
+  Character2RatingAscNullsFirst = 'character2_rating_ASC_NULLS_FIRST',
+  Character2RatingDesc = 'character2_rating_DESC',
+  Character2RatingDescNullsLast = 'character2_rating_DESC_NULLS_LAST',
+  Character2WinnerAsc = 'character2_winner_ASC',
+  Character2WinnerAscNullsFirst = 'character2_winner_ASC_NULLS_FIRST',
+  Character2WinnerDesc = 'character2_winner_DESC',
+  Character2WinnerDescNullsLast = 'character2_winner_DESC_NULLS_LAST',
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  LobbyCapacityAsc = 'lobby_capacity_ASC',
+  LobbyCapacityAscNullsFirst = 'lobby_capacity_ASC_NULLS_FIRST',
+  LobbyCapacityDesc = 'lobby_capacity_DESC',
+  LobbyCapacityDescNullsLast = 'lobby_capacity_DESC_NULLS_LAST',
+  LobbyIdAsc = 'lobby_id_ASC',
+  LobbyIdAscNullsFirst = 'lobby_id_ASC_NULLS_FIRST',
+  LobbyIdDesc = 'lobby_id_DESC',
+  LobbyIdDescNullsLast = 'lobby_id_DESC_NULLS_LAST'
+}
+
+export type BattleLogWhereInput = {
+  AND?: InputMaybe<Array<BattleLogWhereInput>>;
+  OR?: InputMaybe<Array<BattleLogWhereInput>>;
+  battleIndex_eq?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_gt?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_gte?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  battleIndex_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  battleIndex_lt?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_lte?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  battleIndex_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  character1?: InputMaybe<CharacterStateWhereInput>;
+  character1_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  character2?: InputMaybe<CharacterStateWhereInput>;
+  character2_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  lobby?: InputMaybe<LobbyWhereInput>;
+  lobby_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  turns_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type BattleLogsConnection = {
+  __typename?: 'BattleLogsConnection';
+  edges: Array<BattleLogEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type BattleTurn = {
+  __typename?: 'BattleTurn';
+  character1?: Maybe<CharacterTurnState>;
+  character2?: Maybe<CharacterTurnState>;
+  logs: Array<TurnLog>;
+};
+
 export type Character = {
   __typename?: 'Character';
   attributes: Scalars['JSON']['output'];
@@ -56,6 +183,78 @@ export enum CharacterOrderByInput {
   OwnerDesc = 'owner_DESC',
   OwnerDescNullsLast = 'owner_DESC_NULLS_LAST'
 }
+
+export type CharacterState = {
+  __typename?: 'CharacterState';
+  attributes: Scalars['JSON']['output'];
+  character: Scalars['String']['output'];
+  experience: Scalars['Int']['output'];
+  level: Scalars['Int']['output'];
+  rating: Scalars['Int']['output'];
+  winner: Scalars['Boolean']['output'];
+};
+
+export type CharacterStateWhereInput = {
+  attributes_eq?: InputMaybe<Scalars['JSON']['input']>;
+  attributes_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  attributes_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  attributes_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  attributes_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  character_contains?: InputMaybe<Scalars['String']['input']>;
+  character_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  character_endsWith?: InputMaybe<Scalars['String']['input']>;
+  character_eq?: InputMaybe<Scalars['String']['input']>;
+  character_gt?: InputMaybe<Scalars['String']['input']>;
+  character_gte?: InputMaybe<Scalars['String']['input']>;
+  character_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  character_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  character_lt?: InputMaybe<Scalars['String']['input']>;
+  character_lte?: InputMaybe<Scalars['String']['input']>;
+  character_not_contains?: InputMaybe<Scalars['String']['input']>;
+  character_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  character_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  character_not_eq?: InputMaybe<Scalars['String']['input']>;
+  character_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  character_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  character_startsWith?: InputMaybe<Scalars['String']['input']>;
+  experience_eq?: InputMaybe<Scalars['Int']['input']>;
+  experience_gt?: InputMaybe<Scalars['Int']['input']>;
+  experience_gte?: InputMaybe<Scalars['Int']['input']>;
+  experience_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  experience_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  experience_lt?: InputMaybe<Scalars['Int']['input']>;
+  experience_lte?: InputMaybe<Scalars['Int']['input']>;
+  experience_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  experience_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  level_eq?: InputMaybe<Scalars['Int']['input']>;
+  level_gt?: InputMaybe<Scalars['Int']['input']>;
+  level_gte?: InputMaybe<Scalars['Int']['input']>;
+  level_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  level_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  level_lt?: InputMaybe<Scalars['Int']['input']>;
+  level_lte?: InputMaybe<Scalars['Int']['input']>;
+  level_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  level_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  rating_eq?: InputMaybe<Scalars['Int']['input']>;
+  rating_gt?: InputMaybe<Scalars['Int']['input']>;
+  rating_gte?: InputMaybe<Scalars['Int']['input']>;
+  rating_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  rating_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  rating_lt?: InputMaybe<Scalars['Int']['input']>;
+  rating_lte?: InputMaybe<Scalars['Int']['input']>;
+  rating_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  rating_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  winner_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  winner_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  winner_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type CharacterTurnState = {
+  __typename?: 'CharacterTurnState';
+  energy: Scalars['Int']['output'];
+  hp: Scalars['Int']['output'];
+  position: Scalars['Int']['output'];
+};
 
 export type CharacterWhereInput = {
   AND?: InputMaybe<Array<CharacterWhereInput>>;
@@ -152,8 +351,18 @@ export type LobbiesConnection = {
 
 export type Lobby = {
   __typename?: 'Lobby';
+  battleLogs: Array<BattleLog>;
+  capacity: Scalars['Int']['output'];
   characters: Array<LobbyCharacter>;
   id: Scalars['String']['output'];
+};
+
+
+export type LobbyBattleLogsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BattleLogOrderByInput>>;
+  where?: InputMaybe<BattleLogWhereInput>;
 };
 
 
@@ -202,6 +411,10 @@ export enum LobbyCharacterOrderByInput {
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
   IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  LobbyCapacityAsc = 'lobby_capacity_ASC',
+  LobbyCapacityAscNullsFirst = 'lobby_capacity_ASC_NULLS_FIRST',
+  LobbyCapacityDesc = 'lobby_capacity_DESC',
+  LobbyCapacityDescNullsLast = 'lobby_capacity_DESC_NULLS_LAST',
   LobbyIdAsc = 'lobby_id_ASC',
   LobbyIdAscNullsFirst = 'lobby_id_ASC_NULLS_FIRST',
   LobbyIdDesc = 'lobby_id_DESC',
@@ -248,6 +461,10 @@ export type LobbyEdge = {
 };
 
 export enum LobbyOrderByInput {
+  CapacityAsc = 'capacity_ASC',
+  CapacityAscNullsFirst = 'capacity_ASC_NULLS_FIRST',
+  CapacityDesc = 'capacity_DESC',
+  CapacityDescNullsLast = 'capacity_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -257,6 +474,18 @@ export enum LobbyOrderByInput {
 export type LobbyWhereInput = {
   AND?: InputMaybe<Array<LobbyWhereInput>>;
   OR?: InputMaybe<Array<LobbyWhereInput>>;
+  battleLogs_every?: InputMaybe<BattleLogWhereInput>;
+  battleLogs_none?: InputMaybe<BattleLogWhereInput>;
+  battleLogs_some?: InputMaybe<BattleLogWhereInput>;
+  capacity_eq?: InputMaybe<Scalars['Int']['input']>;
+  capacity_gt?: InputMaybe<Scalars['Int']['input']>;
+  capacity_gte?: InputMaybe<Scalars['Int']['input']>;
+  capacity_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  capacity_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  capacity_lt?: InputMaybe<Scalars['Int']['input']>;
+  capacity_lte?: InputMaybe<Scalars['Int']['input']>;
+  capacity_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  capacity_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   characters_every?: InputMaybe<LobbyCharacterWhereInput>;
   characters_none?: InputMaybe<LobbyCharacterWhereInput>;
   characters_some?: InputMaybe<LobbyCharacterWhereInput>;
@@ -289,6 +518,11 @@ export type PageInfo = {
 
 export type Query = {
   __typename?: 'Query';
+  battleLogById?: Maybe<BattleLog>;
+  /** @deprecated Use battleLogById */
+  battleLogByUniqueInput?: Maybe<BattleLog>;
+  battleLogs: Array<BattleLog>;
+  battleLogsConnection: BattleLogsConnection;
   characterById?: Maybe<Character>;
   /** @deprecated Use characterById */
   characterByUniqueInput?: Maybe<Character>;
@@ -305,6 +539,32 @@ export type Query = {
   lobbyCharacters: Array<LobbyCharacter>;
   lobbyCharactersConnection: LobbyCharactersConnection;
   squidStatus?: Maybe<SquidStatus>;
+};
+
+
+export type QueryBattleLogByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryBattleLogByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryBattleLogsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<BattleLogOrderByInput>>;
+  where?: InputMaybe<BattleLogWhereInput>;
+};
+
+
+export type QueryBattleLogsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<BattleLogOrderByInput>;
+  where?: InputMaybe<BattleLogWhereInput>;
 };
 
 
@@ -391,9 +651,27 @@ export type SquidStatus = {
   height?: Maybe<Scalars['Int']['output']>;
 };
 
+export type TurnLog = {
+  __typename?: 'TurnLog';
+  action: Scalars['JSON']['output'];
+  character: Scalars['String']['output'];
+};
+
 export type WhereIdInput = {
   id: Scalars['String']['input'];
 };
+
+export type BattleLogsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BattleLogsQuery = { __typename?: 'Query', battleLogs: Array<{ __typename?: 'BattleLog', id: string, battleIndex: number, character1: { __typename?: 'CharacterState', attributes: any, character: string, experience: number, rating: number, level: number }, character2: { __typename?: 'CharacterState', attributes: any, experience: number, character: string, level: number, rating: number }, lobby: { __typename?: 'Lobby', id: string, capacity: number, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', owner: string, name: string, level: number, experience: number, attributes: any, id: string } }> }, turns: Array<{ __typename?: 'BattleTurn', character1?: { __typename?: 'CharacterTurnState', energy: number, hp: number, position: number } | null, logs: Array<{ __typename?: 'TurnLog', action: any, character: string }>, character2?: { __typename?: 'CharacterTurnState', energy: number, position: number, hp: number } | null }> }> };
+
+export type BattleLogByIdQueryVariables = Exact<{
+  battleId: Scalars['String']['input'];
+}>;
+
+
+export type BattleLogByIdQuery = { __typename?: 'Query', battleLogById?: { __typename?: 'BattleLog', id: string, battleIndex: number, character1: { __typename?: 'CharacterState', attributes: any, character: string, experience: number, rating: number, level: number }, character2: { __typename?: 'CharacterState', attributes: any, experience: number, character: string, level: number, rating: number }, lobby: { __typename?: 'Lobby', id: string, capacity: number, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', owner: string, name: string, level: number, experience: number, attributes: any, id: string } }> }, turns: Array<{ __typename?: 'BattleTurn', character1?: { __typename?: 'CharacterTurnState', energy: number, hp: number, position: number } | null, logs: Array<{ __typename?: 'TurnLog', action: any, character: string }>, character2?: { __typename?: 'CharacterTurnState', energy: number, position: number, hp: number } | null }> } | null };
 
 export type AllCharactersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -417,18 +695,20 @@ export type CharacterByIdQuery = { __typename?: 'Query', characterById?: { __typ
 export type LobbiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LobbiesQuery = { __typename?: 'Query', lobbies: Array<{ __typename?: 'Lobby', id: string, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', name: string, owner: string, level: number, id: string, experience: number, attributes: any } }> }> };
+export type LobbiesQuery = { __typename?: 'Query', lobbies: Array<{ __typename?: 'Lobby', id: string, capacity: number, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', name: string, owner: string, level: number, id: string, experience: number, attributes: any } }> }> };
 
 export type LobbyByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type LobbyByIdQuery = { __typename?: 'Query', lobbyById?: { __typename?: 'Lobby', id: string, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', attributes: any, experience: number, id: string, level: number, name: string, owner: string } }> } | null };
+export type LobbyByIdQuery = { __typename?: 'Query', lobbyById?: { __typename?: 'Lobby', id: string, capacity: number, characters: Array<{ __typename?: 'LobbyCharacter', id: string, character: { __typename?: 'Character', attributes: any, experience: number, id: string, level: number, name: string, owner: string } }> } | null };
 
 
+export const BattleLogsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BattleLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"battleLogs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"battleIndex"}},{"kind":"Field","name":{"kind":"Name","value":"character1"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"character"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"Field","name":{"kind":"Name","value":"character2"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"character"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}}]}},{"kind":"Field","name":{"kind":"Name","value":"lobby"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"capacity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"turns"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"character1"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"energy"}},{"kind":"Field","name":{"kind":"Name","value":"hp"}},{"kind":"Field","name":{"kind":"Name","value":"position"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"action"}},{"kind":"Field","name":{"kind":"Name","value":"character"}}]}},{"kind":"Field","name":{"kind":"Name","value":"character2"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"energy"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"hp"}}]}}]}}]}}]}}]} as unknown as DocumentNode<BattleLogsQuery, BattleLogsQueryVariables>;
+export const BattleLogByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BattleLogById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"battleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"battleLogById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"battleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"battleIndex"}},{"kind":"Field","name":{"kind":"Name","value":"character1"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"character"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}},{"kind":"Field","name":{"kind":"Name","value":"level"}}]}},{"kind":"Field","name":{"kind":"Name","value":"character2"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"character"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"rating"}}]}},{"kind":"Field","name":{"kind":"Name","value":"lobby"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"capacity"}}]}},{"kind":"Field","name":{"kind":"Name","value":"turns"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"character1"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"energy"}},{"kind":"Field","name":{"kind":"Name","value":"hp"}},{"kind":"Field","name":{"kind":"Name","value":"position"}}]}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"action"}},{"kind":"Field","name":{"kind":"Name","value":"character"}}]}},{"kind":"Field","name":{"kind":"Name","value":"character2"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"energy"}},{"kind":"Field","name":{"kind":"Name","value":"position"}},{"kind":"Field","name":{"kind":"Name","value":"hp"}}]}}]}}]}}]}}]} as unknown as DocumentNode<BattleLogByIdQuery, BattleLogByIdQueryVariables>;
 export const AllCharactersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllCharacters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]} as unknown as DocumentNode<AllCharactersQuery, AllCharactersQueryVariables>;
 export const CharactersByOwnerDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CharactersByOwner"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"owner_eq"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characters"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"owner_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"owner_eq"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]} as unknown as DocumentNode<CharactersByOwnerQuery, CharactersByOwnerQueryVariables>;
 export const CharacterByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CharacterById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"character_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"characterById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"character_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}}]}}]}}]} as unknown as DocumentNode<CharacterByIdQuery, CharacterByIdQueryVariables>;
-export const LobbiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Lobbies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lobbies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]}}]} as unknown as DocumentNode<LobbiesQuery, LobbiesQueryVariables>;
-export const LobbyByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LobbyById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lobbyById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<LobbyByIdQuery, LobbyByIdQueryVariables>;
+export const LobbiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Lobbies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lobbies"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"capacity"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"attributes"}}]}}]}}]}}]}}]} as unknown as DocumentNode<LobbiesQuery, LobbiesQueryVariables>;
+export const LobbyByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LobbyById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lobbyById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"capacity"}},{"kind":"Field","name":{"kind":"Name","value":"characters"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"character"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"attributes"}},{"kind":"Field","name":{"kind":"Name","value":"experience"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"level"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"owner"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<LobbyByIdQuery, LobbyByIdQueryVariables>;

@@ -1,6 +1,6 @@
 import "../styles.scss";
 
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAlert, useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
@@ -25,7 +25,9 @@ export const ButtonJoinReservePlay = ({
   hasPlayerJoined,
   lobbyId,
   players,
+  playersNeeded,
   refreshState,
+  onGasReserved,
 }: {
   hasPlayerJoined: boolean;
   lobbyId?: string;
@@ -33,7 +35,9 @@ export const ButtonJoinReservePlay = ({
     id: string;
     // a lot of fields omitted
   }>;
+  playersNeeded: number;
   refreshState: () => void;
+  onGasReserved?: (times: number) => void;
 }) => {
   const alert = useAlert();
   const navigate = useNavigate();
@@ -42,10 +46,14 @@ export const ButtonJoinReservePlay = ({
 
   const isUserHasPermissionToCancel = false;
 
-  const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
+  const {
+    gasReservedTimes,
+    handleGasReserved,
+  } = useGasReserved({ onGasReserved });
+
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const isDoubleReservationNeeded = players ? players?.length > 2 : true;
+  const isDoubleReservationNeeded = playersNeeded > 2;
 
   const btnText = (() => {
     if (!hasPlayerJoined) return JOIN_BUTTON_TEXT;
@@ -58,7 +66,7 @@ export const ButtonJoinReservePlay = ({
     if (gasReservedTimes === 2) return PLAY_BUTTON_TEXT;
   })();
 
-  const isPlayDisabled = false;
+  const isPlayDisabled = hasPlayerJoined && playersNeeded > players.length;
 
   const reserveGas = React.useCallback(() => {
     return new Promise((resolve) => {
@@ -68,19 +76,21 @@ export const ButtonJoinReservePlay = ({
         onSuccess: () => {
           console.log("successfully reserved gas");
           resolve("successfully reserved gas");
-          setGasReservedTimes((t) => t + 1);
+          handleGasReserved();
         },
         onError: () => console.log("error while reserving gas"),
       });
     });
-  }, [send]);
+  }, [send, handleGasReserved]);
 
   const startBattle = React.useCallback(() => {
     return new Promise((resolve) => {
       send(
         {
           payload: {
-            Play: null,
+            Play: {
+              lobby_id: lobbyId
+            },
           },
           gasLimit: MAX_GAS_LIMIT,
           onSuccess: () => {
@@ -92,7 +102,7 @@ export const ButtonJoinReservePlay = ({
         }
       );
     });
-  }, [send]);
+  }, [send, lobbyId]);
 
   const registerForBattle = useOnRegisterForBattle();
 
@@ -173,4 +183,25 @@ export const ButtonJoinReservePlay = ({
       ) : null}
     </>
   );
+};
+
+const useGasReserved = ({
+  onGasReserved,
+}: {
+  onGasReserved?: (times: number) => void;
+}) => {
+  const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
+  const onGasReservedRef = React.useRef(onGasReserved);
+  onGasReservedRef.current = onGasReserved;
+  const handleGasReserved = useCallback(() => {
+    setGasReservedTimes((t) => {
+      onGasReserved?.(t + 1);
+      return t + 1;
+    });
+  }, [onGasReserved]);
+
+  return {
+    gasReservedTimes,
+    handleGasReserved,
+  };
 };

@@ -15,12 +15,6 @@ export const StatBar: FC<StatBarProps> = ({ lives, health, healthMax, energy, en
   const healthPercent = healthMax ? (health ?? 0) / healthMax * 100 : 100;
   const energyPercent = energyMax ? (energy ?? 0) / energyMax * 100 : 100;
 
-  console.log({
-    health,
-    healthMax,
-    healthPercent
-  });
-
   let livesIndicators: React.ReactNode[] = [];
 
   if (lives != null) {

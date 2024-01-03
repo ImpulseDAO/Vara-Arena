@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 //
 import "./styles.scss";
 //
@@ -21,10 +21,16 @@ import { CharStats } from "pages/@shared/CharStats/CharStats";
 import { StrategyInput } from "components/StrategyInput";
 import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
 import { SchoolOfMagic } from "components/SchoolOfMagic";
+import { NoCharacterWidget } from "pages/@shared/NoCharacterWidget";
 
 
 export const MyProfile = () => {
   const { data: myCharacter } = useMyCharacter();
+
+  if (!myCharacter) {
+    return <NoCharacterWidget />;
+  }
+
   return <Profile character={myCharacter} />;
 };
 

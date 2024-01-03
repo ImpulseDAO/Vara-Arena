@@ -4,10 +4,10 @@ import { useOnRegisterForBattle } from "./hooks/useOnSubmit";
 import { StartFightView } from "./components/StartFightView";
 import { useAccount, useAlert, useReadWasmState } from "@gear-js/react-hooks";
 import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import stateMetaWasm from "../../assets/mint.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ARENA_ID, ARENA_METADATA } from "./constants";
-import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import arenaMetaWasm from "../../assets/arena.opt.wasm";
 import { useParams } from "react-router-dom";
 import { useMyCharacter } from "app/api/characters";
 

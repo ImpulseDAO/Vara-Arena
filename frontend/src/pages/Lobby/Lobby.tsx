@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import "./styles.scss";
 import ProgressIcon from "../../assets/svg/progress.svg";
 
@@ -12,6 +12,7 @@ import { PlayersTable } from "./components/PlayersTable";
 
 export const Lobby = () => {
   const myId = useMyAccountId();
+  const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
 
   const { lobbyId } = useParams<{ lobbyId: string; }>();
 
@@ -49,10 +50,9 @@ export const Lobby = () => {
   }, [myId, players]);
 
   const playersJoined = characters.length,
-    playersSize = 4; // FIXME
+    playersSize = lobbyData?.lobbyById?.capacity;
 
-  const gasNeeded = 2, // FIXME
-    gasReserved = 1; // FIXME
+  const gasNeeded = 2; // FIXME
 
   return (
     <div className="content_wrapper">
@@ -76,7 +76,7 @@ export const Lobby = () => {
             mb="xs"
             {...{
               gasNeeded,
-              gasReserved
+              gasReserved: gasReservedTimes
             }} />
         </div>
 
@@ -86,13 +86,21 @@ export const Lobby = () => {
 
         {
           players != null
-            ? <ButtonJoinReservePlay {...{
-              hasPlayerJoined, players, lobbyId,
-              refreshState: () => {
-                console.log('refreshState');
-                refetchLobbyQuery();
-              }
-            }} />
+            ? (
+              <ButtonJoinReservePlay
+                {...{
+                  hasPlayerJoined,
+                  players,
+                  playersNeeded: playersSize ?? 0,
+                  lobbyId,
+                  refreshState: () => {
+                    console.log('refreshState');
+                    refetchLobbyQuery();
+                  },
+                  onGasReserved: (times: number) => setGasReservedTimes(times)
+                }}
+              />
+            )
             : null
         }
 

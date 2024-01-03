@@ -9,7 +9,11 @@ export const SchoolOfMagicChoice = ({
 }: {
   onChange: (element: MagicElement) => void;
 }) => {
-  const [elementChecked, setElementChecked] = useState<MagicElement | undefined>();
+  const [elementChecked, setElementCheckedRaw] = useState<MagicElement | undefined>();
+  const setElementChecked = (element: MagicElement) => {
+    setElementCheckedRaw(element);
+    onChange(element);
+  };
 
   return (
     <Stack spacing={'sm'}>

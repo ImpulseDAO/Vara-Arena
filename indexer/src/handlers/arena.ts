@@ -15,7 +15,14 @@ export async function handleArenaMessage(
     lobbiesCharacter: Map<string, LobbyCharacter>,
     battleLogs: Map<string, BattleLog>,
 ) {
-    let data = arenaMeta.createType(assertNotNull(arenaMeta.types.handle.output), message.payload).toJSON() as any
+    let data
+    try {
+        data = arenaMeta.createType(assertNotNull(arenaMeta.types.handle.output), message.payload).toJSON() as any
+    } catch (e) {
+        console.log('error happened during message decoding')
+        return
+    }
+
     if (data.lobbyCreated) {
         let lobby = new Lobby({
             id: String(data.lobbyCreated.lobbyId),

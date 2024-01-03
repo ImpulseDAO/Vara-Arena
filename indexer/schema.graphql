@@ -41,6 +41,7 @@ type CharacterState {
   level: Int!
   experience: Int!
   rating: Int!
+  winner: Boolean!
 }
 
 type CharacterTurnState {

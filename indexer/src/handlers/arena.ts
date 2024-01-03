@@ -178,6 +178,7 @@ export async function handleArenaMessage(
                     experience: character1.experience,
                     level: character1.level,
                     rating: 0,
+                    winner: log.character1[1],
                 }),
                 character2: new CharacterState({
                     character: character2.id,
@@ -185,11 +186,14 @@ export async function handleArenaMessage(
                     experience: character2.experience,
                     level: character2.level,
                     rating: 0,
+                    winner: log.character2[1],
                 }),
                 turns,
             })
             battleLogs.set(battleLog.id, battleLog)
         }
+    } else if (data.gasReserved) {
+        // TODO: attach reservation to its lobby?
     } else {
         throw new Error('event is not supported')
     }

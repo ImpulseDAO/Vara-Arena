@@ -7,6 +7,7 @@ export class CharacterState {
     private _level!: number
     private _experience!: number
     private _rating!: number
+    private _winner!: boolean
 
     constructor(props?: Partial<Omit<CharacterState, 'toJSON'>>, json?: any) {
         Object.assign(this, props)
@@ -16,6 +17,7 @@ export class CharacterState {
             this._level = marshal.int.fromJSON(json.level)
             this._experience = marshal.int.fromJSON(json.experience)
             this._rating = marshal.int.fromJSON(json.rating)
+            this._winner = marshal.boolean.fromJSON(json.winner)
         }
     }
 
@@ -64,6 +66,15 @@ export class CharacterState {
         this._rating = value
     }
 
+    get winner(): boolean {
+        assert(this._winner != null, 'uninitialized access')
+        return this._winner
+    }
+
+    set winner(value: boolean) {
+        this._winner = value
+    }
+
     toJSON(): object {
         return {
             character: this.character,
@@ -71,6 +82,7 @@ export class CharacterState {
             level: this.level,
             experience: this.experience,
             rating: this.rating,
+            winner: this.winner,
         }
     }
 }

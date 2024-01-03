@@ -38,16 +38,16 @@ export const BattleResult = () => {
   const [currentTurnIndex, setCurrentTurnIndexRaw] = useState(0);
   const { turns } = battleLog ?? {};
   const currentTurn = turns?.[currentTurnIndex];
-  const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex + 1 < (turns?.length ?? 0)];
+  const lastTurnIndex = (turns?.length ?? 0) - 1;
+  const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex < lastTurnIndex];
 
   const setCurrentTurnIndex = useCallback((newStateOfFunction: number | ((prev: number) => number)) => {
 
     return setCurrentTurnIndexRaw(
       prevState => {
         let newIdx = typeof newStateOfFunction === 'function' ? newStateOfFunction(prevState) : newStateOfFunction;
-        const turnsTotal = turns?.length ?? 0;
 
-        if (newIdx % 7 !== 0 && (newIdx !== turnsTotal - 1 || newIdx !== 0)) {
+        if (newIdx % 7 !== 0 && (newIdx !== lastTurnIndex || newIdx !== 0)) {
           // do nothing
         }
         else if (newIdx >= 0 && itemRefs.current?.[newIdx]) {
@@ -56,7 +56,7 @@ export const BattleResult = () => {
 
           const idxToScrollTo = weAreScrollingBack
             ? Math.max(newIdx - 10, 0)
-            : Math.min(newIdx + 10, turnsTotal - 1);
+            : Math.min(newIdx + 10, lastTurnIndex);
 
 
           itemRefs.current[idxToScrollTo]?.scrollIntoView({
@@ -68,7 +68,7 @@ export const BattleResult = () => {
         return newIdx;
       }
     );
-  }, [turns?.length]);
+  }, [lastTurnIndex]);
 
   /**
    * Playback
@@ -79,7 +79,7 @@ export const BattleResult = () => {
     if (isPlaying) {
       const interval = setInterval(() => {
         setCurrentTurnIndex((prev) => {
-          if (prev + 1 < (turns?.length ?? 0)) {
+          if (prev < lastTurnIndex) {
             return prev + 1;
           } else {
             setIsPlaying(false);
@@ -90,7 +90,7 @@ export const BattleResult = () => {
       return () => clearInterval(interval);
     }
 
-  }, [isPlaying, turns?.length]);
+  }, [isPlaying, lastTurnIndex, setCurrentTurnIndex]);
 
 
 
@@ -128,6 +128,13 @@ export const BattleResult = () => {
             background: "#000"
           }}
           onClick={() => {
+            if (currentTurnIndex === lastTurnIndex) {
+              setCurrentTurnIndex(0);
+              itemRefs.current?.[0].scrollIntoView({
+                behavior: 'auto',
+                block: 'nearest'
+              });
+            }
             setIsPlaying(!isPlaying);
           }}
         >

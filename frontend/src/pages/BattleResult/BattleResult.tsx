@@ -4,7 +4,7 @@ import { CharInfo } from "pages/@shared/CharInfo";
 
 import { Panel } from 'components/Panel';
 import { StatBar } from "pages/@shared/StatBar";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getShortIdString, getXpNeededForLvlUp } from "utils";
 import { CharStats } from "pages/@shared/CharStats/CharStats";
 import { getFullEnergy, getFullHp } from "consts";
@@ -18,6 +18,8 @@ export const BattleResult = () => {
   const { battleId } = useParams<{ battleId: string; }>();
   const { data: battleLog } = useBattleLogById({ battleId });
 
+
+
   /**
    * Characters
    */
@@ -25,12 +27,48 @@ export const BattleResult = () => {
   const char2 = battleLog?.lobby.characters[1].character;
 
   /**
+  * List items refs
+  */
+
+  const itemRefs = useRef<HTMLElement[]>([]);
+
+  /**
    * Turns
    */
-  const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
+  const [currentTurnIndex, setCurrentTurnIndexRaw] = useState(0);
   const { turns } = battleLog ?? {};
   const currentTurn = turns?.[currentTurnIndex];
   const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex + 1 < (turns?.length ?? 0)];
+
+  const setCurrentTurnIndex = useCallback((newStateOfFunction: number | ((prev: number) => number)) => {
+
+    return setCurrentTurnIndexRaw(
+      prevState => {
+        let newIdx = typeof newStateOfFunction === 'function' ? newStateOfFunction(prevState) : newStateOfFunction;
+        const turnsTotal = turns?.length ?? 0;
+
+        if (newIdx % 7 !== 0 && (newIdx !== turnsTotal - 1 || newIdx !== 0)) {
+          // do nothing
+        }
+        else if (newIdx >= 0 && itemRefs.current?.[newIdx]) {
+          const weAreScrollingBack = newIdx < prevState;
+          // scroll only to every 3rd or to the last
+
+          const idxToScrollTo = weAreScrollingBack
+            ? Math.max(newIdx - 10, 0)
+            : Math.min(newIdx + 10, turnsTotal - 1);
+
+
+          itemRefs.current[idxToScrollTo]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest'
+          });
+        }
+
+        return newIdx;
+      }
+    );
+  }, [turns?.length]);
 
   /**
    * Playback
@@ -53,6 +91,12 @@ export const BattleResult = () => {
     }
 
   }, [isPlaying, turns?.length]);
+
+
+
+  /**
+   * 
+   */
 
   const names = [0, 1].map(idx => battleLog?.lobby.characters[idx].character.name ?? (idx === 0 ? 'first' : 'second'));
   const logVisualized = visualizeBattleLog(turns ?? [], names);
@@ -137,13 +181,20 @@ export const BattleResult = () => {
           >
             {logVisualized.map((text, i) => {
               if (i === 0) {
-                return null;
+                return <div ref={(ref) => {
+                  itemRefs.current[i] = ref as HTMLElement;
+                }}>
+
+                </div>;
               }
 
               const isInactive = currentTurnIndex < i;
 
               return (
                 <Box
+                  ref={(ref) => {
+                    itemRefs.current[i] = ref as HTMLElement;
+                  }}
                   onClick={() => setCurrentTurnIndex(i)}
                   component="li"
                   key={i}
@@ -152,9 +203,8 @@ export const BattleResult = () => {
                       backgroundColor: 'rgba(255, 255, 255, 0.2)'
                     },
                     cursor: 'pointer',
-                    backgroundColor: i % 2 === 0 ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)',
                   }}>
-                  <Box component="span" {...isInactive ? { sx: theme => ({ color: 'rgba(255, 255, 255, 0.3)' }) } : {}}>
+                  <Box component="span" {...isInactive ? { sx: theme => ({ opacity: '0.4' }) } : {}}>
                     {text.map((line, i) => <p key={i}>{line}</p>)}
                   </Box>
                 </Box>

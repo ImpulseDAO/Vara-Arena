@@ -14,6 +14,10 @@ import { BattlesList } from "pages/BattlesList";
 import { UploadStrategy } from "pages/UploadStrategy";
 import { MintCharacter, StartFight, StartScreen } from "pages";
 
+const options: Parameters<typeof createBrowserRouter>[1] = {
+  basename: "/Vara-Arena"
+};
+
 export const appRouter = createBrowserRouter(
   [
     { element: <StartScreen />, path: routes.startScreen },
@@ -42,5 +46,6 @@ export const appRouter = createBrowserRouter(
   ].map(({ element, path, auth }) => ({
     element: auth ? <AuthorizedLayer>{element}</AuthorizedLayer> : element,
     path,
-  }))
+  })),
+  options
 );

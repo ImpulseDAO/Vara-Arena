@@ -2,7 +2,7 @@
   "name": "dapp",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://impulsedao.github.io/AArena",
+  "homepage": "https://impulsedao.github.io/Vara-Arena",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",

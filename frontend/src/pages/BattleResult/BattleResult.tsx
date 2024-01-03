@@ -30,6 +30,7 @@ export const BattleResult = () => {
   const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const { turns } = battleLog ?? {};
   const currentTurn = turns?.[currentTurnIndex];
+  const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex + 1 < (turns?.length ?? 0)];
 
   /**
    * Playback
@@ -53,12 +54,8 @@ export const BattleResult = () => {
 
   }, [isPlaying, turns?.length]);
 
-  console.log('battleLog', battleLog);
-  console.log('turns', turns);
-
   const names = [0, 1].map(idx => battleLog?.lobby.characters[idx].character.name ?? (idx === 0 ? 'first' : 'second'));
   const logVisualized = visualizeBattleLog(turns ?? [], names);
-  console.log('logVisualized', logVisualized);
 
   if (!char1 || !char2) {
     return <LoadingOverlay visible />;
@@ -122,18 +119,22 @@ export const BattleResult = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            overflow: 'hidden',
           }}
           pl="2.5rem"
+          mah="75vh"
         >
 
           <p>{`Battle ID: ${battleId}`}</p>
           <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
-            {currentTurnIndex > 0 ? <Anchor pl="sm" style={{ userSelect: 'none' }} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</Anchor> : null}
-            {currentTurnIndex + 1 < (turns?.length ?? 0) ? <Anchor pl="sm" style={{ userSelect: 'none' }} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</Anchor> : null}
+            <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
+            <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
           </Box>
 
-          <ol>
+          <Box component="ol"
+            style={{
+              overflowY: 'scroll',
+            }}
+          >
             {logVisualized.map((text, i) => {
               if (i === 0) {
                 return null;
@@ -159,7 +160,7 @@ export const BattleResult = () => {
                 </Box>
               );
             })}
-          </ol>
+          </Box>
 
           {/* <Box component="pre" sx={{
             maxWidth: '400px',
@@ -212,6 +213,29 @@ const CharPanel = ({ character, charState }: { character: any; charState?: Chara
 
     </Stack>
   );
+};
+
+const TextButton = ({
+  disabled = false,
+  onClick,
+  children
+}: {
+  disabled?: boolean;
+  onClick?: () => void;
+  children: React.ReactNode;
+}) => {
+  return <Anchor
+    pl="sm"
+    sx={{
+      userSelect: 'none',
+      ...disabled
+        ? { color: 'gray', textDecoration: 'none', cursor: 'default', '&:hover': { textDecoration: 'none' } }
+        : {}
+    }}
+    onClick={disabled ? undefined : onClick}
+  >
+    {children}
+  </Anchor>;
 };
 
 /**

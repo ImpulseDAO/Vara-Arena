@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/AArena/static/css/main.044d3656.css",
-    "main.js": "/AArena/static/js/main.f6481301.js",
+    "main.css": "/AArena/static/css/main.28939b73.css",
+    "main.js": "/AArena/static/js/main.3c57948d.js",
     "static/media/startScreen.png": "/AArena/static/media/startScreen.de8d9b2609c0773b4d70.png",
     "static/media/waitingScreen.png": "/AArena/static/media/waitingScreen.42a40f42109b41834b60.png",
     "static/media/battle.png": "/AArena/static/media/battle.223eb032fa4314bd2b9f.png",
@@ -11,23 +11,31 @@
     "static/media/mintCharacterScreen.png": "/AArena/static/media/mintCharacterScreen.420da1918567e3615aef.png",
     "static/media/char.svg": "/AArena/static/media/char.5255214121e3ec6268337e3e63fb4001.svg",
     "static/media/lock.svg": "/AArena/static/media/lock.a1f997e58c55e973d33c830990ccca4f.svg",
-    "static/media/arena_state.meta.wasm": "/AArena/static/media/arena_state.meta.5bf86d6e4c72bcadcd28.wasm",
-    "static/media/mint_state.meta.wasm": "/AArena/static/media/mint_state.meta.8b4a94fde8f7ba509656.wasm",
+    "static/media/Inter-ExtraBold.ttf": "/AArena/static/media/Inter-ExtraBold.4164cfba15dbca5f37aa.ttf",
+    "static/media/Inter-Black.ttf": "/AArena/static/media/Inter-Black.83d81b169bedf85385f2.ttf",
+    "static/media/Inter-Bold.ttf": "/AArena/static/media/Inter-Bold.0eaf807b1cf0eceabe0f.ttf",
+    "static/media/Inter-SemiBold.ttf": "/AArena/static/media/Inter-SemiBold.6058d3da655fb35169c2.ttf",
+    "static/media/Inter-Medium.ttf": "/AArena/static/media/Inter-Medium.3f7acfe50aad7ad68548.ttf",
+    "static/media/Inter-ExtraLight.ttf": "/AArena/static/media/Inter-ExtraLight.fbcf1d9ad9d7bac9f6de.ttf",
+    "static/media/Inter-Thin.ttf": "/AArena/static/media/Inter-Thin.97a5cc3ca8d3b35a4239.ttf",
+    "static/media/Inter-Light.ttf": "/AArena/static/media/Inter-Light.02850f28027788580733.ttf",
+    "static/media/Inter-Regular.ttf": "/AArena/static/media/Inter-Regular.9ca9ba81e9dcaa12b3a1.ttf",
+    "static/media/arena.opt.wasm": "/AArena/static/media/arena.opt.ffb399ba591c8b6a8894.wasm",
+    "static/media/mint.opt.wasm": "/AArena/static/media/mint.opt.6ad8f4fc6e77b13a78e6.wasm",
     "static/media/serpiente-display-medium-trial-webfont.woff": "/AArena/static/media/serpiente-display-medium-trial-webfont.7145994df7117cf2ef32.woff",
     "static/media/serpiente-display-medium-trial-webfont.woff2": "/AArena/static/media/serpiente-display-medium-trial-webfont.1db6494657661cc760b4.woff2",
     "static/media/upload_icon.svg": "/AArena/static/media/upload_icon.8ab4b61f0f1776acb298ba937057eecf.svg",
-    "static/media/user.svg": "/AArena/static/media/user.60292a92f2aa8465ee53a02a6cb06426.svg",
     "static/media/step_back.svg": "/AArena/static/media/step_back.d8330a176ce7365419928293ce4e57d4.svg",
     "static/media/step_forward.svg": "/AArena/static/media/step_forward.1b98f31e2cd2e5a80d471fce537ae5c8.svg",
     "static/media/forward.svg": "/AArena/static/media/forward.b60cb2268c2eae20ebae79bbca831b1d.svg",
     "static/media/back.svg": "/AArena/static/media/back.8de93fbe4e80fb9e36206bd1063f6702.svg",
     "index.html": "/AArena/index.html",
     "static/media/progress.svg": "/AArena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
-    "main.044d3656.css.map": "/AArena/static/css/main.044d3656.css.map",
-    "main.f6481301.js.map": "/AArena/static/js/main.f6481301.js.map"
+    "main.28939b73.css.map": "/AArena/static/css/main.28939b73.css.map",
+    "main.3c57948d.js.map": "/AArena/static/js/main.3c57948d.js.map"
   },
   "entrypoints": [
-    "static/css/main.044d3656.css",
-    "static/js/main.f6481301.js"
+    "static/css/main.28939b73.css",
+    "static/js/main.3c57948d.js"
   ]
 }

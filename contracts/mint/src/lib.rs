@@ -45,6 +45,8 @@ impl Mint {
             self.pool_amount = self.pool_amount.saturating_add(mint_cost);
         }
 
+        self.check_attributes(&attributes);
+
         let (_, character_id) =
             ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                 .unwrap();
@@ -241,6 +243,21 @@ impl Mint {
 
     fn check_if_admin(&self, account: &ActorId) {
         assert!(self.admins.contains(account), "Not admin");
+    }
+
+    fn check_attributes(&self, attributes: &InitialAttributes) {
+        assert!(attributes.agility >= 1);
+        assert!(attributes.stamina >= 1);
+        assert!(attributes.strength >= 1);
+        assert!(attributes.intelligence >= 1);
+        assert!(attributes.vitality >= 1);
+        let mut sum: u8 = 0;
+        sum = sum.checked_add(attributes.agility).unwrap();
+        sum = sum.checked_add(attributes.stamina).unwrap();
+        sum = sum.checked_add(attributes.strength).unwrap();
+        sum = sum.checked_add(attributes.intelligence).unwrap();
+        sum = sum.checked_add(attributes.vitality).unwrap();
+        assert!(sum == 10, "invalid amount of attributes")
     }
 }
 

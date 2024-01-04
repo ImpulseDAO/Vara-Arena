@@ -120,7 +120,7 @@ export async function handleArenaMessage(
                             break
                         case 'rest':
                             let fullEnergy = fullEnergyByCharacter[event.character]
-                            player.energy = Math.max(player.energy + event.action.rest.energy, fullEnergy)
+                            player.energy = Math.min(player.energy + event.action.rest.energy, fullEnergy)
                             break
                         case 'castSpell':
                             let spell = Object.keys(event.action.castSpell)[0]

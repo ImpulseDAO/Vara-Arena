@@ -87,7 +87,12 @@ impl Mint {
         msg::reply(character, 0).expect("unable to reply");
     }
 
-    fn increase_xp(&mut self, owner_id: CharacterId, losers: Vec<ActorId>) {
+    fn increase_xp(
+        &mut self,
+        owner_id: CharacterId,
+        character_id: CharacterId,
+        losers: Vec<ActorId>,
+    ) {
         let caller = msg::source();
 
         if let Some(arena_id) = self.arena_contract {
@@ -102,6 +107,8 @@ impl Mint {
             .cloned()
             .expect("invalid owner_id");
 
+        assert!(character.id == character_id);
+
         let earned_rating = match character.level {
             0 => unreachable!(),
             1 => 25,
@@ -113,7 +120,6 @@ impl Mint {
         character.increase_xp();
 
         character.attributes.increase_rating(earned_rating);
-        let character_id = character.id;
         let xp = character.experience;
         self.characters.insert(owner_id, character.clone());
 
@@ -287,7 +293,11 @@ extern "C" fn handle() {
             mint.create_character(code_id, name, attributes);
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
-        MintAction::BattleResult { owner_id, losers } => mint.increase_xp(owner_id, losers),
+        MintAction::BattleResult {
+            owner_id,
+            character_id,
+            losers,
+        } => mint.increase_xp(owner_id, character_id, losers),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
         MintAction::MakeReservation => mint.make_reservation(),

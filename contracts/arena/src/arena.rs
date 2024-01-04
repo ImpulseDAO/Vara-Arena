@@ -114,6 +114,7 @@ impl Arena {
                     self.mint,
                     MintAction::BattleResult {
                         owner_id: winner.owner,
+                        character_id: winner.id,
                         losers: lobby.losers.drain(..).collect(),
                     },
                     0,

@@ -147,6 +147,7 @@ pub enum MintAction {
     },
     BattleResult {
         owner_id: ActorId,
+        character_id: ActorId,
         losers: Vec<ActorId>,
     },
     SetArena {

@@ -222,6 +222,7 @@ pub fn execute_action(
             }
         }
         BattleAction::CastSpell { spell } => {
+            debug!("player {:?} CASTING SPELL", player.id);
             let event = execute_cast_spell(player, enemy, spell, action);
             logs.push(TurnLog {
                 character: player.id,

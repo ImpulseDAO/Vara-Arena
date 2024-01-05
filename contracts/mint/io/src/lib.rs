@@ -129,7 +129,7 @@ impl CharacterAttributes {
     }
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Clone)]
 pub enum MintAction {
     AddAdmin {
         admin: ActorId,

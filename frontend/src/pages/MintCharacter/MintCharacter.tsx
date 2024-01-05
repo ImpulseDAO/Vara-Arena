@@ -18,8 +18,6 @@ import {
 
 export type MintCharacterProps = {};
 
-
-
 export const MintCharacter: FC<MintCharacterProps> = memo(() => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const setUserName = useUnit(userStore.setName);

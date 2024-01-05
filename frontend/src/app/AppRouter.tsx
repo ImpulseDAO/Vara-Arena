@@ -10,7 +10,7 @@ import { Battle } from "pages/Battle";
 import { MyProfile } from "pages/MyProfile";
 import { BattleResult } from "pages/BattleResult";
 import { Leaderboard } from "pages/Leaderboard";
-import { BattlesList } from "pages/BattlesList";
+import { Arena } from "pages/Arena";
 import { UploadStrategy } from "pages/UploadStrategy";
 import { MintCharacter, StartFight, StartScreen } from "pages";
 
@@ -35,7 +35,7 @@ export const appRouter = createBrowserRouter(
      * NEW ROUTES:
     */
     { element: <Lobby />, path: newRoutes.lobbyDynamic, auth: true },
-    { element: <BattlesList />, path: newRoutes.arena, auth: true },
+    { element: <Arena />, path: newRoutes.arena, auth: true },
     { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
     { element: <Logs />, path: newRoutes.myLogs, auth: true },

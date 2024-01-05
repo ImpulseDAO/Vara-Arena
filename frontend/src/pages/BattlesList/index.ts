@@ -1,1 +1,0 @@
-export { BattlesList } from "./BattlesList";

@@ -17,10 +17,13 @@ const navLinks = [
     name: "My logs",
     path: newRoutes.myLogs,
   },
-  {
-    name: "Leaderboard",
-    path: newRoutes.leaderboard,
-  },
+  /**
+   * HIDE LEADERBOARD UNTIL IT IS READY
+   */
+  // {
+  //   name: "Leaderboard",
+  //   path: newRoutes.leaderboard,
+  // },
   {
     name: "My Profile",
     path: newRoutes.myProfile,

@@ -9,7 +9,7 @@ import { useMemo, useRef } from "react";
 import { GasReserved } from "components/GasReserved/GasReserved";
 import { useAlert } from "@gear-js/react-hooks";
 
-export const BattlesList = () => {
+export const Arena = () => {
   const alert = useAlert();
   const navigate = useNavigate();
   const selectRef = useRef<HTMLInputElement | null>(null);
@@ -51,6 +51,7 @@ export const BattlesList = () => {
   return (
     <Flex sx={{
       flex: 1,
+      justifyContent: 'center',
     }} >
       <Grid m={'lg'} gutter={'md'}
         pb={150}

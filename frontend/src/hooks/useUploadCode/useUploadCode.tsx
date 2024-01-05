@@ -192,6 +192,19 @@ export const addCodeIdToLocalStorage = (codeId: string) => {
   );
 };
 
+export const removeCodeIdFromLocalStorage = (codeId: string) => {
+  const newValue = getCodeIdsFromLocalStorage();
+
+  console.log('newValue', newValue);
+
+  localStorage.setItem(
+    UPLOADED_CODE_IDS_ARRAY,
+    JSON.stringify(newValue)
+  );
+
+  return newValue;
+};
+
 export const getCodeIdsFromLocalStorage = (): string[] => {
   return JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]");
 };

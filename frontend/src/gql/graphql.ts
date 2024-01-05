@@ -90,7 +90,11 @@ export enum BattleLogOrderByInput {
   LobbyIdAsc = 'lobby_id_ASC',
   LobbyIdAscNullsFirst = 'lobby_id_ASC_NULLS_FIRST',
   LobbyIdDesc = 'lobby_id_DESC',
-  LobbyIdDescNullsLast = 'lobby_id_DESC_NULLS_LAST'
+  LobbyIdDescNullsLast = 'lobby_id_DESC_NULLS_LAST',
+  LobbyReservationsCountAsc = 'lobby_reservationsCount_ASC',
+  LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
+  LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
+  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST'
 }
 
 export type BattleLogWhereInput = {
@@ -355,6 +359,7 @@ export type Lobby = {
   capacity: Scalars['Int']['output'];
   characters: Array<LobbyCharacter>;
   id: Scalars['String']['output'];
+  reservationsCount: Scalars['Int']['output'];
 };
 
 
@@ -418,7 +423,11 @@ export enum LobbyCharacterOrderByInput {
   LobbyIdAsc = 'lobby_id_ASC',
   LobbyIdAscNullsFirst = 'lobby_id_ASC_NULLS_FIRST',
   LobbyIdDesc = 'lobby_id_DESC',
-  LobbyIdDescNullsLast = 'lobby_id_DESC_NULLS_LAST'
+  LobbyIdDescNullsLast = 'lobby_id_DESC_NULLS_LAST',
+  LobbyReservationsCountAsc = 'lobby_reservationsCount_ASC',
+  LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
+  LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
+  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST'
 }
 
 export type LobbyCharacterWhereInput = {
@@ -468,7 +477,11 @@ export enum LobbyOrderByInput {
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
-  IdDescNullsLast = 'id_DESC_NULLS_LAST'
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  ReservationsCountAsc = 'reservationsCount_ASC',
+  ReservationsCountAscNullsFirst = 'reservationsCount_ASC_NULLS_FIRST',
+  ReservationsCountDesc = 'reservationsCount_DESC',
+  ReservationsCountDescNullsLast = 'reservationsCount_DESC_NULLS_LAST'
 }
 
 export type LobbyWhereInput = {
@@ -506,6 +519,15 @@ export type LobbyWhereInput = {
   id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  reservationsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  reservationsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  reservationsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  reservationsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type PageInfo = {

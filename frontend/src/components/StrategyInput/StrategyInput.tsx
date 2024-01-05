@@ -1,11 +1,11 @@
 import {
-  getCodeIdsFromLocalStorage,
   useUploadCode,
 } from "hooks/useUploadCode";
 import { Button, Select, Text } from "@mantine/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { STRATEGY_CODE_ID_HARDCODED } from "consts";
 import { useAlert } from "@gear-js/react-hooks";
+import { removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
 
 export const StrategyInput = ({
   codeId,
@@ -19,17 +19,30 @@ export const StrategyInput = ({
   const alert = useAlert();
   const uploadCode = useUploadCode();
 
-  const selectData = getCodeIdsFromLocalStorage().map((codeId, index) => {
-    const firstPart =
-      codeId === STRATEGY_CODE_ID_HARDCODED
-        ? "Default Strategy"
-        : `Strategy Class Hash: ${index + 1}`;
+  const [strategyCodeIds, setStrategyCodeIds] = React.useState<string[]>([]);
 
-    return {
-      value: codeId,
-      label: `${firstPart}: ${codeId.substring(0, 8)}...`,
-    };
-  });
+  useEffect(() => {
+    /**
+      * FILTER OUT OLD STRATEGY CODE ID
+      */
+    const OLD_STRATEGY_CODE_ID_HARDCODED = "0x25c002d7c488d8117a6c003c3ed04f11da6eb95f912dda39e31c4a634cd1f79f";
+    const updatedCodeIds = removeCodeIdFromLocalStorage(OLD_STRATEGY_CODE_ID_HARDCODED);
+    setStrategyCodeIds(updatedCodeIds);
+  }, []);
+
+  const selectData = React.useMemo(() => {
+    return strategyCodeIds.map((codeId, index) => {
+      const firstPart =
+        codeId === STRATEGY_CODE_ID_HARDCODED
+          ? "Default Strategy"
+          : `Strategy Class Hash: ${index + 1}`;
+
+      return {
+        value: codeId,
+        label: `${firstPart}: ${codeId.substring(0, 8)}...`,
+      };
+    });
+  }, []);
 
 
   /**

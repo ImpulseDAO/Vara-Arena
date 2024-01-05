@@ -4,7 +4,7 @@ import {
 } from "hooks/useUploadCode";
 import { Button, Select, Text } from "@mantine/core";
 import React from "react";
-import { STRATEGY_CODE_ID_HARDCODED } from "pages/MintCharacter/MintCharacter";
+import { STRATEGY_CODE_ID_HARDCODED } from "consts";
 import { useAlert } from "@gear-js/react-hooks";
 
 export const StrategyInput = ({

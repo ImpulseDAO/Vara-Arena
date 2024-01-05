@@ -1,6 +1,6 @@
 import { useWasmMetadata } from "./../../MintCharacter/hooks/useWasmMetadata";
 import { useCallback, useMemo } from "react";
-import { ARENA_ID, ARENA_METADATA } from "../constants";
+import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 import {
   useAccount,
   useReadWasmState,
@@ -16,11 +16,11 @@ export const useOnRegisterForBattle = () => {
   const { buffer } = useWasmMetadata(arenaMetaWasm);
 
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
   const arenaMetaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: ARENA_ID,
+      programId: ARENA_PROGRAM_ID,
       programMetadata: meta,
       wasm: buffer,
       functionName: "registered",

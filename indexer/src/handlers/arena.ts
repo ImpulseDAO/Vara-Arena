@@ -27,6 +27,7 @@ export async function handleArenaMessage(
         let lobby = new Lobby({
             id: String(data.lobbyCreated.lobbyId),
             capacity: data.lobbyCreated.capacity,
+            reservationsCount: 0,
         })
         lobbies.set(lobby.id, lobby)
     } else if (data.playerRegistered) {
@@ -193,7 +194,12 @@ export async function handleArenaMessage(
             battleLogs.set(battleLog.id, battleLog)
         }
     } else if (data.gasReserved) {
-        // TODO: attach reservation to its lobby?
+        let lobby = lobbies.get(data.gasReserved.lobbyId)
+        if (lobby == null) {
+            lobby = await store.findOneOrFail(Lobby, { where: { id: data.gasReserved.lobbyId } })
+            lobbies.set(data.gasReserved.lobbyId, lobby)
+        }
+        lobby.reservationsCount += 1
     } else {
         throw new Error('event is not supported')
     }

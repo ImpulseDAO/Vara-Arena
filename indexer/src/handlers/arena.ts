@@ -111,7 +111,7 @@ export async function handleArenaMessage(
                                     player.energy -= 6
                                     break
                                 default:
-                                    throw new Error('attack kind is not supported')
+                                    throw new Error(`attack kind "${event.action.attack.kind}" is not supported`)
                             }
 
                             let result = Object.keys(event.action.attack.result)[0]
@@ -124,7 +124,7 @@ export async function handleArenaMessage(
                             player.energy = Math.min(player.energy + event.action.rest.energy, fullEnergy)
                             break
                         case 'castSpell':
-                            let spell = Object.keys(event.action.castSpell)[0]
+                            let spell = Object.keys(event.action.castSpell.result)[0]
                             player.energy -= 5
                             switch (spell) {
                                 case 'fireball':
@@ -148,7 +148,7 @@ export async function handleArenaMessage(
                                 case 'chillingTouch':
                                     break
                                 default:
-                                    throw new Error('spell is not supported')
+                                    throw new Error(`spell "${spell}" is not supported`)
                             }
                             break
                         case 'fireWall':
@@ -163,7 +163,7 @@ export async function handleArenaMessage(
                             player.energy -= 2
                             break
                         default:
-                            throw new Error('action is not supported')
+                            throw new Error(`action "${action}" is not supported`)
                     }
                     return new TurnLog(event)
                 })
@@ -201,6 +201,7 @@ export async function handleArenaMessage(
         }
         lobby.reservationsCount += 1
     } else {
+        console.log(data)
         throw new Error('event is not supported')
     }
 }

@@ -33,7 +33,7 @@ export const AccountsModal = memo(({ close, account }: Props) => {
       {account ? (
         <div className={styles.footer}>
           <div className={styles.logout} onClick={logout}>
-            logout
+            Logout
           </div>
         </div>
       ) : null}

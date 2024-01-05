@@ -4,7 +4,7 @@ import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { useNavigate } from "react-router-dom";
 import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
+import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 import arenaMetaWasm from "../../assets/arena.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
 import { ProgramMetadata } from "@gear-js/api";
@@ -34,7 +34,7 @@ export const Leaderboard = () => {
 
   const metaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: ARENA_ID,
+      programId: ARENA_PROGRAM_ID,
       programMetadata: meta,
       wasm: buffer,
       functionName: "leaderboard",

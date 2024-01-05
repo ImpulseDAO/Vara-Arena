@@ -3,7 +3,7 @@ import "../styles.scss";
 import React, { useMemo } from "react";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
+import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 import { useNavigate } from "react-router-dom";
 import { Button, Text } from "@mantine/core";
 import { MAX_GAS_LIMIT } from "consts";
@@ -19,7 +19,7 @@ export const PlayAndCancelButtons = ({
 }) => {
   const navigate = useNavigate();
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
   const isUserHasPermissionToCancel = false;
 

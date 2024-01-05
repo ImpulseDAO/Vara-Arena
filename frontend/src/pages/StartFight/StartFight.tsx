@@ -3,10 +3,9 @@ import { ProgramMetadata } from "@gear-js/api";
 import { useOnRegisterForBattle } from "./hooks/useOnSubmit";
 import { StartFightView } from "./components/StartFightView";
 import { useAccount, useAlert, useReadWasmState } from "@gear-js/react-hooks";
-import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
 import stateMetaWasm from "../../assets/mint.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { ARENA_ID, ARENA_METADATA } from "./constants";
+import { ARENA_PROGRAM_ID, ARENA_METADATA, MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import arenaMetaWasm from "../../assets/arena.opt.wasm";
 import { useParams } from "react-router-dom";
 import { useMyCharacter } from "app/api/characters";
@@ -35,12 +34,12 @@ export const StartFight = memo(() => {
   const { buffer } = useWasmMetadata(stateMetaWasm);
   const { buffer: arenaMetaBuffer } = useWasmMetadata(arenaMetaWasm);
 
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
   const arenaMeta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
 
   const metaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: MINT_ID,
+      programId: MINT_PROGRAM_ID,
       programMetadata: meta,
       wasm: buffer,
       functionName: "character_info",
@@ -51,7 +50,7 @@ export const StartFight = memo(() => {
 
   const arenaMetaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: ARENA_ID,
+      programId: ARENA_PROGRAM_ID,
       programMetadata: arenaMeta,
       wasm: arenaMetaBuffer,
       functionName: "registered",

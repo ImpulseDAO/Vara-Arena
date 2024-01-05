@@ -1,6 +1,6 @@
 import { useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo, useRef } from "react";
-import { METADATA, MINT_ID } from "../constants";
+import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
 import { MAX_GAS_LIMIT, PAYMENT_FOR_MINTING } from "consts";
@@ -33,9 +33,9 @@ export const useOnSubmit = ({
   /**
    *
    */
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
 
-  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
   const navigate = useNavigate();
 
   return useCallback(async () => {

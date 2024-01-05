@@ -6,7 +6,7 @@ import AvatarIcon from "../../assets/images/avatar.png";
 import ProgressIcon from "../../assets/svg/progress.svg";
 import { useAccount, useApi, useReadWasmState } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import { ARENA_ID, ARENA_METADATA } from "pages/StartFight/constants";
+import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 
 import { useUnit } from "effector-react";
 import { useNavigate } from "react-router-dom";
@@ -93,7 +93,7 @@ export const Queue: FC<QueueProps> = () => {
 
   const metaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: ARENA_ID,
+      programId: ARENA_PROGRAM_ID,
       programMetadata: meta,
       wasm: buffer,
       functionName: "registered",
@@ -161,7 +161,7 @@ export const Queue: FC<QueueProps> = () => {
       unsub = api.gearEvents.subscribeToGearEvent(
         "UserMessageSent",
         ({ data: { message } }) => {
-          if (JSON.parse(message.toString()).source === ARENA_ID) {
+          if (JSON.parse(message.toString()).source === ARENA_PROGRAM_ID) {
 
 
             const result = meta.types.handle.output != null

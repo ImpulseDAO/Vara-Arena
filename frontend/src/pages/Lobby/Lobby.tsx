@@ -51,6 +51,7 @@ export const Lobby = () => {
 
   const playersJoined = characters.length,
     playersSize = lobbyData?.lobbyById?.capacity;
+  const isEnoughPlayers = playersJoined === (playersSize ?? 0);
 
   const gasNeeded = 2; // FIXME
 
@@ -60,12 +61,18 @@ export const Lobby = () => {
 
         <div className="modal_loader">
           <p className="modal_tille">Tournament participants</p>
-          <img
-            className={"modal_progress"}
-            src={ProgressIcon}
-            alt="ProgressIcon"
-          />
-          <p className="modal_info">Waiting players</p>
+          {
+            isEnoughPlayers
+              ? <p className="modal_info">Ready to start</p>
+              : <>
+                <img
+                  className={"modal_progress"}
+                  src={ProgressIcon}
+                  alt="ProgressIcon"
+                />
+                <p className="modal_info">Waiting players</p>
+              </>
+          }
 
           <Badge c={'white'} sx={{ textTransform: 'none' }} mb="lg">
             {playersJoined} of {playersSize} players

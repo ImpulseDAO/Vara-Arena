@@ -1,7 +1,7 @@
 import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { XP_NEEDED_FOR_LEVEL_UP_MAP } from "consts";
-import { METADATA, MINT_ID } from "pages/MintCharacter/constants";
+import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 export const useStats = (character?: Character) => {
@@ -21,8 +21,8 @@ export const useStats = (character?: Character) => {
     toggleVisible();
   }, []);
 
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
+  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
+  const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
   const accept = useCallback(() => {
     if (attr) {
       toggleVisible();

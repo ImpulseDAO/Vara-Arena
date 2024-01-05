@@ -14,6 +14,9 @@ export class Lobby {
     @Column_("int4", {nullable: false})
     capacity!: number
 
+    @Column_("int4", {nullable: false})
+    reservationsCount!: number
+
     @OneToMany_(() => LobbyCharacter, e => e.lobby)
     characters!: LobbyCharacter[]
 

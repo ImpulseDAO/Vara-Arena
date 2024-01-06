@@ -79,17 +79,27 @@ impl Mint {
         .expect("unable to reply");
     }
 
-    fn update_strategy(&mut self, code_id: CodeId) {
+    fn update_strategy(&mut self, code_id: Option<CodeId>, address: Option<ActorId>) {
         let player = msg::source();
 
+        if code_id.is_some() && address.is_some() {
+            panic!("Either code ID or strategy address")
+        }
         let character = self
             .characters
             .get_mut(&player)
             .expect("You have no  characters");
 
-        let (_, character_id) =
-            ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
-                .unwrap();
+        let character_id = if let Some(code_id) = code_id {
+            let (_, character_id) =
+                ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
+                    .unwrap();
+            character_id
+        } else if let Some(address) = address {
+            address
+        } else {
+            panic!("Both values cant be None")
+        };
 
         character.id = character_id;
 
@@ -380,7 +390,7 @@ extern "C" fn handle() {
         MintAction::RemoveAdmin { admin } => mint.remove_admin(&admin),
         MintAction::StartDailyGoldDistribution => mint.start_daily_gold_distribution(),
         MintAction::StopDailyGoldDistribution => mint.stop_daily_gold_distribution(),
-        MintAction::UpdateCharacter { code_id } => mint.update_strategy(code_id),
+        MintAction::UpdateCharacter { code_id, address } => mint.update_strategy(code_id, address),
         MintAction::UpdateConfig {
             gas_for_daily_distribution,
             minimum_gas_amount,

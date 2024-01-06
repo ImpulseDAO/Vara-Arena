@@ -143,7 +143,8 @@ pub enum MintAction {
         attributes: InitialAttributes,
     },
     UpdateCharacter {
-        code_id: CodeId,
+        code_id: Option<CodeId>,
+        address: Option<ActorId>,
     },
     CharacterInfo {
         owner_id: ActorId,

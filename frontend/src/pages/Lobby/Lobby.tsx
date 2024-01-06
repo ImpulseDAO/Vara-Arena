@@ -2,16 +2,19 @@ import React, { useMemo } from "react";
 import "./styles.scss";
 import ProgressIcon from "../../assets/svg/progress.svg";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ButtonsJoinReservePlay } from "./components/ButtonJoinReservePlay";
 import { useLobby } from "app/api/lobbies";
 import { GasReserved } from "components/GasReserved/GasReserved";
-import { Badge } from "@mantine/core";
+import { Badge, Text } from "@mantine/core";
 import { useMyAccountId } from "hooks/hooks";
 import { PlayersTable } from "./components/PlayersTable";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
+import { TheButton } from "components/TheButton";
+import { newRoutes } from "app/routes";
 
 export const Lobby = () => {
+  const navigate = useNavigate();
   const myId = useMyAccountId();
   const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
 
@@ -66,7 +69,7 @@ export const Lobby = () => {
           {
             isEnoughPlayers
               ? isFinished
-                ? <p className="modal_info">Battle is finished</p>
+                ? <Text className="modal_info" color="red" >Lobby ended</Text>
                 : <p className="modal_info">Ready to start</p>
               : <>
                 <img
@@ -118,6 +121,20 @@ export const Lobby = () => {
                   onGasReserved: (times: number) => setGasReservedTimes(times)
                 }}
               />
+            )
+            : null
+        }
+
+        {
+          isFinished
+            ? (
+              <TheButton
+                mt="lg"
+                w={200}
+                onClick={() => lobbyId && navigate(newRoutes.tournamentResult(lobbyId))}
+              >
+                See results
+              </TheButton>
             )
             : null
         }

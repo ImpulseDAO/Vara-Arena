@@ -11,8 +11,9 @@ export const TheButton = ({
       onClick={onClick}
       //
       radius="sm"
-      h={44}
       bg="primary"
+      size="md"
+      px="xl"
       sx={{
         boxShadow: 'sm',
       }}
@@ -20,6 +21,7 @@ export const TheButton = ({
         root: {
           '&:disabled': {
             backgroundColor: theme.colors.gray[5],
+            color: theme.colors.gray[6],
           },
         },
       })}

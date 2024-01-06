@@ -1,7 +1,5 @@
-import { Anchor, BackgroundImage, Box, Button, Flex, LoadingOverlay, Stack, Text } from "@mantine/core";
-import BattleBackground from 'assets/images/battle.png';
+import { Anchor, Box, Flex, Stack, Text } from "@mantine/core";
 import { CharInfo } from "pages/@shared/CharInfo";
-
 import { Panel } from 'components/Panel';
 import { StatBar } from "pages/@shared/StatBar";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -10,14 +8,42 @@ import { CharStats } from "pages/@shared/CharStats/CharStats";
 import { getFullEnergy, getFullHp } from "consts";
 import { useParams } from "react-router-dom";
 import { useBattleLogById } from "app/api/battleLogs";
+import { BattleBackgroundWrapper } from "./components/BackgroundWrapper";
+import { BattleResultNotFound } from "./components/BattleResultNotFound";
+import { BlackButton } from "./components/BlackButton";
 
 const SIDE_PANEL_WIDTH = 375;
 const MID_PANEL_WIDTH = 420;
 
-export const BattleResult = () => {
+export const BattleResultPage = () => {
   const { battleId } = useParams<{ battleId: string; }>();
-  const { data: battleLog } = useBattleLogById({ battleId });
 
+  if (battleId == null) {
+    return (
+      <BattleBackgroundWrapper>
+        <BattleResultNotFound />
+      </BattleBackgroundWrapper>
+    );
+  }
+
+  return (
+    <BattleBackgroundWrapper>
+      <BattleResult battleId={battleId} />
+    </BattleBackgroundWrapper>
+  );
+};
+
+export const BattleResult = ({
+  battleId,
+  setPlayButton
+}: {
+  battleId: string;
+  setPlayButton?: (button: React.ReactNode) => void;
+}) => {
+
+  const { data: battleLog, isSuccess } = useBattleLogById({ battleId });
+
+  console.log('battleLog', battleLog);
 
 
   /**
@@ -28,6 +54,7 @@ export const BattleResult = () => {
 
   const char1 = battleLog?.lobby.characters.find(char => char.character.id === char1id)?.character;
   const char2 = battleLog?.lobby.characters.find(char => char.character.id === char2id)?.character;
+  const names = [char1, char2].map(char => char?.name ?? '');
 
   /**
   * List items refs
@@ -101,144 +128,118 @@ export const BattleResult = () => {
    * 
    */
 
-  const names = [0, 1].map(idx => battleLog?.lobby.characters[idx].character.name ?? (idx === 0 ? 'first' : 'second'));
+
   const logVisualized = visualizeBattleLog(turns ?? [], names);
 
-  if (!char1 || !char2) {
-    return <LoadingOverlay visible />;
+  React.useEffect(() => {
+    return () => setIsPlaying(false);
+  }, []);
+
+  React.useEffect(() => {
+    setPlayButton?.(
+      <BlackButton
+        onClick={() => {
+          if (currentTurnIndex === lastTurnIndex) {
+            setCurrentTurnIndex(0);
+            itemRefs.current?.[0].scrollIntoView({
+              behavior: 'auto',
+              block: 'nearest'
+            });
+          }
+          setIsPlaying(!isPlaying);
+        }}
+        rightIcon={
+          isPlaying ? (
+            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" viewBox="0 0 9 14" fill="none">
+              <path d="M9 1.5C9 0.671573 8.32843 0 7.5 0V0C6.67157 0 6 0.671573 6 1.5V12.5C6 13.3284 6.67157 14 7.5 14V14C8.32843 14 9 13.3284 9 12.5V1.5Z" fill="white" />
+              <path d="M3 1.5C3 0.671573 2.32843 0 1.5 0V0C0.671573 0 0 0.671573 0 1.5V12.5C0 13.3284 0.671573 14 1.5 14V14C2.32843 14 3 13.3284 3 12.5V1.5Z" fill="white" />
+            </svg>
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 13 14" fill="none">
+              <path d="M11.8684 8.13702C12.7105 7.63168 12.7105 6.36832 11.8684 5.86298L2.39474 0.177857C1.55263 -0.327487 0.5 0.304193 0.5 1.31488L0.499999 12.6851C0.499999 13.6958 1.55263 14.3275 2.39474 13.8221L11.8684 8.13702Z" fill="white" />
+            </svg>
+          )
+        }
+      >
+        {isPlaying ? 'Pause' : 'Play'}
+      </BlackButton >
+    );
+  }, [currentTurnIndex, isPlaying, lastTurnIndex, setCurrentTurnIndex, setPlayButton]);
+
+  if (isSuccess && battleLog === null) {
+    return <BattleResultNotFound />;
   }
 
   return (
-    <BackgroundImage src={BattleBackground} style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'start',
+    <Flex gap='md'>
+      <Panel w={SIDE_PANEL_WIDTH} >
+        {currentTurn ? <CharPanel character={char1} charState={currentTurn?.character1 ?? undefined} /> : null}
+      </Panel>
+      <Panel
+        w={MID_PANEL_WIDTH}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+        pl="2.5rem"
+        mah="75vh"
+      >
 
-      paddingBlock: '2rem'
-    }}>
-      <Flex mb="md">
-        <Button
-          h={44}
+        <p>{`Battle ID: ${battleId}`}</p>
+        <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
+          <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
+          <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
+        </Box>
+
+        <Box component="ol"
           style={{
-            display: "inline-flex",
-            padding: "10px 16px",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "12px",
-            //
-            borderRadius: "8px",
-            background: "#000"
-          }}
-          onClick={() => {
-            if (currentTurnIndex === lastTurnIndex) {
-              setCurrentTurnIndex(0);
-              itemRefs.current?.[0].scrollIntoView({
-                behavior: 'auto',
-                block: 'nearest'
-              });
-            }
-            setIsPlaying(!isPlaying);
+            overflowY: 'scroll',
           }}
         >
-          <Flex gap="xs" align={'center'}>
-            {
-              isPlaying ? (
-                <>
-                  Pause
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" viewBox="0 0 9 14" fill="none">
-                    <path d="M9 1.5C9 0.671573 8.32843 0 7.5 0V0C6.67157 0 6 0.671573 6 1.5V12.5C6 13.3284 6.67157 14 7.5 14V14C8.32843 14 9 13.3284 9 12.5V1.5Z" fill="white" />
-                    <path d="M3 1.5C3 0.671573 2.32843 0 1.5 0V0C0.671573 0 0 0.671573 0 1.5V12.5C0 13.3284 0.671573 14 1.5 14V14C2.32843 14 3 13.3284 3 12.5V1.5Z" fill="white" />
-                  </svg>
-                </>
-              )
-                : (
-                  <>
-                    Play
-                    <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 13 14" fill="none">
-                      <path d="M11.8684 8.13702C12.7105 7.63168 12.7105 6.36832 11.8684 5.86298L2.39474 0.177857C1.55263 -0.327487 0.5 0.304193 0.5 1.31488L0.499999 12.6851C0.499999 13.6958 1.55263 14.3275 2.39474 13.8221L11.8684 8.13702Z" fill="white" />
-                    </svg>
-                  </>
-                )}
-          </Flex>
-        </Button>
-      </Flex>
-
-      <Flex gap='md'>
-        <Panel w={SIDE_PANEL_WIDTH} >
-          {currentTurn ? <CharPanel character={char1} charState={currentTurn.character1 ?? undefined} /> : null}
-        </Panel>
-        <Panel
-          w={MID_PANEL_WIDTH}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-          pl="2.5rem"
-          mah="75vh"
-        >
-
-          <p>{`Battle ID: ${battleId}`}</p>
-          <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
-            <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
-            <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
-          </Box>
-
-          <Box component="ol"
-            style={{
-              overflowY: 'scroll',
-            }}
-          >
-            {logVisualized.map((text, i) => {
-              if (i === 0) {
-                return <div ref={(ref) => {
+          {logVisualized.map((text, i) => {
+            if (i === 0) {
+              return <div
+                key={i}
+                ref={(ref) => {
                   itemRefs.current[i] = ref as HTMLElement;
                 }}>
 
-                </div>;
-              }
+              </div>;
+            }
 
-              const isInactive = currentTurnIndex < i;
+            const isInactive = currentTurnIndex < i;
 
-              return (
-                <Box
-                  ref={(ref) => {
-                    itemRefs.current[i] = ref as HTMLElement;
-                  }}
-                  onClick={() => setCurrentTurnIndex(i)}
-                  component="li"
-                  key={i}
-                  sx={{
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)'
-                    },
-                    cursor: 'pointer',
-                  }}>
-                  <Box component="span" {...isInactive ? { sx: theme => ({ opacity: '0.4' }) } : {}}>
-                    {text.map((line, i) => <p key={i}>{line}</p>)}
-                  </Box>
+            return (
+              <Box
+                ref={(ref) => {
+                  itemRefs.current[i] = ref as HTMLElement;
+                }}
+                onClick={() => setCurrentTurnIndex(i)}
+                component="li"
+                key={i}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                  },
+                  cursor: 'pointer',
+                }}>
+                <Box component="span" {...isInactive ? { sx: theme => ({ opacity: '0.4' }) } : {}}>
+                  {text.map((line, i) => <p key={i}>{line}</p>)}
                 </Box>
-              );
-            })}
-          </Box>
-
-          {/* <Box component="pre" sx={{
-            maxWidth: '400px',
-            overflowX: 'scroll'
-          }}>
-            {JSON.stringify(battleLog, null, 2)}
-          </Box> */}
-        </Panel>
+              </Box>
+            );
+          })}
+        </Box>
+      </Panel>
 
 
 
-        <Panel w={SIDE_PANEL_WIDTH} >
-          {currentTurn
-            ? <CharPanel character={char2} charState={currentTurn.character2 ?? undefined} />
-            : null}
-        </Panel>
-      </Flex>
-    </BackgroundImage >
+      <Panel w={SIDE_PANEL_WIDTH} >
+        {currentTurn
+          ? <CharPanel character={char2} charState={currentTurn?.character2 ?? undefined} />
+          : null}
+      </Panel>
+    </Flex>
   );
 };
 
@@ -355,19 +356,19 @@ function visualizeBattleLog(battleLog: BattleStep[], names: string[]): React.Rea
 
       if (log.action.move) {
         nestedResults.push(
-          <Text>
+          <Text component="span">
             <Name {...{ charName, isFirst }} /> moves to position {log.action.move.position}.
           </Text>
         );
       } else if (log.action.attack) {
         nestedResults.push(
-          <Text>
+          <Text component="span">
             <Name {...{ charName, isFirst }} /> attacks with {log.action.attack.kind}.
           </Text>
         );
       } else if (log.action.rest) {
         nestedResults.push(
-          <Text>
+          <Text component="span">
             <Name {...{ charName, isFirst }} /> rests, gaining {log.action.rest.energy} energy.
           </Text>
         );

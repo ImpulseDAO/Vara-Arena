@@ -4,6 +4,7 @@ import {
   useGraphQL,
 } from "app/providers/ReactQuery/useGraphQL";
 import { graphql } from "gql/gql";
+import { BattleLog } from "gql/graphql";
 
 export const allbattleLogsQueryDocument = graphql(`
   query BattleLogs {
@@ -148,7 +149,47 @@ export const useBattleLogById = ({ battleId }: { battleId?: string }) => {
     {
       enabled: battleId != null,
       select: (data) => data.battleLogById,
+      placeholderData: (previousData) => previousData,
     }
   );
   return query;
+};
+
+/**
+ * Battle logs by lobby id
+ */
+
+const battleLogsByLobbyIdQueryDocument = graphql(/* GraphQL */ `
+  query BattleLogsByLobbyId($lobbyId: String!) {
+    battleLogs(where: { lobby: { id_eq: $lobbyId } }) {
+      id
+    }
+  }
+`);
+
+export const useBattleLogsByLobbyId = ({ lobbyId }: { lobbyId?: string }) => {
+  const query = useGraphQL(
+    battleLogsByLobbyIdQueryDocument,
+    {
+      lobbyId: `${lobbyId}`,
+    },
+    {
+      enabled: lobbyId != null,
+      select: (data) => data.battleLogs,
+    }
+  );
+  return query;
+};
+
+/**
+ * Utils
+ */
+
+export const getCharacterFromBattleLogById = (
+  battleLog: BattleLog,
+  characterId: string
+) => {
+  return battleLog.lobby.characters.find(
+    ({ character: { id } }) => id === characterId
+  )?.character;
 };

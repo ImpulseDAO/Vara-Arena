@@ -15,6 +15,7 @@ export const customColors = {
   backgroundLightGreenHover: "#BFD6B2",
   backgroundLightBlue: "#EAF9FF",
   backgroundLightBlueHover: "#CBEDFB",
+  red: "#F93642",
   //
   white: "#FFFFFF",
   //

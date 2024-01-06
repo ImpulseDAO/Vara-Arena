@@ -1,1 +1,2 @@
-export { BattleResult } from "./BattleResult";
+export { BattleResultPage } from "./BattleResult";
+export { TournamentResultPage } from "./TournamentResult";

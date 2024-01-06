@@ -1,13 +1,14 @@
-import { Button, Stack, Title } from "@mantine/core";
+import { Stack, Title } from "@mantine/core";
 import { routes } from "app/routes";
 import { Panel } from "components/Panel";
+import { TheButton } from "components/TheButton";
 import { useNavigate } from "react-router-dom";
 
 export const NoCharacterWidget = () => {
   const navigate = useNavigate();
 
   return (
-    <Stack justify="center" align="center" w="100%">
+    <Stack justify="center" align="center" w="100%" my="auto">
       <Panel w={375}>
         <Title
           order={3}
@@ -15,9 +16,9 @@ export const NoCharacterWidget = () => {
         >
           You don't have a character yet
         </Title>
-        <Button onClick={() => navigate(routes.mintCharacter)}>
+        <TheButton onClick={() => navigate(routes.mintCharacter)} w="100%">
           Create
-        </Button>
+        </TheButton>
       </Panel>
     </Stack>
   );

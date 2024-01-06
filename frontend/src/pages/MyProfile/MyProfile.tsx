@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 //
 import "./styles.scss";
 //
@@ -28,7 +28,7 @@ export const MyProfile = () => {
   const { data: myCharacter } = useMyCharacter();
 
   if (!myCharacter) {
-    return <NoCharacterWidget />;
+    return <div className="profile"><NoCharacterWidget /></div>;
   }
 
   return <Profile character={myCharacter} />;
@@ -57,7 +57,7 @@ export const Profile = ({
   character: Character;
 }) => {
   const { data: myCharacter } = useMyCharacter();
-  const { accept, alertVisible, cancel, selectAttr, stats } = useStats(
+  const { accept, alertVisible, cancel, stats } = useStats(
     character
   );
 

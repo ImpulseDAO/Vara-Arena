@@ -8,11 +8,12 @@ import { Queue } from "pages/Queue";
 import { Lobby } from "pages/Lobby";
 import { Battle } from "pages/Battle";
 import { MyProfile } from "pages/MyProfile";
-import { BattleResult } from "pages/BattleResult";
+import { BattleResultPage } from "pages/BattleResult";
 import { Leaderboard } from "pages/Leaderboard";
 import { Arena } from "pages/Arena";
 import { UploadStrategy } from "pages/UploadStrategy";
 import { MintCharacter, StartFight, StartScreen } from "pages";
+import { TournamentResultPage } from "pages/BattleResult/TournamentResult";
 
 const options: Parameters<typeof createBrowserRouter>[1] = {
   // see more https://github.com/rafgraph/spa-github-pages
@@ -39,7 +40,8 @@ export const appRouter = createBrowserRouter(
     { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
     { element: <Logs />, path: newRoutes.myLogs, auth: true },
-    { element: <BattleResult />, path: newRoutes.battleResultDynamic, auth: true },
+    { element: <BattleResultPage />, path: newRoutes.battleResultDynamic, auth: true },
+    { element: <TournamentResultPage />, path: newRoutes.tournamentResultDynamic, auth: true },
     /**
      * END NEW ROUTES
      */

@@ -1,4 +1,4 @@
-import { Title, Box, Grid, Image, Select, Stack, Badge, TitleProps, Text, ScrollArea, Flex } from "@mantine/core";
+import { Title, Box, Grid, Image, Select, Stack, Badge, type TitleProps, Text, Flex } from "@mantine/core";
 import ArenaPng from "assets/images/arena.png";
 import { TheButton } from "components/TheButton";
 import { Panel } from "components/Panel";
@@ -8,6 +8,7 @@ import { newRoutes } from "app/routes";
 import { useMemo, useRef } from "react";
 import { GasReserved } from "components/GasReserved/GasReserved";
 import { useAlert } from "@gear-js/react-hooks";
+import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
 
 export const Arena = () => {
   const alert = useAlert();
@@ -25,8 +26,9 @@ export const Arena = () => {
         lobbyId: lobby.id,
         playersSize: lobby.capacity,
         playersJoined: lobby.characters.length,
-        gasNeeded: 0,
-        gasReserved: 0
+        gasNeeded: PLAYERS_TO_RESERVATIONS_NEEDED_MAP[lobby.capacity],
+        gasReserved: lobby.reservationsCount,
+        isFinished: lobby.battleLogs.length > 0,
       };
     });
   }, [lobbiesData]);
@@ -128,6 +130,7 @@ export const Arena = () => {
         {cards.map((card, index) => (
           <GridColumn key={`${index} - ${card.lobbyId}`}>
             <Card
+              isFinished={card.isFinished}
               tierText={card.tierText}
               lobbyId={card.lobbyId}
               playersSize={card.playersSize}
@@ -158,6 +161,7 @@ const GridColumn = ({ children }) => {
 };
 
 const Card = ({
+  isFinished,
   tierText,
   lobbyId,
   playersSize,
@@ -166,6 +170,7 @@ const Card = ({
   gasReserved,
   onJoin
 }: {
+  isFinished?: boolean,
   tierText: string,
   lobbyId: string,
   playersSize: number | string,
@@ -176,7 +181,7 @@ const Card = ({
 }) => {
   return (
     <Panel h={370} pos="relative" >
-      {/* Battle ID - absolutely positioned*/}
+      {/* Lobby ID - absolutely positioned*/}
       <Box pos="absolute"
         top={10}
         right={10}
@@ -187,7 +192,7 @@ const Card = ({
           sx={{
             borderRadius: 9999,
           }}
-        >Battle ID #{lobbyId}</Text>
+        >Lobby ID #{lobbyId}</Text>
       </Box>
 
       {/* Centered Content */}
@@ -200,13 +205,16 @@ const Card = ({
           {playersJoined} of {playersSize} players
         </Badge>
 
-        <GasReserved
+        <Box
           mt="auto"
           mb="lg"
-          {...{
-            gasNeeded,
-            gasReserved
-          }} />
+        >
+          {
+            isFinished
+              ? <Text c="red" fw={600}>Lobby ended</Text>
+              : gasNeeded > 0 ? <GasReserved  {...{ gasNeeded, gasReserved }} /> : null
+          }
+        </Box>
 
         <TheButton onClick={() => {
           setTimeout(onJoin, 200);

@@ -13,6 +13,7 @@ type Lobby @entity {
   id: ID!
   capacity: Int!
   reservationsCount: Int!
+  tier: Int!
   characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
   battleLogs: [BattleLog!]! @derivedFrom(field: "lobby")
 }

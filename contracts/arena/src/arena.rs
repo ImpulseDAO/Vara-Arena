@@ -225,8 +225,16 @@ impl Arena {
                 3..=5 => SetTier::Tier3,
                 6..=9 => SetTier::Tier2,
                 _ => SetTier::Tier1,
-            }
-        };
+            };
+            msg::reply(
+                ArenaEvent::TierSet {
+                    lobby_id,
+                    tier: lobby.current_tier as u8,
+                },
+                0,
+            )
+            .expect("unable to reply");
+        }
         if character_tier == lobby.current_tier {
             lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it

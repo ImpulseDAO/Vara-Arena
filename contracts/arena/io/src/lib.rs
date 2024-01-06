@@ -85,6 +85,10 @@ pub enum ArenaEvent {
         lobby_id: u128,
         player_id: ActorId,
     },
+    TierSet {
+        lobby_id: u128,
+        tier: u8,
+    },
     GasReserved {
         lobby_id: u128,
     },
@@ -95,15 +99,16 @@ pub enum ArenaEvent {
     },
 }
 
-#[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, TypeInfo)]
+#[repr(u8)]
+#[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, Copy, TypeInfo)]
 pub enum SetTier {
     #[default]
     Tier0,
-    Tier5,
-    Tier4,
-    Tier3,
-    Tier2,
     Tier1,
+    Tier2,
+    Tier3,
+    Tier4,
+    Tier5,
 }
 
 #[derive(Encode, Decode, Debug, TypeInfo, Clone)]

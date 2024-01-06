@@ -167,12 +167,17 @@ pub enum MintEvent {
     CharacterCreated {
         character_info: CharacterInfo,
     },
-    CharacterDied {
+    LivesCountUpdated {
         character_id: ActorId,
+        count: u8,
     },
-    XpIncreased {
+    XpUpdated {
         character_id: ActorId,
         xp: u32,
+    },
+    RatingUpdated {
+        character_id: ActorId,
+        rating: u128,
     },
     LevelUpdated {
         character_id: ActorId,

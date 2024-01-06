@@ -5,6 +5,8 @@ type Character @entity {
   attributes: JSON!
   level: Int!
   experience: Int!
+  rating: Int!
+  livesCount: Int!
 }
 
 type Lobby @entity {

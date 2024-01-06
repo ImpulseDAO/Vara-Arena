@@ -20,15 +20,29 @@ export async function handleMintMessage(
             owner: message.destination
         })
         characters.set(character.id, character)
-    } else if (data.xpIncreased) {
-        let character = characters.get(data.xpIncreased.characterId)
+    } else if (data.xpUpdated) {
+        let character = characters.get(data.xpUpdated.characterId)
         if (character == null) {
-            character = await store.findOneOrFail(Character, { where: { id: data.xpIncreased.characterId } })
+            character = await store.findOneOrFail(Character, { where: { id: data.xpUpdated.characterId } })
             characters.set(character.id, character)
         }
-        character.experience = data.xpIncreased.xp
+        character.experience = data.xpUpdated.xp
+    } else if (data.livesCountUpdated) {
+        let character = characters.get(data.livesCountUpdated.characterId)
+        if (character == null) {
+            character = await store.findOneOrFail(Character, { where: { id: data.livesCountUpdated.characterId } })
+            characters.set(character.id, character)
+        }
+        character.livesCount = data.livesCountUpdated.count
+    } else if (data.ratingUpdated) {
+        let character = characters.get(data.ratingUpdated.characterId)
+        if (character == null) {
+            character = await store.findOneOrFail(Character, { where: { id: data.ratingUpdated.characterId } })
+            characters.set(character.id, character)
+        }
+        character.rating = data.ratingUpdated.rating
     } else if (data.levelUpdated) {
-        if (!['strength', 'agility', 'vitality', 'stamina'].includes(data.levelUpdated.attr)) {
+        if (!['strength', 'agility', 'vitality', 'stamina', 'intelligence'].includes(data.levelUpdated.attr)) {
             console.log(data.levelUpdated.attr)
             throw new Error('unknown attr')
         }

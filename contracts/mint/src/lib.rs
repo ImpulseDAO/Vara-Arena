@@ -120,23 +120,39 @@ impl Mint {
         character.increase_xp();
 
         character.attributes.increase_rating(earned_rating);
+        msg::reply(
+            MintEvent::RatingUpdated {
+                character_id,
+                rating: character.attributes.tier_rating,
+            },
+            0,
+        )
+        .expect("unable to reply");
+
         let xp = character.experience;
         self.characters.insert(owner_id, character.clone());
 
         for character_id in losers {
             if let Entry::Occupied(mut character_info) = self.characters.entry(character_id) {
                 character_info.get_mut().attributes.lives_count -= 1;
+                msg::reply(
+                    MintEvent::LivesCountUpdated {
+                        character_id,
+                        count: character_info.get().attributes.lives_count,
+                    },
+                    0,
+                )
+                .expect("unable to reply");
+
                 if character_info.get().attributes.lives_count == 0 {
                     character_info.remove_entry();
-                    msg::reply(MintEvent::CharacterDied { character_id }, 0)
-                        .expect("unable to reply");
                 }
             }
         }
 
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
-        msg::reply(MintEvent::XpIncreased { character_id, xp }, 0).expect("unable to reply");
+        msg::reply(MintEvent::XpUpdated { character_id, xp }, 0).expect("unable to reply");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {

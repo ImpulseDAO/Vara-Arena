@@ -2,7 +2,7 @@
 
 use gstd::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 use gstd::prog::ProgramGenerator;
-use gstd::{debug, exec, msg, prelude::*, ActorId, CodeId, ReservationId};
+use gstd::{exec, msg, prelude::*, ActorId, CodeId, ReservationId};
 use mint_io::{
     AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus,
     InitialAttributes, MintAction, MintEvent, MintState,
@@ -20,6 +20,7 @@ struct Mint {
     pool_amount: u128,
     total_rating: u128,
     daily_gold_distr_status: DailyGoldDistrStatus,
+    character_id: u128,
 }
 
 static mut MINT: Option<Mint> = None;
@@ -47,12 +48,14 @@ impl Mint {
 
         self.check_attributes(&attributes);
 
-        let (_, character_id) =
+        let (_, algorithm_id) =
             ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                 .unwrap();
 
+        let id = self.character_id;
         let info = CharacterInfo {
-            id: character_id,
+            id,
+            algorithm_id,
             name,
             attributes: CharacterAttributes {
                 strength: attributes.strength,
@@ -69,7 +72,8 @@ impl Mint {
         };
 
         self.characters.insert(msg::source(), info.clone());
-        debug!("character {:?} minted", character_id);
+
+        self.character_id += 1;
         msg::reply(
             MintEvent::CharacterCreated {
                 character_info: info,
@@ -77,6 +81,33 @@ impl Mint {
             0,
         )
         .expect("unable to reply");
+    }
+
+    fn update_strategy(&mut self, code_id: Option<CodeId>, address: Option<ActorId>) {
+        let player = msg::source();
+
+        if code_id.is_some() && address.is_some() {
+            panic!("Either code ID or strategy address")
+        }
+        let character = self
+            .characters
+            .get_mut(&player)
+            .expect("You have no  characters");
+
+        let algorithm_id = if let Some(code_id) = code_id {
+            let (_, algorithm_id) =
+                ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
+                    .unwrap();
+            algorithm_id
+        } else if let Some(address) = address {
+            address
+        } else {
+            panic!("Both values cant be None")
+        };
+
+        character.algorithm_id = algorithm_id;
+
+        msg::reply(MintEvent::CharacterUpdated, 0).expect("unable to reply");
     }
 
     fn character_info(&self, owner_id: CharacterId) {
@@ -90,7 +121,7 @@ impl Mint {
     fn increase_xp(
         &mut self,
         owner_id: CharacterId,
-        character_id: CharacterId,
+        algorithm_id: CharacterId,
         losers: Vec<ActorId>,
     ) {
         let caller = msg::source();
@@ -107,7 +138,7 @@ impl Mint {
             .cloned()
             .expect("invalid owner_id");
 
-        assert!(character.id == character_id);
+        assert!(character.algorithm_id == algorithm_id);
 
         let earned_rating = match character.level {
             0 => unreachable!(),
@@ -122,7 +153,7 @@ impl Mint {
         character.attributes.increase_rating(earned_rating);
         msg::reply(
             MintEvent::RatingUpdated {
-                character_id,
+                id: character.id,
                 rating: character.attributes.tier_rating,
             },
             0,
@@ -152,7 +183,14 @@ impl Mint {
 
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
-        msg::reply(MintEvent::XpUpdated { character_id, xp }, 0).expect("unable to reply");
+        msg::reply(
+            MintEvent::XpUpdated {
+                id: character.id,
+                xp,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {
@@ -203,8 +241,8 @@ impl Mint {
             program_id == msg::source(),
             "The caller must be the contract itself"
         );
-        // 75 percent
-        let amount_for_distribution = (self.config.gold_pool_amount * 750) / 1000;
+
+        let amount_for_distribution = self.config.gold_pool_amount;
 
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;
@@ -281,6 +319,47 @@ impl Mint {
         sum = sum.checked_add(attributes.vitality).unwrap();
         assert!(sum == 10, "invalid amount of attributes")
     }
+
+    fn update_config(
+        &mut self,
+        gas_for_daily_distribution: Option<u64>,
+        minimum_gas_amount: Option<u64>,
+        update_interval_in_blocks: Option<u32>,
+        reservation_amount: Option<u64>,
+        reservation_duration: Option<u32>,
+        mint_cost: Option<u128>,
+        gold_pool_amount: Option<u128>,
+    ) {
+        self.check_if_admin(&msg::source());
+
+        if let Some(gas_for_daily_distribution) = gas_for_daily_distribution {
+            self.config.gas_for_daily_distribution = gas_for_daily_distribution;
+        }
+
+        if let Some(minimum_gas_amount) = minimum_gas_amount {
+            self.config.minimum_gas_amount = minimum_gas_amount;
+        }
+
+        if let Some(update_interval_in_blocks) = update_interval_in_blocks {
+            self.config.update_interval_in_blocks = update_interval_in_blocks;
+        }
+
+        if let Some(reservation_amount) = reservation_amount {
+            self.config.reservation_amount = reservation_amount;
+        }
+
+        if let Some(reservation_duration) = reservation_duration {
+            self.config.reservation_duration = reservation_duration;
+        }
+
+        if let Some(mint_cost) = mint_cost {
+            self.config.mint_cost = Some(mint_cost);
+        }
+
+        if let Some(gold_pool_amount) = gold_pool_amount {
+            self.config.gold_pool_amount = gold_pool_amount;
+        }
+    }
 }
 
 #[no_mangle]
@@ -322,6 +401,24 @@ extern "C" fn handle() {
         MintAction::RemoveAdmin { admin } => mint.remove_admin(&admin),
         MintAction::StartDailyGoldDistribution => mint.start_daily_gold_distribution(),
         MintAction::StopDailyGoldDistribution => mint.stop_daily_gold_distribution(),
+        MintAction::UpdateCharacter { code_id, address } => mint.update_strategy(code_id, address),
+        MintAction::UpdateConfig {
+            gas_for_daily_distribution,
+            minimum_gas_amount,
+            update_interval_in_blocks,
+            reservation_amount,
+            reservation_duration,
+            mint_cost,
+            gold_pool_amount,
+        } => mint.update_config(
+            gas_for_daily_distribution,
+            minimum_gas_amount,
+            update_interval_in_blocks,
+            reservation_amount,
+            reservation_duration,
+            mint_cost,
+            gold_pool_amount,
+        ),
     }
 }
 

@@ -71,7 +71,8 @@ pub enum AttributeChoice {
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct CharacterInfo {
-    pub id: ActorId,
+    pub id: u128,
+    pub algorithm_id: ActorId,
     pub name: String,
     pub attributes: CharacterAttributes,
     pub level: u8,
@@ -142,6 +143,10 @@ pub enum MintAction {
         name: String,
         attributes: InitialAttributes,
     },
+    UpdateCharacter {
+        code_id: Option<CodeId>,
+        address: Option<ActorId>,
+    },
     CharacterInfo {
         owner_id: ActorId,
     },
@@ -160,6 +165,16 @@ pub enum MintAction {
     StartDailyGoldDistribution,
     DistributeDailyPool,
     StopDailyGoldDistribution,
+
+    UpdateConfig {
+        gas_for_daily_distribution: Option<u64>,
+        minimum_gas_amount: Option<u64>,
+        update_interval_in_blocks: Option<u32>,
+        reservation_amount: Option<u64>,
+        reservation_duration: Option<u32>,
+        mint_cost: Option<u128>,
+        gold_pool_amount: Option<u128>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -172,17 +187,18 @@ pub enum MintEvent {
         count: u8,
     },
     XpUpdated {
-        character_id: ActorId,
+        id: u128,
         xp: u32,
     },
     RatingUpdated {
-        character_id: ActorId,
+        id: u128,
         rating: u128,
     },
     LevelUpdated {
-        character_id: ActorId,
+        character_id: u128,
         attr: AttributeChoice,
     },
+    CharacterUpdated,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

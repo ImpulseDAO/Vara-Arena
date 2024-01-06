@@ -74,11 +74,23 @@ export async function handleArenaMessage(
                     hp: fullHpByCharacter[character1.id],
                     energy: fullEnergyByCharacter[character1.id],
                     position: 6,
+                    chillingTouch: 0,
+                    earthSkin: 0,
+                    earthSmites: 0,
+                    fireHaste: 0,
+                    fireWall: 0,
+                    waterBurst: 0,
                 }),
                 character2: new CharacterTurnState({
                     hp: fullHpByCharacter[character2.id],
                     energy: fullEnergyByCharacter[character2.id],
                     position: 10,
+                    chillingTouch: 0,
+                    earthSkin: 0,
+                    earthSmites: 0,
+                    fireHaste: 0,
+                    fireWall: 0,
+                    waterBurst: 0,
                 }),
                 logs: [],
             })
@@ -86,8 +98,24 @@ export async function handleArenaMessage(
             for (let events of log.turns) {
                 let previous = turns[turns.length - 1]
                 let turn = new BattleTurn({
-                    character1: new CharacterTurnState({ ...previous.character1?.toJSON() }),
-                    character2: new CharacterTurnState({ ...previous.character2?.toJSON() }),
+                    character1: new CharacterTurnState({
+                        ...previous.character1?.toJSON(),
+                        chillingTouch: Math.max(previous.character1!.chillingTouch - 1, 0),
+                        earthSkin: Math.max(previous.character1!.earthSkin - 1, 0),
+                        earthSmites: Math.max(previous.character1!.earthSmites - 1, 0),
+                        fireHaste: Math.max(previous.character1!.fireHaste - 1, 0),
+                        fireWall: Math.max(previous.character1!.fireWall - 1, 0),
+                        waterBurst: Math.max(previous.character1!.waterBurst - 1, 0),
+                    }),
+                    character2: new CharacterTurnState({
+                        ...previous.character2?.toJSON(),
+                        chillingTouch: Math.max(previous.character2!.chillingTouch - 1, 0),
+                        earthSkin: Math.max(previous.character2!.earthSkin - 1, 0),
+                        earthSmites: Math.max(previous.character2!.earthSmites - 1, 0),
+                        fireHaste: Math.max(previous.character2!.fireHaste - 1, 0),
+                        fireWall: Math.max(previous.character2!.fireWall - 1, 0),
+                        waterBurst: Math.max(previous.character2!.waterBurst - 1, 0),
+                    }),
                     logs: []
                 })
                 turn.logs = events.map((event: any) => {
@@ -147,12 +175,22 @@ export async function handleArenaMessage(
                                     break
                                 case 'waterBurst':
                                     enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.waterBurst.damage, 0)
+                                    enemy.waterBurst = 3
                                     break
                                 case 'fireWall':
+                                    player.fireWall = 3
+                                    break
                                 case 'fireHaste':
+                                    player.fireHaste = 4
+                                    break
                                 case 'earthSmites':
+                                    player.earthSmites = 3
+                                    break
                                 case 'earthSkin':
+                                    player.earthSkin = 3
+                                    break
                                 case 'chillingTouch':
+                                    enemy.chillingTouch = 4
                                     break
                                 default:
                                     throw new Error(`spell "${spell}" is not supported`)

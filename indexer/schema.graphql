@@ -52,6 +52,12 @@ type CharacterTurnState {
   hp: Int!
   energy: Int!
   position: Int!
+  fireWall: Int!
+  fireHaste: Int!
+  earthSmites: Int!
+  earthSkin: Int!
+  chillingTouch: Int!
+  waterBurst: Int!
 }
 
 type TurnLog {

@@ -17,7 +17,7 @@ pub struct Lobby {
     capacity: u8,
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
-    winners: Vec<ActorId>,
+    winners: Vec<u128>,
     losers: Vec<ActorId>,
     logs: Vec<BattleLog>,
 }
@@ -182,6 +182,7 @@ impl Arena {
         let character = Character {
             owner: owner_id,
             id: character_info.id,
+            algorithm_id: character_info.algorithm_id,
             name: character_info.name,
             hp: utils::full_hp(character_info.attributes.vitality),
             energy: utils::full_energy(character_info.attributes.stamina),

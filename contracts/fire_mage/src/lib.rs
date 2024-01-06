@@ -1,6 +1,6 @@
 #![no_std]
 
-use arena_io::{AttackKind, BattleAction, Spell, YourTurn};
+use arena_io::{BattleAction, Spell, YourTurn};
 use gstd::{debug, msg};
 
 const SPELL_COST: u8 = 5;

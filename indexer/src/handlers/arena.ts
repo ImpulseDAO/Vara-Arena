@@ -25,7 +25,7 @@ export async function handleArenaMessage(
 
     if (data.lobbyCreated) {
         let lobby = new Lobby({
-            id: String(data.lobbyCreated.lobbyId),
+            id: data.lobbyCreated.lobbyId,
             capacity: data.lobbyCreated.capacity,
             reservationsCount: 0,
         })

@@ -118,12 +118,7 @@ impl Mint {
         msg::reply(character, 0).expect("unable to reply");
     }
 
-    fn increase_xp(
-        &mut self,
-        owner_id: CharacterId,
-        algorithm_id: CharacterId,
-        losers: Vec<ActorId>,
-    ) {
+    fn increase_xp(&mut self, owner_id: CharacterId, character_id: u128, losers: Vec<ActorId>) {
         let caller = msg::source();
 
         if let Some(arena_id) = self.arena_contract {
@@ -138,7 +133,7 @@ impl Mint {
             .cloned()
             .expect("invalid owner_id");
 
-        assert!(character.algorithm_id == algorithm_id);
+        assert!(character.id == character_id);
 
         let earned_rating = match character.level {
             0 => unreachable!(),
@@ -153,7 +148,7 @@ impl Mint {
         character.attributes.increase_rating(earned_rating);
         msg::reply(
             MintEvent::RatingUpdated {
-                id: character.id,
+                character_id: character.id,
                 rating: character.attributes.tier_rating,
             },
             0,
@@ -168,7 +163,7 @@ impl Mint {
                 character_info.get_mut().attributes.lives_count -= 1;
                 msg::reply(
                     MintEvent::LivesCountUpdated {
-                        character_id,
+                        character_id: character_info.get().id,
                         count: character_info.get().attributes.lives_count,
                     },
                     0,
@@ -185,7 +180,7 @@ impl Mint {
 
         msg::reply(
             MintEvent::XpUpdated {
-                id: character.id,
+                character_id: character.id,
                 xp,
             },
             0,

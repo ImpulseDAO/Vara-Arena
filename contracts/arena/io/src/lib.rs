@@ -17,7 +17,7 @@ pub enum ArenaAction {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct TurnLog {
-    pub character: ActorId,
+    pub character: u128,
     pub action: TurnEvent,
 }
 
@@ -70,8 +70,8 @@ pub enum TurnEvent {
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct BattleLog {
-    pub character1: (ActorId, bool),
-    pub character2: (ActorId, bool),
+    pub character1: (u128, bool),
+    pub character2: (u128, bool),
     pub turns: Vec<Vec<TurnLog>>,
 }
 
@@ -83,7 +83,7 @@ pub enum ArenaEvent {
     },
     PlayerRegistered {
         lobby_id: u128,
-        player_id: ActorId,
+        player_id: u128,
     },
     TierSet {
         lobby_id: u128,
@@ -94,7 +94,7 @@ pub enum ArenaEvent {
     },
     LobbyBattleLog {
         lobby_id: u128,
-        winner_id: ActorId,
+        winner_id: u128,
         logs: Vec<BattleLog>,
     },
 }
@@ -167,7 +167,8 @@ pub struct YourTurn {
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct Character {
     pub owner: ActorId,
-    pub id: ActorId,
+    pub id: u128,
+    pub algorithm_id: ActorId,
     pub name: String,
     pub hp: u8,
     pub energy: u8,

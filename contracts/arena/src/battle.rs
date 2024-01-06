@@ -1,6 +1,6 @@
 use crate::execute::execute_action;
 use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
-use gstd::{debug, msg, prelude::*, ActorId};
+use gstd::{debug, msg, prelude::*};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
@@ -68,19 +68,21 @@ impl Battle {
                 you: p1_state.clone(),
                 enemy: p2_state.clone(),
             };
-            let p1_action: BattleAction = msg::send_for_reply_as(self.c1.id, p1_turn, 0, 0)
-                .expect("unable to send message")
-                .await
-                .expect("unable to receive `BattleAction`");
+            let p1_action: BattleAction =
+                msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
+                    .expect("unable to send message")
+                    .await
+                    .expect("unable to receive `BattleAction`");
 
             let p2_turn = YourTurn {
                 you: p2_state,
                 enemy: p1_state,
             };
-            let p2_action: BattleAction = msg::send_for_reply_as(self.c2.id, p2_turn, 0, 0)
-                .expect("unable to send message")
-                .await
-                .expect("unable to receive `BattleAction`");
+            let p2_action: BattleAction =
+                msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
+                    .expect("unable to send message")
+                    .await
+                    .expect("unable to receive `BattleAction`");
 
             let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
             let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);
@@ -137,7 +139,7 @@ impl Battle {
         }
     }
 
-    fn check_winner(&self) -> Option<((ActorId, bool), (ActorId, bool))> {
+    fn check_winner(&self) -> Option<((u128, bool), (u128, bool))> {
         if self.c1.hp == 0 {
             Some(((self.c1.id, false), (self.c2.id, true)))
         } else if self.c2.hp == 0 {

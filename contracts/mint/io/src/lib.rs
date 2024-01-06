@@ -152,7 +152,7 @@ pub enum MintAction {
     },
     BattleResult {
         owner_id: ActorId,
-        character_id: ActorId,
+        character_id: u128,
         losers: Vec<ActorId>,
     },
     SetArena {
@@ -183,15 +183,15 @@ pub enum MintEvent {
         character_info: CharacterInfo,
     },
     LivesCountUpdated {
-        character_id: ActorId,
+        character_id: u128,
         count: u8,
     },
     XpUpdated {
-        id: u128,
+        character_id: u128,
         xp: u32,
     },
     RatingUpdated {
-        id: u128,
+        character_id: u128,
         rating: u128,
     },
     LevelUpdated {

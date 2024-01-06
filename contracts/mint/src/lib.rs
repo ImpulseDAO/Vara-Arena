@@ -79,6 +79,23 @@ impl Mint {
         .expect("unable to reply");
     }
 
+    fn update_strategy(&mut self, code_id: CodeId) {
+        let player = msg::source();
+
+        let character = self
+            .characters
+            .get_mut(&player)
+            .expect("You have no  characters");
+
+        let (_, character_id) =
+            ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
+                .unwrap();
+
+        character.id = character_id;
+
+        msg::reply(MintEvent::CharacterUpdated, 0).expect("unable to reply");
+    }
+
     fn character_info(&self, owner_id: CharacterId) {
         let character = self
             .characters
@@ -281,6 +298,47 @@ impl Mint {
         sum = sum.checked_add(attributes.vitality).unwrap();
         assert!(sum == 10, "invalid amount of attributes")
     }
+
+    fn update_config(
+        &mut self,
+        gas_for_daily_distribution: Option<u64>,
+        minimum_gas_amount: Option<u64>,
+        update_interval_in_blocks: Option<u32>,
+        reservation_amount: Option<u64>,
+        reservation_duration: Option<u32>,
+        mint_cost: Option<u128>,
+        gold_pool_amount: Option<u128>,
+    ) {
+        self.check_if_admin(&msg::source());
+
+        if let Some(gas_for_daily_distribution) = gas_for_daily_distribution {
+            self.config.gas_for_daily_distribution = gas_for_daily_distribution;
+        }
+
+        if let Some(minimum_gas_amount) = minimum_gas_amount {
+            self.config.minimum_gas_amount = minimum_gas_amount;
+        }
+
+        if let Some(update_interval_in_blocks) = update_interval_in_blocks {
+            self.config.update_interval_in_blocks = update_interval_in_blocks;
+        }
+
+        if let Some(reservation_amount) = reservation_amount {
+            self.config.reservation_amount = reservation_amount;
+        }
+
+        if let Some(reservation_duration) = reservation_duration {
+            self.config.reservation_duration = reservation_duration;
+        }
+
+        if let Some(mint_cost) = mint_cost {
+            self.config.mint_cost = Some(mint_cost);
+        }
+
+        if let Some(gold_pool_amount) = gold_pool_amount {
+            self.config.gold_pool_amount = gold_pool_amount;
+        }
+    }
 }
 
 #[no_mangle]
@@ -322,6 +380,24 @@ extern "C" fn handle() {
         MintAction::RemoveAdmin { admin } => mint.remove_admin(&admin),
         MintAction::StartDailyGoldDistribution => mint.start_daily_gold_distribution(),
         MintAction::StopDailyGoldDistribution => mint.stop_daily_gold_distribution(),
+        MintAction::UpdateCharacter { code_id } => mint.update_strategy(code_id),
+        MintAction::UpdateConfig {
+            gas_for_daily_distribution,
+            minimum_gas_amount,
+            update_interval_in_blocks,
+            reservation_amount,
+            reservation_duration,
+            mint_cost,
+            gold_pool_amount,
+        } => mint.update_config(
+            gas_for_daily_distribution,
+            minimum_gas_amount,
+            update_interval_in_blocks,
+            reservation_amount,
+            reservation_duration,
+            mint_cost,
+            gold_pool_amount,
+        ),
     }
 }
 

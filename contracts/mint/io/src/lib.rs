@@ -142,6 +142,9 @@ pub enum MintAction {
         name: String,
         attributes: InitialAttributes,
     },
+    UpdateCharacter {
+        code_id: CodeId,
+    },
     CharacterInfo {
         owner_id: ActorId,
     },
@@ -160,6 +163,15 @@ pub enum MintAction {
     StartDailyGoldDistribution,
     DistributeDailyPool,
     StopDailyGoldDistribution,
+    UpdateConfig {
+        gas_for_daily_distribution: Option<u64>,
+        minimum_gas_amount: Option<u64>,
+        update_interval_in_blocks: Option<u32>,
+        reservation_amount: Option<u64>,
+        reservation_duration: Option<u32>,
+        mint_cost: Option<u128>,
+        gold_pool_amount: Option<u128>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -183,6 +195,7 @@ pub enum MintEvent {
         character_id: ActorId,
         attr: AttributeChoice,
     },
+    CharacterUpdated,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

@@ -2,7 +2,7 @@
 
 use gstd::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 use gstd::prog::ProgramGenerator;
-use gstd::{debug, exec, msg, prelude::*, ActorId, CodeId, ReservationId};
+use gstd::{exec, msg, prelude::*, ActorId, CodeId, ReservationId};
 use mint_io::{
     AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus,
     InitialAttributes, MintAction, MintEvent, MintState,
@@ -20,6 +20,7 @@ struct Mint {
     pool_amount: u128,
     total_rating: u128,
     daily_gold_distr_status: DailyGoldDistrStatus,
+    character_id: u128,
 }
 
 static mut MINT: Option<Mint> = None;
@@ -47,12 +48,14 @@ impl Mint {
 
         self.check_attributes(&attributes);
 
-        let (_, character_id) =
+        let (_, algorithm_id) =
             ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                 .unwrap();
 
+        let id = self.character_id;
         let info = CharacterInfo {
-            id: character_id,
+            id,
+            algorithm_id,
             name,
             attributes: CharacterAttributes {
                 strength: attributes.strength,
@@ -69,7 +72,8 @@ impl Mint {
         };
 
         self.characters.insert(msg::source(), info.clone());
-        debug!("character {:?} minted", character_id);
+
+        self.character_id += 1;
         msg::reply(
             MintEvent::CharacterCreated {
                 character_info: info,
@@ -90,18 +94,18 @@ impl Mint {
             .get_mut(&player)
             .expect("You have no  characters");
 
-        let character_id = if let Some(code_id) = code_id {
-            let (_, character_id) =
+        let algorithm_id = if let Some(code_id) = code_id {
+            let (_, algorithm_id) =
                 ProgramGenerator::create_program_with_gas(code_id, b"payload", 10_000_000_000, 0)
                     .unwrap();
-            character_id
+            algorithm_id
         } else if let Some(address) = address {
             address
         } else {
             panic!("Both values cant be None")
         };
 
-        character.id = character_id;
+        character.algorithm_id = algorithm_id;
 
         msg::reply(MintEvent::CharacterUpdated, 0).expect("unable to reply");
     }
@@ -117,7 +121,7 @@ impl Mint {
     fn increase_xp(
         &mut self,
         owner_id: CharacterId,
-        character_id: CharacterId,
+        algorithm_id: CharacterId,
         losers: Vec<ActorId>,
     ) {
         let caller = msg::source();
@@ -134,7 +138,7 @@ impl Mint {
             .cloned()
             .expect("invalid owner_id");
 
-        assert!(character.id == character_id);
+        assert!(character.algorithm_id == algorithm_id);
 
         let earned_rating = match character.level {
             0 => unreachable!(),
@@ -149,7 +153,7 @@ impl Mint {
         character.attributes.increase_rating(earned_rating);
         msg::reply(
             MintEvent::RatingUpdated {
-                character_id,
+                id: character.id,
                 rating: character.attributes.tier_rating,
             },
             0,
@@ -179,7 +183,14 @@ impl Mint {
 
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
-        msg::reply(MintEvent::XpUpdated { character_id, xp }, 0).expect("unable to reply");
+        msg::reply(
+            MintEvent::XpUpdated {
+                id: character.id,
+                xp,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {
@@ -230,8 +241,8 @@ impl Mint {
             program_id == msg::source(),
             "The caller must be the contract itself"
         );
-        // 75 percent
-        let amount_for_distribution = (self.config.gold_pool_amount * 750) / 1000;
+
+        let amount_for_distribution = self.config.gold_pool_amount;
 
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;

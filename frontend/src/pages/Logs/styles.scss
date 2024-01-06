@@ -8,10 +8,12 @@
   flex-direction: column;
   align-items: center;
 
-  padding-inline: 2rem;
+  padding-inline: 3rem;
 
   .modal_leaderboard {
-    min-width: 500px;
+    width: 100%;
+    min-width: 600px;
+    max-width: 700px;
 
     margin-top: 42px;
     overflow-y: scroll;

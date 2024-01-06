@@ -53,6 +53,8 @@ export const useOnSubmit = ({
       },
     };
 
+    console.log("onSubmit payload", payload);
+
     send({
       payload,
       gasLimit: MAX_GAS_LIMIT,

@@ -3,12 +3,13 @@ import "./styles.scss";
 import ProgressIcon from "../../assets/svg/progress.svg";
 
 import { useParams } from "react-router-dom";
-import { ButtonJoinReservePlay } from "./components/ButtonJoinReservePlay";
+import { ButtonsJoinReservePlay } from "./components/ButtonJoinReservePlay";
 import { useLobby } from "app/api/lobbies";
 import { GasReserved } from "components/GasReserved/GasReserved";
 import { Badge } from "@mantine/core";
 import { useMyAccountId } from "hooks/hooks";
 import { PlayersTable } from "./components/PlayersTable";
+import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
 
 export const Lobby = () => {
   const myId = useMyAccountId();
@@ -18,6 +19,7 @@ export const Lobby = () => {
 
   const { data: lobbyData, refetch: refetchLobbyQuery } = useLobby({ id: lobbyId ?? '' });
   const players = lobbyData?.lobbyById?.characters;
+  const isFinished = lobbyData?.lobbyById?.battleLogs?.length !== 0;
 
   const { characters, hasPlayerJoined } = useMemo(() => {
     if (!players) {
@@ -53,7 +55,7 @@ export const Lobby = () => {
     playersSize = lobbyData?.lobbyById?.capacity;
   const isEnoughPlayers = playersJoined === (playersSize ?? 0);
 
-  const gasNeeded = 2; // FIXME
+  const gasNeeded = PLAYERS_TO_RESERVATIONS_NEEDED_MAP[playersSize ?? 0] ?? 0;
 
   return (
     <div className="content_wrapper">
@@ -63,7 +65,9 @@ export const Lobby = () => {
           <p className="modal_tille">Tournament participants</p>
           {
             isEnoughPlayers
-              ? <p className="modal_info">Ready to start</p>
+              ? isFinished
+                ? <p className="modal_info">Battle is finished</p>
+                : <p className="modal_info">Ready to start</p>
               : <>
                 <img
                   className={"modal_progress"}
@@ -78,13 +82,20 @@ export const Lobby = () => {
             {playersJoined} of {playersSize} players
           </Badge>
 
-          <GasReserved
-            mt="auto"
-            mb="xs"
-            {...{
-              gasNeeded,
-              gasReserved: gasReservedTimes
-            }} />
+          {
+            /**
+             * Show "Gas reserved" widget only if gasNeeded is not 0
+             */
+            gasNeeded !== 0
+              ? (<GasReserved
+                mt="auto"
+                mb="xs"
+                {...{
+                  gasNeeded,
+                  gasReserved: gasReservedTimes
+                }} />)
+              : null
+          }
         </div>
 
         <div className="modal_table">
@@ -92,9 +103,9 @@ export const Lobby = () => {
         </div>
 
         {
-          players != null
+          players != null && !isFinished
             ? (
-              <ButtonJoinReservePlay
+              <ButtonsJoinReservePlay
                 {...{
                   hasPlayerJoined,
                   players,

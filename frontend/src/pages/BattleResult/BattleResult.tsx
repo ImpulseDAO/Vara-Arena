@@ -23,8 +23,11 @@ export const BattleResult = () => {
   /**
    * Characters
    */
-  const char1 = battleLog?.lobby.characters[0].character;
-  const char2 = battleLog?.lobby.characters[1].character;
+  const char1id = battleLog?.character1.character;
+  const char2id = battleLog?.character2.character;
+
+  const char1 = battleLog?.lobby.characters.find(char => char.character.id === char1id)?.character;
+  const char2 = battleLog?.lobby.characters.find(char => char.character.id === char2id)?.character;
 
   /**
   * List items refs

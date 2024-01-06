@@ -42,7 +42,7 @@ export const StrategyInput = ({
         label: `${firstPart}: ${codeId.substring(0, 8)}...`,
       };
     });
-  }, []);
+  }, [strategyCodeIds]);
 
 
   /**

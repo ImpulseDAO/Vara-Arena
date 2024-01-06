@@ -1,4 +1,4 @@
-import { graphql } from "../../gql/gql";
+import { graphql } from "gql/gql";
 import { useGraphQL } from "app/providers/ReactQuery/useGraphQL";
 import { useSendToArena } from "./sendMessages";
 import { MAX_GAS_LIMIT } from "consts";
@@ -13,16 +13,20 @@ const lobbiesQueryDocument = graphql(/* GraphQL */ `
     lobbies {
       id
       capacity
+      reservationsCount
       characters {
         id
         character {
+          id
           name
           owner
           level
-          id
           experience
           attributes
         }
+      }
+      battleLogs {
+        id
       }
     }
   }
@@ -35,19 +39,23 @@ export const useLobbies = () => useGraphQL(lobbiesQueryDocument);
  */
 
 const lobbyByIdQueryDocument = graphql(/* GraphQL */ `
-  query LobbyById($id: String!) {
+  query LobbyById2($id: String!) {
     lobbyById(id: $id) {
       id
       capacity
+      reservationsCount
       characters {
+        id
         character {
-          attributes
-          experience
           id
-          level
           name
           owner
+          level
+          experience
+          attributes
         }
+      }
+      battleLogs {
         id
       }
     }

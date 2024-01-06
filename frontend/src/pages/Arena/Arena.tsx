@@ -21,7 +21,7 @@ export const Arena = () => {
 
     return [...lobbiesData?.lobbies].reverse().map(lobby => {
       return {
-        tier: 'tier' in lobby ? lobby.tier as string : 'UNSET',
+        tierText: 'tier' in lobby ? lobby.tier as string : "",
         lobbyId: lobby.id,
         playersSize: lobby.capacity,
         playersJoined: lobby.characters.length,
@@ -128,7 +128,7 @@ export const Arena = () => {
         {cards.map((card, index) => (
           <GridColumn key={`${index} - ${card.lobbyId}`}>
             <Card
-              tier={card.tier}
+              tierText={card.tierText}
               lobbyId={card.lobbyId}
               playersSize={card.playersSize}
               playersJoined={card.playersJoined}
@@ -158,7 +158,7 @@ const GridColumn = ({ children }) => {
 };
 
 const Card = ({
-  tier,
+  tierText,
   lobbyId,
   playersSize,
   playersJoined,
@@ -166,7 +166,7 @@ const Card = ({
   gasReserved,
   onJoin
 }: {
-  tier: string,
+  tierText: string,
   lobbyId: string,
   playersSize: number | string,
   playersJoined: number,
@@ -194,7 +194,7 @@ const Card = ({
       <Stack align="center" h="100%" spacing={0}>
         <SwordsImage />
 
-        <TitleText mb="sm">Tier {tier}</TitleText>
+        <TitleText mb="sm">{tierText}</TitleText>
 
         <Badge c={'white'} sx={{ textTransform: 'none' }}>
           {playersJoined} of {playersSize} players

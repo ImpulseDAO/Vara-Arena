@@ -45,6 +45,11 @@ export const PAYMENT_FOR_MINTING = IS_TESTNET
   ? 10_000_000_000_000
   : 100_000_000_000_000;
 
+export const PLAYERS_TO_RESERVATIONS_NEEDED_MAP = {
+  2: 0,
+  4: 2,
+};
+
 export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
   2: 300,
   3: 600,

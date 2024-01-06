@@ -14,31 +14,37 @@ export const Logs = () => {
   const inProgressRows = battleLogs?.map((battleLog) => {
     const { id } = battleLog;
 
-    console.log(battleLog);
-
     return ({
-      player1_id: (
-        <div className='row_player'>
-          <img src={AvatarIcon} />
-          <div>
-            <p className='row_name'>{battleLog.lobby.characters[0].character.name}</p>
-            <p className='row_id'>{getShortIdString(battleLog.lobby.characters[0].character.owner)}</p>
-          </div>
-        </div>
-      ),
-      player2_id: (
-        <div className='row_player'>
-          <img src={AvatarIcon} />
-          <div>
-            <p className='row_name'>{battleLog.lobby.characters[1].character.name}</p>
-            <p className='row_id'>{getShortIdString(battleLog.lobby.characters[1].character.owner)}</p>
-          </div>
-        </div>
-      ),
-      status: 'WON',
-      players: battleLog.lobby.characters,
-      level: <span className='row_lvl'>12</span>,
-      battleId: id
+      // player1_id: (
+      //   <div className='row_player'>
+      //     <img src={AvatarIcon} />
+      //     <div>
+      //       <p className='row_name'>{battleLog.lobby.characters[0].character.name}</p>
+      //       <p className='row_id'>{getShortIdString(battleLog.lobby.characters[0].character.owner)}</p>
+      //     </div>
+      //   </div>
+      // ),
+      // player2_id: (
+      //   <div className='row_player'>
+      //     <img src={AvatarIcon} />
+      //     <div>
+      //       <p className='row_name'>{battleLog.lobby.characters[1].character.name}</p>
+      //       <p className='row_id'>{getShortIdString(battleLog.lobby.characters[1].character.owner)}</p>
+      //     </div>
+      //   </div>
+      // ),
+      playersNames: [battleLog.character1, battleLog.character2].map(({ character: characterId }) => {
+        const characterName = battleLog.lobby.characters.find(c => c.character.id === characterId)?.character.name;
+        return characterName;
+      }),
+      battleId: id,
+      lobbyId: battleLog.lobby.id,
+      winner: battleLog.character1.winner
+        ? battleLog.lobby.characters[0].character.name
+        : battleLog.character2.winner
+          ? battleLog.lobby.characters[1].character.name :
+          'No winner'
+
     });
   }) ?? [];
 
@@ -51,6 +57,7 @@ export const Logs = () => {
           <Table horizontalSpacing="md" verticalSpacing="md">
             <thead>
               <tr>
+                <th>Lobby ID</th>
                 <th>Battle ID</th>
                 <th>Players</th>
                 <th>Winner</th>
@@ -70,15 +77,23 @@ export const Logs = () => {
                     cursor: 'pointer'
                   }}
                 >
+                  {/* Lobby ID */}
+                  <td><div className={'row_position'}>{row.lobbyId}</div></td>
+
+                  {/* Battle ID */}
                   <td><div className={'row_position'}>{row.battleId}</div></td>
-                  <td>{row.players.map(character => {
+
+                  {/* Players */}
+                  <td>{row.playersNames.map(playerName => {
                     return (
                       <div>
-                        {character.character.name}
+                        {playerName}
                       </div>
                     );
                   })}</td>
-                  <td>{'winner'}</td>
+
+                  {/* Winner */}
+                  <td>{row.winner}</td>
                 </Box>);
             })}</tbody>
           </Table>

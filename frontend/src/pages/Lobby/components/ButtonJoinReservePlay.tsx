@@ -21,7 +21,7 @@ const PLAY_BUTTON_TEXT = "Start battle";
  * 2. Button text is "Reserve gas".
  * 3. Button text is "Play".
  */
-export const ButtonJoinReservePlay = ({
+export const ButtonsJoinReservePlay = ({
   hasPlayerJoined,
   lobbyId,
   players,
@@ -71,7 +71,11 @@ export const ButtonJoinReservePlay = ({
   const reserveGas = React.useCallback(() => {
     return new Promise((resolve) => {
       send({
-        payload: { ReserveGas: null },
+        payload: {
+          ReserveGas: {
+            lobby_id: lobbyId
+          }
+        },
         gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
           console.log("successfully reserved gas");
@@ -81,7 +85,7 @@ export const ButtonJoinReservePlay = ({
         onError: () => console.log("error while reserving gas"),
       });
     });
-  }, [send, handleGasReserved]);
+  }, [send, lobbyId, handleGasReserved]);
 
   const startBattle = React.useCallback(() => {
     return new Promise((resolve) => {

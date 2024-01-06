@@ -11,6 +11,7 @@ export const allbattleLogsQueryDocument = graphql(`
       id
       battleIndex
       character1 {
+        winner
         attributes
         character
         experience
@@ -18,6 +19,7 @@ export const allbattleLogsQueryDocument = graphql(`
         level
       }
       character2 {
+        winner
         attributes
         experience
         character
@@ -87,6 +89,7 @@ const battleLogByIdQueryDocument = graphql(/* GraphQL */ `
       id
       battleIndex
       character1 {
+        winner
         attributes
         character
         experience
@@ -94,6 +97,7 @@ const battleLogByIdQueryDocument = graphql(/* GraphQL */ `
         level
       }
       character2 {
+        winner
         attributes
         experience
         character

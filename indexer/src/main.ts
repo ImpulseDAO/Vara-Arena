@@ -36,7 +36,7 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
     }
 
     await ctx.store.upsert([...characters.values()])
-    await ctx.store.insert([...lobbies.values()])
+    await ctx.store.upsert([...lobbies.values()])
     await ctx.store.insert([...lobbiesCharacter.values()])
     await ctx.store.insert([...battleLogs.values()])
 })

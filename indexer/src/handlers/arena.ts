@@ -128,18 +128,18 @@ export async function handleArenaMessage(
                             player.energy -= 5
                             switch (spell) {
                                 case 'fireball':
-                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.fireball.damage, 0)
+                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.fireball.damage, 0)
                                     break
                                 case 'waterRestoration':
                                     let fullHp = fullHpByCharacter[event.character]
-                                    player.hp = Math.min(player.hp + event.action.castSpell.waterRestoration.heal, fullHp)
+                                    player.hp = Math.min(player.hp + event.action.castSpell.result.waterRestoration.heal, fullHp)
                                     break
                                 case 'earthCatapult':
-                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.earthCatapult.damage, 0)
-                                    enemy.position = event.action.castSpell.earthCatapult.enemyPosition
+                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.earthCatapult.damage, 0)
+                                    enemy.position = event.action.castSpell.result.earthCatapult.enemyPosition
                                     break
                                 case 'waterBurst':
-                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.waterBurst.damage, 0)
+                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.waterBurst.damage, 0)
                                     break
                                 case 'fireWall':
                                 case 'fireHaste':

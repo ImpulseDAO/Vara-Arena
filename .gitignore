@@ -9,3 +9,10 @@ frontend/.vscode
 
 **/*/.idea
 
+#backend
+backend/.env
+backend/.vscode
+backend/node_modules
+backend/bim
+backend/src/polkadot-account
+#end of backend

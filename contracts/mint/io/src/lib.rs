@@ -182,23 +182,17 @@ pub enum MintEvent {
     CharacterCreated {
         character_info: CharacterInfo,
     },
-    LivesCountUpdated {
-        character_id: u128,
-        count: u8,
-    },
-    XpUpdated {
-        character_id: u128,
-        xp: u32,
-    },
-    RatingUpdated {
-        character_id: u128,
-        rating: u128,
-    },
     LevelUpdated {
         character_id: u128,
         attr: AttributeChoice,
     },
     CharacterUpdated,
+    BattleResultHandled {
+        winner_id: u128,
+        winner_xp: u32,
+        winner_rating: u128,
+        losers: Vec<u128>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

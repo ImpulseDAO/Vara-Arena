@@ -82,9 +82,6 @@ pub enum ArenaEvent {
     PlayerRegistered {
         lobby_id: u128,
         player_id: u128,
-    },
-    TierSet {
-        lobby_id: u128,
         tier: u8,
     },
     GasReserved {

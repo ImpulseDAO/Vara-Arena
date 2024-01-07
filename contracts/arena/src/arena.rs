@@ -217,23 +217,9 @@ impl Arena {
         // set current tournament tier based on the first registered character's level
         // Initialize current_tier based on the level of the first registered character
         if let SetTier::Tier0 = lobby.current_tier {
-            lobby.current_tier = match character.level {
-                0 => unreachable!(),
-                1 => SetTier::Tier5,
-                2 => SetTier::Tier4,
-                3..=5 => SetTier::Tier3,
-                6..=9 => SetTier::Tier2,
-                _ => SetTier::Tier1,
-            };
-            msg::reply(
-                ArenaEvent::TierSet {
-                    lobby_id,
-                    tier: lobby.current_tier as u8,
-                },
-                0,
-            )
-            .expect("unable to reply");
+            lobby.current_tier = character_tier.clone();
         }
+
         if character_tier == lobby.current_tier {
             lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
@@ -248,6 +234,7 @@ impl Arena {
             ArenaEvent::PlayerRegistered {
                 lobby_id,
                 player_id: character_info.id,
+                tier: character_tier as u8,
             },
             0,
         )

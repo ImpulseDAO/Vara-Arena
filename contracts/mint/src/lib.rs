@@ -144,32 +144,16 @@ impl Mint {
             _ => 5,
         };
         character.increase_xp();
-
         character.attributes.increase_rating(earned_rating);
-        msg::reply(
-            MintEvent::RatingUpdated {
-                character_id: character.id,
-                rating: character.attributes.tier_rating,
-            },
-            0,
-        )
-        .expect("unable to reply");
 
         let xp = character.experience;
         self.characters.insert(owner_id, character.clone());
 
+        let mut losers_id = vec![];
         for character_id in losers {
             if let Entry::Occupied(mut character_info) = self.characters.entry(character_id) {
                 character_info.get_mut().attributes.lives_count -= 1;
-                msg::reply(
-                    MintEvent::LivesCountUpdated {
-                        character_id: character_info.get().id,
-                        count: character_info.get().attributes.lives_count,
-                    },
-                    0,
-                )
-                .expect("unable to reply");
-
+                losers_id.push(character_info.get().id);
                 if character_info.get().attributes.lives_count == 0 {
                     character_info.remove_entry();
                 }
@@ -179,9 +163,11 @@ impl Mint {
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
         msg::reply(
-            MintEvent::XpUpdated {
-                character_id: character.id,
-                xp,
+            MintEvent::BattleResultHandled {
+                winner_id: character_id,
+                winner_xp: xp,
+                winner_rating: character.attributes.tier_rating,
+                losers: losers_id,
             },
             0,
         )

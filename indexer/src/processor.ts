@@ -10,15 +10,15 @@ import {
     Extrinsic as _Extrinsic
 } from '@subsquid/substrate-processor'
 
-export const MINT_ADDRESS = '0x8601d263613d1b34249b5846b2c7085a7990e2c7b8a6effebb79157aa8725daf'
-export const ARENA_ADDRESS = '0x3dd15018150e5eab8a0d5b767697779e99bf9dce020a5c4d6fca73c99ce93ed5'
+export const MINT_ADDRESS = '0x356733d944f2f35a312c0258d9ba859fd72ecf567485ad1c0ea82e38783a6328'
+export const ARENA_ADDRESS = '0xfa29e61fefa098fc2b33e72e34c952dce40aacfc1c1067d60ec3d07b372e2f45'
 
 export const processor = new SubstrateBatchProcessor()
     .setDataSource({
         archive: lookupArchive('vara-testnet', { release: 'ArrowSquid' }),
         chain: assertNotNull(process.env.RPC_ENDPOINT)
     })
-    .setBlockRange({ from: 2919401 })
+    .setBlockRange({ from: 3050802 })
     .addGearUserMessageSent({ programId: [MINT_ADDRESS, ARENA_ADDRESS] })
     .setFields({
         event: {

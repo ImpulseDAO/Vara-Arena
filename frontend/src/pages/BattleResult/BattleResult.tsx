@@ -28,24 +28,50 @@ export const BattleResultPage = () => {
 
   return (
     <BattleBackgroundWrapper>
-      <BattleResult battleId={battleId} withPlayButton />
+      <BattleResultData battleId={battleId}>
+
+        {(battleLog) => (
+          <BattleResult battleId={battleId} withPlayButton battleLog={battleLog} />
+        )}
+      </BattleResultData>
     </BattleBackgroundWrapper>
   );
+};
+
+
+/**
+ * This is done to keep query logic in the component that is not unmounted on battle change
+ * whereas the BattleResult component is unmounted and mounted again when clicking "Next battle" / "Prev battle"
+ * 
+ * Therefore the previous data is preserved and the UI doesn't flicker.
+ */
+export const BattleResultData = ({
+  battleId,
+  children,
+}: {
+  battleId: string;
+  withPlayButton?: boolean;
+  children: (data: ReturnType<typeof useBattleLogById>['data']) => JSX.Element;
+}) => {
+  const { data: battleLog } = useBattleLogById({ battleId });
+
+  return children(battleLog);
 };
 
 export const BattleResult = ({
   battleId,
   setPlayButton,
   withPlayButton = false,
+  battleLog
 }: {
+  battleLog: ReturnType<typeof useBattleLogById>['data'];
   battleId: string;
   setPlayButton?: (button: React.ReactNode) => void;
   withPlayButton?: boolean;
 }) => {
 
-  const { data: battleLog, isSuccess } = useBattleLogById({ battleId });
+  const isSuccess = battleLog != null;
 
-  console.log('battleLog', battleLog);
 
 
   /**

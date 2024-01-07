@@ -4,7 +4,7 @@ import { BattleBackgroundWrapper } from "./components/BackgroundWrapper";
 import { BattleResultNotFound } from "./components/BattleResultNotFound";
 import { useBattleLogsByLobbyId } from "app/api/battleLogs";
 import React from "react";
-import { BattleResult } from "./BattleResult";
+import { BattleResult, BattleResultData } from "./BattleResult";
 import { BlackButton } from "./components/BlackButton";
 
 export const TournamentResultPage = () => {
@@ -70,8 +70,14 @@ export const TournamentResultPageContent = ({
       </Flex>
 
 
-      {curBattleId ? <BattleResult key={curBattleId} battleId={curBattleId} setPlayButton={setPlayButton} /> : null}
+      {curBattleId ? (
+        <BattleResultData battleId={curBattleId}>
+          {(battleLog) => (
+            <BattleResult battleLog={battleLog} key={curBattleId} battleId={curBattleId} setPlayButton={setPlayButton} />
+          )}
+        </BattleResultData>) : null}
     </BattleBackgroundWrapper>
   );
 
 };
+

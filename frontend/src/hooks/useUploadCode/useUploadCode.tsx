@@ -199,7 +199,7 @@ export const removeCodeIdFromLocalStorage = (codeId: string) => {
 
   localStorage.setItem(
     UPLOADED_CODE_IDS_ARRAY,
-    JSON.stringify(newValue)
+    JSON.stringify(newValue.filter((id) => id !== codeId))
   );
 
   return newValue;

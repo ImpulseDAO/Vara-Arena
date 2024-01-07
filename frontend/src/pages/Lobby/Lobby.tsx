@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ButtonsJoinReservePlay } from "./components/ButtonJoinReservePlay";
 import { useLobby } from "app/api/lobbies";
 import { GasReserved } from "components/GasReserved/GasReserved";
-import { Badge, Text } from "@mantine/core";
+import { Badge, Box, Stack, Text } from "@mantine/core";
 import { useMyAccountId } from "hooks/hooks";
 import { PlayersTable } from "./components/PlayersTable";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
@@ -66,20 +66,23 @@ export const Lobby = () => {
 
         <div className="modal_loader">
           <p className="modal_tille">Tournament participants</p>
-          {
-            isEnoughPlayers
-              ? isFinished
-                ? <Text className="modal_info" color="red" >Lobby ended</Text>
-                : <p className="modal_info">Ready to start</p>
-              : <>
-                <img
-                  className={"modal_progress"}
-                  src={ProgressIcon}
-                  alt="ProgressIcon"
-                />
-                <p className="modal_info">Waiting players</p>
-              </>
-          }
+          <Stack align="center" pos="relative" w="100%">
+            <AbsolutelyPositionedElements lobbyId={lobbyId} tierText={lobbyData?.lobbyById?.['tier'] ?? ''} />
+            {
+              isEnoughPlayers
+                ? isFinished
+                  ? <Text className="modal_info" color="red" >Lobby ended</Text>
+                  : <p className="modal_info">Ready to start</p>
+                : <>
+                  <img
+                    className={"modal_progress"}
+                    src={ProgressIcon}
+                    alt="ProgressIcon"
+                  />
+                  <p className="modal_info">Waiting players</p>
+                </>
+            }
+          </Stack>
 
           <Badge c={'white'} sx={{ textTransform: 'none' }} mb="lg">
             {playersJoined} of {playersSize} players
@@ -147,5 +150,49 @@ export const Lobby = () => {
 
       </div>
     </div>
+  );
+};
+
+/**
+ * Absolutely positioned elements
+ */
+
+const AbsolutelyPositionedElements = ({
+  lobbyId,
+  tierText,
+}: {
+  lobbyId?: string,
+  tierText?: string,
+}) => {
+  const FROM_TOP = 10;
+  const FROM_SIDE = 15;
+  return (
+    <>
+      <Box pos="absolute"
+        top={FROM_TOP}
+        right={FROM_SIDE}
+      >
+        <Text fz={12} fw="600" color="white" bg={"rgba(0, 0, 0, 0.4)"}
+          py={4}
+          px={8}
+          sx={{
+            borderRadius: 9999,
+          }}
+        >Lobby ID #{lobbyId}</Text>
+      </Box>
+
+      {!!tierText && tierText !== '' ? <Box pos="absolute"
+        top={FROM_TOP}
+        left={FROM_SIDE}
+      >
+        <Text fz={12} fw="600" color="white" bg={"rgba(0, 0, 0, 0.4)"}
+          py={4}
+          px={8}
+          sx={{
+            borderRadius: 9999,
+          }}
+        >{tierText}</Text>
+      </Box> : null}
+    </>
   );
 };

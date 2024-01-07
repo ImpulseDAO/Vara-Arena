@@ -34,6 +34,11 @@ export const MINT_PROGRAM_ID =
 // STRATEGY
 export const STRATEGY_CODE_ID_HARDCODED =
   "0x6d5dbdcb194f16fe1c7dbbe9c406f4b3fe656a88c1052375f8be3e68668231bd";
+/**
+ * OLD ! OLD ! OLD strategy code id. We shoould keep track of it
+ */
+export const OLD_STRATEGY_CODE_ID_HARDCODED =
+  "0x60a2e174175bdfee6cb59411c3f1a440c9b9f3e5065766994e625857456f7d1e";
 
 /**
  *

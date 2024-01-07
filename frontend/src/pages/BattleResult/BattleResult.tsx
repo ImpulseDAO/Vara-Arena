@@ -346,6 +346,7 @@ type Action = {
   attack?: {
     kind: AttackKind;
     result: {
+      damage?: number;
       miss?: any;
     };
   };
@@ -422,9 +423,19 @@ const getLogEntryDescription = (log: LogEntry, charName: string, color: string) 
         </Text>
       );
     case log.action.attack != null:
+      const { kind, result } = log.action.attack ?? { result: {} };
       return (
         <Text component="span">
-          <Name {...{ charName, color }} /> attacks with {log.action.attack?.kind}.
+          {
+            'damage' in result ? (
+              <><Name {...{ charName, color }} /> deals {result.damage} dmg using {kind?.toLowerCase()} attack</>
+            ) : null
+          }
+          {
+            'miss' in result ? (
+              <><Name {...{ charName, color }} /> misses trying to attack with {kind?.toLowerCase()}.</>
+            ) : null
+          }
         </Text>
       );
     case log.action.rest != null:

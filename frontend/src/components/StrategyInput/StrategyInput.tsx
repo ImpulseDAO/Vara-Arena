@@ -3,7 +3,7 @@ import {
 } from "hooks/useUploadCode";
 import { Button, Select, Text } from "@mantine/core";
 import React, { useEffect } from "react";
-import { STRATEGY_CODE_ID_HARDCODED } from "consts";
+import { OLD_STRATEGY_CODE_ID_HARDCODED, STRATEGY_CODE_ID_HARDCODED } from "consts";
 import { useAlert } from "@gear-js/react-hooks";
 import { removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
 
@@ -25,7 +25,6 @@ export const StrategyInput = ({
     /**
       * FILTER OUT OLD STRATEGY CODE ID
       */
-    const OLD_STRATEGY_CODE_ID_HARDCODED = "0x25c002d7c488d8117a6c003c3ed04f11da6eb95f912dda39e31c4a634cd1f79f";
     const updatedCodeIds = removeCodeIdFromLocalStorage(OLD_STRATEGY_CODE_ID_HARDCODED);
     setStrategyCodeIds(updatedCodeIds);
   }, []);

@@ -1,5 +1,6 @@
 use crate::execute::execute_action;
 use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
+use gstd::errors::Error;
 use gstd::{debug, msg, prelude::*};
 
 const FIRST_POS: u8 = 6;
@@ -69,20 +70,44 @@ impl Battle {
                 enemy: p2_state.clone(),
             };
             let p1_action: BattleAction =
-                msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
+                match msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
                     .expect("unable to send message")
                     .await
-                    .expect("unable to receive `BattleAction`");
+                {
+                    Ok(action) => action,
+                    Err(err) => match err {
+                        Error::Timeout(_, _) => {
+                            return BattleLog {
+                                character1: (self.c1.id, false),
+                                character2: (self.c2.id, true),
+                                turns,
+                            }
+                        }
+                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
+                    },
+                };
 
             let p2_turn = YourTurn {
                 you: p2_state,
                 enemy: p1_state,
             };
             let p2_action: BattleAction =
-                msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
+                match msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
                     .expect("unable to send message")
                     .await
-                    .expect("unable to receive `BattleAction`");
+                {
+                    Ok(action) => action,
+                    Err(err) => match err {
+                        Error::Timeout(_, _) => {
+                            return BattleLog {
+                                character1: (self.c1.id, true),
+                                character2: (self.c2.id, false),
+                                turns,
+                            }
+                        }
+                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
+                    },
+                };
 
             let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
             let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);

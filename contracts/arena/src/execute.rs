@@ -1,6 +1,6 @@
 use crate::spell::execute_cast_spell;
 use crate::utils;
-use arena_io::{AttackKind, BattleAction, Character, TurnEvent, TurnLog};
+use arena_io::{AttackKind, AttackResult, BattleAction, Character, TurnEvent, TurnLog};
 use core::cmp::{max, min};
 use gstd::{debug, prelude::*};
 
@@ -19,8 +19,10 @@ fn execute_attack_kind(
     energy: u8,
     base_hit_chance: u8,
     base_damage: u8,
+    kind: &AttackKind,
     logs: &mut Vec<TurnLog>,
 ) {
+    let kind = kind.clone();
     if let Some(energy) = player.energy.checked_sub(energy) {
         player.energy = energy;
         if player.position.abs_diff(enemy.position) == 1 {
@@ -28,8 +30,8 @@ fn execute_attack_kind(
                 logs.push(TurnLog {
                     character: player.id,
                     action: TurnEvent::Attack {
-                        position: player.position,
-                        damage: 0,
+                        kind,
+                        result: AttackResult::Parry,
                     },
                 });
             } else {
@@ -57,20 +59,24 @@ fn execute_attack_kind(
                     if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
                         let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
-                        todo!("emmit fire wall damage event")
+                        logs.push(TurnLog {
+                            character: player.id,
+                            action: TurnEvent::FireWall { damage },
+                        });
                     }
                     logs.push(TurnLog {
                         character: player.id,
                         action: TurnEvent::Attack {
-                            position: player.position,
-                            damage,
+                            kind,
+                            result: AttackResult::Damage(damage),
                         },
                     });
                 } else {
                     logs.push(TurnLog {
                         character: player.id,
-                        action: TurnEvent::Miss {
-                            position: player.position,
+                        action: TurnEvent::Attack {
+                            kind,
+                            result: AttackResult::Miss,
                         },
                     });
                 }
@@ -78,19 +84,19 @@ fn execute_attack_kind(
         } else {
             logs.push(TurnLog {
                 character: player.id,
-                action: TurnEvent::Miss {
-                    position: player.position,
+                action: TurnEvent::Attack {
+                    kind,
+                    result: AttackResult::Miss,
                 },
             });
         }
     } else {
-        debug!(
-            "player {:?} has not enough energy for quick attack. skipping the turn...",
-            player.id
-        );
+        debug!("player {:?} has not enough energy for attack", player.id);
         logs.push(TurnLog {
             character: player.id,
-            action: TurnEvent::NotEnoughEnergy,
+            action: TurnEvent::NotEnoughEnergy {
+                action: BattleAction::Attack { kind },
+            },
         })
     }
 }
@@ -102,9 +108,9 @@ fn execute_attack(
     logs: &mut Vec<TurnLog>,
 ) {
     match kind {
-        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, logs),
-        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, logs),
-        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20, logs),
+        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, kind, logs),
+        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, kind, logs),
+        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20, kind, logs),
     }
 }
 
@@ -134,7 +140,9 @@ pub fn execute_action(
             } else {
                 logs.push(TurnLog {
                     character: player.id,
-                    action: TurnEvent::NotEnoughEnergy,
+                    action: TurnEvent::NotEnoughEnergy {
+                        action: action.clone(),
+                    },
                 });
             }
         }
@@ -156,7 +164,9 @@ pub fn execute_action(
             } else {
                 logs.push(TurnLog {
                     character: player.id,
-                    action: TurnEvent::NotEnoughEnergy,
+                    action: TurnEvent::NotEnoughEnergy {
+                        action: action.clone(),
+                    },
                 });
             }
         }
@@ -184,7 +194,9 @@ pub fn execute_action(
             } else {
                 logs.push(TurnLog {
                     character: player.id,
-                    action: TurnEvent::NotEnoughEnergy,
+                    action: TurnEvent::NotEnoughEnergy {
+                        action: action.clone(),
+                    },
                 });
             }
         }
@@ -203,12 +215,15 @@ pub fn execute_action(
             } else {
                 logs.push(TurnLog {
                     character: player.id,
-                    action: TurnEvent::NotEnoughEnergy,
+                    action: TurnEvent::NotEnoughEnergy {
+                        action: action.clone(),
+                    },
                 })
             }
         }
         BattleAction::CastSpell { spell } => {
-            let event = execute_cast_spell(player, enemy, spell);
+            debug!("player {:?} CASTING SPELL", player.id);
+            let event = execute_cast_spell(player, enemy, spell, action);
             logs.push(TurnLog {
                 character: player.id,
                 action: event,

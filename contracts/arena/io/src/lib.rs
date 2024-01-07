@@ -2,7 +2,6 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata, Out};
-use gstd::collections::BTreeMap;
 use gstd::{prelude::*, ActorId, TypeInfo};
 use mint_io::CharacterAttributes;
 
@@ -12,31 +11,65 @@ pub enum ArenaAction {
     Register { lobby_id: u128, owner_id: ActorId },
     Play { lobby_id: u128 },
     ReserveGas { lobby_id: u128 },
-    CleanState { lobby_id: u128 },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct TurnLog {
-    pub character: ActorId,
+    pub character: u128,
     pub action: TurnEvent,
 }
 
 #[derive(Encode, Decode, TypeInfo)]
-pub enum TurnEvent {
-    NotEnoughEnergy,
-    Miss { position: u8 },
-    Attack { position: u8, damage: u8 },
-    Move { position: u8 },
-    Rest { energy: u8 },
+pub enum AttackResult {
+    Damage(u8),
     Parry,
-    Guardbreak { success: bool },
-    CastSpell,
+    Miss,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum CastSpellResult {
+    FireWall,
+    EarthSkin { defence: u8 },
+    WaterRestoration { heal: u8 },
+    Fireball { damage: u8 },
+    EarthCatapult { damage: u8, enemy_position: u8 },
+    WaterBurst { damage: u8 },
+    FireHaste,
+    EarthSmites { damage: u8 },
+    ChillingTouch,
+}
+
+#[derive(Encode, Decode, TypeInfo)]
+pub enum TurnEvent {
+    NotEnoughEnergy {
+        action: BattleAction,
+    },
+    Attack {
+        kind: AttackKind,
+        result: AttackResult,
+    },
+    Move {
+        position: u8,
+    },
+    Rest {
+        energy: u8,
+    },
+    Parry,
+    Guardbreak {
+        success: bool,
+    },
+    CastSpell {
+        result: CastSpellResult,
+    },
+    FireWall {
+        damage: u8,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
 pub struct BattleLog {
-    pub winner_id: ActorId,
-    pub loser_id: ActorId,
+    pub character1: (u128, bool),
+    pub character2: (u128, bool),
     pub turns: Vec<Vec<TurnLog>>,
 }
 
@@ -48,37 +81,42 @@ pub enum ArenaEvent {
     },
     PlayerRegistered {
         lobby_id: u128,
-        player_id: ActorId,
+        player_id: u128,
+    },
+    TierSet {
+        lobby_id: u128,
+        tier: u8,
     },
     GasReserved {
         lobby_id: u128,
     },
     LobbyBattleLog {
         lobby_id: u128,
-        winner_id: ActorId,
+        winner_id: u128,
         logs: Vec<BattleLog>,
     },
 }
 
-#[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, TypeInfo)]
+#[repr(u8)]
+#[derive(Encode, Decode, Debug, Default, Eq, PartialEq, Clone, Copy, TypeInfo)]
 pub enum SetTier {
     #[default]
     Tier0,
-    Tier5,
-    Tier4,
-    Tier3,
-    Tier2,
     Tier1,
+    Tier2,
+    Tier3,
+    Tier4,
+    Tier5,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum AttackKind {
     Quick,
     Precise,
     Heavy,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum Spell {
     FireWall,
     EarthSkin,
@@ -91,7 +129,7 @@ pub enum Spell {
     ChillingTouch,
 }
 
-#[derive(Encode, Decode, Debug)]
+#[derive(Encode, Decode, Debug, TypeInfo, Clone)]
 pub enum BattleAction {
     Attack { kind: AttackKind },
     MoveRight,
@@ -127,7 +165,8 @@ pub struct YourTurn {
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct Character {
     pub owner: ActorId,
-    pub id: ActorId,
+    pub id: u128,
+    pub algorithm_id: ActorId,
     pub name: String,
     pub hp: u8,
     pub energy: u8,
@@ -167,7 +206,6 @@ pub struct BattleState {
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
     pub mint: ActorId,
-    pub leaderboard: BTreeMap<ActorId, u32>,
     pub lobby_count: u128,
 }
 

@@ -29,7 +29,6 @@ async fn main() {
         }
         ArenaAction::Play { lobby_id } => arena.play(lobby_id).await,
         ArenaAction::ReserveGas { lobby_id } => arena.reserve_gas(lobby_id),
-        ArenaAction::CleanState { lobby_id } => arena.clean_state(lobby_id),
     }
 }
 

@@ -1,5 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import {LobbyCharacter} from "./lobbyCharacter.model"
+import {BattleLog} from "./battleLog.model"
 
 @Entity_()
 export class Lobby {
@@ -13,6 +14,15 @@ export class Lobby {
     @Column_("int4", {nullable: false})
     capacity!: number
 
+    @Column_("int4", {nullable: false})
+    reservationsCount!: number
+
+    @Column_("int4", {nullable: false})
+    tier!: number
+
     @OneToMany_(() => LobbyCharacter, e => e.lobby)
     characters!: LobbyCharacter[]
+
+    @OneToMany_(() => BattleLog, e => e.lobby)
+    battleLogs!: BattleLog[]
 }

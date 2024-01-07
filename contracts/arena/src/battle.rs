@@ -1,6 +1,7 @@
 use crate::execute::execute_action;
 use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
-use gstd::{debug, msg, prelude::*, ActorId};
+use gstd::errors::Error;
+use gstd::{debug, msg, prelude::*};
 
 const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
@@ -26,18 +27,10 @@ impl Battle {
             if turns.len() > 25 {
                 debug!("New GAMEPLAY!");
                 debug!("p1 = {} hp x p2 = {} hp!", self.c1.hp, self.c2.hp);
-                if self.c1.hp > self.c2.hp {
-                    return BattleLog {
-                        winner_id: self.c1.id,
-                        loser_id: self.c2.id,
-                        turns,
-                    };
-                } else {
-                    return BattleLog {
-                        winner_id: self.c2.id,
-                        loser_id: self.c1.id,
-                        turns,
-                    };
+                return BattleLog {
+                    character1: (self.c1.id, self.c1.hp > self.c2.hp),
+                    character2: (self.c2.id, self.c2.hp > self.c1.hp),
+                    turns,
                 };
             };
 
@@ -76,19 +69,45 @@ impl Battle {
                 you: p1_state.clone(),
                 enemy: p2_state.clone(),
             };
-            let p1_action: BattleAction = msg::send_for_reply_as(self.c1.id, p1_turn, 0, 0)
-                .expect("unable to send message")
-                .await
-                .expect("unable to receive `BattleAction`");
+            let p1_action: BattleAction =
+                match msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
+                    .expect("unable to send message")
+                    .await
+                {
+                    Ok(action) => action,
+                    Err(err) => match err {
+                        Error::Timeout(_, _) => {
+                            return BattleLog {
+                                character1: (self.c1.id, false),
+                                character2: (self.c2.id, true),
+                                turns,
+                            }
+                        }
+                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
+                    },
+                };
 
             let p2_turn = YourTurn {
                 you: p2_state,
                 enemy: p1_state,
             };
-            let p2_action: BattleAction = msg::send_for_reply_as(self.c2.id, p2_turn, 0, 0)
-                .expect("unable to send message")
-                .await
-                .expect("unable to receive `BattleAction`");
+            let p2_action: BattleAction =
+                match msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
+                    .expect("unable to send message")
+                    .await
+                {
+                    Ok(action) => action,
+                    Err(err) => match err {
+                        Error::Timeout(_, _) => {
+                            return BattleLog {
+                                character1: (self.c1.id, true),
+                                character2: (self.c2.id, false),
+                                turns,
+                            }
+                        }
+                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
+                    },
+                };
 
             let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
             let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);
@@ -101,21 +120,19 @@ impl Battle {
                 self.c2.parry = false;
 
                 execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
 
                 execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
@@ -124,21 +141,19 @@ impl Battle {
                 self.c2.parry = matches!(&p2_action, BattleAction::Parry);
 
                 execute_action(&p2_action, &mut self.c2, &mut self.c1, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
 
                 execute_action(&p1_action, &mut self.c1, &mut self.c2, turn_logs);
-                if let Some((winner, loser)) = self.check_winner() {
-                    debug!("{:?} is a winner", winner);
+                if let Some((character1, character2)) = self.check_winner() {
                     return BattleLog {
-                        winner_id: winner,
-                        loser_id: loser,
+                        character1,
+                        character2,
                         turns,
                     };
                 }
@@ -149,11 +164,11 @@ impl Battle {
         }
     }
 
-    fn check_winner(&self) -> Option<(ActorId, ActorId)> {
+    fn check_winner(&self) -> Option<((u128, bool), (u128, bool))> {
         if self.c1.hp == 0 {
-            Some((self.c2.id, self.c1.id))
+            Some(((self.c1.id, false), (self.c2.id, true)))
         } else if self.c2.hp == 0 {
-            Some((self.c1.id, self.c2.id))
+            Some(((self.c1.id, true), (self.c2.id, false)))
         } else {
             None
         }

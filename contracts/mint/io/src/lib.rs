@@ -10,6 +10,7 @@ const MAX_STRENGTH: usize = 9;
 const MAX_AGILITY: usize = 9;
 const MAX_VITALITY: usize = 9;
 const MAX_STAMINA: usize = 9;
+const MAX_INTELLIGENCE: usize = 9;
 
 const XP_GAIN: [u32; MAX_LEVEL + 1] = [
     0, 300, 600, 600, 1350, 3240, 8100, 18225, 48600, 131220, 328050,
@@ -19,12 +20,44 @@ const LEVEL_XP: [u32; MAX_LEVEL + 1] = [
 ];
 
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]
+pub struct InitialAttributes {
+    pub strength: u8,
+    pub agility: u8,
+    pub vitality: u8,
+    pub stamina: u8,
+    pub intelligence: u8,
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]
 pub struct CharacterAttributes {
     pub strength: u8,
     pub agility: u8,
     pub vitality: u8,
     pub stamina: u8,
     pub intelligence: u8,
+    pub lives_count: u8,
+    pub tier_rating: u128,
+    pub balance: u128,
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]
+pub struct Config {
+    pub lives_count: u8,
+    pub gas_for_daily_distribution: u64,
+    pub minimum_gas_amount: u64,
+    pub update_interval_in_blocks: u32,
+    pub reservation_amount: u64,
+    pub reservation_duration: u32,
+    pub mint_cost: Option<u128>,
+    pub gold_pool_amount: u128,
+}
+
+#[derive(Encode, Decode, TypeInfo, Default, Debug, PartialEq, Eq)]
+pub enum DailyGoldDistrStatus {
+    Active,
+    OutOfGas,
+    #[default]
+    Stopped,
 }
 
 #[derive(Encode, Debug, Decode, TypeInfo, Clone)]
@@ -33,11 +66,13 @@ pub enum AttributeChoice {
     Agility,
     Vitality,
     Stamina,
+    Intelligence,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct CharacterInfo {
-    pub id: ActorId,
+    pub id: u128,
+    pub algorithm_id: ActorId,
     pub name: String,
     pub attributes: CharacterAttributes,
     pub level: u8,
@@ -76,24 +111,48 @@ impl CharacterInfo {
                 assert!(self.attributes.stamina != MAX_STAMINA as u8, "max level");
                 self.attributes.stamina = self.attributes.stamina + 1;
             }
+            AttributeChoice::Intelligence => {
+                assert!(
+                    self.attributes.intelligence != MAX_INTELLIGENCE as u8,
+                    "max level"
+                );
+                self.attributes.intelligence = self.attributes.intelligence + 1;
+            }
         }
 
         self.experience = self.experience - xp_consume;
     }
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+impl CharacterAttributes {
+    pub fn increase_rating(&mut self, earned_rating: u128) {
+        self.tier_rating = self.tier_rating.saturating_add(earned_rating);
+    }
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone)]
 pub enum MintAction {
+    AddAdmin {
+        admin: ActorId,
+    },
+    RemoveAdmin {
+        admin: ActorId,
+    },
     CreateCharacter {
         code_id: CodeId,
         name: String,
-        attributes: CharacterAttributes,
+        attributes: InitialAttributes,
+    },
+    UpdateCharacter {
+        code_id: Option<CodeId>,
+        address: Option<ActorId>,
     },
     CharacterInfo {
         owner_id: ActorId,
     },
     BattleResult {
         owner_id: ActorId,
+        character_id: u128,
         losers: Vec<ActorId>,
     },
     SetArena {
@@ -102,6 +161,20 @@ pub enum MintAction {
     LevelUp {
         attr: AttributeChoice,
     },
+    MakeReservation,
+    StartDailyGoldDistribution,
+    DistributeDailyPool,
+    StopDailyGoldDistribution,
+
+    UpdateConfig {
+        gas_for_daily_distribution: Option<u64>,
+        minimum_gas_amount: Option<u64>,
+        update_interval_in_blocks: Option<u32>,
+        reservation_amount: Option<u64>,
+        reservation_duration: Option<u32>,
+        mint_cost: Option<u128>,
+        gold_pool_amount: Option<u128>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -109,14 +182,23 @@ pub enum MintEvent {
     CharacterCreated {
         character_info: CharacterInfo,
     },
-    XpIncreased {
-        character_id: ActorId,
+    LivesCountUpdated {
+        character_id: u128,
+        count: u8,
+    },
+    XpUpdated {
+        character_id: u128,
         xp: u32,
     },
+    RatingUpdated {
+        character_id: u128,
+        rating: u128,
+    },
     LevelUpdated {
-        character_id: ActorId,
+        character_id: u128,
         attr: AttributeChoice,
     },
+    CharacterUpdated,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]
@@ -127,7 +209,7 @@ pub struct MintState {
 pub struct MintMetadata;
 
 impl Metadata for MintMetadata {
-    type Init = InOut<(), ()>;
+    type Init = InOut<Config, ()>;
     type Handle = InOut<MintAction, MintEvent>;
     type Others = InOut<(), ()>;
     type Reply = InOut<(), ()>;

@@ -17,7 +17,7 @@ pub struct Lobby {
     capacity: u8,
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
-    winners: Vec<ActorId>,
+    winners: Vec<u128>,
     losers: Vec<ActorId>,
     logs: Vec<BattleLog>,
 }
@@ -25,7 +25,6 @@ pub struct Lobby {
 #[derive(Default)]
 pub struct Arena {
     mint: ActorId,
-    leaderboard: BTreeMap<ActorId, u32>,
     lobby_count: u128,
     lobbys: BTreeMap<u128, Lobby>,
 }
@@ -81,13 +80,24 @@ impl Arena {
 
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
-        let loser = lobby
-            .characters
-            .iter()
-            .find(|c| c.id == lobby.winners[0])
-            .unwrap();
-        lobby.winners.push(log.winner_id);
-        lobby.losers.push(loser.owner);
+
+        if log.character1.1 {
+            let loser = lobby
+                .characters
+                .iter()
+                .find(|c| c.id == log.character2.0)
+                .unwrap();
+            lobby.winners.push(log.character1.0);
+            lobby.losers.push(loser.owner);
+        } else {
+            let loser = lobby
+                .characters
+                .iter()
+                .find(|c| c.id == log.character1.0)
+                .unwrap();
+            lobby.winners.push(log.character2.0);
+            lobby.losers.push(loser.owner);
+        }
         lobby.logs.push(log);
 
         if lobby.battles.is_empty() {
@@ -103,6 +113,7 @@ impl Arena {
                     self.mint,
                     MintAction::BattleResult {
                         owner_id: winner.owner,
+                        character_id: winner.id,
                         losers: lobby.losers.drain(..).collect(),
                     },
                     0,
@@ -120,7 +131,6 @@ impl Arena {
                 )
                 .expect("unable to reply");
 
-                Arena::tournament_winners(&mut self.leaderboard, winner.owner);
                 self.lobbys.remove(&lobby_id);
                 return;
             } else {
@@ -170,6 +180,7 @@ impl Arena {
         let character = Character {
             owner: owner_id,
             id: character_info.id,
+            algorithm_id: character_info.algorithm_id,
             name: character_info.name,
             hp: utils::full_hp(character_info.attributes.vitality),
             energy: utils::full_energy(character_info.attributes.stamina),
@@ -213,8 +224,16 @@ impl Arena {
                 3..=5 => SetTier::Tier3,
                 6..=9 => SetTier::Tier2,
                 _ => SetTier::Tier1,
-            }
-        };
+            };
+            msg::reply(
+                ArenaEvent::TierSet {
+                    lobby_id,
+                    tier: lobby.current_tier as u8,
+                },
+                0,
+            )
+            .expect("unable to reply");
+        }
         if character_tier == lobby.current_tier {
             lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
@@ -243,28 +262,9 @@ impl Arena {
         msg::reply(ArenaEvent::GasReserved { lobby_id }, 0).expect("unable to reply");
     }
 
-    pub fn clean_state(&mut self, lobby_id: u128) {
-        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
-        lobby.current_tier = SetTier::Tier0;
-        lobby.winners = vec![];
-        lobby.characters = vec![];
-        lobby.reservations = vec![];
-        lobby.battles = vec![];
-        lobby.logs = vec![];
-        lobby.source = None;
-    }
-
-    pub fn tournament_winners(leaderboard: &mut BTreeMap<ActorId, u32>, winner: ActorId) {
-        leaderboard
-            .entry(winner)
-            .and_modify(|value| *value += 1)
-            .or_insert(1);
-    }
-
     pub fn state(&self) -> ArenaState {
         ArenaState {
             mint: self.mint,
-            leaderboard: self.leaderboard.clone(),
             lobby_count: self.lobby_count,
         }
     }

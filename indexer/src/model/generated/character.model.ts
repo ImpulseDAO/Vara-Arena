@@ -24,4 +24,10 @@ export class Character {
 
     @Column_("int4", {nullable: false})
     experience!: number
+
+    @Column_("int4", {nullable: false})
+    rating!: number
+
+    @Column_("int4", {nullable: false})
+    livesCount!: number
 }

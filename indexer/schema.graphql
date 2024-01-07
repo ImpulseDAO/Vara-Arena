@@ -5,16 +5,62 @@ type Character @entity {
   attributes: JSON!
   level: Int!
   experience: Int!
+  rating: Int!
+  livesCount: Int!
 }
 
 type Lobby @entity {
   id: ID!
   capacity: Int!
+  reservationsCount: Int!
+  tier: Int!
   characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
+  battleLogs: [BattleLog!]! @derivedFrom(field: "lobby")
 }
 
 type LobbyCharacter @entity {
   id: ID!
   lobby: Lobby!
   character: Character!
+}
+
+type BattleLog @entity {
+  id: ID!
+  lobby: Lobby!
+  battleIndex: Int!
+  character1: CharacterState!
+  character2: CharacterState!
+  turns: [BattleTurn!]!
+}
+
+type BattleTurn {
+  character1: CharacterTurnState
+  character2: CharacterTurnState
+  logs: [TurnLog!]!
+}
+
+type CharacterState {
+  character: String!
+  attributes: JSON!
+  level: Int!
+  experience: Int!
+  rating: Int!
+  winner: Boolean!
+}
+
+type CharacterTurnState {
+  hp: Int!
+  energy: Int!
+  position: Int!
+  fireWall: Int!
+  fireHaste: Int!
+  earthSmites: Int!
+  earthSkin: Int!
+  chillingTouch: Int!
+  waterBurst: Int!
+}
+
+type TurnLog {
+  character: String!
+  action: JSON!
 }

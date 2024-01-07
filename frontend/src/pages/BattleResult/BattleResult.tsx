@@ -433,7 +433,7 @@ const getLogEntryDescription = (log: LogEntry, charName: string, color: string) 
           }
           {
             'miss' in result ? (
-              <><Name {...{ charName, color }} /> misses trying to attack with {kind?.toLowerCase()}.</>
+              <><Name {...{ charName, color }} /> misses trying to use {kind?.toLowerCase()} attack.</>
             ) : null
           }
         </Text>

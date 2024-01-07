@@ -32,7 +32,8 @@ const lobbiesQueryDocument = graphql(/* GraphQL */ `
   }
 `);
 
-export const useLobbies = () => useGraphQL(lobbiesQueryDocument);
+export const useLobbies = () =>
+  useGraphQL(lobbiesQueryDocument, undefined, { refetchInterval: 1000 * 3 });
 
 /**
  * Lobby By Id
@@ -63,7 +64,14 @@ const lobbyByIdQueryDocument = graphql(/* GraphQL */ `
 `);
 
 export const useLobby = ({ id }: { id: string }) => {
-  const query = useGraphQL(lobbyByIdQueryDocument, { id: `${id}` });
+  const query = useGraphQL(
+    lobbyByIdQueryDocument,
+    { id: `${id}` },
+    {
+      // refresh every 3 seconds
+      refetchInterval: 1000 * 3,
+    }
+  );
   return query;
 };
 

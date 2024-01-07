@@ -1,4 +1,8 @@
-import { useSendMessage } from "@gear-js/react-hooks";
+import {
+  useBalanceFormat,
+  useSendMessage,
+  useVoucher,
+} from "@gear-js/react-hooks";
 import { useCallback, useMemo, useRef } from "react";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
@@ -31,12 +35,30 @@ export const useOnSubmit = ({
   onSuccessRef.current = onSuccess;
 
   /**
+   * Voucher
+   */
+
+  const { getFormattedBalanceValue } = useBalanceFormat();
+  const { isVoucherExists, voucherBalance, isVoucherReady } =
+    useVoucher(MINT_PROGRAM_ID);
+  const formattedBalance =
+    voucherBalance &&
+    getFormattedBalanceValue(voucherBalance.toString()).toFixed();
+
+  const shouldUseVoucher =
+    isVoucherReady && isVoucherExists && formattedBalance > 10;
+
+  /**
    *
    */
   const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
 
   const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
   const navigate = useNavigate();
+
+  /**
+   *
+   */
 
   return useCallback(async () => {
     const payload = {
@@ -53,11 +75,10 @@ export const useOnSubmit = ({
       },
     };
 
-    console.log("onSubmit payload", payload);
-
     send({
       payload,
       gasLimit: MAX_GAS_LIMIT,
+      withVoucher: shouldUseVoucher,
       onSuccess: (result) => {
         console.log("success", result);
         onSuccessRef.current?.();
@@ -67,10 +88,7 @@ export const useOnSubmit = ({
       onError: () => {
         console.log("error");
       },
-      onInBlock: () => {
-        "in block";
-      },
       value: PAYMENT_FOR_MINTING,
     });
-  }, [codeId, name, navigate, send, stats]);
+  }, [codeId, name, navigate, send, shouldUseVoucher, stats]);
 };

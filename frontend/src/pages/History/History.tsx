@@ -91,13 +91,19 @@ export const History = () => {
 
         <div className='header'>History</div>
         <div className='modal_table'>
-          <Table horizontalSpacing="md" verticalSpacing="md">
+          <Table horizontalSpacing="md" verticalSpacing="md" >
             <thead>
               <tr>
-                <th>Lobby ID</th>
-                <th>Battle ID</th>
-                <th>Players</th>
-                <th>Winner</th>
+                {[
+                  'Lobby ID',
+                  'Battle ID',
+                  'Players',
+                  'Winner',
+                ].map((header) => {
+                  return (
+                    <th key={header}>{header}</th>
+                  );
+                })}
               </tr>
             </thead>
             <tbody>{inProgressRows.map((row) => {
@@ -111,26 +117,32 @@ export const History = () => {
                     "&:hover": {
                       background: 'rgba(255, 255, 255, 0.2)'
                     },
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
                 >
-                  {/* Lobby ID */}
-                  <td><div className={'row_position'}>{row.lobbyId}</div></td>
-
-                  {/* Battle ID */}
-                  <td><div className={'row_position'}>{row.battleId}</div></td>
-
-                  {/* Players */}
-                  <td>{row.playersNames.map(playerName => {
+                  {[
+                    /* Lobby ID */
+                    <div className={'row_position'} > {row.lobbyId}</div>,
+                    /* Battle ID */
+                    <div className={'row_position'}>{row.battleId}</div>,
+                    /* Players */
+                    row.playersNames.map(playerName => {
+                      return (
+                        <div>
+                          {playerName}
+                        </div>
+                      );
+                    }),
+                    /* Winner */
+                    row.winner,
+                  ].map((cellContent, idx) => {
                     return (
-                      <div>
-                        {playerName}
-                      </div>
+                      <td>
+                        {cellContent}
+                      </td>
                     );
-                  })}</td>
+                  })}
 
-                  {/* Winner */}
-                  <td>{row.winner}</td>
                 </Box>);
             })}</tbody>
           </Table>

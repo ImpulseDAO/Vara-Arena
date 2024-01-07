@@ -186,7 +186,7 @@ export const addCodeIdToLocalStorage = (codeId: string) => {
   localStorage.setItem(
     UPLOADED_CODE_IDS_ARRAY,
     JSON.stringify([
-      ...JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]"),
+      ...(JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as []),
       codeId,
     ])
   );
@@ -206,5 +206,5 @@ export const removeCodeIdFromLocalStorage = (codeId: string) => {
 };
 
 export const getCodeIdsFromLocalStorage = (): string[] => {
-  return JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]");
+  return JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as [];
 };

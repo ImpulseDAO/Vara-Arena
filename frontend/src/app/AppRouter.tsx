@@ -4,7 +4,6 @@ import { routes } from "./routes";
 import { newRoutes } from "./routes";
 //
 import { History } from "pages/History";
-import { Queue } from "pages/Queue";
 import { Lobby } from "pages/Lobby";
 import { Battle } from "pages/Battle";
 import { MyProfile } from "pages/MyProfile";
@@ -25,7 +24,6 @@ export const appRouter = createBrowserRouter(
   [
     { element: <StartScreen />, path: routes.startScreen },
     { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
-    { element: <Queue />, path: routes.tournament, auth: true },
 
     { element: <UploadStrategy />, path: routes.strategy, auth: true },
     // 

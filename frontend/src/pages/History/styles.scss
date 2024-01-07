@@ -9,6 +9,7 @@
   align-items: center;
 
   padding-inline: 3rem;
+  padding-bottom: 2rem;
 
   .modal_leaderboard {
     width: 100%;
@@ -47,7 +48,7 @@
     border-bottom-left-radius: 12px;
 
     background: rgba(0, 0, 0, 0.7);
-    overflow: hidden;
+    overflow-y: scroll;
     & * {
       color: white;
     }
@@ -55,8 +56,6 @@
 
   .row_position {
     display: flex;
-    width: 76px;
-    height: 22px;
     border: 2px solid #ffffff;
     border-radius: 16px;
     align-items: center;

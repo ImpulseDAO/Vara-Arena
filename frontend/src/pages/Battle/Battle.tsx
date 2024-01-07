@@ -31,7 +31,7 @@ export type BattleLogs = {
 };
 
 export const Battle: FC<BattleProps> = () => {
-  const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue") ?? '[]');
+  const usersOnBattle = JSON.parse(localStorage.getItem("usersOnQueue") ?? '[]') as [];
   const battleLogs = JSON.parse(
     localStorage.getItem("battleLog") ?? '[]'
   ) as BattleLogs;

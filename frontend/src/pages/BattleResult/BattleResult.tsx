@@ -56,7 +56,7 @@ export const BattleResult = ({
 
   const char1 = battleLog?.lobby.characters.find(char => char.character.id === char1id)?.character;
   const char2 = battleLog?.lobby.characters.find(char => char.character.id === char2id)?.character;
-  const names = [char1, char2].map(char => char?.name ?? '');
+  const characters = [char1, char2];
 
   /**
   * List items refs
@@ -128,7 +128,7 @@ export const BattleResult = ({
    * 
    */
 
-  const logVisualized = visualizeBattleLog(turns ?? [], names);
+  const logVisualized = visualizeBattleLog(turns ?? [], characters.filter(Boolean));
 
   /**
    * 
@@ -190,22 +190,25 @@ export const BattleResult = ({
             display: 'flex',
             flexDirection: 'column',
           }}
-          pl="2.5rem"
+          pl="1rem"
           mah="75vh"
         >
 
-          <p>{`Battle ID: ${battleId}`}</p>
-          <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
-            <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
-            <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
+          <Box pl="2rem">
+            <p>{`Battle ID: ${battleId}`}</p>
+            <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
+              <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
+              <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
+            </Box>
           </Box>
 
           <Box component="ol"
+            pl='xl'
             style={{
               overflowY: 'scroll',
             }}
           >
-            {logVisualized.map((text, i) => {
+            {logVisualized.map((turnLogs, i) => {
               if (i === 0) {
                 return <div
                   key={i}
@@ -231,9 +234,10 @@ export const BattleResult = ({
                       backgroundColor: 'rgba(255, 255, 255, 0.2)'
                     },
                     cursor: 'pointer',
+                    '&::marker': { color: isInactive ? 'gray' : undefined }
                   }}>
                   <Box component="span" {...isInactive ? { sx: theme => ({ opacity: '0.4' }) } : {}}>
-                    {text.map((line, i) => <p key={i}>{line}</p>)}
+                    {turnLogs.map((line, i) => <p key={i}>{line}</p>)}
                   </Box>
                 </Box>
               );
@@ -319,12 +323,28 @@ type CharacterState = {
   position: number;
 };
 
+type AttackKind = "Quick" | "Precise" | "Heavy";
+
+const spellnames = [
+  'fireball',
+  'waterRestoration',
+  'earthCatapult',
+  'waterBurst',
+  'fireWall',
+  'fireHaste',
+  'earthSmites',
+  'earthSkin',
+  'chillingTouch'
+] as const;
+
+type Spell = typeof spellnames[number];
+
 type Action = {
   move?: {
     position: number;
   };
   attack?: {
-    kind: string;
+    kind: AttackKind;
     result: {
       miss?: any;
     };
@@ -332,6 +352,20 @@ type Action = {
   rest?: {
     energy: number;
   };
+  castSpell: {
+    result: {
+      [key in Spell]: key extends 'fireball' | 'waterBurst' ? { damage: number; }
+      : key extends 'waterRestoration' ? { heal: number; }
+      : key extends 'earthCatapult' ? { damage: number, enemyPosition: number; }
+      : {}
+    };
+  };
+  fireWall: {
+    damage: number;
+  };
+  notEnoughEnergy: {};
+  parry: {};
+  guardbreak: {};
 };
 
 type LogEntry = {
@@ -347,45 +381,97 @@ type BattleStep = {
 
 const Name = ({
   charName,
-  isFirst,
+  color,
 }: {
   charName: string;
-  isFirst: boolean;
+  color: string;
 }) => {
-  return <Text component="span" color={isFirst ? 'red' : 'blue'}>{charName}</Text>;
+  return <Text component="span" color={color}>{charName}</Text>;
 };
 
-function visualizeBattleLog(battleLog: BattleStep[], names: string[]): React.ReactNode[][] {
+function visualizeBattleLog(battleLog: BattleStep[], characters: ({ name: string, id: string; })[]): React.ReactNode[][] {
   const results: React.ReactNode[][] = [];
 
   battleLog.forEach((step, index) => {
-    const nestedResults: React.ReactNode[] = [];
-    step.logs.forEach((log, charIdx) => {
-      const isFirst = charIdx === 0;
-      const charName = names[charIdx];
+    const turnLogs: React.ReactNode[] = step.logs.map((log) => {
+      const index = characters.findIndex(char => char.id === log.character);
+      const charName = characters[index].name;
 
-      if (log.action.move) {
-        nestedResults.push(
-          <Text component="span">
-            <Name {...{ charName, isFirst }} /> moves to position {log.action.move.position}.
-          </Text>
-        );
-      } else if (log.action.attack) {
-        nestedResults.push(
-          <Text component="span">
-            <Name {...{ charName, isFirst }} /> attacks with {log.action.attack.kind}.
-          </Text>
-        );
-      } else if (log.action.rest) {
-        nestedResults.push(
-          <Text component="span">
-            <Name {...{ charName, isFirst }} /> rests, gaining {log.action.rest.energy} energy.
-          </Text>
-        );
+      try {
+        const color = index === 0 ? 'red' : 'blue';
+        return getLogEntryDescription(log, charName, color);
+      } catch (error) {
+        return <Text c="red">Error while parsing log entry</Text>;
       }
     });
-    results.push(nestedResults);
+
+    results.push(turnLogs);
   });
 
   return results;
 }
+
+//  isFirst ? 'red' : 'blue'
+const getLogEntryDescription = (log: LogEntry, charName: string, color: string) => {
+
+  switch (true) {
+    case log.action.move != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> moves to position {log.action.move?.position}.
+        </Text>
+      );
+    case log.action.attack != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> attacks with {log.action.attack?.kind}.
+        </Text>
+      );
+    case log.action.rest != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> rests, gaining {log.action.rest?.energy} energy.
+        </Text>
+      );
+    case log.action.castSpell != null:
+      const spell = spellnames.find(spell => spell in log.action.castSpell?.result);
+      if (!spell) return <Text component="span">Unknown spell</Text>;
+      const details = log.action.castSpell?.result[spell] ?? {};
+
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> casts {spell} spell.
+          {'heal' in details ? ` ${details.heal} HP healed` : null}
+          {'damage' in details ? ` ${details.damage} damage dealt` : null}
+          {'enemyPosition' in details ? ` Enemy thrown to position ${details.enemyPosition}` : null}
+        </Text>
+      );
+    case log.action.fireWall != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> gets {log.action.fireWall.damage} damage from firewall.
+        </Text>
+      );
+    case log.action.notEnoughEnergy != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> doesn't have enough energy.
+        </Text>
+      );
+    case log.action.parry != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> parries the attack.
+        </Text>
+      );
+    case log.action.guardbreak != null:
+      return (
+        <Text component="span">
+          <Name {...{ charName, color }} /> guardbreaks the attack.
+        </Text>
+      );
+    default: {
+      return <Text component="span">Unknown action</Text>;
+    }
+  }
+};

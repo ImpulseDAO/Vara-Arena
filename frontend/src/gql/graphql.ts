@@ -94,7 +94,11 @@ export enum BattleLogOrderByInput {
   LobbyReservationsCountAsc = 'lobby_reservationsCount_ASC',
   LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
   LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
-  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST'
+  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST',
+  LobbyTierAsc = 'lobby_tier_ASC',
+  LobbyTierAscNullsFirst = 'lobby_tier_ASC_NULLS_FIRST',
+  LobbyTierDesc = 'lobby_tier_DESC',
+  LobbyTierDescNullsLast = 'lobby_tier_DESC_NULLS_LAST'
 }
 
 export type BattleLogWhereInput = {
@@ -155,8 +159,10 @@ export type Character = {
   experience: Scalars['Int']['output'];
   id: Scalars['String']['output'];
   level: Scalars['Int']['output'];
+  livesCount: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   owner: Scalars['String']['output'];
+  rating: Scalars['Int']['output'];
 };
 
 export type CharacterEdge = {
@@ -178,6 +184,10 @@ export enum CharacterOrderByInput {
   LevelAscNullsFirst = 'level_ASC_NULLS_FIRST',
   LevelDesc = 'level_DESC',
   LevelDescNullsLast = 'level_DESC_NULLS_LAST',
+  LivesCountAsc = 'livesCount_ASC',
+  LivesCountAscNullsFirst = 'livesCount_ASC_NULLS_FIRST',
+  LivesCountDesc = 'livesCount_DESC',
+  LivesCountDescNullsLast = 'livesCount_DESC_NULLS_LAST',
   NameAsc = 'name_ASC',
   NameAscNullsFirst = 'name_ASC_NULLS_FIRST',
   NameDesc = 'name_DESC',
@@ -185,7 +195,11 @@ export enum CharacterOrderByInput {
   OwnerAsc = 'owner_ASC',
   OwnerAscNullsFirst = 'owner_ASC_NULLS_FIRST',
   OwnerDesc = 'owner_DESC',
-  OwnerDescNullsLast = 'owner_DESC_NULLS_LAST'
+  OwnerDescNullsLast = 'owner_DESC_NULLS_LAST',
+  RatingAsc = 'rating_ASC',
+  RatingAscNullsFirst = 'rating_ASC_NULLS_FIRST',
+  RatingDesc = 'rating_DESC',
+  RatingDescNullsLast = 'rating_DESC_NULLS_LAST'
 }
 
 export type CharacterState = {
@@ -255,9 +269,15 @@ export type CharacterStateWhereInput = {
 
 export type CharacterTurnState = {
   __typename?: 'CharacterTurnState';
+  chillingTouch: Scalars['Int']['output'];
+  earthSkin: Scalars['Int']['output'];
+  earthSmites: Scalars['Int']['output'];
   energy: Scalars['Int']['output'];
+  fireHaste: Scalars['Int']['output'];
+  fireWall: Scalars['Int']['output'];
   hp: Scalars['Int']['output'];
   position: Scalars['Int']['output'];
+  waterBurst: Scalars['Int']['output'];
 };
 
 export type CharacterWhereInput = {
@@ -303,6 +323,15 @@ export type CharacterWhereInput = {
   level_lte?: InputMaybe<Scalars['Int']['input']>;
   level_not_eq?: InputMaybe<Scalars['Int']['input']>;
   level_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  livesCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  livesCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  livesCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  livesCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   name_contains?: InputMaybe<Scalars['String']['input']>;
   name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   name_endsWith?: InputMaybe<Scalars['String']['input']>;
@@ -337,6 +366,15 @@ export type CharacterWhereInput = {
   owner_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   owner_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   owner_startsWith?: InputMaybe<Scalars['String']['input']>;
+  rating_eq?: InputMaybe<Scalars['Int']['input']>;
+  rating_gt?: InputMaybe<Scalars['Int']['input']>;
+  rating_gte?: InputMaybe<Scalars['Int']['input']>;
+  rating_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  rating_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  rating_lt?: InputMaybe<Scalars['Int']['input']>;
+  rating_lte?: InputMaybe<Scalars['Int']['input']>;
+  rating_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  rating_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type CharactersConnection = {
@@ -360,6 +398,7 @@ export type Lobby = {
   characters: Array<LobbyCharacter>;
   id: Scalars['String']['output'];
   reservationsCount: Scalars['Int']['output'];
+  tier: Scalars['Int']['output'];
 };
 
 
@@ -404,6 +443,10 @@ export enum LobbyCharacterOrderByInput {
   CharacterLevelAscNullsFirst = 'character_level_ASC_NULLS_FIRST',
   CharacterLevelDesc = 'character_level_DESC',
   CharacterLevelDescNullsLast = 'character_level_DESC_NULLS_LAST',
+  CharacterLivesCountAsc = 'character_livesCount_ASC',
+  CharacterLivesCountAscNullsFirst = 'character_livesCount_ASC_NULLS_FIRST',
+  CharacterLivesCountDesc = 'character_livesCount_DESC',
+  CharacterLivesCountDescNullsLast = 'character_livesCount_DESC_NULLS_LAST',
   CharacterNameAsc = 'character_name_ASC',
   CharacterNameAscNullsFirst = 'character_name_ASC_NULLS_FIRST',
   CharacterNameDesc = 'character_name_DESC',
@@ -412,6 +455,10 @@ export enum LobbyCharacterOrderByInput {
   CharacterOwnerAscNullsFirst = 'character_owner_ASC_NULLS_FIRST',
   CharacterOwnerDesc = 'character_owner_DESC',
   CharacterOwnerDescNullsLast = 'character_owner_DESC_NULLS_LAST',
+  CharacterRatingAsc = 'character_rating_ASC',
+  CharacterRatingAscNullsFirst = 'character_rating_ASC_NULLS_FIRST',
+  CharacterRatingDesc = 'character_rating_DESC',
+  CharacterRatingDescNullsLast = 'character_rating_DESC_NULLS_LAST',
   IdAsc = 'id_ASC',
   IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
   IdDesc = 'id_DESC',
@@ -427,7 +474,11 @@ export enum LobbyCharacterOrderByInput {
   LobbyReservationsCountAsc = 'lobby_reservationsCount_ASC',
   LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
   LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
-  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST'
+  LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST',
+  LobbyTierAsc = 'lobby_tier_ASC',
+  LobbyTierAscNullsFirst = 'lobby_tier_ASC_NULLS_FIRST',
+  LobbyTierDesc = 'lobby_tier_DESC',
+  LobbyTierDescNullsLast = 'lobby_tier_DESC_NULLS_LAST'
 }
 
 export type LobbyCharacterWhereInput = {
@@ -481,7 +532,11 @@ export enum LobbyOrderByInput {
   ReservationsCountAsc = 'reservationsCount_ASC',
   ReservationsCountAscNullsFirst = 'reservationsCount_ASC_NULLS_FIRST',
   ReservationsCountDesc = 'reservationsCount_DESC',
-  ReservationsCountDescNullsLast = 'reservationsCount_DESC_NULLS_LAST'
+  ReservationsCountDescNullsLast = 'reservationsCount_DESC_NULLS_LAST',
+  TierAsc = 'tier_ASC',
+  TierAscNullsFirst = 'tier_ASC_NULLS_FIRST',
+  TierDesc = 'tier_DESC',
+  TierDescNullsLast = 'tier_DESC_NULLS_LAST'
 }
 
 export type LobbyWhereInput = {
@@ -528,6 +583,15 @@ export type LobbyWhereInput = {
   reservationsCount_lte?: InputMaybe<Scalars['Int']['input']>;
   reservationsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
   reservationsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  tier_eq?: InputMaybe<Scalars['Int']['input']>;
+  tier_gt?: InputMaybe<Scalars['Int']['input']>;
+  tier_gte?: InputMaybe<Scalars['Int']['input']>;
+  tier_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  tier_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  tier_lt?: InputMaybe<Scalars['Int']['input']>;
+  tier_lte?: InputMaybe<Scalars['Int']['input']>;
+  tier_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  tier_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 export type PageInfo = {

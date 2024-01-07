@@ -284,12 +284,28 @@ export const BattleResult = ({
 };
 
 const CharPanel = ({ character, charState }: { character: any; charState?: CharacterState; }) => {
+
+  const health = Math.ceil(charState?.hp ?? 0);
+  const healthMax = getFullHp(character.attributes.vitality);
+  const energy = Math.ceil(charState?.energy ?? 0);
+  const energyMax = getFullEnergy(character.attributes.stamina);
+
+  /**
+   *  This is done to force rerender the component when the health/energy is full
+   */
+  const keyRef = useRef(Math.random());
+  if (health === healthMax && energy === energyMax) keyRef.current = Math.random();
+
   return (
-    <Stack spacing={0}>
+    <Stack spacing={0} >
       <StatBar
-        health={Math.ceil(charState?.hp ?? 0)} // mock
+        /**
+         * This is done to force rerender (see above)
+         */
+        key={keyRef.current}
+        health={Math.ceil(charState?.hp ?? 0)}
         healthMax={getFullHp(character.attributes.vitality)}
-        energy={Math.ceil(charState?.energy ?? 0)} // mock
+        energy={Math.ceil(charState?.energy ?? 0)}
         energyMax={getFullEnergy(character.attributes.stamina)}
       />
 

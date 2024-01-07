@@ -3,7 +3,7 @@ import { AuthorizedLayer } from "layouts/AuthorizedLayer";
 import { routes } from "./routes";
 import { newRoutes } from "./routes";
 //
-import { Logs } from "pages/Logs";
+import { History } from "pages/History";
 import { Queue } from "pages/Queue";
 import { Lobby } from "pages/Lobby";
 import { Battle } from "pages/Battle";
@@ -39,7 +39,7 @@ export const appRouter = createBrowserRouter(
     { element: <Arena />, path: newRoutes.arena, auth: true },
     { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
-    { element: <Logs />, path: newRoutes.myLogs, auth: true },
+    { element: <History />, path: newRoutes.history, auth: true },
     { element: <BattleResultPage />, path: newRoutes.battleResultDynamic, auth: true },
     { element: <TournamentResultPage />, path: newRoutes.tournamentResultDynamic, auth: true },
     /**

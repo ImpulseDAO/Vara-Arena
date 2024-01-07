@@ -28,6 +28,7 @@ export const ButtonsJoinReservePlay = ({
   playersNeeded,
   refreshState,
   onGasReserved,
+  onStartButtonSucess
 }: {
   hasPlayerJoined: boolean;
   lobbyId?: string;
@@ -38,6 +39,7 @@ export const ButtonsJoinReservePlay = ({
   playersNeeded: number;
   refreshState: () => void;
   onGasReserved?: (times: number) => void;
+  onStartButtonSucess?: () => void;
 }) => {
   const alert = useAlert();
   const navigate = useNavigate();
@@ -101,12 +103,13 @@ export const ButtonsJoinReservePlay = ({
             localStorage.setItem("players", JSON.stringify([]));
             console.log("successfully started the battle");
             resolve("successfully started the battle");
+            onStartButtonSucess?.();
           },
           onError: () => console.log("error while starting the battle"),
         }
       );
     });
-  }, [send, lobbyId]);
+  }, [send, lobbyId, onStartButtonSucess]);
 
   const registerForBattle = useOnRegisterForBattle();
 

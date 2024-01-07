@@ -14,8 +14,8 @@ const navLinks = [
     path: newRoutes.arena,
   },
   {
-    name: "My logs",
-    path: newRoutes.myLogs,
+    name: "History",
+    path: newRoutes.history,
   },
   /**
    * HIDE LEADERBOARD UNTIL IT IS READY

@@ -118,7 +118,13 @@ export const Lobby = () => {
                     console.log('refreshState');
                     refetchLobbyQuery();
                   },
-                  onGasReserved: (times: number) => setGasReservedTimes(times)
+                  onGasReserved: (times: number) => setGasReservedTimes(times),
+                  onStartButtonSucess: () => {
+                    setTimeout(() => {
+                      refetchLobbyQuery();
+                      navigate(newRoutes.tournamentResult(lobbyId ?? ''));
+                    }, 3000);
+                  },
                 }}
               />
             )

@@ -20,7 +20,7 @@ export const routes = {
 export const newRoutes = {
   home: "/",
   arena: "/arena",
-  myLogs: "/my-logs",
+  history: "/history",
   lobbyDynamic: "/lobby/:lobbyId",
   lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",

@@ -1,14 +1,54 @@
 import './styles.scss';
 import { getCharacterFromBattleLogById, useAllBattleLogs } from 'app/api/battleLogs';
-import { Box, Table } from '@mantine/core';
+import { Box, Flex, Table } from '@mantine/core';
 import { newRoutes } from 'app/routes';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BattleLog } from 'gql/graphql';
+import React, { useEffect } from 'react';
+import { useMyCharacters } from 'app/api/characters';
+import { useMyAccountId } from 'hooks/hooks';
+import { TheButton } from 'components/TheButton';
 
-export const Logs = () => {
-  // const inProgressRows = useMemo(() => getRows(), []);
+export const History = () => {
   const navigate = useNavigate();
-  const { data: battleLogs } = useAllBattleLogs();
+  const myAccountId = useMyAccountId();
+
+  /**
+   * 
+   */
+
+  const { data: myCharacters } = useMyCharacters({ owner_eq: myAccountId ?? '' });
+  const { data: battleLogsUnfiltered } = useAllBattleLogs();
+
+  /**
+   * If true, only show battle logs where the player's characters are involved.
+   */
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isFiltered = searchParams.get('filtered') === 'true';
+
+
+  useEffect(() => {
+    // set initial if not set
+    if (!searchParams.get('filtered')) {
+      setSearchParams('filtered=true');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const battleLogs = React.useMemo(() => {
+    if (!isFiltered) { return battleLogsUnfiltered; }
+
+    const myCharactersIds = myCharacters?.characters.map((character) => character.id) ?? [];
+
+    return battleLogsUnfiltered?.filter((battleLog: BattleLog) => {
+      return (myCharactersIds.includes(battleLog.character1.character)
+        || myCharactersIds.includes(battleLog.character2.character));
+    });
+  }, [battleLogsUnfiltered, isFiltered, myCharacters?.characters]);
+
+  /**
+   * 
+   */
 
   const inProgressRows = battleLogs?.map((battleLog: BattleLog) => {
     const { id } = battleLog;
@@ -34,7 +74,22 @@ export const Logs = () => {
   return (
     <div className='logs'>
       <div className='modal_leaderboard'>
-        <div className='header'>My logs</div>
+        <Flex
+          style={{ alignSelf: 'stretch' }}
+          mb="xs"
+        >
+          <TheButton
+            size="sm"
+            bg="black"
+            onClick={() => setSearchParams(prev => {
+              const newParams = new URLSearchParams(prev);
+              newParams.set('filtered', isFiltered ? 'false' : 'true');
+              return newParams;
+            },)}
+          >{isFiltered ? "Show all logs" : "Show my logs only"}</TheButton>
+        </Flex>
+
+        <div className='header'>History</div>
         <div className='modal_table'>
           <Table horizontalSpacing="md" verticalSpacing="md">
             <thead>
@@ -80,10 +135,8 @@ export const Logs = () => {
             })}</tbody>
           </Table>
 
-
-
         </div>
       </div>
-    </div>
+    </div >
   );
 };

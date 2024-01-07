@@ -25,7 +25,6 @@ pub struct Lobby {
 #[derive(Default)]
 pub struct Arena {
     mint: ActorId,
-    leaderboard: BTreeMap<ActorId, u32>,
     lobby_count: u128,
     lobbys: BTreeMap<u128, Lobby>,
 }
@@ -132,7 +131,6 @@ impl Arena {
                 )
                 .expect("unable to reply");
 
-                Arena::tournament_winners(&mut self.leaderboard, winner.owner);
                 self.lobbys.remove(&lobby_id);
                 return;
             } else {
@@ -264,28 +262,9 @@ impl Arena {
         msg::reply(ArenaEvent::GasReserved { lobby_id }, 0).expect("unable to reply");
     }
 
-    pub fn clean_state(&mut self, lobby_id: u128) {
-        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
-        lobby.current_tier = SetTier::Tier0;
-        lobby.winners = vec![];
-        lobby.characters = vec![];
-        lobby.reservations = vec![];
-        lobby.battles = vec![];
-        lobby.logs = vec![];
-        lobby.source = None;
-    }
-
-    pub fn tournament_winners(leaderboard: &mut BTreeMap<ActorId, u32>, winner: ActorId) {
-        leaderboard
-            .entry(winner)
-            .and_modify(|value| *value += 1)
-            .or_insert(1);
-    }
-
     pub fn state(&self) -> ArenaState {
         ArenaState {
             mint: self.mint,
-            leaderboard: self.leaderboard.clone(),
             lobby_count: self.lobby_count,
         }
     }

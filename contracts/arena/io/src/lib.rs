@@ -2,7 +2,6 @@
 
 use codec::{Decode, Encode};
 use gmeta::{InOut, Metadata, Out};
-use gstd::collections::BTreeMap;
 use gstd::{prelude::*, ActorId, TypeInfo};
 use mint_io::CharacterAttributes;
 
@@ -12,7 +11,6 @@ pub enum ArenaAction {
     Register { lobby_id: u128, owner_id: ActorId },
     Play { lobby_id: u128 },
     ReserveGas { lobby_id: u128 },
-    CleanState { lobby_id: u128 },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -208,7 +206,6 @@ pub struct BattleState {
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
     pub mint: ActorId,
-    pub leaderboard: BTreeMap<ActorId, u32>,
     pub lobby_count: u128,
 }
 

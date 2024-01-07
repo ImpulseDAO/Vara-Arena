@@ -4,11 +4,15 @@ export const BlackButton = ({
   children,
   style,
   onClick,
+  buttonRef,
   ...buttonProps
 }: {
   onClick?: () => void;
+  buttonRef?: React.ForwardedRef<HTMLButtonElement>;
+  children: React.ReactNode;
 } & ButtonProps & DefaultProps) => {
   return <Button
+    ref={buttonRef}
     h={44}
     bg="black"
     style={{

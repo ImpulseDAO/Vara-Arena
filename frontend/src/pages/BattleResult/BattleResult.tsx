@@ -11,6 +11,7 @@ import { useBattleLogById } from "app/api/battleLogs";
 import { BattleBackgroundWrapper } from "./components/BackgroundWrapper";
 import { BattleResultNotFound } from "./components/BattleResultNotFound";
 import { BlackButton } from "./components/BlackButton";
+import { useHotkeys } from '@mantine/hooks';
 
 const SIDE_PANEL_WIDTH = 375;
 const MID_PANEL_WIDTH = 420;
@@ -99,6 +100,14 @@ export const BattleResult = ({
   const lastTurnIndex = (turns?.length ?? 0) - 1;
   const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex < lastTurnIndex];
 
+  useHotkeys([
+    ['ArrowUp', () => canGoBack && setCurrentTurnIndex(currentTurnIndex - 1)],
+    ['ArrowLeft', () => canGoBack && setCurrentTurnIndex(currentTurnIndex - 1)],
+    ['ArrowDown', () => canGoNext && setCurrentTurnIndex(currentTurnIndex + 1)],
+    ['ArrowRight', () => canGoNext && setCurrentTurnIndex(currentTurnIndex + 1)],
+    ['Space', () => playButtonRef.current?.click()]
+  ]);
+
   const setCurrentTurnIndex = useCallback((newStateOfFunction: number | ((prev: number) => number)) => {
 
     return setCurrentTurnIndexRaw(
@@ -160,12 +169,15 @@ export const BattleResult = ({
    * 
    */
 
+  const playButtonRef = useRef<React.ElementRef<'button'>>(null);
+
   React.useEffect(() => {
     return () => setIsPlaying(false);
   }, []);
 
   const playButton = React.useMemo(() => {
     const playButton = <BlackButton
+      buttonRef={playButtonRef}
       onClick={() => {
         if (currentTurnIndex === lastTurnIndex) {
           setCurrentTurnIndex(0);

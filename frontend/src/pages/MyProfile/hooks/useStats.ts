@@ -1,6 +1,6 @@
 import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
-import { XP_NEEDED_FOR_LEVEL_UP_MAP } from "consts";
+import { MAX_GAS_LIMIT, XP_NEEDED_FOR_LEVEL_UP_MAP } from "consts";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
@@ -16,8 +16,8 @@ export const useStats = (character?: Character) => {
 
   const [alertVisible, toggleVisible] = useReducer((state) => !state, false);
 
-  const selectAttr = useCallback((attrName: string) => {
-    setAttr(attrName);
+  const selectAttr = useCallback((capitalizedAttrName: string) => {
+    setAttr(capitalizedAttrName);
     toggleVisible();
   }, []);
 
@@ -32,7 +32,7 @@ export const useStats = (character?: Character) => {
             attr,
           },
         },
-        gasLimit: Infinity,
+        gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
           console.log("success");
         },
@@ -73,5 +73,6 @@ export const useStats = (character?: Character) => {
     alertVisible,
     accept,
     cancel: toggleVisible,
+    selectedAttr: attr,
   };
 };

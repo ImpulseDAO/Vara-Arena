@@ -92,7 +92,6 @@ export const Arena = () => {
                     // can be only of type LobbyCapacity
                     { value: '2', label: '2', },
                     { value: '4', label: '4' },
-                    { value: '8', label: '8' },
                   ]}
                   defaultValue="4"
                   rightSection={

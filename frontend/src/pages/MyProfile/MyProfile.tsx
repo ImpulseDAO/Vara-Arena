@@ -57,7 +57,7 @@ export const Profile = ({
   character: Character;
 }) => {
   const { data: myCharacter } = useMyCharacter();
-  const { accept, alertVisible, cancel, stats } = useStats(
+  const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr } = useStats(
     character
   );
 
@@ -88,7 +88,7 @@ export const Profile = ({
     <div className="profile">
       {alertVisible && (
         <Alert
-          title="Confirm changes?"
+          title={`Please confirm ${selectedAttr} increase`}
           buttonsSlot={[
             {
               className: "profile_alert_cancel",
@@ -122,7 +122,11 @@ export const Profile = ({
             onUploadCodeChange={onUploadCodeChange}
           />
 
-          <CharStats character={character} />
+          <CharStats
+            character={character}
+            isReadyForLevelUp={stats.points > 0}
+            selectAttr={selectAttr}
+          />
 
         </div>
 

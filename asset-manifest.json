@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Vara-Arena/static/css/main.b43ea541.css",
-    "main.js": "/Vara-Arena/static/js/main.4c4cefb1.js",
+    "main.js": "/Vara-Arena/static/js/main.e1ce326d.js",
     "static/media/startScreen.png": "/Vara-Arena/static/media/startScreen.de8d9b2609c0773b4d70.png",
     "static/media/waitingScreen.png": "/Vara-Arena/static/media/waitingScreen.42a40f42109b41834b60.png",
     "static/media/battle.png": "/Vara-Arena/static/media/battle.223eb032fa4314bd2b9f.png",
@@ -32,10 +32,10 @@
     "static/media/back.svg": "/Vara-Arena/static/media/back.8de93fbe4e80fb9e36206bd1063f6702.svg",
     "static/media/progress.svg": "/Vara-Arena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
     "main.b43ea541.css.map": "/Vara-Arena/static/css/main.b43ea541.css.map",
-    "main.4c4cefb1.js.map": "/Vara-Arena/static/js/main.4c4cefb1.js.map"
+    "main.e1ce326d.js.map": "/Vara-Arena/static/js/main.e1ce326d.js.map"
   },
   "entrypoints": [
     "static/css/main.b43ea541.css",
-    "static/js/main.4c4cefb1.js"
+    "static/js/main.e1ce326d.js"
   ]
 }

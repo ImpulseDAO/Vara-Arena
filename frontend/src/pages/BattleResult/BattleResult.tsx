@@ -399,7 +399,7 @@ function visualizeBattleLog(battleLog: BattleStep[], characters: ({ name: string
       const charName = characters[index].name;
 
       try {
-        const color = index === 0 ? 'red' : 'blue';
+        const color = index === 0 ? 'coral' : 'cyan';
         return getLogEntryDescription(log, charName, color);
       } catch (error) {
         return <Text c="red">Error while parsing log entry</Text>;

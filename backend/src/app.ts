@@ -18,26 +18,28 @@ app.use(express.json());
 const port = process.env.PORT;
 
 const NODE_ADDRESS = process.env.NODE_ADDRESS;
-const GAME_ADDRESS = process.env.GAME_ADDRESS;
+const GAME_ADDRESS = process.env.GAME_ADDRESS as HexString;
 const KEYRING_PATH = process.env.PATH_TO_KEYS || "";
 const KEYRING_PASSPHRASE = process.env.KEYRING_PASSPHRASE;
 
 const jsonKeyring = readFileSync(KEYRING_PATH).toString();
 const KEYRING = GearKeyring.fromJson(jsonKeyring, KEYRING_PASSPHRASE);
 
-const createVoucher = async (accountUser: HexString) => {
+const createVoucher = async (
+  accountUser: HexString,
+  programId: HexString = GAME_ADDRESS
+) => {
   const api = await GearApi.create({
     providerAddress: NODE_ADDRESS,
   });
 
-  const programId = GAME_ADDRESS as HexString;
   const account = decodeAddress(accountUser);
 
   // Specify the number of issues
   const tx = api.voucher.issue(
     account,
     programId,
-    15 * 10 ** api.registry.chainDecimals[0]
+    50 * 10 ** api.registry.chainDecimals[0]
   );
 
   const extrinsic = tx.extrinsic;

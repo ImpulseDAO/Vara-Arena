@@ -57,6 +57,8 @@ export async function handleMintMessage(
         let attributes = JSON.parse(character.attributes as any)
         attributes[data.levelUpdated.attr] += 1
         character.attributes = JSON.stringify(attributes)
+    } else if ('characterUpdated' in data) {
+        // update character algorithmId?
     } else {
         console.log(data);
         throw new Error('event is not supported')

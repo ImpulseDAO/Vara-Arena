@@ -71,10 +71,7 @@ export const theme: MantineThemeOverride = {
         sx: (theme) => ({
           transition: "all 0.07s ease-in-out",
           "&:hover": {
-            backgroundColor: `${theme.fn.darken(
-              theme.colors.primary[0],
-              0.07
-            )}!important`,
+            backgroundColor: `${theme.fn.darken(theme.colors.primary[0], 0.3)}`,
           },
           height: "100%",
           width: "100%",

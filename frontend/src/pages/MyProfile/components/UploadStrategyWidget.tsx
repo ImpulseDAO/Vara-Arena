@@ -119,12 +119,22 @@ export const UploadStrategyWidget = () => {
         onUploadCodeChange={onUploadCodeChange}
       />
       <Flex gap="md">
-        <Button onClick={() => setIsVisible(false)}>Cancel</Button>
-        <Button onClick={() => {
-          handleUpdateCharacter();
-          setIsVisible(false);
-        }}>Confirm</Button>
+        <Button
+          variant="outline"
+          color="white"
+          onClick={() => setIsVisible(false)}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={() => {
+            handleUpdateCharacter();
+            setIsVisible(false);
+          }}
+        >
+          Confirm
+        </Button>
       </Flex>
-    </Stack>
+    </Stack >
   );
 };

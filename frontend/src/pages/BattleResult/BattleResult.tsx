@@ -251,6 +251,8 @@ export const BattleResult = ({
 
               const isInactive = currentTurnIndex < i;
 
+              const BORDER_RADIUS = '.5rem';
+
               return (
                 <Box
                   ref={(ref) => {
@@ -260,9 +262,25 @@ export const BattleResult = ({
                   component="li"
                   key={i}
                   sx={{
+                    position: 'relative',
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)'
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
                     },
+                    '&:hover:after': {
+                      content: '""',
+                      position: 'absolute',
+                      top: 0,
+                      bottom: 0,
+                      left: -25,
+                      right: '100%',
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+
+                      borderTopLeftRadius: BORDER_RADIUS,
+                      borderBottomLeftRadius: BORDER_RADIUS,
+                    },
+                    borderTopRightRadius: BORDER_RADIUS,
+                    borderBottomRightRadius: BORDER_RADIUS,
+
                     cursor: 'pointer',
                     '&::marker': { color: isInactive ? 'gray' : undefined }
                   }}>

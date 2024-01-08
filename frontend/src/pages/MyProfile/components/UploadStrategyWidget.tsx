@@ -35,12 +35,9 @@ export const UploadStrategyWidget = () => {
 
   const sendToMintContract = useSendToMintContract();
 
-  const sendToMintContractRef = React.useRef(sendToMintContract);
-
-  if (sendToMintContractRef.current !== sendToMintContract) {
-    console.log('sendToMintContractRef.current !== sendToMintContract');
-  }
-
+  /**
+   * 
+   */
 
   const [isUpdating, setIsUpdating] = React.useState(false);
 

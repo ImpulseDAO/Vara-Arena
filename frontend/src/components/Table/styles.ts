@@ -52,8 +52,6 @@ const Columns = styled.div`
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
   height: 40px;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 `;
 
 const Rows = styled.div`

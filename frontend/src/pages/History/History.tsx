@@ -99,9 +99,16 @@ export const History = () => {
                   'Battle ID',
                   'Players',
                   'Winner',
-                ].map((header) => {
+                ].map((header, idx) => {
                   return (
-                    <th key={header}>{header}</th>
+                    <Box
+                      key={header}
+                      component='th'
+                      w={CELL_WIDTH[idx]}
+                      ta={TEXT_ALIGN[idx]}
+                    >
+                      {header}
+                    </Box>
                   );
                 })}
               </tr>
@@ -122,9 +129,9 @@ export const History = () => {
                 >
                   {[
                     /* Lobby ID */
-                    <div className={'row_position'} > {row.lobbyId}</div>,
+                    <div className={'badge'} > {row.lobbyId}</div>,
                     /* Battle ID */
-                    <div className={'row_position'}>{row.battleId}</div>,
+                    <div className={'badge'}>{row.battleId}</div>,
                     /* Players */
                     row.playersNames.map(playerName => {
                       return (
@@ -137,9 +144,14 @@ export const History = () => {
                     row.winner,
                   ].map((cellContent, idx) => {
                     return (
-                      <td>
+                      <Box
+                        key={idx}
+                        component='td'
+                        w={CELL_WIDTH[idx]}
+                        ta={TEXT_ALIGN[idx]}
+                      >
                         {cellContent}
-                      </td>
+                      </Box>
                     );
                   })}
 
@@ -151,4 +163,14 @@ export const History = () => {
       </div>
     </div >
   );
+};
+
+const CELL_WIDTH = {
+  0: '100px',
+  1: '100px',
+};
+
+const TEXT_ALIGN = {
+  0: 'center',
+  1: 'center',
 };

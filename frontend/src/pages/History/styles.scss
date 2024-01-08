@@ -54,14 +54,18 @@
     }
   }
 
-  .row_position {
-    display: flex;
-    border: 2px solid #ffffff;
-    border-radius: 16px;
+  .badge {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    //
+    border: 2px solid #ffffff;
+    border-radius: 16px;
+    //
     font-size: 12px;
     font-weight: bold;
+    //
+    padding: 0.1rem 0.8rem;
   }
   .row_lvl {
     display: flex;

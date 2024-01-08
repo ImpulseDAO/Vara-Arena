@@ -242,20 +242,12 @@ export const BattleResult = ({
 
           <Box component="ol"
             pl='xl'
+            start={0}
             style={{
               overflowY: 'scroll',
             }}
           >
             {logVisualized.map((turnLogs, i) => {
-              if (i === 0) {
-                return <div
-                  key={i}
-                  ref={(ref) => {
-                    itemRefs.current[i] = ref as HTMLElement;
-                  }}>
-
-                </div>;
-              }
 
               const isInactive = currentTurnIndex < i;
 
@@ -444,10 +436,10 @@ const Name = ({
   return <Text component="span" color={color}>{charName}</Text>;
 };
 
-function visualizeBattleLog(battleLog: BattleStep[], characters: ({ name: string, id: string; })[]): React.ReactNode[][] {
+function visualizeBattleLog(battleSteps: BattleStep[], characters: ({ name: string, id: string; })[]): React.ReactNode[][] {
   const results: React.ReactNode[][] = [];
 
-  battleLog.forEach((step, index) => {
+  battleSteps.forEach((step, index) => {
     const turnLogs: React.ReactNode[] = step.logs.map((log) => {
       const index = characters.findIndex(char => char.id === log.character);
       const charName = characters[index].name;
@@ -460,13 +452,19 @@ function visualizeBattleLog(battleLog: BattleStep[], characters: ({ name: string
       }
     });
 
-    results.push(turnLogs);
+    if (index === 0) {
+      results.push([
+        <Text component="span">
+          Battle started
+        </Text >
+      ]);
+    }
+    else results.push(turnLogs);
   });
 
   return results;
 }
 
-//  isFirst ? 'red' : 'blue'
 const getLogEntryDescription = (log: LogEntry, charName: string, color: string) => {
 
   switch (true) {

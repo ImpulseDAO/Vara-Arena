@@ -5,6 +5,8 @@ import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { getShortIdString } from "utils";
+import { useAllCharacters } from "app/api/characters";
+import { useAllBattleLogs } from '../../../app/api/battleLogs';
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -36,6 +38,40 @@ export const PlayersTable = ({
     isMyCharacter: boolean,
   }>,
 }) => {
+  // const characters = [];
+
+  return (
+    <PlayersTableDataFetcher>
+      {(allBattleLogs) => (
+        <PlayersTableView characters={characters} battleLogs={allBattleLogs} />
+      )}
+    </PlayersTableDataFetcher>
+  );
+};
+
+type BattleLogsReturned = ReturnType<typeof useAllBattleLogs>['data'];
+
+export const PlayersTableDataFetcher = ({
+  children }: {
+    children: (data: BattleLogsReturned) => JSX.Element;
+  }) => {
+  const { data: allBattleLogs } = useAllBattleLogs();
+
+  return children(allBattleLogs);
+};
+
+export const PlayersTableView = ({
+  characters,
+  battleLogs,
+}: {
+  characters: Array<{
+    name: string,
+    id: string,
+    level: string,
+    isMyCharacter: boolean,
+  }>,
+  battleLogs: BattleLogsReturned,
+}) => {
   const inProgressRows = useMemo(() => {
     if (!characters || isEmpty(Object.values(characters))) {
       return [];
@@ -44,11 +80,11 @@ export const PlayersTable = ({
     return characters.map(({ name, id, level, isMyCharacter }) => ({
       name,
       id: <Row name={name} id={getShortIdString(id)} isSelected={isMyCharacter} />,
-      NB: 0,
+      NB: battleLogs?.filter(({ character1, character2 }) => character1.character === id || character2.character === id).length ?? 0,
       level: <span className="row_lvl">{level} LVL</span>,
       isMyCharacter,
     }));
-  }, [characters]);
+  }, [battleLogs, characters]);
 
   return (
     <TableUI rows={inProgressRows} columns={inProgressColumns} />

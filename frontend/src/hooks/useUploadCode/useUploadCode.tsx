@@ -183,13 +183,12 @@ export { useUploadCode };
 const UPLOADED_CODE_IDS_ARRAY = "uploadedCodeIdsArray";
 
 export const addCodeIdToLocalStorage = (codeId: string) => {
-  localStorage.setItem(
-    UPLOADED_CODE_IDS_ARRAY,
-    JSON.stringify([
-      ...(JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as []),
-      codeId,
-    ])
-  );
+  const arrayOfCodeIds = JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as string[];
+
+  const uniqueSet = new Set(arrayOfCodeIds);
+  uniqueSet.add(codeId);
+
+  localStorage.setItem(UPLOADED_CODE_IDS_ARRAY, JSON.stringify(Array.from(uniqueSet)));
 };
 
 export const removeCodeIdFromLocalStorage = (codeId: string) => {

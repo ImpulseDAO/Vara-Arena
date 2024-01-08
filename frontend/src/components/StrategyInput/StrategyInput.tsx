@@ -5,7 +5,7 @@ import { Button, Select, Text } from "@mantine/core";
 import React, { useEffect } from "react";
 import { OLD_STRATEGY_CODE_ID_HARDCODED, STRATEGY_CODE_ID_HARDCODED } from "consts";
 import { useAlert } from "@gear-js/react-hooks";
-import { removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
+import { getCodeIdsFromLocalStorage, removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
 
 export const StrategyInput = ({
   codeId,
@@ -29,12 +29,17 @@ export const StrategyInput = ({
     setStrategyCodeIds(updatedCodeIds);
   }, []);
 
+  const onUploadCodeSuccess = () => {
+    const updatedCodeIds = getCodeIdsFromLocalStorage();
+    setStrategyCodeIds(updatedCodeIds);
+  };
+
   const selectData = React.useMemo(() => {
     return strategyCodeIds.map((codeId, index) => {
       const firstPart =
         codeId === STRATEGY_CODE_ID_HARDCODED
           ? "Default Strategy"
-          : `Strategy Class Hash: ${index + 1}`;
+          : `Strategy ${index + 1}`;
 
       return {
         value: codeId,
@@ -73,6 +78,7 @@ export const StrategyInput = ({
 
             setCodeId(codeId);
             onUploadCodeChange(codeId);
+            onUploadCodeSuccess();
           },
         });
       }

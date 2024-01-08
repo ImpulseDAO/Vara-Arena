@@ -1,14 +1,11 @@
-import {
-  useBalanceFormat,
-  useSendMessage,
-  useVoucher,
-} from "@gear-js/react-hooks";
+import { useSendMessage } from "@gear-js/react-hooks";
 import { useCallback, useMemo, useRef } from "react";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
 import { MAX_GAS_LIMIT, PAYMENT_FOR_MINTING } from "consts";
 import { resetUseMyCharacrersQuery } from "app/api/characters";
+import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 
 export const useOnSubmit = ({
   codeId,
@@ -35,18 +32,10 @@ export const useOnSubmit = ({
   onSuccessRef.current = onSuccess;
 
   /**
-   * Voucher
+   *
    */
 
-  const { getFormattedBalanceValue } = useBalanceFormat();
-  const { isVoucherExists, voucherBalance, isVoucherReady } =
-    useVoucher(MINT_PROGRAM_ID);
-  const formattedBalance =
-    voucherBalance &&
-    getFormattedBalanceValue(voucherBalance.toString()).toFixed();
-
-  const shouldUseVoucher =
-    isVoucherReady && isVoucherExists && formattedBalance > 10;
+  const shouldUseVoucher = useShouldUseVoucher();
 
   /**
    *

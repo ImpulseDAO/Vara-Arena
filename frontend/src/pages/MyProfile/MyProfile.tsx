@@ -18,10 +18,9 @@ import { Alert } from "components/Alert/Alert";
 import { StatBar } from "pages/@shared/StatBar";
 import { CharInfo } from "pages/@shared/CharInfo";
 import { CharStats } from "pages/@shared/CharStats/CharStats";
-import { StrategyInput } from "components/StrategyInput";
-import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
 import { SchoolOfMagic } from "components/SchoolOfMagic";
 import { NoCharacterWidget } from "pages/@shared/NoCharacterWidget";
+import { UploadStrategyWidget } from "./components/UploadStrategyWidget";
 
 
 export const MyProfile = () => {
@@ -60,19 +59,6 @@ export const Profile = ({
   const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr } = useStats(
     character
   );
-
-  /**
-   * Upload code 
-   */
-
-  const [data, setData] = useState({
-    codeId: getCodeIdsFromLocalStorage()[0] ?? "",
-    name: "",
-  });
-
-  const codeId = data.codeId;
-  const setCodeId = (codeId) => setData({ ...data, codeId });
-  const onUploadCodeChange = (codeId) => setData({ ...data, codeId });
 
   /**
    * 
@@ -116,11 +102,7 @@ export const Profile = ({
             level={stats.level}
           />
 
-          <StrategyInput
-            codeId={codeId}
-            setCodeId={setCodeId}
-            onUploadCodeChange={onUploadCodeChange}
-          />
+          <UploadStrategyWidget />
 
           <CharStats
             character={character}

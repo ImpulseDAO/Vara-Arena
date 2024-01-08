@@ -195,8 +195,6 @@ export const addCodeIdToLocalStorage = (codeId: string) => {
 export const removeCodeIdFromLocalStorage = (codeId: string) => {
   const newValue = getCodeIdsFromLocalStorage();
 
-  console.log('newValue', newValue);
-
   localStorage.setItem(
     UPLOADED_CODE_IDS_ARRAY,
     JSON.stringify(newValue.filter((id) => id !== codeId))

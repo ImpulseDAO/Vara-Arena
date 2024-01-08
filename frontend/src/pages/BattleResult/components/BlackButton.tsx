@@ -23,6 +23,7 @@ export const BlackButton = ({
       gap: "12px",
       //
       borderRadius: "8px",
+      transition: 'background .1s ease-in-out',
       ...(style ?? {})
     }}
     sx={theme => ({

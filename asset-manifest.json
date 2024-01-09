@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/Vara-Arena/static/css/main.aaa40c1e.css",
-    "main.js": "/Vara-Arena/static/js/main.dd5318fb.js",
-    "static/media/startScreen.png": "/Vara-Arena/static/media/startScreen.de8d9b2609c0773b4d70.png",
-    "static/media/waitingScreen.png": "/Vara-Arena/static/media/waitingScreen.42a40f42109b41834b60.png",
-    "static/media/battle.png": "/Vara-Arena/static/media/battle.223eb032fa4314bd2b9f.png",
-    "static/media/profile.png": "/Vara-Arena/static/media/profile.ec5ec478d44315d5b331.png",
-    "static/media/startFightScreen.png": "/Vara-Arena/static/media/startFightScreen.69db2552b238454dc209.png",
-    "static/media/leader.png": "/Vara-Arena/static/media/leader.682a8f0571254a05d5ec.png",
-    "static/media/mintCharacterScreen.png": "/Vara-Arena/static/media/mintCharacterScreen.420da1918567e3615aef.png",
+    "main.css": "/Vara-Arena/static/css/main.0c67acdf.css",
+    "main.js": "/Vara-Arena/static/js/main.b08a461c.js",
+    "static/media/startScreen.webp": "/Vara-Arena/static/media/startScreen.211d61d5a535065bb149.webp",
+    "static/media/waitingScreen.webp": "/Vara-Arena/static/media/waitingScreen.8b2df33063ef5984ce6e.webp",
+    "static/media/battle.webp": "/Vara-Arena/static/media/battle.9a9631f33126418f973f.webp",
+    "static/media/profile.webp": "/Vara-Arena/static/media/profile.98459e8011a6e75afd87.webp",
+    "static/media/startFightScreen.webp": "/Vara-Arena/static/media/startFightScreen.535e825555162c58231e.webp",
+    "static/media/leader.webp": "/Vara-Arena/static/media/leader.3229f36583fbe1c82599.webp",
+    "static/media/mintCharacterScreen.webp": "/Vara-Arena/static/media/mintCharacterScreen.fa2dca705e261a419f1d.webp",
     "static/media/char.svg": "/Vara-Arena/static/media/char.5255214121e3ec6268337e3e63fb4001.svg",
     "static/media/lock.svg": "/Vara-Arena/static/media/lock.a1f997e58c55e973d33c830990ccca4f.svg",
     "static/media/Inter-ExtraBold.ttf": "/Vara-Arena/static/media/Inter-ExtraBold.4164cfba15dbca5f37aa.ttf",
@@ -31,11 +31,11 @@
     "static/media/forward.svg": "/Vara-Arena/static/media/forward.b60cb2268c2eae20ebae79bbca831b1d.svg",
     "static/media/back.svg": "/Vara-Arena/static/media/back.8de93fbe4e80fb9e36206bd1063f6702.svg",
     "static/media/progress.svg": "/Vara-Arena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
-    "main.aaa40c1e.css.map": "/Vara-Arena/static/css/main.aaa40c1e.css.map",
-    "main.dd5318fb.js.map": "/Vara-Arena/static/js/main.dd5318fb.js.map"
+    "main.0c67acdf.css.map": "/Vara-Arena/static/css/main.0c67acdf.css.map",
+    "main.b08a461c.js.map": "/Vara-Arena/static/js/main.b08a461c.js.map"
   },
   "entrypoints": [
-    "static/css/main.aaa40c1e.css",
-    "static/js/main.dd5318fb.js"
+    "static/css/main.0c67acdf.css",
+    "static/js/main.b08a461c.js"
   ]
 }

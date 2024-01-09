@@ -107,7 +107,8 @@
     "postcss-preset-mantine": "^1.12.3",
     "postcss-simple-vars": "^7.0.1",
     "react-app-rewired": "2.2.1",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "webpack-bundle-analyzer": "^4.10.1"
   },
   "lint-staged": {
     "./**/*.{js,css,ts,tsx}": "eslint --fix"

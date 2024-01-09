@@ -1,18 +1,22 @@
+import React, { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { AuthorizedLayer } from "layouts/AuthorizedLayer";
 import { routes } from "./routes";
 import { newRoutes } from "./routes";
 //
-import { History } from "pages/History";
-import { Lobby } from "pages/Lobby";
-import { Battle } from "pages/Battle";
-import { MyProfile } from "pages/MyProfile";
-import { BattleResultPage } from "pages/BattleResult";
-import { Leaderboard } from "pages/Leaderboard";
-import { Arena } from "pages/Arena";
-import { UploadStrategy } from "pages/UploadStrategy";
-import { MintCharacter, StartFight, StartScreen } from "pages";
-import { TournamentResultPage } from "pages/BattleResult/TournamentResult";
+const History = React.lazy(() => import("pages/History").then(({ History }) => ({ default: History })));
+const Lobby = React.lazy(() => import("pages/Lobby").then(({ Lobby }) => ({ default: Lobby })));
+const Battle = React.lazy(() => import("pages/Battle").then(({ Battle }) => ({ default: Battle })));
+const MyProfile = React.lazy(() => import("pages/MyProfile").then(({ MyProfile }) => ({ default: MyProfile })));
+const BattleResultPage = React.lazy(() => import("pages/BattleResult").then(({ BattleResultPage }) => ({ default: BattleResultPage })));
+const Leaderboard = React.lazy(() => import("pages/Leaderboard").then(({ Leaderboard }) => ({ default: Leaderboard })));
+const Arena = React.lazy(() => import("pages/Arena").then(({ Arena }) => ({ default: Arena })));
+const UploadStrategy = React.lazy(() => import("pages/UploadStrategy").then(({ UploadStrategy }) => ({ default: UploadStrategy })));
+const MintCharacter = React.lazy(() => import("pages/MintCharacter").then(({ MintCharacter }) => ({ default: MintCharacter })));
+const StartFight = React.lazy(() => import("pages/StartFight").then(({ StartFight }) => ({ default: StartFight })));
+const StartScreen = React.lazy(() => import("pages/StartScreen").then(({ StartScreen }) => ({ default: StartScreen })));
+const TournamentResultPage = React.lazy(() => import("pages/BattleResult/TournamentResult").then(({ TournamentResultPage }) => ({ default: TournamentResultPage })));
+//
 
 const options: Parameters<typeof createBrowserRouter>[1] = {
   // see more https://github.com/rafgraph/spa-github-pages
@@ -46,7 +50,11 @@ export const appRouter = createBrowserRouter(
 
     { element: <div></div>, path: routes.wildcard, auth: true },
   ].map(({ element, path, auth }) => ({
-    element: auth ? <AuthorizedLayer>{element}</AuthorizedLayer> : element,
+    element: auth ? (
+      <Suspense>
+        <AuthorizedLayer>{element}</AuthorizedLayer>
+      </Suspense>
+    ) : element,
     path,
   })),
   options

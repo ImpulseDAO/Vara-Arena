@@ -1,4 +1,4 @@
-import { isEmpty } from "lodash";
+import isEmpty from "lodash/isEmpty";
 import { useMemo } from "react";
 //
 import AvatarIcon from "assets/images/avatar.png";

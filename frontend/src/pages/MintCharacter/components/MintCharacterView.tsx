@@ -7,7 +7,7 @@ import "./styles.scss";
 import { Badge, Box, Table } from "@mantine/core";
 import { SchoolOfMagicChoice } from "./SchoolOfMagicChoice";
 import { TitleWithQuote } from "components/TitleWithQuote";
-import { capitalize } from "lodash";
+import capitalize from "lodash/capitalize";
 import { StrategyInput } from "components/StrategyInput";
 import { getFullEnergy, getFullHp } from "consts";
 

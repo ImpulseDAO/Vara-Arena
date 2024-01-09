@@ -115,6 +115,7 @@ impl Arena {
                         owner_id: winner.owner,
                         character_id: winner.id,
                         losers: lobby.losers.drain(..).collect(),
+                        reply_to: source,
                     },
                     0,
                 )

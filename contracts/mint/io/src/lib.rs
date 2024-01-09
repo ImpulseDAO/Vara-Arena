@@ -155,6 +155,7 @@ pub enum MintAction {
         owner_id: ActorId,
         character_id: u128,
         losers: Vec<ActorId>,
+        reply_to: ActorId,
     },
     SetArena {
         arena_id: ActorId,

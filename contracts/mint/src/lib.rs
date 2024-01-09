@@ -118,7 +118,13 @@ impl Mint {
         msg::reply(character, 0).expect("unable to reply");
     }
 
-    fn increase_xp(&mut self, owner_id: CharacterId, character_id: u128, losers: Vec<ActorId>) {
+    fn increase_xp(
+        &mut self,
+        owner_id: CharacterId,
+        character_id: u128,
+        losers: Vec<ActorId>,
+        reply_to: ActorId,
+    ) {
         let caller = msg::source();
 
         if let Some(arena_id) = self.arena_contract {
@@ -162,7 +168,8 @@ impl Mint {
 
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
-        msg::reply(
+        msg::send(
+            reply_to,
             MintEvent::BattleResultHandled {
                 winner_id: character_id,
                 winner_xp: xp,
@@ -171,7 +178,7 @@ impl Mint {
             },
             0,
         )
-        .expect("unable to reply");
+        .expect("unable to send");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {
@@ -373,7 +380,8 @@ extern "C" fn handle() {
             owner_id,
             character_id,
             losers,
-        } => mint.increase_xp(owner_id, character_id, losers),
+            reply_to,
+        } => mint.increase_xp(owner_id, character_id, losers, reply_to),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
         MintAction::MakeReservation => mint.make_reservation(),

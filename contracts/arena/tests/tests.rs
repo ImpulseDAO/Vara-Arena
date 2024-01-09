@@ -63,8 +63,8 @@ fn game() {
             agility: 1,
             strength: 1,
             stamina: 1,
-            vitality: 3,
-            intelligence: 4,
+            vitality: 2,
+            intelligence: 5,
         },
     };
 
@@ -72,10 +72,10 @@ fn game() {
         code_id,
         name: "Bob".to_string(),
         attributes: InitialAttributes {
-            agility: 3,
-            strength: 3,
+            agility: 1,
+            strength: 1,
             stamina: 1,
-            vitality: 2,
+            vitality: 6,
             intelligence: 1,
         },
     };
@@ -84,10 +84,10 @@ fn game() {
         code_id,
         name: "Che".to_string(),
         attributes: InitialAttributes {
-            agility: 3,
-            strength: 3,
+            agility: 1,
+            strength: 1,
             stamina: 1,
-            vitality: 2,
+            vitality: 6,
             intelligence: 1,
         },
     };
@@ -96,10 +96,10 @@ fn game() {
         code_id,
         name: "Dua".to_string(),
         attributes: InitialAttributes {
-            agility: 3,
-            strength: 3,
+            agility: 1,
+            strength: 1,
             stamina: 1,
-            vitality: 2,
+            vitality: 6,
             intelligence: 1,
         },
     };

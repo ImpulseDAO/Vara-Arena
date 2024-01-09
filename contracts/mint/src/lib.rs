@@ -137,11 +137,11 @@ impl Mint {
 
         let earned_rating = match character.level {
             0 => unreachable!(),
-            1 => 25,
-            2 => 20,
-            3 => 15,
-            4 => 10,
-            _ => 5,
+            1 => 5,
+            2 => 10,
+            3..=5 => 15,
+            6..=9 => 20,
+            _ => 25,
         };
         character.increase_xp();
         character.attributes.increase_rating(earned_rating);

@@ -69,7 +69,7 @@ pub enum AttributeChoice {
     Intelligence,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct CharacterInfo {
     pub id: u128,
     pub algorithm_id: ActorId,
@@ -127,6 +127,7 @@ impl CharacterInfo {
 impl CharacterAttributes {
     pub fn increase_rating(&mut self, earned_rating: u128) {
         self.tier_rating = self.tier_rating.saturating_add(earned_rating);
+        debug!("Winner's rating is {:?}", self.tier_rating);
     }
 }
 

@@ -11,6 +11,8 @@ const Container = styled.div`
   border-bottom: 2px solid white;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
+
+  overflow: hidden;
 `;
 
 const Column = styled.div<{ position?: "left" | "right" | "center" }>`
@@ -67,6 +69,8 @@ const Row = styled.div`
   color: white;
   background: rgba(0, 0, 0, 0.7);
   border-top: 1px solid white;
+
+  position: relative;
 
   &:last-child {
     border-bottom-left-radius: 12px;

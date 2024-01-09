@@ -2,10 +2,10 @@ import { Header } from "layouts/Header";
 import { FC, ReactNode, memo, useEffect } from "react";
 import "./styles.scss";
 import { useAccount, useApi } from "@gear-js/react-hooks";
-import { useLocation, useNavigate, useNavigation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BackgroundImage, Box, LoadingOverlay, useMantineTheme } from "@mantine/core";
 
-import StartFightPng from "assets/images/startFightScreen.png";
+import StartFightPng from "assets/images/startFightScreen.webp";
 import { newRoutes } from "app/routes";
 
 

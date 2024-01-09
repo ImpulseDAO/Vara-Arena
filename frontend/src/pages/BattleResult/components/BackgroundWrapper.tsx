@@ -1,5 +1,5 @@
 import { BackgroundImage } from "@mantine/core";
-import BattleBackground from 'assets/images/battle.png';
+import BattleBackground from 'assets/images/battle.webp';
 
 export const BattleBackgroundWrapper = ({ children }: { children: React.ReactNode; }) => {
   return (

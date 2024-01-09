@@ -1,5 +1,5 @@
 import "./styles.scss";
-import ArenaPng from "../../../assets/images/arena.png";
+import ArenaPng from "assets/images/arena.png";
 import { FC, memo } from "react";
 
 import { Button } from "components/Button";

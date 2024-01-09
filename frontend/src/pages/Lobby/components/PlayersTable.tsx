@@ -5,8 +5,8 @@ import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { getShortIdString } from "utils";
-import { useAllCharacters } from "app/api/characters";
 import { useAllBattleLogs } from '../../../app/api/battleLogs';
+import { Flex } from "@mantine/core";
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -38,13 +38,12 @@ export const PlayersTable = ({
     isMyCharacter: boolean,
   }>,
 }) => {
-  // const characters = [];
-
   return (
     <PlayersTableDataFetcher>
       {(allBattleLogs) => (
         <PlayersTableView characters={characters} battleLogs={allBattleLogs} />
       )}
+
     </PlayersTableDataFetcher>
   );
 };
@@ -74,7 +73,23 @@ export const PlayersTableView = ({
 }) => {
   const inProgressRows = useMemo(() => {
     if (!characters || isEmpty(Object.values(characters))) {
-      return [];
+      return [
+        {
+          name: '',
+          id: '',
+          NB: (
+            <Flex
+              align={'center'}
+              justify={'center'}
+              style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0 }}
+            >
+              Lobby is empty
+            </Flex>
+          ),
+          level: '',
+          isMyCharacter: false,
+        }
+      ];
     }
 
     return characters.map(({ name, id, level, isMyCharacter }) => ({

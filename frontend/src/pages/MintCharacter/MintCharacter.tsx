@@ -6,13 +6,11 @@ import { userStore } from "model/user";
 import stateMetaWasm from "../../assets/mint.opt.wasm";
 import { MintCharacterView } from "./components/MintCharacterView";
 import { useWasmMetadata } from "./hooks/useWasmMetadata";
-import { MINT_PROGRAM_ID, MINT_METADATA, STRATEGY_CODE_ID_HARDCODED } from "consts";
+import { MINT_PROGRAM_ID, MINT_METADATA } from "consts";
 import { useOnSubmit } from "./hooks/useOnSubmit";
 import { useStats } from "./hooks/useStats";
 import { useOnChange } from "./hooks/useOnChange";
-import React from "react";
 import {
-  addCodeIdToLocalStorage,
   getCodeIdsFromLocalStorage,
 } from "hooks/useUploadCode";
 
@@ -51,14 +49,6 @@ export const MintCharacter: FC<MintCharacterProps> = memo(() => {
     codeId: getCodeIdsFromLocalStorage()[0] ?? "",
     name: "",
   });
-
-  React.useEffect(() => {
-    const codeIdsArr = getCodeIdsFromLocalStorage();
-    if (codeIdsArr.length === 0) {
-      addCodeIdToLocalStorage(STRATEGY_CODE_ID_HARDCODED);
-      setData((prev) => ({ ...prev, codeId: STRATEGY_CODE_ID_HARDCODED }));
-    }
-  }, []);
 
   const { decrease, increase, stats } = useStats();
   const onSubmit = useOnSubmit({ ...data, stats });

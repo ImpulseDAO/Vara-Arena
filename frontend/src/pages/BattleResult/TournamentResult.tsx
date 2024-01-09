@@ -1,11 +1,12 @@
+import React from "react";
 import { Flex } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import { BattleBackgroundWrapper } from "./components/BackgroundWrapper";
 import { BattleResultNotFound } from "./components/BattleResultNotFound";
 import { useBattleLogsByLobbyId } from "app/api/battleLogs";
-import React from "react";
 import { BattleResult, BattleResultData } from "./BattleResult";
 import { BlackButton } from "./components/BlackButton";
+import { useBattleIndex } from "./components/useBattleIndex/useBattleIndex";
 
 export const TournamentResultPage = () => {
   const { lobbyId } = useParams<{ lobbyId: string; }>();
@@ -28,7 +29,7 @@ export const TournamentResultPageContent = ({
 
   const { data: battleLogs } = useBattleLogsByLobbyId({ lobbyId });
 
-  const [curIdx, setCurIdx] = React.useState(0);
+  const [curIdx, setCurIdx] = useBattleIndex();
 
   const maxIdx = (battleLogs?.length ?? 0) - 1;
   const curBattleId = battleLogs?.[curIdx].id;

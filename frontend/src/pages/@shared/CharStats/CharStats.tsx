@@ -68,17 +68,6 @@ const Attribute = ({
 
       <Text fw="600">{value}</Text>
 
-
-      {/* <ButtonGroupNew
-        key={attributeName}
-        leftText={''}
-        firstButton={"-"}
-        value={value}
-        secondButton={"+"}
-        onClickSecondButton={() => selectAttr?.(attributeName)}
-        isFirstDisabled={true}
-        isSecondDisabled={false}
-      /> */}
     </Flex >
   );
 };

@@ -116,7 +116,8 @@ export const History = () => {
               return (
                 <Table.Tr
                   onClick={() => {
-                    navigate(newRoutes.battleResult(row.battleId));
+                    const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
+                    navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
                   }}
                   className='table_row'
                 >

@@ -32,9 +32,14 @@ export const TournamentResultPageContent = ({
   const [curIdx, setCurIdx] = useBattleIndex();
 
   const maxIdx = (battleLogs?.length ?? 0) - 1;
-  const curBattleId = battleLogs?.[curIdx].id;
+  const curBattleId = battleLogs?.[curIdx]?.id;
   const isMultipleBattles = maxIdx > 0;
 
+  if (!curBattleId) {
+    return <BattleBackgroundWrapper>
+      <BattleResultNotFound />
+    </BattleBackgroundWrapper>;
+  }
 
   return (
     <BattleBackgroundWrapper>

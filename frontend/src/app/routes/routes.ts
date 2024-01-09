@@ -29,6 +29,12 @@ export const newRoutes = {
   battleResultDynamic: "/battle-result/:battleId",
   battleResult: (battleId: string) => `/battle-result/${battleId}`,
   //
-  tournamentResultDynamic: "/tournament-result/:lobbyId",
-  tournamentResult: (lobbyId: string) => `/tournament-result/${lobbyId}`,
+  tournamentResultDynamic: "/tournament-result/:lobbyId/:battleId?",
+  tournamentResult: ({
+    lobbyId,
+    battleId,
+  }: {
+    lobbyId: string;
+    battleId?: string;
+  }) => `/tournament-result/${lobbyId}${battleId ? `/${battleId}` : ""}`,
 };

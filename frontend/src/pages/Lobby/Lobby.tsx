@@ -125,7 +125,7 @@ export const Lobby = () => {
                   onStartButtonSucess: () => {
                     setTimeout(() => {
                       refetchLobbyQuery();
-                      navigate(newRoutes.tournamentResult(lobbyId ?? ''));
+                      navigate(newRoutes.tournamentResult({ lobbyId: lobbyId ?? '' }));
                     }, 3000);
                   },
                 }}
@@ -140,7 +140,7 @@ export const Lobby = () => {
               <TheButton
                 mt="lg"
                 w={200}
-                onClick={() => lobbyId && navigate(newRoutes.tournamentResult(lobbyId))}
+                onClick={() => lobbyId && navigate(newRoutes.tournamentResult({ lobbyId }))}
               >
                 See results
               </TheButton>

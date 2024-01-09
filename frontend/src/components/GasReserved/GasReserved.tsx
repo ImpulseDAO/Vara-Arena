@@ -24,7 +24,7 @@ export const GasReserved = ({
 };
 
 const GasPoint = ({ filled }: { filled?: boolean; }) => {
-  return <Box bg={filled ? 'primary' : 'white'} w={20} h={8} sx={{
+  return <Box bg={filled ? 'primary' : 'white'} w={20} h={8} style={{
     borderRadius: 4,
   }} />;
 };

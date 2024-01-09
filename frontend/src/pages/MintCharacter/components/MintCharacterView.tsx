@@ -1,14 +1,15 @@
 import { Input } from "components";
 import { Button } from "components/Button";
-import { ButtonGroupNew } from "components/ButtonGroupNew";
+import { ButtonGroupNew } from "components/ButtonGroup";
 import { StatBar } from "pages/@shared/StatBar";
 import { FC, memo, useRef } from "react";
 import "./styles.scss";
 import { Badge, Box, Table } from "@mantine/core";
 import { SchoolOfMagicChoice } from "./SchoolOfMagicChoice";
 import { TitleWithQuote } from "components/TitleWithQuote";
-import { capitalize } from "lodash";
+import { capitalize, get } from "lodash";
 import { StrategyInput } from "components/StrategyInput";
+import { getFullEnergy, getFullHp } from "consts";
 
 type MintCharacterViewProps = {
   stats: {
@@ -97,10 +98,8 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
             <div className={"modal_right"}>
               <Box pt="2.5rem" mb="2rem">
                 <StatBar
-                  health={stats.vitality * 30 + 10}
-                  energy={
-                    [0, 110, 120, 130, 140, 150, 160, 170, 180, 190][stats.stamina]
-                  }
+                  health={getFullHp(stats.vitality)}
+                  energy={getFullEnergy(stats.stamina)}
                 />
               </Box>
 

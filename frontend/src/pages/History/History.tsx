@@ -1,6 +1,6 @@
 import './styles.scss';
 import { getCharacterFromBattleLogById, useAllBattleLogs } from 'app/api/battleLogs';
-import { Box, Flex, Table } from '@mantine/core';
+import { Flex, Table } from '@mantine/core';
 import { newRoutes } from 'app/routes';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BattleLog } from 'gql/graphql';
@@ -92,8 +92,8 @@ export const History = () => {
         <div className='header'>History</div>
         <div className='modal_table'>
           <Table horizontalSpacing="md" verticalSpacing="md" >
-            <thead>
-              <tr>
+            <Table.Thead>
+              <Table.Tr>
                 {[
                   'Lobby ID',
                   'Battle ID',
@@ -101,31 +101,24 @@ export const History = () => {
                   'Winner',
                 ].map((header, idx) => {
                   return (
-                    <Box
+                    <Table.Th
                       key={header}
-                      component='th'
                       w={CELL_WIDTH[idx]}
                       ta={TEXT_ALIGN[idx]}
                     >
                       {header}
-                    </Box>
+                    </Table.Th>
                   );
                 })}
-              </tr>
-            </thead>
-            <tbody>{inProgressRows.map((row) => {
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{inProgressRows.map((row) => {
               return (
-                <Box
+                <Table.Tr
                   onClick={() => {
                     navigate(newRoutes.battleResult(row.battleId));
                   }}
-                  component='tr'
-                  sx={{
-                    "&:hover": {
-                      background: 'rgba(255, 255, 255, 0.2)'
-                    },
-                    cursor: 'pointer',
-                  }}
+                  className='table_row'
                 >
                   {[
                     /* Lobby ID */
@@ -144,19 +137,18 @@ export const History = () => {
                     row.winner,
                   ].map((cellContent, idx) => {
                     return (
-                      <Box
+                      <Table.Td
                         key={idx}
-                        component='td'
                         w={CELL_WIDTH[idx]}
                         ta={TEXT_ALIGN[idx]}
                       >
                         {cellContent}
-                      </Box>
+                      </Table.Td>
                     );
                   })}
 
-                </Box>);
-            })}</tbody>
+                </Table.Tr>);
+            })}</Table.Tbody>
           </Table>
 
         </div>

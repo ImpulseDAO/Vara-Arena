@@ -1,20 +1,18 @@
-import { Anchor, Box, Flex, Stack, Text } from "@mantine/core";
-import { CharInfo } from "pages/@shared/CharInfo";
+import styles from './BattleResult.module.css';
+//
+import clsx from "clsx";
+import { Box, Flex, Text } from "@mantine/core";
 import { Panel } from 'components/Panel';
-import { StatBar } from "pages/@shared/StatBar";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { getShortIdString, getXpNeededForLvlUp } from "utils";
-import { CharStats } from "pages/@shared/CharStats/CharStats";
-import { getFullEnergy, getFullHp } from "consts";
 import { useParams } from "react-router-dom";
 import { useBattleLogById } from "app/api/battleLogs";
 import { BattleBackgroundWrapper } from "./components/BackgroundWrapper";
 import { BattleResultNotFound } from "./components/BattleResultNotFound";
 import { BlackButton } from "./components/BlackButton";
 import { useHotkeys } from '@mantine/hooks';
-
-const SIDE_PANEL_WIDTH = 375;
-const MID_PANEL_WIDTH = 420;
+import { TextButton } from './components/TextButton';
+import { visualizeBattleLog } from './components/visualizeBattleLog';
+import { CharPanel } from './components/CharPanel';
 
 export const BattleResultPage = () => {
   const { battleId } = useParams<{ battleId: string; }>();
@@ -59,6 +57,13 @@ export const BattleResultData = ({
   return children(battleLog);
 };
 
+/**
+ * Battle Result
+ */
+
+const SIDE_PANEL_WIDTH = 375;
+const MID_PANEL_WIDTH = 420;
+
 export const BattleResult = ({
   battleId,
   setPlayButton,
@@ -73,8 +78,6 @@ export const BattleResult = ({
 
   const isSuccess = battleLog != null;
 
-
-
   /**
    * Characters
    */
@@ -87,8 +90,8 @@ export const BattleResult = ({
 
   /**
   * List items refs
+  * ( used for scrolling to them )
   */
-
   const itemRefs = useRef<HTMLElement[]>([]);
 
   /**
@@ -159,24 +162,25 @@ export const BattleResult = ({
 
   }, [isPlaying, lastTurnIndex, setCurrentTurnIndex]);
 
-  /**
-   * 
-   */
-
-  const logVisualized = visualizeBattleLog(turns ?? [], characters.filter(Boolean));
-
-  /**
-   * 
-   */
-
-  const playButtonRef = useRef<React.ElementRef<'button'>>(null);
 
   React.useEffect(() => {
+    // stop playing when unmounting
     return () => setIsPlaying(false);
   }, []);
 
+  /**
+   * Visualize battle log
+   */
+  const logVisualized = visualizeBattleLog(turns ?? [], characters.filter(Boolean));
+
+  /**
+   *  Play Button functionality
+   */
+  const playButtonRef = useRef<React.ElementRef<'button'>>(null);
+
   const playButton = React.useMemo(() => {
     const playButton = <BlackButton
+      w="95px"
       buttonRef={playButtonRef}
       onClick={() => {
         if (currentTurnIndex === lastTurnIndex) {
@@ -188,7 +192,7 @@ export const BattleResult = ({
         }
         setIsPlaying(!isPlaying);
       }}
-      rightIcon={
+      rightSection={
         isPlaying ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" viewBox="0 0 9 14" fill="none">
             <path d="M9 1.5C9 0.671573 8.32843 0 7.5 0V0C6.67157 0 6 0.671573 6 1.5V12.5C6 13.3284 6.67157 14 7.5 14V14C8.32843 14 9 13.3284 9 12.5V1.5Z" fill="white" />
@@ -208,10 +212,16 @@ export const BattleResult = ({
     return playButton;
   }, [currentTurnIndex, isPlaying, lastTurnIndex, setCurrentTurnIndex, setPlayButton]);
 
+  /**
+   * Fallback
+   */
   if (isSuccess && battleLog === null) {
     return <BattleResultNotFound />;
   }
 
+  /**
+   * Render
+   */
   return (
     <>
       {withPlayButton ? <Box mb="md">
@@ -224,7 +234,7 @@ export const BattleResult = ({
         </Panel>
         <Panel
           w={MID_PANEL_WIDTH}
-          sx={{
+          style={{
             display: 'flex',
             flexDirection: 'column',
           }}
@@ -234,9 +244,11 @@ export const BattleResult = ({
 
           <Box pl="2rem">
             <p>{`Battle ID: ${battleId}`}</p>
-            <Box component="p" mb="sm">{`Current turn: ${currentTurnIndex}`}
+            <Box component="p" mb="sm">
+              <Text component='span' display="inline-block" w="125px">Current turn: {currentTurnIndex}</Text>
               <TextButton disabled={!canGoBack} onClick={() => setCurrentTurnIndex(currentTurnIndex - 1)}>Prev</TextButton>
               <TextButton disabled={!canGoNext} onClick={() => setCurrentTurnIndex(currentTurnIndex + 1)}>Next</TextButton>
+
             </Box>
           </Box>
 
@@ -251,8 +263,6 @@ export const BattleResult = ({
 
               const isInactive = currentTurnIndex < i;
 
-              const BORDER_RADIUS = '.5rem';
-
               return (
                 <Box
                   ref={(ref) => {
@@ -261,30 +271,9 @@ export const BattleResult = ({
                   onClick={() => setCurrentTurnIndex(i)}
                   component="li"
                   key={i}
-                  sx={{
-                    position: 'relative',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    },
-                    '&:hover:after': {
-                      content: '""',
-                      position: 'absolute',
-                      top: 0,
-                      bottom: 0,
-                      left: -25,
-                      right: '100%',
-                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-
-                      borderTopLeftRadius: BORDER_RADIUS,
-                      borderBottomLeftRadius: BORDER_RADIUS,
-                    },
-                    borderTopRightRadius: BORDER_RADIUS,
-                    borderBottomRightRadius: BORDER_RADIUS,
-
-                    cursor: 'pointer',
-                    '&::marker': { color: isInactive ? 'gray' : undefined }
-                  }}>
-                  <Box component="span" {...isInactive ? { sx: theme => ({ opacity: '0.4' }) } : {}}>
+                  className={clsx(styles.element, isInactive ? styles.inactive : null)}
+                >
+                  <Box component="span" {...isInactive ? { style: theme => ({ opacity: '0.4' }) } : {}}>
                     {turnLogs.map((line, i) => <p key={i}>{line}</p>)}
                   </Box>
                 </Box>
@@ -303,256 +292,4 @@ export const BattleResult = ({
       </Flex>
     </>
   );
-};
-
-const CharPanel = ({ character, charState }: { character: any; charState?: CharacterState; }) => {
-
-  const health = Math.ceil(charState?.hp ?? 0);
-  const healthMax = getFullHp(character.attributes.vitality);
-  const energy = Math.ceil(charState?.energy ?? 0);
-  const energyMax = getFullEnergy(character.attributes.stamina);
-
-  /**
-   *  This is done to force rerender the component when the health/energy is full
-   */
-  const keyRef = useRef(Math.random());
-  if (health === healthMax && energy === energyMax) keyRef.current = Math.random();
-
-  return (
-    <Stack spacing={0} >
-      <StatBar
-        /**
-         * This is done to force rerender (see above)
-         */
-        key={keyRef.current}
-        health={Math.ceil(charState?.hp ?? 0)}
-        healthMax={getFullHp(character.attributes.vitality)}
-        energy={Math.ceil(charState?.energy ?? 0)}
-        energyMax={getFullEnergy(character.attributes.stamina)}
-      />
-
-      <CharInfo
-        mt="lg"
-
-        isMyCharacter={true}
-        name={character.name}
-        shortId={getShortIdString(character.id)}
-        //
-        exp={character.experience}
-        maxExp={getXpNeededForLvlUp(character.level)}
-        level={character.level}
-      />
-
-      <CharStats
-        style={{
-          justifySelf: 'end'
-        }}
-        character={character}
-      />
-
-    </Stack>
-  );
-};
-
-const TextButton = ({
-  disabled = false,
-  onClick,
-  children
-}: {
-  disabled?: boolean;
-  onClick?: () => void;
-  children: React.ReactNode;
-}) => {
-  return <Anchor
-    pl="sm"
-    sx={{
-      userSelect: 'none',
-      ...disabled
-        ? { color: 'gray', textDecoration: 'none', cursor: 'default', '&:hover': { textDecoration: 'none' } }
-        : {}
-    }}
-    onClick={disabled ? undefined : onClick}
-  >
-    {children}
-  </Anchor>;
-};
-
-/**
- * 
- */
-
-type CharacterState = {
-  energy: number;
-  hp: number;
-  position: number;
-};
-
-type AttackKind = "Quick" | "Precise" | "Heavy";
-
-const spellnames = [
-  'fireball',
-  'waterRestoration',
-  'earthCatapult',
-  'waterBurst',
-  'fireWall',
-  'fireHaste',
-  'earthSmites',
-  'earthSkin',
-  'chillingTouch'
-] as const;
-
-type Spell = typeof spellnames[number];
-
-type Action = {
-  move?: {
-    position: number;
-  };
-  attack?: {
-    kind: AttackKind;
-    result: {
-      damage?: number;
-      miss?: any;
-    };
-  };
-  rest?: {
-    energy: number;
-  };
-  castSpell: {
-    result: {
-      [key in Spell]: key extends 'fireball' | 'waterBurst' ? { damage: number; }
-      : key extends 'waterRestoration' ? { heal: number; }
-      : key extends 'earthCatapult' ? { damage: number, enemyPosition: number; }
-      : {}
-    };
-  };
-  fireWall: {
-    damage: number;
-  };
-  notEnoughEnergy: {};
-  parry: {};
-  guardbreak: {};
-};
-
-type LogEntry = {
-  action: Action;
-  character: string;
-};
-
-type BattleStep = {
-  character1?: CharacterState | null;
-  character2?: CharacterState | null;
-  logs: LogEntry[];
-};
-
-const Name = ({
-  charName,
-  color,
-}: {
-  charName: string;
-  color: string;
-}) => {
-  return <Text component="span" color={color}>{charName}</Text>;
-};
-
-function visualizeBattleLog(battleSteps: BattleStep[], characters: ({ name: string, id: string; })[]): React.ReactNode[][] {
-  const results: React.ReactNode[][] = [];
-
-  battleSteps.forEach((step, index) => {
-    const turnLogs: React.ReactNode[] = step.logs.map((log) => {
-      const index = characters.findIndex(char => char.id === log.character);
-      const charName = characters[index].name;
-
-      try {
-        const color = index === 0 ? 'coral' : 'cyan';
-        return getLogEntryDescription(log, charName, color);
-      } catch (error) {
-        return <Text c="red">Error while parsing log entry</Text>;
-      }
-    });
-
-    if (index === 0) {
-      results.push([
-        <Text component="span">
-          Battle started
-        </Text >
-      ]);
-    }
-    else results.push(turnLogs);
-  });
-
-  return results;
-}
-
-const getLogEntryDescription = (log: LogEntry, charName: string, color: string) => {
-
-  switch (true) {
-    case log.action.move != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> moves to position {log.action.move?.position}.
-        </Text>
-      );
-    case log.action.attack != null:
-      const { kind, result } = log.action.attack ?? { result: {} };
-      return (
-        <Text component="span">
-          {
-            'damage' in result ? (
-              <><Name {...{ charName, color }} /> deals {result.damage} dmg using {kind?.toLowerCase()} attack</>
-            ) : null
-          }
-          {
-            'miss' in result ? (
-              <><Name {...{ charName, color }} /> misses trying to use {kind?.toLowerCase()} attack.</>
-            ) : null
-          }
-        </Text>
-      );
-    case log.action.rest != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> rests, gaining {log.action.rest?.energy} energy.
-        </Text>
-      );
-    case log.action.castSpell != null:
-      const spell = spellnames.find(spell => spell in log.action.castSpell?.result);
-      if (!spell) return <Text component="span">Unknown spell</Text>;
-      const details = log.action.castSpell?.result[spell] ?? {};
-
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> casts {spell} spell.
-          {'heal' in details ? ` ${details.heal} HP healed` : null}
-          {'damage' in details ? ` ${details.damage} damage dealt` : null}
-          {'enemyPosition' in details ? ` Enemy thrown to position ${details.enemyPosition}` : null}
-        </Text>
-      );
-    case log.action.fireWall != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> gets {log.action.fireWall.damage} damage from firewall.
-        </Text>
-      );
-    case log.action.notEnoughEnergy != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> doesn't have enough energy.
-        </Text>
-      );
-    case log.action.parry != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> parries the attack.
-        </Text>
-      );
-    case log.action.guardbreak != null:
-      return (
-        <Text component="span">
-          <Name {...{ charName, color }} /> guardbreaks the attack.
-        </Text>
-      );
-    default: {
-      return <Text component="span">Unknown action</Text>;
-    }
-  }
 };

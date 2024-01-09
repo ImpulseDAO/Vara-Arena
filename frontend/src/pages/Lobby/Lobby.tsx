@@ -84,7 +84,7 @@ export const Lobby = () => {
             }
           </Stack>
 
-          <Badge c={'white'} sx={{ textTransform: 'none' }} mb="lg">
+          <Badge c={'white'} style={{ textTransform: 'none' }} mb="lg">
             {playersJoined} of {playersSize} players
           </Badge>
 
@@ -175,7 +175,7 @@ const AbsolutelyPositionedElements = ({
         <Text fz={12} fw="600" color="white" bg={"rgba(0, 0, 0, 0.4)"}
           py={4}
           px={8}
-          sx={{
+          style={{
             borderRadius: 9999,
           }}
         >Lobby ID #{lobbyId}</Text>
@@ -188,7 +188,7 @@ const AbsolutelyPositionedElements = ({
         <Text fz={12} fw="600" color="white" bg={"rgba(0, 0, 0, 0.4)"}
           py={4}
           px={8}
-          sx={{
+          style={{
             borderRadius: 9999,
           }}
         >{tierText}</Text>

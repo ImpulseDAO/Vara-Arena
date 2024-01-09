@@ -1,14 +1,18 @@
 import {
-  type Tuple,
   type DefaultMantineColor,
   type MantineThemeOverride,
   rem,
+  MantineColorsTuple,
+  darken,
 } from "@mantine/core";
 
 export const customColors = {
   // as in Figma
   // https://www.figma.com/file/k61yZ0UVAlmOlvtTRJWFCh/Marketplace?node-id=470%3A11377&t=S3aqhDYsBpC3jlk8-4
   primary: "#2C67FF",
+  //
+  redHealth: "#f93642",
+  blueEnergy: "#2152ff",
   //
   themeLightBlue: "#E3F3FF",
   backgroundLightGreen: "#E9F1E5",
@@ -33,12 +37,25 @@ export const customColors = {
 const formatColors = (colors: typeof customColors) =>
   Object.entries(colors).reduce((acc, item) => {
     const [key, value] = item;
-    return { ...acc, [key]: Array(10).fill(value) };
+    if (Array.isArray(value)) return { ...acc, [key]: value };
+
+    /**
+     * Mantine theme has 10 shades of each color
+     * We use only 2 shades: light and dark.
+     * We make the last array element (index 9) darker
+     */
+    return {
+      ...acc,
+      [key]: Array(10)
+        .fill(value)
+        .map((color, idx) => {
+          return idx === 9 ? darken(color, 0.3) : color;
+        }),
+    };
   }, {});
 
 export const theme: MantineThemeOverride = {
-  colorScheme: "light",
-  black: "#18191B",
+  black: "#000000",
   white: "#FFFFFF",
   colors: {
     ...formatColors(customColors),
@@ -65,48 +82,6 @@ export const theme: MantineThemeOverride = {
       h3: { fontSize: rem(20), lineHeight: rem(32) },
     },
   },
-  components: {
-    Button: {
-      defaultProps: {
-        sx: (theme) => ({
-          transition: "all 0.07s ease-in-out",
-          "&:hover": {
-            backgroundColor: `${theme.fn.darken(theme.colors.primary[0], 0.3)}`,
-          },
-          height: "100%",
-          width: "100%",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "10px 18px",
-        }),
-      },
-    },
-    Container: {
-      defaultProps: {
-        sizes: {
-          xs: 540,
-          sm: 720,
-          md: 960,
-          lg: 1140,
-          xl: 1440,
-        },
-      },
-      styles: (theme) => ({
-        root: {
-          width: "100%",
-          paddingLeft: theme.spacing.xl,
-          paddingRight: theme.spacing.xl,
-          // styles for mobile
-          [theme.fn.smallerThan("sm")]: {
-            paddingLeft: theme.spacing.md,
-            paddingRight: theme.spacing.md,
-          },
-        },
-      }),
-    },
-  },
   fontSizes: {
     xs: rem(10),
     sm: rem(13),
@@ -130,27 +105,13 @@ export const theme: MantineThemeOverride = {
   other: {
     // you can add here anything
   },
-  globalStyles: (theme) => ({
-    "*": {
-      boxSizing: "border-box",
-      margin: 0,
-      padding: 0,
-    },
-    a: {
-      color: "inherit",
-      textDecoration: "none",
-    },
-    body: {
-      color: theme.white,
-    },
-  }),
 };
 
 type ExtendedCustomColors = keyof typeof customColors | DefaultMantineColor;
 
 declare module "@mantine/core" {
   export interface MantineThemeColorsOverride {
-    colors: Record<ExtendedCustomColors, Tuple<string, 10>>;
+    colors: Record<ExtendedCustomColors, MantineColorsTuple>;
   }
   export interface MantineThemeOther {
     // you can add here anything

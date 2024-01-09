@@ -1,0 +1,10 @@
+.textButton {
+  user-select: none;
+  color: gray;
+  text-decoration: none;
+  cursor: default;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

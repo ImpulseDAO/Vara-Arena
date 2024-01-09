@@ -10,6 +10,10 @@
   display: flex;
   overflow: scroll;
 
+  & svg > g > g {
+    stroke-width: 2;
+  }
+
   & > div {
     &::-webkit-scrollbar {
       display: none;

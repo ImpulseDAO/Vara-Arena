@@ -1,0 +1,50 @@
+.input {
+  background-color: black;
+  color: white;
+  font-size: 16px;
+  height: 44px;
+  border-radius: 8px;
+
+  &:focus-within {
+    border-color: white;
+    border-width: 2px;
+  }
+}
+
+.options {
+  background-color: black;
+  color: white;
+  border-radius: 8px;
+}
+
+.option {
+  margin: 0.2rem;
+  height: 2.5rem;
+
+  &[data-selected],
+  &[data-selected]:hover {
+    background-color: #238be6;
+  }
+
+  &:hover {
+    background-color: #77f6;
+  }
+
+  &:hover * {
+    color: white;
+  }
+
+  &[value="upload"] {
+    border: 2px solid white;
+    height: 3rem;
+    background-color: var(--mantine-primary-color-0);
+  }
+
+  &[value="upload"]:hover {
+    background-color: var(--mantine-primary-color-9);
+  }
+}
+
+.dropdown {
+  padding: 0;
+}

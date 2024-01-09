@@ -85,10 +85,11 @@ export const UploadStrategyWidget = () => {
           </Text>
         )}
         color="black"
-        opacity={0.4}
         position="bottom-start"
         withArrow
-        closeDelay={800}
+        closeDelay={200}
+        p="xs"
+        w="350px"
         transitionProps={{
           duration: 600,
           transition: 'pop-top-left'
@@ -112,7 +113,7 @@ export const UploadStrategyWidget = () => {
   }
 
   return (
-    <Stack spacing={'sm'}>
+    <Stack gap={'sm'} >
       <StrategyInput
         codeId={codeId}
         setCodeId={setCodeId}
@@ -121,12 +122,14 @@ export const UploadStrategyWidget = () => {
       <Flex gap="md">
         <Button
           variant="outline"
+          flex={1}
           color="white"
           onClick={() => setIsVisible(false)}
         >
           Cancel
         </Button>
         <Button
+          flex={1}
           onClick={() => {
             handleUpdateCharacter();
             setIsVisible(false);

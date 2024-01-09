@@ -16,12 +16,12 @@ export const SchoolOfMagicChoice = ({
   };
 
   return (
-    <Stack spacing={'sm'}>
+    <Stack gap={'sm'}>
       <TitleWithQuote quoteUrl="https://impulse-dao.gitbook.io/impulse-dao/games-for-developers/arena" >
         Choose a School of Magic
       </TitleWithQuote>
 
-      <Stack spacing={'sm'}>
+      <Stack gap={'sm'}>
         {(['fire', 'water', 'earth'] as MagicElement[]).map((element, index) => {
 
           return (
@@ -51,7 +51,7 @@ const SchoolOfMagicWithRadioButton = ({
   disabled?: boolean;
 }) => {
   return (
-    <Flex gap="md" align="center" sx={{ cursor: 'pointer' }} onClick={onClick}>
+    <Flex gap="md" align="center" style={{ cursor: 'pointer' }} onClick={onClick}>
       <Radio checked={isChecked} color="white" size="xs" styles={{
         icon: {
           color: 'black'

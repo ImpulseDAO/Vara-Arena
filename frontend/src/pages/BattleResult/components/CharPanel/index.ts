@@ -1,0 +1,1 @@
+export { CharPanel } from "./CharPanel";

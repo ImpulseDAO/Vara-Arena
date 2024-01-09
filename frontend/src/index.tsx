@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
+import '@mantine/core/styles.css';
 import "./index.css";
-import "./app/variables.scss";
 import { RouterProvider } from "react-router-dom";
 import { appRouter } from "./app/AppRouter";
 import { Providers } from "./app/providers/providers";

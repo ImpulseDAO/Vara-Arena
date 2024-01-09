@@ -1,11 +1,12 @@
 import {
   useUploadCode,
 } from "hooks/useUploadCode";
-import { Button, Select, Text } from "@mantine/core";
+import { Select } from "@mantine/core";
 import React, { useEffect } from "react";
 import { OLD_STRATEGY_CODE_ID_HARDCODED, STRATEGY_CODE_ID_HARDCODED } from "consts";
 import { useAlert } from "@gear-js/react-hooks";
 import { getCodeIdsFromLocalStorage, removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
+import styles from "./StrategyInput.module.css";
 
 export const StrategyInput = ({
   codeId,
@@ -91,41 +92,6 @@ export const StrategyInput = ({
     }
   };
 
-  interface ItemProps extends React.ComponentPropsWithoutRef<"div"> {
-    value: string;
-    label: string;
-  }
-
-  const SelectItemCustom = React.forwardRef<HTMLDivElement, ItemProps>(
-    ({ value, label, ...others }: ItemProps, ref) => {
-      if (value === "upload") {
-        return (
-          <Button
-            bg="gray[2]"
-            onClick={handleClickAndUpload}
-            m="2px"
-            mt="5px"
-            h="44px"
-            p="xs"
-            sx={{
-              border: "1px solid #ffffff",
-            }}
-          >
-            <Text c="white" fw="600">
-              {label}
-            </Text>
-          </Button>
-        );
-      }
-
-      return (
-        <div ref={ref} {...others}>
-          <Text c="white">{label}</Text>
-        </div>
-      );
-    }
-  );
-
   return (
     <>
       <Select
@@ -137,46 +103,22 @@ export const StrategyInput = ({
           },
         ]}
         value={codeId}
-        onChange={(value) => setCodeId(value)}
-        placeholder="Select items"
-        nothingFound="Nothing found"
-        creatable
-        itemComponent={SelectItemCustom}
-        styles={{
-          input: {
-            backgroundColor: "black",
-            color: "white",
-            fontSize: "16px",
-            height: "44px",
-            borderRadius: "8px",
-            "&:focus-within": {
-              borderColor: "white",
-              borderWidth: "2px",
-            },
-          },
-
-          itemsWrapper: {
-            backgroundColor: "black",
-            color: "white",
-            borderRadius: "8px",
-          },
-
-          item: {
-            "&[data-selected]": {
-              "&, &:hover": {
-                backgroundColor: "#238be6",
-              },
-            },
-
-            // applies styles to hovered item (with mouse or keyboard)
-            "&[data-hovered]": {
-              backgroundColor: "#77f6",
-              "*": {
-                color: "white",
-              },
-            },
-          },
+        onChange={(value) => {
+          if (value === "upload") {
+            handleClickAndUpload();
+            return;
+          }
+          setCodeId(value);
         }}
+        placeholder="Select items"
+        nothingFoundMessage="Nothing found"
+        classNames={{
+          input: styles.input,
+          options: styles.options,
+          option: styles.option,
+          dropdown: styles.dropdown,
+        }}
+
       />
 
       <input

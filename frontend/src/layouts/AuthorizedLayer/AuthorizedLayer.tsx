@@ -54,13 +54,8 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
         <Box
           className="content"
           pos="relative"
-          sx={{
-            '& svg > g > g ': {
-              strokeWidth: 2
-            }
-          }}
         >
-          {isLoading ? <LoadingOverlay visible loaderProps={{ size: 80, variant: 'oval', color: theme.primaryColor }} overlayColor={theme.colors.gray90[0]} /> : children}
+          {isLoading ? <LoadingOverlay visible loaderProps={{ size: 80, variant: 'oval', color: theme.primaryColor }} overlayProps={{ color: theme.colors.gray90[0] }} /> : children}
         </Box>
 
       </div >

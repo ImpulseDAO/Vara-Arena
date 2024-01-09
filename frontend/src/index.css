@@ -7,6 +7,17 @@ body,
   background-color: rgb(23, 25, 30);
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 /**
  * Change the size of REM unit
  * for more responsive typography
@@ -25,8 +36,8 @@ body,
 
 body {
   margin: 0;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -42,78 +53,77 @@ p {
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Thin.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Thin.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-ExtraLight.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-ExtraLight.ttf") format("truetype");
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Light.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Regular.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Medium.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-SemiBold.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-SemiBold.ttf") format("truetype");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Bold.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-ExtraBold.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('./assets/fonts/Inter-Black.ttf') format('truetype');
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
 }
 
-
 @font-face {
   font-family: "serpiente_display_triadisplay";
-  src: url("./assets/fonts/serpiente-display-medium-trial-webfont.woff2") format("woff2"),
-    url("./assets/fonts/serpiente-display-medium-trial-webfont.woff") format("woff");
+  src: url("./assets/fonts/serpiente-display-medium-trial-webfont.woff2")
+      format("woff2"),
+    url("./assets/fonts/serpiente-display-medium-trial-webfont.woff")
+      format("woff");
   font-weight: normal;
   font-style: normal;
 }
-
-
 
 .Alert-module_body__IOnct {
   color: white !important;

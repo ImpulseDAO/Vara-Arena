@@ -1,48 +1,65 @@
-import React, { ButtonHTMLAttributes, DetailedHTMLProps, FC } from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps, FC } from "react";
 import "./styles.scss";
-import { Button } from "../Button";
+import { Button, Flex } from "@mantine/core";
 
-export type ButtonGroupProps = {
+export type ButtonGroupNewProps = {
   disabled?: boolean;
-  value?: string;
   buttonProps?: DetailedHTMLProps<
     ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   >;
   leftText?: string;
   firstButton?: string;
-  secondButton: string | number;
-  thirdButton?: string;
+  value: string | number;
+  secondButton?: string;
   onClickFirstButton?: VoidFunction;
   onClickSecondButton?: VoidFunction;
-  onClickThirdButton?: VoidFunction;
+  //
+  isFirstDisabled?: boolean;
+  isSecondDisabled?: boolean;
 };
 
-export const ButtonGroup: FC<ButtonGroupProps> = ({
+export const ButtonGroup: FC<ButtonGroupNewProps> = ({
   firstButton,
+  value,
   secondButton,
-  thirdButton,
   leftText,
   onClickFirstButton,
   onClickSecondButton,
-  onClickThirdButton,
+  isFirstDisabled = false,
+  isSecondDisabled = false,
 }) => {
   return (
     <div className={"pointButtonWrapper"}>
       <div className={"buttonText"}>{leftText}</div>
-      {onClickFirstButton && (
-        <Button className={"pointButton"} onClick={onClickFirstButton}>
-          {firstButton}
-        </Button>
-      )}
-      <Button className={"pointButton secondBtn"} onClick={onClickSecondButton}>
-        {secondButton}
-      </Button>
-      {onClickThirdButton && (
-        <Button className={"pointButton"} onClick={onClickThirdButton}>
-          {thirdButton}
-        </Button>
-      )}
+      <Button.Group>
+        {onClickFirstButton && (
+          <Button
+            className={"pointButton"}
+            onClick={onClickFirstButton}
+            disabled={isFirstDisabled}
+          >
+            {firstButton}
+          </Button>
+        )}
+        <Flex
+          align={'center'}
+          justify={'center'}
+          style={{ cursor: 'default' }}
+          className={"pointButton secondBtn"}
+        >
+          {value}
+        </Flex>
+        {onClickSecondButton && (
+          <Button
+            className={"pointButton"}
+            onClick={onClickSecondButton}
+            disabled={isSecondDisabled}
+          >
+            {secondButton}
+          </Button>
+        )}
+      </Button.Group>
     </div>
   );
 };

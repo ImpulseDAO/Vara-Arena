@@ -14,9 +14,9 @@ export const TheButton = ({
       bg="primary"
       size="md"
       px="xl"
-      sx={{
-        boxShadow: 'sm',
-      }}
+      style={theme => ({
+        boxShadow: theme.shadows.sm,
+      })}
       styles={(theme) => ({
         root: {
           '&:disabled': {

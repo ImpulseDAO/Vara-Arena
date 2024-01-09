@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdapp=self.webpackChunkdapp||[]).push([[697,213],{8126:(e,a,t)=>{t.r(a),t.d(a,{BattleResultPage:()=>u.qN,TournamentResultPage:()=>s.TournamentResultPage});var u=t(1636),s=t(2714)}}]);

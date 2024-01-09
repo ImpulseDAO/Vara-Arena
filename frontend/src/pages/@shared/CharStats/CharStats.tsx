@@ -55,9 +55,9 @@ const Attribute = ({
           >
             <Button
               variant="outline"
-              w="1.3rem"
               onClick={() => selectAttr(attributeName)}
               c="white"
+              style={{ paddingInline: ".8rem" }}
             >
               +
             </Button>

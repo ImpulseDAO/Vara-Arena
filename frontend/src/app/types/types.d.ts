@@ -12,6 +12,15 @@ type Attributes = {
 
 type MagicElement = "fire" | "water" | "earth";
 
+type CharacterInContractState = {
+  algorithmId: "0x8918c6e37881e0185b53a5af77cb072529a5b58060e79a3e111c9a1870a4324e";
+  attributes: Attributes;
+  experience: number;
+  id: number;
+  level: number;
+  name: string;
+};
+
 type Character = {
   id: string;
   level: number;

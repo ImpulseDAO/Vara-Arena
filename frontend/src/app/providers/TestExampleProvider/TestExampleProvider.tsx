@@ -1,5 +1,5 @@
 import { useApi } from '@gear-js/react-hooks';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export const TestExampleProvider = ({ children }: {
   children: React.ReactNode;

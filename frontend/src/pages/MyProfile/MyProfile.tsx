@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 //
 import "./styles.scss";
@@ -21,16 +20,19 @@ import { CharStats } from "pages/@shared/CharStats/CharStats";
 import { SchoolOfMagic } from "components/SchoolOfMagic";
 import { NoCharacterWidget } from "pages/@shared/NoCharacterWidget";
 import { UploadStrategyWidget } from "./components/UploadStrategyWidget";
+import { useMyCharacterFromContractState } from "app/api/mintState";
 
 
 export const MyProfile = () => {
   const { data: myCharacter } = useMyCharacter();
+  const myCharacterFromState = useMyCharacterFromContractState();
 
-  if (!myCharacter) {
+
+  if (!myCharacter || !myCharacterFromState) {
     return <div className="profile"><NoCharacterWidget /></div>;
   }
 
-  return <Profile character={myCharacter} />;
+  return <Profile character={myCharacter} myCharacter={myCharacterFromState} />;
 };
 
 export const ProfilePage = () => {
@@ -41,24 +43,46 @@ export const ProfilePage = () => {
   }
 
   const { data: character } = useCharacterById({ id: params.id });
+  const myCharacterFromState = useMyCharacterFromContractState();
 
-  if (!character) {
+  if (!character || !myCharacterFromState) {
     return null;
   }
 
-  return <Profile character={character} />;
+  return <Profile character={character} myCharacter={myCharacterFromState} />;
 
 };
 
 export const Profile = ({
-  character
+  /**
+   * Character is the one we are viewing
+   * it can be our own character or someone else's
+   */
+  character,
+  myCharacter
 }: {
   character: Character;
+  myCharacter: CharacterInContractState;
 }) => {
-  const { data: myCharacter } = useMyCharacter();
+  /**
+   * myCharacter is our own character
+   * we need it to check if we are viewing our own character
+   */
+
+
+  const isMyCharacter = character.id === String(myCharacter.id);
+  if (isMyCharacter) {
+    character.name = myCharacter.name;
+    character.attributes = myCharacter.attributes;
+    character.level = myCharacter.level;
+    character.experience = myCharacter.experience;
+  }
+
   const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr } = useStats(
     character
   );
+
+
 
   /**
    * 
@@ -68,7 +92,8 @@ export const Profile = ({
     return null;
   }
 
-  const isMyCharacter = character.id === myCharacter.id;
+
+
 
   return (
     <div className="profile">

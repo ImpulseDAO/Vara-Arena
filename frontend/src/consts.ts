@@ -72,7 +72,7 @@ export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
  */
 
 const BASE_HP = 90;
-const HP_MULTIPLIER = 3;
+const HP_MULTIPLIER = 10;
 const ENERGY_MULTIPLIER = 3;
 const BASE_ENERGY = 20;
 

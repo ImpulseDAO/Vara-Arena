@@ -1,1 +1,1 @@
-export { ButtonGroup as ButtonGroupNew } from "./ButtonGroup";
+export { ButtonGroup  } from "./ButtonGroup";

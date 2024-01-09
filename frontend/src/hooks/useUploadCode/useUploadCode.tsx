@@ -203,5 +203,5 @@ export const removeCodeIdFromLocalStorage = (codeId: string) => {
 };
 
 export const getCodeIdsFromLocalStorage = (): string[] => {
-  return JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as [];
+  return (JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as []) ?? [];
 };

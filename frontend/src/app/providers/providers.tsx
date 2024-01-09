@@ -4,6 +4,7 @@ import { GearProviders } from './GearProviders/GearProviders';
 import { MantineProvider } from './MantineProvider/MantineProvider';
 import { ReactQueryProvider } from './ReactQuery';
 import { TestExampleProvider } from './TestExampleProvider/TestExampleProvider';
+import { InitialConfigProvider } from './InitialConfigProvider';
 
 export const Providers = ({ children }: { children: React.ReactNode; }) => {
   return (
@@ -19,6 +20,7 @@ export const Providers = ({ children }: { children: React.ReactNode; }) => {
         GearProviders,
         MantineProvider,
         SuppressErrorProvider,
+        InitialConfigProvider,
         TestExampleProvider,
       ]}
     >

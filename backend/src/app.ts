@@ -77,7 +77,9 @@ const createVoucher = async (
   });
 };
 
-app.post("/", async (req: Request, res: Response) => {
+const prefix = process.env.NODE_ENV === "production" ? "/arena" : "";
+
+app.post(`${prefix}/`, async (req: Request, res: Response) => {
   try {
     const accountUser = req.body.account as HexString;
 
@@ -91,7 +93,7 @@ app.post("/", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/", async (req: Request, res: Response) => {
+app.get(`${prefix}/`, async (req: Request, res: Response) => {
   try {
     res.sendStatus(200);
   } catch (error) {
@@ -101,4 +103,5 @@ app.get("/", async (req: Request, res: Response) => {
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(prefix ? `address prefix :>> ${prefix}` : "no address prefix");
 });

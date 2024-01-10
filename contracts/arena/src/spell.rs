@@ -1,5 +1,5 @@
 use arena_io::{BattleAction, CastSpellResult, Character, Spell, TurnEvent};
-use core::cmp::max;
+use core::cmp::min;
 
 pub fn execute_cast_spell(
     player: &mut Character,
@@ -64,7 +64,7 @@ pub fn execute_cast_spell(
                 if player.position > enemy.position {
                     enemy.position = enemy.position.saturating_sub(2);
                 } else {
-                    enemy.position = max(enemy.position + 2, 15);
+                    enemy.position = min(enemy.position + 2, 15);
                 }
                 CastSpellResult::EarthCatapult {
                     damage,

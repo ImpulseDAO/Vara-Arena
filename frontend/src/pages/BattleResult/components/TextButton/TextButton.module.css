@@ -1,10 +1,9 @@
 .textButton {
   user-select: none;
+}
+
+.textButtonDisabled {
   color: gray;
   text-decoration: none;
   cursor: default;
-
-  &:hover {
-    text-decoration: none;
-  }
 }

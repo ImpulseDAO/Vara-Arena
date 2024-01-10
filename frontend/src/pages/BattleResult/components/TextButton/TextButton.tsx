@@ -1,5 +1,6 @@
 import { Anchor } from "@mantine/core";
 import styles from './TextButton.module.css';
+import clsx from "clsx";
 
 export const TextButton = ({
   disabled = false,
@@ -11,7 +12,7 @@ export const TextButton = ({
   children: React.ReactNode;
 }) => {
   return <Anchor
-    className={styles.textButton}
+    className={clsx(styles.textButton, disabled && styles.textButtonDisabled)}
     pl="sm"
     onClick={disabled ? undefined : onClick}
   >

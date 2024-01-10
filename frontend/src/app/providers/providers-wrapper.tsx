@@ -19,10 +19,8 @@ export const ProvidersWrapper = ({
     // when children change, AppRerenderConsumer rerenders
     <AppRerenderContext.Provider value={children}>
       <MemoWrapperBoundary>
-        {[...providers].reverse().reduce(
-          (result, Provider) => (
-            <Provider>{result}</Provider>
-          ),
+        {providers.reduceRight(
+          (result, Provider) => (<Provider>{result}</Provider>),
           <AppRerenderConsumer />
         )}
       </MemoWrapperBoundary>
@@ -33,8 +31,8 @@ export const ProvidersWrapper = ({
 // rerender happens only when useAppRendererContext fires
 // (because React.memo that never rerenders is higher in the tree)
 const AppRerenderConsumer: React.FC = () => {
-  const ret = useAppRerenderContext();
-  return <>{ret}</>;
+  const children = useAppRerenderContext();
+  return <>{children}</>;
 };
 
 // the component is never rerended on props change and on parent rerender

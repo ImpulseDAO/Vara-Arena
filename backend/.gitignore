@@ -1,0 +1,4 @@
+node_modules
+bin
+.env
+src/polkadot-account/*.json

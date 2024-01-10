@@ -4,7 +4,15 @@ target/
 frontend/.env
 frontend/node_modules
 frontend/build
+frontend/.vscode
 **/*.code-workspace
 
 **/*/.idea
 
+#backend
+backend/.env
+backend/.vscode
+backend/node_modules
+backend/bim
+backend/src/polkadot-account
+#end of backend

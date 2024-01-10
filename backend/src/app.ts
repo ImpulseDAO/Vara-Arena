@@ -20,9 +20,12 @@ const port = process.env.PORT;
 const NODE_ADDRESS = process.env.NODE_ADDRESS;
 const GAME_ADDRESS = process.env.GAME_ADDRESS as HexString;
 const KEYRING_PATH = process.env.PATH_TO_KEYS || "";
+const KEYRING_JSON_CONTENT_STRING = process.env.KEYRING_JSON_CONTENT_STRING;
 const KEYRING_PASSPHRASE = process.env.KEYRING_PASSPHRASE;
 
-const jsonKeyring = readFileSync(KEYRING_PATH).toString();
+const jsonKeyring = KEYRING_PATH
+  ? readFileSync(KEYRING_PATH).toString()
+  : (KEYRING_JSON_CONTENT_STRING as string);
 const KEYRING = GearKeyring.fromJson(jsonKeyring, KEYRING_PASSPHRASE);
 
 const createVoucher = async (

@@ -10,14 +10,17 @@ const QUICK_ATTACK_COST: u8 = 2;
 async fn main() {
     let turn: YourTurn = msg::load().expect("unable to decode `YourTurn`");
 
+    // TODO::
+    // add a turn.you.rest_count check for a better performance ;)
+
     if turn.you.energy >= SPELL_COST
         && (turn.enemy.position - turn.you.position != 1
             && turn.you.position - turn.enemy.position != 1)
     {
-        debug!("fireball");
+        debug!("CATAPULT");
         msg::reply(
             BattleAction::CastSpell {
-                spell: Spell::Fireball,
+                spell: Spell::EarthCatapult,
             },
             0,
         )

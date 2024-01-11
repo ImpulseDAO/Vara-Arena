@@ -11,6 +11,12 @@ const MOVE: [u8; 10] = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
 fn is_attack_successful(hit_chance: u8) -> bool {
     utils::get_random_value(100) < hit_chance
+    // TODO:: think of reworking hit_chance to attack_range
+    // hard = 20 + 15 == 35;
+    // utils::get_random_value(20..35);
+
+    // quick = 5 + 15 == 20;
+    // utils::get_random_value(5..20)
 }
 
 fn execute_attack_kind(
@@ -42,7 +48,9 @@ fn execute_attack_kind(
                 };
                 let success = is_attack_successful(hit_chance);
                 if success {
+                    // TODO:: think thorugh balancing via match modificator { kind } quick 2 / precise 3 / heavy 4
                     let mut damage = base_damage + player.attributes.strength * 2;
+
                     if player.earth_smites.0 > 0 {
                         damage += player.earth_smites.1;
                     }

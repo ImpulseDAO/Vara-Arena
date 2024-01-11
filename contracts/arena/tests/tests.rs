@@ -63,8 +63,8 @@ fn game() {
             agility: 1,
             strength: 1,
             stamina: 1,
-            vitality: 2,
-            intelligence: 5,
+            vitality: 1,
+            intelligence: 6,
         },
     };
 
@@ -73,9 +73,9 @@ fn game() {
         name: "Bob".to_string(),
         attributes: InitialAttributes {
             agility: 1,
-            strength: 1,
+            strength: 4,
             stamina: 1,
-            vitality: 6,
+            vitality: 3,
             intelligence: 1,
         },
     };

@@ -9,6 +9,9 @@ const QUICK_ATTAK_ENERGY: u8 = 2;
 async fn main() {
     let turn: YourTurn = msg::load().expect("unable to decode `YourTurn`");
 
+    // TODO::
+    // add a turn.you.rest_count check for a better performance ;)
+
     if turn.you.position > turn.enemy.position && turn.you.position - turn.enemy.position > 1 {
         debug!("moving toward the enemy");
         msg::reply(BattleAction::MoveLeft, 0).expect("unable to reply");

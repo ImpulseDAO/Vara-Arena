@@ -23,6 +23,8 @@ const KEYRING_PATH = process.env.PATH_TO_KEYS || "";
 const KEYRING_JSON_CONTENT_STRING = process.env.KEYRING_JSON_CONTENT_STRING;
 const KEYRING_PASSPHRASE = process.env.KEYRING_PASSPHRASE;
 
+const AMOUNT_IN_VARA = process.env.AMOUNT_IN_VARA as any as number;
+
 const jsonKeyring = KEYRING_PATH
   ? readFileSync(KEYRING_PATH).toString()
   : (KEYRING_JSON_CONTENT_STRING as string);
@@ -42,7 +44,7 @@ const createVoucher = async (
   const tx = api.voucher.issue(
     account,
     programId,
-    50 * 10 ** api.registry.chainDecimals[0]
+    AMOUNT_IN_VARA * 10 ** api.registry.chainDecimals[0]
   );
 
   const extrinsic = tx.extrinsic;

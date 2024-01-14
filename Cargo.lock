@@ -1174,15 +1174,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fire_mage"
-version = "0.1.0"
-dependencies = [
- "arena-io",
- "gear-wasm-builder",
- "gstd",
-]
-
-[[package]]
 name = "fixed-hash"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2317,6 +2308,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b823e83b2affd8f40a9ee8c29dbc56404c1e34cd2710921f2801e2cf29527afa"
 dependencies = [
  "libc",
+]
+
+[[package]]
+name = "mage"
+version = "0.1.0"
+dependencies = [
+ "arena-io",
+ "gear-wasm-builder",
+ "gstd",
 ]
 
 [[package]]

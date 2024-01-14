@@ -57,7 +57,7 @@ pub fn execute_cast_spell(
             }
         }
         Spell::EarthCatapult => {
-            if let Some(energy) = player.energy.checked_sub(5) {
+            if let Some(energy) = player.energy.checked_sub(7) {
                 player.energy = energy;
                 let damage = player.attributes.intelligence * 3;
                 enemy.hp = enemy.hp.saturating_sub(damage);

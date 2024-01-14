@@ -1,7 +1,7 @@
 use gstd::exec;
 
-const HP_MULTIPLIER: u8 = 5;
-const BASE_HP: u8 = 70;
+const HP_MULTIPLIER: u8 = 3;
+const BASE_HP: u8 = 90;
 const ENERGY_MULTIPLIER: u8 = 3;
 const BASE_ENERGY: u8 = 20;
 

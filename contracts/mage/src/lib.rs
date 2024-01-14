@@ -4,6 +4,7 @@ use arena_io::{AttackKind, BattleAction, Spell, YourTurn};
 use gstd::{debug, msg};
 
 const SPELL_COST: u8 = 5;
+const CATAPULT_COST: u8 = 7;
 const QUICK_ATTACK_COST: u8 = 2;
 
 #[gstd::async_main]
@@ -11,9 +12,9 @@ async fn main() {
     let turn: YourTurn = msg::load().expect("unable to decode `YourTurn`");
 
     // TODO::
-    // add a turn.you.rest_count check for a better performance ;)
+    // add a turn.you.rest_count check to improve your strategy ;)
 
-    if turn.you.energy >= SPELL_COST
+    if turn.you.energy >= CATAPULT_COST
         && (turn.enemy.position - turn.you.position != 1
             && turn.you.position - turn.enemy.position != 1)
     {

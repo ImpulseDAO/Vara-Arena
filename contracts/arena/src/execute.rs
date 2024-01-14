@@ -11,12 +11,26 @@ const MOVE: [u8; 10] = [0, 1, 1, 2, 2, 3, 3, 4, 4, 5];
 
 fn is_attack_successful(hit_chance: u8) -> bool {
     utils::get_random_value(100) < hit_chance
-    // TODO:: think of reworking hit_chance to attack_range
-    // hard = 20 + 15 == 35;
-    // utils::get_random_value(20..35);
+}
 
-    // quick = 5 + 15 == 20;
-    // utils::get_random_value(5..20)
+fn attack_power(base_damage: u8, strength: u8, agility: u8, kind: &AttackKind) -> u8 {
+    let is_crit = utils::get_random_value(100 + agility * 2);
+    debug!("{:?}", is_crit);
+
+    let damage_modifier = match kind {
+        AttackKind::Quick => 2,
+        AttackKind::Precise => 3,
+        AttackKind::Heavy => 4,
+    };
+
+    if is_crit > 100 {
+        // Scale damage using player's strength and agility
+        let damage = base_damage + strength * 2 + (agility + damage_modifier) * 2;
+        damage
+    } else {
+        let damage = base_damage + strength * 2;
+        damage
+    }
 }
 
 fn execute_attack_kind(
@@ -48,9 +62,13 @@ fn execute_attack_kind(
                 };
                 let success = is_attack_successful(hit_chance);
                 if success {
-                    // TODO:: think thorugh balancing via match modificator { kind } quick 2 / precise 3 / heavy 4
-                    let mut damage = base_damage + player.attributes.strength * 2;
-
+                    let mut damage = attack_power(
+                        base_damage,
+                        player.attributes.strength,
+                        player.attributes.agility,
+                        &kind,
+                    );
+                    debug!("damage is {:?}", damage);
                     if player.earth_smites.0 > 0 {
                         damage += player.earth_smites.1;
                     }

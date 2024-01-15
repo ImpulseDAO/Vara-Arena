@@ -225,7 +225,10 @@ impl Arena {
             lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
         } else {
-            panic!("Can't Register for this Tier");
+            assert!(
+                character_tier != lobby.current_tier,
+                "Can't Register for this Tier"
+            );
         };
 
         debug!("Current tier after registration {:#?}", lobby.current_tier);

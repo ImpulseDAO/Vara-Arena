@@ -1,0 +1,55 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form button,
+.form .walletInput {
+  border: 2px solid lightblue;
+}
+
+.message {
+  text-align: center;
+}
+
+.messageText {
+  opacity: 0;
+}
+
+.messageSmallText {
+  font-size: 10px;
+}
+
+.form button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.walletInput {
+  width: 20rem;
+  padding: 1rem 0.5rem;
+
+  background-color: white;
+
+  height: 3rem;
+  border-radius: 0.5rem;
+}

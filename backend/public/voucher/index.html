@@ -5,12 +5,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
+  <link rel="stylesheet" href="styles.css">
+
 </head>
 
 <body>
-  <div>
-    Hello World
+  <div class="wrapper">
+
+    <h3>
+      Paste your wallet address here
+    </h3>
+
+    <form class="form" id="walletInputForm">
+      <input class="walletInput" type="text" id="walletAddress">
+
+      <button class="submitBtn" type="submit">Submit
+      </button>
+
+      <!-- div for error or for success -->
+      <div class="message">
+        <p class="messageText"></p>
+        <p class="messageSmallText"></p>
+      </div>
+    </form>
+
   </div>
+
+  <script>
+    document.querySelector('#walletInputForm').addEventListener('submit', (e) => {
+      e.preventDefault()
+      const walletAddress = document.querySelector('#walletAddress').value
+      console.log('walletAddress', walletAddress)
+
+      const messageText = document.querySelector('.messageText')
+      const messageSmallText = document.querySelector('.messageSmallText')
+
+      messageText.innerHTML = "Loading..."
+      messageText.style.opacity = 1
+      messageText.style.color = "black"
+
+      messageSmallText.innerHTML = ""
+
+      fetch('http://localhost:3010/voucher', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          account: walletAddress
+        })
+      }).then(async response => {
+        if (!response.ok) {
+          throw await response.json()
+        }
+        return response.json()
+      })
+        .then(response => {
+          messageText.innerHTML = "Success"
+          messageText.style.color = "darkgreen"
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          messageText.innerHTML = "Error"
+          messageText.style.color = "red"
+        })
+        .finally(() => {
+          messageSmallText.innerHTML = "You can check out the browser console for more details"
+        })
+
+    })
+  </script>
+
 </body>
 
 </html>

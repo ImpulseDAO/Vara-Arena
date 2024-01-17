@@ -79,7 +79,7 @@ const createVoucher = async (
   });
 };
 
-const prefix = process.env.NODE_ENV === "production" ? "/" : "";
+const prefix = process.env.NODE_ENV === "production" ? "/voucher" : "";
 
 app.post(`${prefix}/`, async (req: Request, res: Response) => {
   try {

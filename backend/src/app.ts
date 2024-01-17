@@ -15,6 +15,7 @@ dotenv.config();
 const app: Express = express();
 app.use(cors());
 app.use(express.json());
+
 const port = process.env.PORT;
 
 const NODE_ADDRESS = process.env.NODE_ADDRESS;
@@ -95,13 +96,15 @@ app.post(`${prefix}/`, async (req: Request, res: Response) => {
   }
 });
 
-app.get(`${prefix}/`, async (req: Request, res: Response) => {
-  try {
-    res.sendStatus(200);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
+app.use("/voucher", express.static("public/voucher"));
+
+// app.get(`${prefix}/`, async (req: Request, res: Response) => {
+//   try {
+//     res.sendStatus(200);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

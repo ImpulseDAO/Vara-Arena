@@ -13,7 +13,13 @@ export const useOnRegisterForBattle = () => {
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
   const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
-  const { subscribe, unsubscribe } = useWatchArenaMessages();
+  const { subscribe, unsubscribe } = useWatchArenaMessages<{
+    PlayerRegistered: {
+      lobbyId: "32";
+      playerId: "9";
+      tier: "5";
+    };
+  }>();
 
   return useCallback(
     async ({ lobbyId }: { lobbyId: string }) => {
@@ -24,6 +30,14 @@ export const useOnRegisterForBattle = () => {
             alert.error(error.message);
             return;
           }
+
+          reply != null &&
+            setTimeout(() => {
+              const { lobbyId, playerId, tier } = reply.PlayerRegistered;
+              const message = `Player ${playerId} registered for lobby ${lobbyId} with tier ${tier}`;
+              console.info(message);
+              alert.success(message);
+            });
 
           resolve(reply);
         });

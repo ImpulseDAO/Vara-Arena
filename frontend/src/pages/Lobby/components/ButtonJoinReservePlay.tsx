@@ -5,15 +5,20 @@ import { useAlert, useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 import { useNavigate } from "react-router-dom";
-import { Button, Text } from "@mantine/core";
+import { Anchor, Button, Text } from "@mantine/core";
 import { MAX_GAS_LIMIT } from "consts";
 import { useOnRegisterForBattle } from "pages/StartFight/hooks/useOnSubmit";
+import { useMyHeroIsDead } from "app/api/mintState";
+import { routes } from "app/routes";
+import { Panel } from "components/Panel";
 
 // type States = "initial" | "reserved_once" | "reserved_twice" | "starting";
 
 const JOIN_BUTTON_TEXT = "Join the battle";
 const RESERVE_BUTTON_TEXT = "Reserve gas";
 const PLAY_BUTTON_TEXT = "Start battle";
+
+const RESERVATIONS_COUNT_FOR_4_PLAYERS = 2;
 
 /**
  * "Smart" button. It can be in 3 states:
@@ -47,26 +52,18 @@ export const ButtonsJoinReservePlay = ({
   const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
   const isUserHasPermissionToCancel = false;
+  const isReservationsNeeded = playersNeeded === 4;
 
-  const {
-    gasReservedTimes,
-    handleGasReserved,
-  } = useGasReserved({ onGasReserved });
+  const { gasReservedTimes, handleGasReserved } = useGasReserved({ onGasReserved });
+  const { isDead: isMyHeroDead, isFresh } = useMyHeroIsDead();
+
+  const isJoinButtonVisible = !isMyHeroDead && !hasPlayerJoined && players.length < playersNeeded;
+  const isJoinButtonDisabled = isMyHeroDead || isFresh;
+  const isReserveButtonReadyToShow = isReservationsNeeded && gasReservedTimes < RESERVATIONS_COUNT_FOR_4_PLAYERS;
+  const isReservationFullfilled = !isReservationsNeeded || gasReservedTimes === RESERVATIONS_COUNT_FOR_4_PLAYERS;
+  const isStartButtonVisible = playersNeeded === players.length && isReservationFullfilled;
 
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const isDoubleReservationNeeded = playersNeeded > 2;
-
-  const btnText = (() => {
-    if (!hasPlayerJoined) return JOIN_BUTTON_TEXT;
-    if (gasReservedTimes === 0) return RESERVE_BUTTON_TEXT;
-    if (gasReservedTimes === 1) {
-      if (isDoubleReservationNeeded) return RESERVE_BUTTON_TEXT;
-      return PLAY_BUTTON_TEXT;
-    }
-
-    if (gasReservedTimes === 2) return PLAY_BUTTON_TEXT;
-  })();
 
   const isPlayDisabled = hasPlayerJoined && playersNeeded > players.length;
 
@@ -114,9 +111,7 @@ export const ButtonsJoinReservePlay = ({
   const registerForBattle = useOnRegisterForBattle();
 
 
-  const handleReserveOrStart = async () => {
-    setIsLoading(true);
-
+  const handleJoin = async () => {
     if (!hasPlayerJoined) {
       if (!lobbyId) {
         const message = "lobbyId is not defined";
@@ -135,23 +130,20 @@ export const ButtonsJoinReservePlay = ({
       }
       return;
     }
+  };
 
-    else if (gasReservedTimes === 0) {
+  const handleReserve = async () => {
+    setIsLoading(true);
+    try {
       await reserveGas();
-    } else if (gasReservedTimes === 1) {
-      if (isDoubleReservationNeeded) {
-        await reserveGas();
-      } else {
-        await startBattle();
-      }
-    } else if (gasReservedTimes === 2) {
-      await startBattle();
     }
-
+    catch (er) {
+      console.error(er);
+    }
     setIsLoading(false);
   };
 
-  const handleOnlyStart = async () => {
+  const handleStart = async () => {
     setIsLoading(true);
 
     if (!hasPlayerJoined) {
@@ -187,29 +179,79 @@ export const ButtonsJoinReservePlay = ({
 
   return (
     <>
-      <Button
-        className={["action_button", isPlayDisabled && "disabled"]
-          .filter(Boolean)
-          .join(" ")}
-        onClick={handleReserveOrStart}
-        disabled={isPlayDisabled}
-        loading={isLoading}
-      >
-        {btnText}
-      </Button>
-      {/* Only START button */}
-      <Button
-        className={["action_button"].join(" ")}
-        onClick={handleOnlyStart}
-        loading={isLoading}
-      >
-        {'Start battle'}
-      </Button>
+      {/* "Join" button */}
       {
-        hasPlayerJoined
-          ? <Text size="xs" mt={3}>
-            {`Gas reserved ${gasReservedTimes} time(s)`}
-          </Text>
+        isJoinButtonVisible ? (
+          <Button
+            className={["action_button", isJoinButtonDisabled && "disabled"]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={handleJoin}
+            disabled={isPlayDisabled}
+            loading={isLoading}
+          >
+            {JOIN_BUTTON_TEXT}
+          </Button>
+        ) : null
+      }
+
+      {/* "Reserve gas" button */}
+      {
+        isReserveButtonReadyToShow ? (
+          <Button
+            className={["action_button"]
+              .filter(Boolean)
+              .join(" ")}
+            onClick={handleReserve}
+            loading={isLoading}
+          >
+            {RESERVE_BUTTON_TEXT}
+          </Button>
+        ) : null
+      }
+
+      {/* START button */}
+      {
+        isStartButtonVisible ? (
+          <Button
+            className={["action_button", isPlayDisabled && "disabled"].join(" ")}
+            onClick={handleStart}
+            loading={isLoading}
+            disabled={isPlayDisabled}
+          >
+            {PLAY_BUTTON_TEXT}
+          </Button>
+        ) : null
+      }
+      {
+        isReservationsNeeded && hasPlayerJoined
+          ? (
+            <Text size="xs" mt={3}>
+              {`Gas reserved ${gasReservedTimes} time(s)`}
+            </Text>
+          )
+          : null
+      }
+      {
+        isMyHeroDead || isFresh ? (
+          <Panel mt={'7rem'} mb='3rem' p="md" maw="20rem">
+            <Text fz={14} fw="500" ta="center">
+              {
+                isMyHeroDead
+                  ? <>Unfortunately, you cannot participate in battles, because your character is <Text component="span" c='redHealth' fz={14}>dead</Text>.</>
+                  : "You cannot participate in battles, because you don't have any character yet."
+              }
+              <br />
+              <Anchor
+                fw="500"
+                onClick={() => navigate(routes.mintCharacter)}
+                fz={14}
+              >
+                Click here to create a character
+              </Anchor>
+            </Text>
+          </Panel>
+        )
           : null
       }
       {isUserHasPermissionToCancel ? (

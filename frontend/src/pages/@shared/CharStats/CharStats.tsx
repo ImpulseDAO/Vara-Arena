@@ -1,5 +1,6 @@
 import { Divider, Flex, Text, Box, Button, Tooltip } from "@mantine/core";
 import type { FlexProps, BoxProps } from "@mantine/core";
+import { capitalize } from "lodash";
 
 export const CharStats = ({
   character,
@@ -34,7 +35,7 @@ export const CharStats = ({
       ].map((attrName) => (
         <Attribute
           key={attrName}
-          attributeName={attrName}
+          attributeName={capitalize(attrName)}
           value={character.attributes[attrName]}
           my="sm"
           selectAttr={isReadyForLevelUp ? selectAttr : undefined}
@@ -73,7 +74,7 @@ const Attribute = ({
               onClick={() => selectAttr(attributeName)}
               c="white"
               style={{ paddingInline: ".8rem" }}
-              {...{ isLoading }}
+              loading={isLoading}
             >
               +
             </Button>

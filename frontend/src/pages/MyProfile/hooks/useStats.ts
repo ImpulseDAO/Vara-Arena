@@ -25,7 +25,7 @@ export const useStats = (character?: Character) => {
   const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
   const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
   const accept = useCallback(
-    ({
+    async ({
       onSuccess,
       onError,
     }: {
@@ -36,7 +36,7 @@ export const useStats = (character?: Character) => {
         setIsStatsMutating(true);
         toggleVisible();
         try {
-          send({
+          await send({
             payload: {
               LevelUp: {
                 attr,

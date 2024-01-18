@@ -4,6 +4,7 @@ import { useMyAccountId } from "hooks/hooks";
 
 import { createQuery } from "react-query-kit";
 import { withApi } from "./queryMiddleware/withApi";
+import { useMyCharacters } from "./characters";
 
 type OwnerId = HexString;
 
@@ -48,4 +49,16 @@ export const useMyCharacterFromContractState = () => {
   });
 
   return queryResult;
+};
+
+export const useMyHeroIsDead = () => {
+  const owner_eq = useMyAccountId() ?? "";
+  const { data: myCharacters } = useMyCharacters({ owner_eq });
+  const { data: myCharacter } = useMyCharacterFromContractState();
+
+  return {
+    isDead: myCharacters?.characters.length !== 0 && !myCharacter,
+    // isFresh means that we don't have any characters yet
+    isFresh: myCharacters?.characters.length === 0,
+  };
 };

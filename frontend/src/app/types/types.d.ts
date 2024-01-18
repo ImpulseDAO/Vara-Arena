@@ -34,7 +34,6 @@ type Character = {
   owner: string;
   experience: number;
   attributes: Attributes;
-  magicElement: MagicElement;
   lives_count: number;
   tier_rating: number;
   balance: number;

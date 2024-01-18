@@ -9,7 +9,7 @@ import GoldCoin from "../../assets/images/goldCoin.png";
 import { getShortIdString } from "utils";
 import { getFullEnergy, getFullHp } from "consts";
 import { useStats } from "./hooks/useStats";
-import { useCharacterById, useMyCharacter } from "app/api/characters";
+import { useCharacterById } from "app/api/characters";
 //
 import { Flex, Image, Text } from "@mantine/core";
 //
@@ -17,30 +17,22 @@ import { Alert } from "components/Alert/Alert";
 import { StatBar } from "pages/@shared/StatBar";
 import { CharInfo } from "pages/@shared/CharInfo";
 import { CharStats } from "pages/@shared/CharStats/CharStats";
-import { SchoolOfMagic } from "components/SchoolOfMagic";
 import { NoCharacterWidget } from "pages/@shared/NoCharacterWidget";
 import { UploadStrategyWidget } from "./components/UploadStrategyWidget";
 import { useMyCharacterFromContractState } from "app/api/mintState";
+import { useMemo } from "react";
 
 export const MyProfile = () => {
-  const { data: myCharacter, refetch: refetchMyCharacterQuery } = useMyCharacter();
   const {
     data: myCharacterFromState,
     refetch: refetchMyCharacterFromStateQuery
   } = useMyCharacterFromContractState();
 
-
-  const refetch = () => {
-    console.log('refetching YAY');
-    refetchMyCharacterQuery();
-    refetchMyCharacterFromStateQuery();
-  };
-
-  if (!myCharacter || !myCharacterFromState) {
+  if (!myCharacterFromState) {
     return <div className="profile"><NoCharacterWidget /></div>;
   }
 
-  return <Profile character={myCharacter} myCharacter={myCharacterFromState} onSuccessfulLevelUp={refetch} />;
+  return <Profile character={undefined} myCharacter={myCharacterFromState} onSuccessfulLevelUp={refetchMyCharacterFromStateQuery} />;
 };
 
 export const ProfilePage = () => {
@@ -70,7 +62,7 @@ export const Profile = ({
   myCharacter,
   onSuccessfulLevelUp
 }: {
-  character: Character;
+  character?: Character;
   myCharacter: CharacterInContractState;
   onSuccessfulLevelUp?: () => void;
 }) => {
@@ -79,15 +71,20 @@ export const Profile = ({
    * we need it to check if we are viewing our own character
    */
 
-  const isMyCharacter = character.id === String(myCharacter.id);
-  if (isMyCharacter) {
-    character.name = myCharacter.name;
-    character.attributes = myCharacter.attributes;
-    character.level = myCharacter.level;
-    character.experience = myCharacter.experience;
-    character.lives_count = myCharacter.attributes.livesCount;
-    character.balance = myCharacter.attributes.balance;
-  }
+  character = useMemo(() => {
+    return character ?? {
+      id: String(myCharacter.id),
+      name: myCharacter.name,
+      attributes: myCharacter.attributes,
+      level: myCharacter.level,
+      experience: myCharacter.experience,
+      lives_count: myCharacter.attributes.livesCount,
+      balance: myCharacter.attributes.balance,
+      owner: '',
+      tier_rating: myCharacter.attributes.tierRating,
+    };
+  }, [character, myCharacter]);
+  const isMyCharacter = character?.id === String(myCharacter.id);
 
   const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr, isStatsMutating } = useStats(
     character
@@ -170,10 +167,10 @@ export const Profile = ({
           </div>
 
           <div className="school_and_gold">
-            <div className="one_half school_of_magic">
+            {/* <div className="one_half school_of_magic">
               <p>School of magic:</p>
               <SchoolOfMagic className="bottom_part" type={character.magicElement} size={48} />
-            </div>
+            </div> */}
             <div className="one_half gold">
               <p>Gold:</p>
               <Flex className="bottom_part" gap="md" align="center" style={{ position: 'relative' }} >

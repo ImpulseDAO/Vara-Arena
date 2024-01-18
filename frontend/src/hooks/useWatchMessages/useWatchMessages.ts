@@ -83,7 +83,6 @@ export function useWatchMessages<TReply>({
       if (isOwner && isGame) {
         try {
           const reply = getDecodedPayload<TReply>(payload);
-          console.log("inside update: ", { reply });
 
           return {
             data: reply,

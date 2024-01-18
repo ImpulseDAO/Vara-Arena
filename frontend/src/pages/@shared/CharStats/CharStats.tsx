@@ -5,11 +5,13 @@ export const CharStats = ({
   character,
   isReadyForLevelUp = false,
   selectAttr,
+  isLoading,
   ...boxProps
 }: {
   character: Character;
   isReadyForLevelUp?: boolean;
   selectAttr?: (capitalizedAttrName: string) => void;
+  isLoading?: boolean;
 } & BoxProps) => {
   return (
     <Box {...boxProps}
@@ -23,11 +25,22 @@ export const CharStats = ({
       <Divider mt="sm" />
       <Attribute attributeName="Rating" value={character.tier_rating ?? 0} my="lg" />
       <Divider mb="xs" />
-      <Attribute attributeName="Strength" value={character.attributes.strength} my="sm" selectAttr={isReadyForLevelUp ? selectAttr : undefined} />
-      <Attribute attributeName="Agility" value={character.attributes.agility} my="sm" selectAttr={isReadyForLevelUp ? selectAttr : undefined} />
-      <Attribute attributeName="Vitality" value={character.attributes.vitality} my="sm" selectAttr={isReadyForLevelUp ? selectAttr : undefined} />
-      <Attribute attributeName="Stamina" value={character.attributes.stamina} my="sm" selectAttr={isReadyForLevelUp ? selectAttr : undefined} />
-      <Attribute attributeName="Intelligence" value={character.attributes.intelligence} my="sm" selectAttr={isReadyForLevelUp ? selectAttr : undefined} />
+      {[
+        'strength',
+        'agility',
+        'vitality',
+        'stamina',
+        'intelligence',
+      ].map((attrName) => (
+        <Attribute
+          key={attrName}
+          attributeName={attrName}
+          value={character.attributes[attrName]}
+          my="sm"
+          selectAttr={isReadyForLevelUp ? selectAttr : undefined}
+          isLoading={isLoading}
+        />
+      ))}
     </Box >
   );
 };
@@ -36,11 +49,13 @@ const Attribute = ({
   attributeName,
   value,
   selectAttr,
+  isLoading,
   ...flexProps
 }: {
   attributeName: string;
   value: number;
   selectAttr?: (capitalizedAttrName: string) => void;
+  isLoading?: boolean;
 } & FlexProps) => {
   return (
     <Flex justify={'space-between'} align="center" {...flexProps}>
@@ -58,6 +73,7 @@ const Attribute = ({
               onClick={() => selectAttr(attributeName)}
               c="white"
               style={{ paddingInline: ".8rem" }}
+              {...{ isLoading }}
             >
               +
             </Button>

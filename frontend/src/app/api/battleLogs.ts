@@ -73,10 +73,6 @@ export const useAllBattleLogs = () => {
     select: (data) => data.battleLogs,
   });
 
-  queryResult.data?.forEach((battleLog) => {
-    console.log(`battleLog`, battleLog);
-  });
-
   return queryResult;
 };
 

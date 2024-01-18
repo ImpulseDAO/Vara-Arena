@@ -18,7 +18,7 @@ export const Alert: FC<AlertProps> = memo(
           <div className="alert_buttons">
             {buttonsSlot.map(({ children, ...restButtonProps }, i) => (
               <>
-                {i % 2 ? <div className="alert_divider"></div> : null}
+                {i % 2 ? <div className="alert_divider" key={i}></div> : null}
                 <Button {...restButtonProps}>{children}</Button>
               </>
             ))}

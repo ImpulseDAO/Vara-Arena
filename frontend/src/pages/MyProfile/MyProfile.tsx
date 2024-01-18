@@ -22,17 +22,25 @@ import { NoCharacterWidget } from "pages/@shared/NoCharacterWidget";
 import { UploadStrategyWidget } from "./components/UploadStrategyWidget";
 import { useMyCharacterFromContractState } from "app/api/mintState";
 
-
 export const MyProfile = () => {
-  const { data: myCharacter } = useMyCharacter();
-  const myCharacterFromState = useMyCharacterFromContractState();
+  const { data: myCharacter, refetch: refetchMyCharacterQuery } = useMyCharacter();
+  const {
+    data: myCharacterFromState,
+    refetch: refetchMyCharacterFromStateQuery
+  } = useMyCharacterFromContractState();
 
+
+  const refetch = () => {
+    console.log('refetching YAY');
+    refetchMyCharacterQuery();
+    refetchMyCharacterFromStateQuery();
+  };
 
   if (!myCharacter || !myCharacterFromState) {
     return <div className="profile"><NoCharacterWidget /></div>;
   }
 
-  return <Profile character={myCharacter} myCharacter={myCharacterFromState} />;
+  return <Profile character={myCharacter} myCharacter={myCharacterFromState} onSuccessfulLevelUp={refetch} />;
 };
 
 export const ProfilePage = () => {
@@ -43,7 +51,7 @@ export const ProfilePage = () => {
   }
 
   const { data: character } = useCharacterById({ id: params.id });
-  const myCharacterFromState = useMyCharacterFromContractState();
+  const { data: myCharacterFromState } = useMyCharacterFromContractState();
 
   if (!character || !myCharacterFromState) {
     return null;
@@ -59,16 +67,17 @@ export const Profile = ({
    * it can be our own character or someone else's
    */
   character,
-  myCharacter
+  myCharacter,
+  onSuccessfulLevelUp
 }: {
   character: Character;
   myCharacter: CharacterInContractState;
+  onSuccessfulLevelUp?: () => void;
 }) => {
   /**
    * myCharacter is our own character
    * we need it to check if we are viewing our own character
    */
-
 
   const isMyCharacter = character.id === String(myCharacter.id);
   if (isMyCharacter) {
@@ -76,9 +85,11 @@ export const Profile = ({
     character.attributes = myCharacter.attributes;
     character.level = myCharacter.level;
     character.experience = myCharacter.experience;
+    character.lives_count = myCharacter.attributes.livesCount;
+    character.balance = myCharacter.attributes.balance;
   }
 
-  const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr } = useStats(
+  const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr, isStatsMutating } = useStats(
     character
   );
 
@@ -91,8 +102,6 @@ export const Profile = ({
   if (!myCharacter) {
     return null;
   }
-
-
 
 
   return (
@@ -109,7 +118,9 @@ export const Profile = ({
             {
               className: "profile_alert_accept",
               children: "Accept",
-              onClick: accept,
+              onClick: () => accept({
+                onSuccess: onSuccessfulLevelUp,
+              }),
             },
           ]}
         />
@@ -133,13 +144,14 @@ export const Profile = ({
             character={character}
             isReadyForLevelUp={stats.points > 0}
             selectAttr={selectAttr}
+            isLoading={isStatsMutating}
           />
 
         </div>
 
         <div className="profile_equip">
           <StatBar
-            lives={character.lives_count ?? 5}
+            lives={character.lives_count}
             health={getFullHp(character.attributes.vitality)}
             energy={getFullEnergy(character.attributes.stamina)}
           />

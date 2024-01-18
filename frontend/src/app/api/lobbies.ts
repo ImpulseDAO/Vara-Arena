@@ -3,6 +3,7 @@ import { useGraphQL } from "app/providers/ReactQuery/useGraphQL";
 import { useSendToArena } from "./sendMessages";
 import { MAX_GAS_LIMIT } from "consts";
 import { useAccount, useAlert } from "@gear-js/react-hooks";
+import { useWatchArenaMessages } from "hooks/useWatchArenaMessages/useWatchArenaMessages";
 
 /**
  * All Lobbies
@@ -75,6 +76,13 @@ export const useLobby = ({ id }: { id: string }) => {
   return query;
 };
 
+type ReplyObject = {
+  LobbyCreated: {
+    lobbyId: string;
+    capacity: string;
+  };
+};
+
 /**
  * Create Lobby
  */
@@ -83,19 +91,38 @@ export const useCreateLobby = () => {
   const alert = useAlert();
   const send = useSendToArena();
   const { isAccountReady } = useAccount();
+  const { subscribe, unsubscribe } = useWatchArenaMessages<ReplyObject>();
 
   if (!isAccountReady) {
     // no-op
-    return ({ capacity }: { capacity: LobbyCapacity }) => Promise.resolve();
+    return ({ capacity }: { capacity: LobbyCapacity }) =>
+      Promise.resolve(undefined as ReplyObject | undefined);
   }
 
   return ({ capacity }: { capacity: LobbyCapacity }) => {
     if (capacity <= 0) {
       alert.error("Capacity must be greater than 0");
-      return;
+      return Promise.reject("Capacity must be greater than 0");
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<ReplyObject | undefined>((resolve, reject) => {
+      subscribe((reply, error) => {
+        if (error) {
+          reject(error.message);
+          alert.error(error.message);
+          return;
+        }
+
+        reply != null &&
+          setTimeout(() => {
+            const { lobbyId, capacity } = reply.LobbyCreated;
+            const message = `Lobby ${lobbyId} created with capacity ${capacity}`;
+            console.info(message);
+            alert.success(message);
+          });
+
+        resolve(reply);
+      });
       send({
         payload: {
           CreateLobby: {
@@ -104,14 +131,16 @@ export const useCreateLobby = () => {
         },
         gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
-          console.log("success");
-          resolve("success");
+          console.log("CreateLobby message successfully sent");
         },
         onError: () => {
-          console.log("error");
-          reject("error");
+          console.log("Error while sending CreateLobby message");
+          reject("Error while sending CreateLobby message");
         },
       });
+    }).finally(() => {
+      console.log("Unsubscribing from arena messages");
+      unsubscribe();
     });
   };
 };

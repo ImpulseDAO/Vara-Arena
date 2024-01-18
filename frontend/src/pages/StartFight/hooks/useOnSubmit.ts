@@ -1,54 +1,37 @@
-import { useWasmMetadata } from "./../../MintCharacter/hooks/useWasmMetadata";
 import { useCallback, useMemo } from "react";
 import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
-import {
-  useAccount,
-  useReadWasmState,
-  useSendMessage,
-} from "@gear-js/react-hooks";
+import { useAccount, useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import arenaMetaWasm from "../../../assets/arena.opt.wasm";
 import { MAX_GAS_LIMIT } from "consts";
+import { useWatchArenaMessages } from "hooks/useWatchArenaMessages/useWatchArenaMessages";
+import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
 
 export const useOnRegisterForBattle = () => {
   const { account } = useAccount();
-
-  const { buffer } = useWasmMetadata(arenaMetaWasm);
+  const alert = useStableAlert();
 
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
   const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
-  const arenaMetaWasmData: MetaWasmDataType = useMemo(
-    () => ({
-      programId: ARENA_PROGRAM_ID,
-      programMetadata: meta,
-      wasm: buffer,
-      functionName: "registered",
-      argument: account?.decodedAddress,
-    }),
-    [account?.decodedAddress, meta, buffer]
-  );
+  const { subscribe, unsubscribe } = useWatchArenaMessages();
 
-  const registered = useReadWasmState<
-    Array<{
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-      };
-      energy: string;
-      hp: string;
-      id: string;
-      name: string;
-      owner: string;
-      position: string;
-    }>
-  >(arenaMetaWasmData).state;
-  console.log(`registered`, registered);
   return useCallback(
     async ({ lobbyId }: { lobbyId: string }) => {
       return new Promise(async (resolve, reject) => {
+        subscribe((reply, error) => {
+          if (error) {
+            reject(error.message);
+            alert.error(error.message);
+            return;
+          }
+
+          resolve(reply);
+        });
+        const rejectAfterTimeout = () =>
+          setTimeout(
+            () => reject(new Error("Timeout: no reply from the arena")),
+            4000
+          );
         send({
           payload: {
             Register: {
@@ -58,16 +41,18 @@ export const useOnRegisterForBattle = () => {
           },
           gasLimit: MAX_GAS_LIMIT,
           onSuccess: () => {
-            console.log('"Register" message successfully sent');
-            resolve(undefined);
+            console.log('"Register" message sent');
+            rejectAfterTimeout();
           },
           onError: () => {
-            console.log("error");
-            reject();
+            console.log("Error while sending Register message");
+            rejectAfterTimeout();
           },
         });
+      }).finally(() => {
+        unsubscribe();
       });
     },
-    [account?.decodedAddress, send]
+    [account?.decodedAddress, alert, send, subscribe, unsubscribe]
   );
 };

@@ -55,11 +55,11 @@ export const UploadStrategyWidget = () => {
       gasLimit: MAX_GAS_LIMIT,
       withVoucher: shouldUseVoucher,
       onSuccess: (result) => {
-        console.log("success", result);
+        console.log("UpdateCharacter message successfully sent", result);
         setIsUpdating(false);
       },
       onError: () => {
-        console.log("error trying to call UpdateCharacter method ");
+        console.log("Error while trying to call UpdateCharacter method ");
         setIsUpdating(false);
       },
     });

@@ -15,6 +15,7 @@ export const useStats = (character?: Character) => {
   const [attr, setAttr] = useState("");
 
   const [alertVisible, toggleVisible] = useReducer((state) => !state, false);
+  const [isStatsMutating, setIsStatsMutating] = useState(false);
 
   const selectAttr = useCallback((capitalizedAttrName: string) => {
     setAttr(capitalizedAttrName);
@@ -23,25 +24,43 @@ export const useStats = (character?: Character) => {
 
   const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
   const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
-  const accept = useCallback(() => {
-    if (attr) {
-      toggleVisible();
-      send({
-        payload: {
-          LevelUp: {
-            attr,
-          },
-        },
-        gasLimit: MAX_GAS_LIMIT,
-        onSuccess: () => {
-          console.log("success");
-        },
-        onError: () => {
-          console.log("error");
-        },
-      });
-    }
-  }, [attr, send]);
+  const accept = useCallback(
+    ({
+      onSuccess,
+      onError,
+    }: {
+      onSuccess?: () => void;
+      onError?: () => void;
+    } = {}) => {
+      if (attr) {
+        setIsStatsMutating(true);
+        toggleVisible();
+        try {
+          send({
+            payload: {
+              LevelUp: {
+                attr,
+              },
+            },
+            gasLimit: MAX_GAS_LIMIT,
+            onSuccess: () => {
+              console.log("LevelUp message successfully sent");
+              onSuccess?.();
+            },
+            onError: () => {
+              console.log("Error while sending LevelUp message");
+              onError?.();
+            },
+          });
+        } catch (e) {
+          console.log(e);
+        } finally {
+          setIsStatsMutating(false);
+        }
+      }
+    },
+    [attr, send]
+  );
 
   useEffect(() => {
     if (character?.attributes) {
@@ -74,5 +93,6 @@ export const useStats = (character?: Character) => {
     accept,
     cancel: toggleVisible,
     selectedAttr: attr,
+    isStatsMutating,
   };
 };

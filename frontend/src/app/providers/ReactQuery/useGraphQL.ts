@@ -3,7 +3,7 @@ import { type TypedDocumentNode } from "@graphql-typed-document-node/core";
 import {
   type DefaultError,
   useQuery,
-  UseQueryOptions,
+  type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
 import { GRAPHQL_API_URL } from "app/api/consts";

@@ -117,11 +117,23 @@ export const Arena = () => {
                     return;
                   };
 
-                  await handleCreateLobby({ capacity });
-                  /**
-                   * Refetch lobbies after successful promise resolution
-                   */
-                  refetchLobbies();
+                  handleCreateLobby({ capacity })
+                    .then(async (reply) => {
+                      if (reply) {
+                        const { lobbyId } = reply.LobbyCreated;
+                        setTimeout(() => navigate(newRoutes.lobby(lobbyId)), 800);
+                      }
+                      /**
+                       * Refetch lobbies after successful promise resolution
+                       */
+                      await refetchLobbies();
+                    })
+                    .catch(error => {
+                      console.log('Lobby creation cancelled');
+                    });
+
+
+
                 }}  >
                   Create
                 </TheButton>
@@ -148,7 +160,7 @@ export const Arena = () => {
           </GridColumn>
         ))}
       </Grid>
-    </Flex>
+    </Flex >
   );
 };
 

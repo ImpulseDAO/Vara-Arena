@@ -128,6 +128,8 @@ export const ButtonsJoinReservePlay = ({
       try {
         await registerForBattle({ lobbyId });
         refreshState();
+      } catch (er) {
+        console.error(er);
       } finally {
         setIsLoading(false);
       }
@@ -175,10 +177,10 @@ export const ButtonsJoinReservePlay = ({
         },
         gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
-          console.log("successfully cleaned the state");
+          console.log("CleanState message successfully sent");
           navigate("/arena");
         },
-        onError: () => console.log("error while cleaning the state"),
+        onError: () => console.log("Error while cleaning the state"),
       }
     );
   };

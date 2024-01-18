@@ -235,6 +235,7 @@ impl Mint {
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;
 
+        let mut distribution: BTreeMap<u128, u128> = BTreeMap::new();
         for character_info in self.characters.values_mut() {
             if character_info.attributes.lives_count > 0 {
                 let earned_daily_balance =
@@ -243,8 +244,12 @@ impl Mint {
                     .attributes
                     .balance
                     .saturating_add(earned_daily_balance.into());
+                distribution.insert(character_info.id, character_info.attributes.balance);
             }
         }
+
+        let admin = self.admins.first().expect("admins set can't be empty");
+        msg::send(*admin, MintEvent::GoldDistributed { distribution }, 0).expect("unable to send");
 
         // Check gas in message
         // If the remaining gas in the message is less than the minimum gas amount on config

@@ -17,12 +17,13 @@ export async function handleMintMessage(
     let data = mintMeta.createType(assertNotNull(mintMeta.types.handle.output), message.payload).toJSON() as any
     if (data.characterCreated) {
         let info = data.characterCreated.characterInfo
-        let { tierRating, livesCount, ...attributes } = data.characterCreated.characterInfo.attributes
+        let { tierRating, livesCount, balance, ...attributes } = data.characterCreated.characterInfo.attributes
         let character = new Character({
             ...info,
             attributes,
             livesCount,
             rating: tierRating,
+            balance,
             owner: message.destination
         })
         characters.set(character.id, character)
@@ -62,6 +63,18 @@ export async function handleMintMessage(
         attributes[data.levelUpdated.attr.toLowerCase()] += 1
     } else if ('characterUpdated' in data) {
         // update character algorithmId?
+    } else if (data.goldDistributed) {
+        for (let characterId in data.goldDistributed.distribution) {
+            let balance = data.goldDistributed.distribution[characterId]
+
+            let character = characters.get(characterId)
+            if (character == null) {
+                character = await store.findOneOrFail(Character, { where: { id: characterId } })
+                characters.set(character.id, character)
+            }
+
+            character.balance = balance
+        }
     } else {
         console.log(data);
         throw new Error('event is not supported')

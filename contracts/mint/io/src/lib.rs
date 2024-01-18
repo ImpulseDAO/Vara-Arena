@@ -195,6 +195,9 @@ pub enum MintEvent {
         winner_rating: u128,
         losers: Vec<u128>,
     },
+    GoldDistributed {
+        distribution: BTreeMap<u128, u128>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone)]

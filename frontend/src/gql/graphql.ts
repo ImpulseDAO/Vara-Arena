@@ -156,6 +156,7 @@ export type BattleTurn = {
 export type Character = {
   __typename?: 'Character';
   attributes: Scalars['JSON']['output'];
+  balance: Scalars['Int']['output'];
   experience: Scalars['Int']['output'];
   id: Scalars['String']['output'];
   level: Scalars['Int']['output'];
@@ -172,6 +173,10 @@ export type CharacterEdge = {
 };
 
 export enum CharacterOrderByInput {
+  BalanceAsc = 'balance_ASC',
+  BalanceAscNullsFirst = 'balance_ASC_NULLS_FIRST',
+  BalanceDesc = 'balance_DESC',
+  BalanceDescNullsLast = 'balance_DESC_NULLS_LAST',
   ExperienceAsc = 'experience_ASC',
   ExperienceAscNullsFirst = 'experience_ASC_NULLS_FIRST',
   ExperienceDesc = 'experience_DESC',
@@ -288,6 +293,15 @@ export type CharacterWhereInput = {
   attributes_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
   attributes_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
   attributes_not_eq?: InputMaybe<Scalars['JSON']['input']>;
+  balance_eq?: InputMaybe<Scalars['Int']['input']>;
+  balance_gt?: InputMaybe<Scalars['Int']['input']>;
+  balance_gte?: InputMaybe<Scalars['Int']['input']>;
+  balance_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  balance_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  balance_lt?: InputMaybe<Scalars['Int']['input']>;
+  balance_lte?: InputMaybe<Scalars['Int']['input']>;
+  balance_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  balance_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   experience_eq?: InputMaybe<Scalars['Int']['input']>;
   experience_gt?: InputMaybe<Scalars['Int']['input']>;
   experience_gte?: InputMaybe<Scalars['Int']['input']>;
@@ -431,6 +445,10 @@ export type LobbyCharacterEdge = {
 };
 
 export enum LobbyCharacterOrderByInput {
+  CharacterBalanceAsc = 'character_balance_ASC',
+  CharacterBalanceAscNullsFirst = 'character_balance_ASC_NULLS_FIRST',
+  CharacterBalanceDesc = 'character_balance_DESC',
+  CharacterBalanceDescNullsLast = 'character_balance_DESC_NULLS_LAST',
   CharacterExperienceAsc = 'character_experience_ASC',
   CharacterExperienceAscNullsFirst = 'character_experience_ASC_NULLS_FIRST',
   CharacterExperienceDesc = 'character_experience_DESC',
@@ -594,6 +612,67 @@ export type LobbyWhereInput = {
   tier_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
+export type Mint = {
+  __typename?: 'Mint';
+  id: Scalars['String']['output'];
+  poolAmount: Scalars['Int']['output'];
+};
+
+export type MintEdge = {
+  __typename?: 'MintEdge';
+  cursor: Scalars['String']['output'];
+  node: Mint;
+};
+
+export enum MintOrderByInput {
+  IdAsc = 'id_ASC',
+  IdAscNullsFirst = 'id_ASC_NULLS_FIRST',
+  IdDesc = 'id_DESC',
+  IdDescNullsLast = 'id_DESC_NULLS_LAST',
+  PoolAmountAsc = 'poolAmount_ASC',
+  PoolAmountAscNullsFirst = 'poolAmount_ASC_NULLS_FIRST',
+  PoolAmountDesc = 'poolAmount_DESC',
+  PoolAmountDescNullsLast = 'poolAmount_DESC_NULLS_LAST'
+}
+
+export type MintWhereInput = {
+  AND?: InputMaybe<Array<MintWhereInput>>;
+  OR?: InputMaybe<Array<MintWhereInput>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  poolAmount_eq?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_gt?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_gte?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  poolAmount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  poolAmount_lt?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_lte?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  poolAmount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+export type MintsConnection = {
+  __typename?: 'MintsConnection';
+  edges: Array<MintEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor: Scalars['String']['output'];
@@ -624,6 +703,11 @@ export type Query = {
   lobbyCharacterByUniqueInput?: Maybe<LobbyCharacter>;
   lobbyCharacters: Array<LobbyCharacter>;
   lobbyCharactersConnection: LobbyCharactersConnection;
+  mintById?: Maybe<Mint>;
+  /** @deprecated Use mintById */
+  mintByUniqueInput?: Maybe<Mint>;
+  mints: Array<Mint>;
+  mintsConnection: MintsConnection;
   squidStatus?: Maybe<SquidStatus>;
 };
 
@@ -729,6 +813,32 @@ export type QueryLobbyCharactersConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LobbyCharacterOrderByInput>;
   where?: InputMaybe<LobbyCharacterWhereInput>;
+};
+
+
+export type QueryMintByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryMintByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryMintsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MintOrderByInput>>;
+  where?: InputMaybe<MintWhereInput>;
+};
+
+
+export type QueryMintsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<MintOrderByInput>;
+  where?: InputMaybe<MintWhereInput>;
 };
 
 export type SquidStatus = {

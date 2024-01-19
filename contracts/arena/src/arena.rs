@@ -253,10 +253,7 @@ impl Arena {
             )
             .expect("unable to reply");
         } else {
-            assert!(
-                character_tier != lobby.current_tier,
-                "Can't Register for this Tier"
-            );
+            panic!("Can't Register for this Tier");
         };
 
         debug!("Current tier after registration {:#?}", lobby.current_tier);

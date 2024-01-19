@@ -60,7 +60,7 @@ export const theme: MantineThemeOverride = {
   colors: {
     ...formatColors(customColors),
   },
-  fontFamily: "Inter, sans-serif",
+  fontFamily: "Poppins, sans-serif",
   // these are default values of breakpoints
   // https://mantine.dev/styles/responsive/
   breakpoints: {

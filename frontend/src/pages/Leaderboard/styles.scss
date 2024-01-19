@@ -4,22 +4,22 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+
+  overflow: hidden;
   display: flex;
-
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
-  padding-inline: 2rem;
+  padding: 2rem 3rem;
 
-  .modal_leaderboard {
-    max-width: 100%;
-    margin-top: 42px;
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 90%;
+    overflow: hidden;
 
-    padding-inline: 1px;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    max-width: 700px;
   }
 
   .header {
@@ -82,13 +82,15 @@
   */
 
 .modal_table {
+  display: flex;
+  flex: 1;
+  align-self: stretch;
+
   border-left: 2px solid white;
   border-right: 2px solid white;
   border-bottom: 2px solid white;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
-
-  min-width: 600px;
 
   background: rgba(0, 0, 0, 0.7);
   overflow-y: scroll;
@@ -103,6 +105,10 @@ table {
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    &.table_row_highlighted {
+      background: rgba(135, 147, 255, 0.228);
     }
   }
 

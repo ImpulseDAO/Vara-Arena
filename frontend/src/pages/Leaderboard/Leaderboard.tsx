@@ -4,8 +4,11 @@ import { useMintState } from "app/api/mintState";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { Table, Text } from "@mantine/core";
 import { getShortIdString } from "utils";
+import { useMyAccountId } from "hooks/hooks";
 
 export const Leaderboard = () => {
+  const myAccountId = useMyAccountId();
+
   const { data: mintState } = useMintState({
     variables: {
       metadata: MINT_METADATA,
@@ -23,77 +26,78 @@ export const Leaderboard = () => {
 
 
   const inProgressRows = entries.map(([ownerId, c]) => {
+    const isMyCharacter = ownerId === myAccountId;
+
     return {
       name: c.name,
       level: c.level,
       exp: c.experience,
-      ownerId: ownerId,
+      ownerId,
       rating: c.attributes.tierRating,
+      isMyCharacter,
     };
   });
 
   return (
     <div className="leaderboard">
-      <div className="modal_leaderboard">
+      <div className="content-wrapper">
         <div className="header">Leaderboard</div>
-        <div className={"scroll_container"}>
 
-          <div className='modal_table'>
-            <Table horizontalSpacing="md" verticalSpacing="md" >
-              <Table.Thead>
-                <Table.Tr>
+        <div className='modal_table'>
+          <Table horizontalSpacing="md" verticalSpacing="md" >
+            <Table.Thead>
+              <Table.Tr>
+                {[
+                  'Rating',
+                  'Name',
+                  'Level',
+                  'Owner ID',
+                ].map((header, idx) => {
+                  return (
+                    <Table.Th
+                      key={header}
+                      w={CELL_WIDTH[idx]}
+                      ta={TEXT_ALIGN[idx]}
+                    >
+                      {header}
+                    </Table.Th>
+                  );
+                })}
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>{inProgressRows.map((row) => {
+              return (
+                <Table.Tr
+                  // onClick={() => {
+                  //   const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
+                  //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
+                  // }}
+                  className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
+                >
                   {[
-                    'Rating',
-                    'Name',
-                    'Level',
-                    'Owner ID',
-                  ].map((header, idx) => {
+                    /* Rating */
+                    <div className={'badge'}>{row.rating}</div>,
+                    /* Name */
+                    <Text size="md"> {row.name}</Text>,
+                    /* Level */
+                    <div className={'badge'}>{row.level}</div>,
+                    /* Owner ID */
+                    <div >{getShortIdString(row.ownerId)}</div>,
+                  ].map((cellContent, idx) => {
                     return (
-                      <Table.Th
-                        key={header}
+                      <Table.Td
+                        key={idx}
                         w={CELL_WIDTH[idx]}
                         ta={TEXT_ALIGN[idx]}
                       >
-                        {header}
-                      </Table.Th>
+                        {cellContent}
+                      </Table.Td>
                     );
                   })}
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>{inProgressRows.map((row) => {
-                return (
-                  <Table.Tr
-                    // onClick={() => {
-                    //   const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
-                    //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
-                    // }}
-                    className='table_row'
-                  >
-                    {[
-                      /* Rating */
-                      <div className={'badge'}>{row.rating}</div>,
-                      /* Name */
-                      <Text size="md"> {row.name}</Text>,
-                      /* Level */
-                      <div className={'badge'}>{row.level}</div>,
-                      /* Owner ID */
-                      <div >{getShortIdString(row.ownerId)}</div>,
-                    ].map((cellContent, idx) => {
-                      return (
-                        <Table.Td
-                          key={idx}
-                          w={CELL_WIDTH[idx]}
-                          ta={TEXT_ALIGN[idx]}
-                        >
-                          {cellContent}
-                        </Table.Td>
-                      );
-                    })}
 
-                  </Table.Tr>);
-              })}</Table.Tbody>
-            </Table>
-          </div>
+                </Table.Tr>);
+            })}</Table.Tbody>
+          </Table>
         </div>
       </div>
     </div>
@@ -101,12 +105,14 @@ export const Leaderboard = () => {
 };
 
 const CELL_WIDTH = {
-  0: '50px',
-  1: '160px',
-  2: '100px',
+  0: '10%',
+  1: '30%',
+  // 2: '100px',
+  3: '40%'
 };
 
 const TEXT_ALIGN = {
+  0: 'center',
   1: 'left',
   2: 'center',
 };

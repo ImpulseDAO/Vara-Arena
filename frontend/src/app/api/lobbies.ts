@@ -14,6 +14,7 @@ const lobbiesQueryDocument = graphql(/* GraphQL */ `
     lobbies {
       id
       capacity
+      tier
       reservationsCount
       characters {
         id
@@ -45,6 +46,7 @@ const lobbyByIdQueryDocument = graphql(/* GraphQL */ `
     lobbyById(id: $id) {
       id
       capacity
+      tier
       reservationsCount
       characters {
         id

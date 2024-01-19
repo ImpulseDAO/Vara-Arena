@@ -34,7 +34,7 @@ export const PlayersTable = ({
   characters: Array<{
     name: string,
     id: string,
-    level: string,
+    level: number,
     isMyCharacter: boolean,
   }>,
 }) => {
@@ -66,7 +66,7 @@ export const PlayersTableView = ({
   characters: Array<{
     name: string,
     id: string,
-    level: string,
+    level: number,
     isMyCharacter: boolean,
   }>,
   battleLogs: BattleLogsReturned,

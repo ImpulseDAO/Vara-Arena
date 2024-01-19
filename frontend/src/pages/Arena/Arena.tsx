@@ -22,7 +22,7 @@ export const Arena = () => {
 
     return [...lobbiesData?.lobbies].reverse().map(lobby => {
       return {
-        tierText: 'tier' in lobby ? lobby.tier as string : "",
+        tierText: 'tier' in lobby ? `Tier ${lobby.tier}` : "",
         lobbyId: lobby.id,
         playersSize: lobby.capacity,
         playersJoined: lobby.characters.length,

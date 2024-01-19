@@ -22,6 +22,7 @@ export const Lobby = () => {
 
   const { data: lobbyData, refetch: refetchLobbyQuery } = useLobby({ id: lobbyId ?? '' });
   const players = lobbyData?.lobbyById?.characters;
+
   const isFinished = lobbyData?.lobbyById?.battleLogs?.length !== 0;
 
   const { characters, hasPlayerJoined } = useMemo(() => {
@@ -44,7 +45,7 @@ export const Lobby = () => {
         playerId: character.id,
         id: character.character.id,
         name: character.character.name,
-        level: character.character.attributes.level ?? 0,
+        level: character.character.level ?? 0,
       });
     }) ?? [];
 
@@ -60,6 +61,9 @@ export const Lobby = () => {
 
   const gasNeeded = PLAYERS_TO_RESERVATIONS_NEEDED_MAP[playersSize ?? 0] ?? 0;
 
+  const tier = String(lobbyData?.lobbyById?.['tier']);
+  const tierText = `Tier ${tier}`;
+
   return (
     <div className="content_wrapper">
       <div className="modal_queue">
@@ -67,7 +71,7 @@ export const Lobby = () => {
         <div className="modal_loader">
           <p className="modal_tille">Tournament participants</p>
           <Stack align="center" pos="relative" w="100%">
-            <AbsolutelyPositionedElements lobbyId={lobbyId} tierText={lobbyData?.lobbyById?.['tier'] ?? ''} />
+            <AbsolutelyPositionedElements lobbyId={lobbyId} tierText={tierText} />
             {
               isEnoughPlayers
                 ? isFinished

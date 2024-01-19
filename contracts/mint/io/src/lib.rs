@@ -50,6 +50,7 @@ pub struct Config {
     pub reservation_duration: u32,
     pub mint_cost: Option<u128>,
     pub gold_pool_amount: u128,
+    pub season_duration_in_days: u128,
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Debug, PartialEq, Eq)]
@@ -177,6 +178,10 @@ pub enum MintAction {
         mint_cost: Option<u128>,
         gold_pool_amount: Option<u128>,
     },
+    DepositVara,
+    FinalDistribution {
+        player_percentage_for_vara_distr: Option<u16>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -197,7 +202,7 @@ pub enum MintEvent {
     },
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct MintState {
     pub characters: BTreeMap<ActorId, CharacterInfo>,
 }

@@ -2,7 +2,7 @@
 
 use gstd::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 use gstd::prog::ProgramGenerator;
-use gstd::{exec, msg, prelude::*, ActorId, CodeId, ReservationId};
+use gstd::{debug, exec, msg, prelude::*, ActorId, CodeId, ReservationId};
 use mint_io::{
     AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus,
     InitialAttributes, MintAction, MintEvent, MintState,
@@ -17,7 +17,9 @@ struct Mint {
     admins: BTreeSet<ActorId>,
     config: Config,
     reservations: Vec<ReservationId>,
-    pool_amount: u128,
+    gold_pool_amount: u128,
+    daily_gold_pool_amount: u128,
+    vara_pool_amount: u128,
     total_rating: u128,
     daily_gold_distr_status: DailyGoldDistrStatus,
     character_id: u128,
@@ -26,6 +28,9 @@ struct Mint {
 static mut MINT: Option<Mint> = None;
 
 impl Mint {
+    fn deposit_vara(&mut self) {
+        self.vara_pool_amount = self.vara_pool_amount.saturating_add(msg::value());
+    }
     fn add_admin(&mut self, admin: &ActorId) {
         self.check_if_admin(&msg::source());
         self.admins.insert(*admin);
@@ -43,7 +48,7 @@ impl Mint {
                 msg::value(),
                 "Please attach the exact amount of Vara"
             );
-            self.pool_amount = self.pool_amount.saturating_add(mint_cost);
+            self.vara_pool_amount = self.vara_pool_amount.saturating_add(mint_cost);
         }
 
         self.check_attributes(&attributes);
@@ -230,7 +235,7 @@ impl Mint {
             "The caller must be the contract itself"
         );
 
-        let amount_for_distribution = self.config.gold_pool_amount;
+        let amount_for_distribution = self.daily_gold_pool_amount;
 
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;
@@ -264,14 +269,43 @@ impl Mint {
                 self.daily_gold_distr_status = DailyGoldDistrStatus::OutOfGas;
             }
         } else {
-            msg::send_with_gas_delayed(
+            msg::send_delayed(
                 program_id,
                 MintAction::DistributeDailyPool,
-                self.config.gas_for_daily_distribution,
                 0,
                 self.config.update_interval_in_blocks,
             )
             .expect("Error during sending a delayed message");
+        }
+    }
+
+    fn end_season_distribution(&mut self, player_percentage_for_vara_distr: Option<u16>) {
+        self.check_if_admin(&msg::source());
+
+        let amount_for_distribution = self.gold_pool_amount;
+
+        // Payment per rating unit
+        let unit_rating_payment = amount_for_distribution / self.total_rating;
+
+        let mut live_characters = Vec::new();
+        for character_info in self.characters.values_mut() {
+            if character_info.attributes.lives_count > 0 {
+                let earned_daily_balance =
+                    character_info.attributes.tier_rating * unit_rating_payment;
+                character_info.attributes.balance = character_info
+                    .attributes
+                    .balance
+                    .saturating_add(earned_daily_balance.into());
+                live_characters.push(character_info.clone());
+            }
+        }
+
+        if let Some(percentage) = player_percentage_for_vara_distr {
+            assert!(
+                percentage <= 1000,
+                "Not allowed to send more than 1000 messages"
+            );
+            // TO DO select that amount of characters to send vara
         }
     }
 
@@ -353,10 +387,15 @@ impl Mint {
 #[no_mangle]
 unsafe extern "C" fn init() {
     let config: Config = msg::load().expect("Unable to decode Config");
+    let gold_pool_amount = config.gold_pool_amount / 2;
+    let daily_gold_pool_amount = gold_pool_amount / config.season_duration_in_days;
+
     let contract_owner = msg::source();
     MINT = Some(Mint {
         admins: BTreeSet::from([contract_owner]),
         config,
+        gold_pool_amount,
+        daily_gold_pool_amount,
         ..Default::default()
     });
 }
@@ -368,6 +407,7 @@ extern "C" fn handle() {
     let caller = msg::source();
 
     match action {
+        MintAction::DepositVara => mint.deposit_vara(),
         MintAction::CreateCharacter {
             code_id,
             name,
@@ -408,6 +448,9 @@ extern "C" fn handle() {
             mint_cost,
             gold_pool_amount,
         ),
+        MintAction::FinalDistribution {
+            player_percentage_for_vara_distr,
+        } => mint.end_season_distribution(player_percentage_for_vara_distr),
     }
 }
 

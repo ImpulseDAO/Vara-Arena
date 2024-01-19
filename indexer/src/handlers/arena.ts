@@ -161,37 +161,45 @@ export async function handleArenaMessage(
                             break
                         case 'castSpell':
                             let spell = Object.keys(event.action.castSpell.result)[0]
-                            player.energy -= 5
                             switch (spell) {
                                 case 'fireball':
                                     enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.fireball.damage, 0)
+                                    player.energy -= 5
                                     break
                                 case 'waterRestoration':
                                     let fullHp = fullHpByCharacter[event.character]
                                     player.hp = Math.min(player.hp + event.action.castSpell.result.waterRestoration.heal, fullHp)
+                                    player.energy -= 5
                                     break
                                 case 'earthCatapult':
                                     enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.earthCatapult.damage, 0)
                                     enemy.position = event.action.castSpell.result.earthCatapult.enemyPosition
+                                    player.energy -= 7
                                     break
                                 case 'waterBurst':
                                     enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.waterBurst.damage, 0)
                                     enemy.waterBurst = 3
+                                    player.energy -= 5
                                     break
                                 case 'fireWall':
                                     player.fireWall = 3
+                                    player.energy -= 5
                                     break
                                 case 'fireHaste':
                                     player.fireHaste = 4
+                                    player.energy -= 5
                                     break
                                 case 'earthSmites':
                                     player.earthSmites = 3
+                                    player.energy -= 5
                                     break
                                 case 'earthSkin':
                                     player.earthSkin = 3
+                                    player.energy -= 5
                                     break
                                 case 'chillingTouch':
                                     enemy.chillingTouch = 4
+                                    player.energy -= 5
                                     break
                                 default:
                                     throw new Error(`spell "${spell}" is not supported`)
@@ -253,7 +261,7 @@ export async function handleArenaMessage(
 }
 
 function getFullHp(vitality: number): number {
-    return 90 + vitality * 10
+    return 90 + vitality * 3
 }
 
 function getFullEnergy(stamina: number): number {

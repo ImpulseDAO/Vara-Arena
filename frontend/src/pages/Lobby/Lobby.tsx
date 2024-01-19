@@ -16,14 +16,14 @@ import { newRoutes } from "app/routes";
 export const Lobby = () => {
   const navigate = useNavigate();
   const myId = useMyAccountId();
-  const [gasReservedTimes, setGasReservedTimes] = React.useState(0);
 
   const { lobbyId } = useParams<{ lobbyId: string; }>();
-
   const { data: lobbyData, refetch: refetchLobbyQuery } = useLobby({ id: lobbyId ?? '' });
-  const players = lobbyData?.lobbyById?.characters;
 
-  const isFinished = lobbyData?.lobbyById?.battleLogs?.length !== 0;
+  const lobbyInfo = lobbyData?.lobbyById;
+  const players = lobbyInfo?.characters;
+  const isFinished = lobbyInfo?.battleLogs?.length !== 0;
+  const gasReservedTimes = lobbyInfo?.reservationsCount ?? 0;
 
   const { characters, hasPlayerJoined } = useMemo(() => {
     if (!players) {
@@ -56,12 +56,12 @@ export const Lobby = () => {
   }, [myId, players]);
 
   const playersJoined = characters.length,
-    playersSize = lobbyData?.lobbyById?.capacity;
+    playersSize = lobbyInfo?.capacity;
   const isEnoughPlayers = playersJoined === (playersSize ?? 0);
 
   const gasNeeded = PLAYERS_TO_RESERVATIONS_NEEDED_MAP[playersSize ?? 0] ?? 0;
 
-  const tier = String(lobbyData?.lobbyById?.['tier']);
+  const tier = String(lobbyInfo?.['tier']);
   const tierText = `Tier ${tier}`;
 
   return (
@@ -120,12 +120,13 @@ export const Lobby = () => {
                   hasPlayerJoined,
                   players,
                   playersNeeded: playersSize ?? 0,
+                  gasReservedTimes,
                   lobbyId,
                   refreshState: () => {
                     console.log('refreshState');
                     refetchLobbyQuery();
                   },
-                  onGasReserved: (times: number) => setGasReservedTimes(times),
+                  onGasReserved: (times: number) => { },
                   onStartButtonSucess: () => {
                     setTimeout(() => {
                       refetchLobbyQuery();

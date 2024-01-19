@@ -32,6 +32,7 @@ export const ButtonsJoinReservePlay = ({
   players,
   playersNeeded,
   refreshState,
+  gasReservedTimes,
   onGasReserved,
   onStartButtonSucess
 }: {
@@ -43,6 +44,7 @@ export const ButtonsJoinReservePlay = ({
   }>;
   playersNeeded: number;
   refreshState: () => void;
+  gasReservedTimes: number;
   onGasReserved?: (times: number) => void;
   onStartButtonSucess?: () => void;
 }) => {
@@ -54,7 +56,7 @@ export const ButtonsJoinReservePlay = ({
   const isUserHasPermissionToCancel = false;
   const isReservationsNeeded = playersNeeded === 4;
 
-  const { gasReservedTimes, handleGasReserved } = useGasReserved({ onGasReserved });
+  const { handleGasReserved } = useGasReserved({ onGasReserved });
   const { isDead: isMyHeroDead, isFresh } = useMyHeroIsDead();
 
   const isJoinButtonVisible = !isMyHeroDead && !hasPlayerJoined && players.length < playersNeeded;

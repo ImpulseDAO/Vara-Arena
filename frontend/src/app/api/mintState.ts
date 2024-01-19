@@ -8,7 +8,7 @@ import { useMyCharacters } from "./characters";
 
 type OwnerId = HexString;
 
-const useMintState = createQuery<
+export const useMintState = createQuery<
   {
     characters: Record<OwnerId, CharacterInContractState>;
   },

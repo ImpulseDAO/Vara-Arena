@@ -32,19 +32,19 @@ export async function handleArenaMessage(
         })
         lobbies.set(lobby.id, lobby)
     } else if (data.playerRegistered) {
+        let lobby = lobbies.get(data.playerRegistered.lobbyId)
+        if (lobby == null) {
+            lobby = await store.findOneOrFail(Lobby, { where: { id: data.playerRegistered.lobbyId } })
+            lobbies.set(lobby.id, lobby)
+        }
+        lobby.tier = data.playerRegistered.tier
+
         let lobbyCharacter = new LobbyCharacter({
             id: `${data.playerRegistered.lobbyId}-${data.playerRegistered.playerId}`,
             character: data.playerRegistered.playerId,
             lobby: data.playerRegistered.lobbyId,
         })
         lobbiesCharacter.set(lobbyCharacter.id, lobbyCharacter)
-    } else if (data.tierSet) {
-        let lobby = lobbies.get(data.tierSet.lobbyId)
-        if (lobby == null) {
-            lobby = await store.findOneOrFail(Lobby, { where: { id: data.tierSet.lobbyId } })
-            lobbies.set(data.tierSet.lobbyId, lobby)
-        }
-        lobby.tier = data.tierSet.tier
     } else if (data.lobbyBattleLog) {
         for (let idx = 0; idx < data.lobbyBattleLog.logs.length; idx++) {
             let log = data.lobbyBattleLog.logs[idx];

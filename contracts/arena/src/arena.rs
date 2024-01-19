@@ -243,6 +243,15 @@ impl Arena {
         if character_tier == lobby.current_tier {
             lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
+            msg::reply(
+                ArenaEvent::PlayerRegistered {
+                    lobby_id,
+                    player_id: character_info.id,
+                    tier: character_tier as u8,
+                },
+                0,
+            )
+            .expect("unable to reply");
         } else {
             assert!(
                 character_tier != lobby.current_tier,
@@ -252,16 +261,6 @@ impl Arena {
 
         debug!("Current tier after registration {:#?}", lobby.current_tier);
         debug!("Registered participants{:?}", lobby.characters);
-
-        msg::reply(
-            ArenaEvent::PlayerRegistered {
-                lobby_id,
-                player_id: character_info.id,
-                tier: character_tier as u8,
-            },
-            0,
-        )
-        .expect("unable to reply");
     }
 
     pub fn reserve_gas(&mut self, lobby_id: u128) {

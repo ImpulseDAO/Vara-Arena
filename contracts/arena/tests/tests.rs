@@ -34,6 +34,7 @@ fn game() {
         reservation_duration: 1200,
         mint_cost: Some(10000000000000),
         gold_pool_amount: 100,
+        season_duration_in_days: 7,
     };
 
     mint.send(USER_ID, config);
@@ -52,7 +53,7 @@ fn game() {
     let code_id = CodeId::from(hash);
 
     let hash2: [u8; 32] = system
-        .submit_code("../../target/wasm32-unknown-unknown/release/fire_mage.wasm")
+        .submit_code("../../target/wasm32-unknown-unknown/release/mage.wasm")
         .into();
     let code_id2 = CodeId::from(hash2);
 
@@ -96,8 +97,8 @@ fn game() {
         code_id,
         name: "Dua".to_string(),
         attributes: InitialAttributes {
-            agility: 4,
-            strength: 3,
+            agility: 1,
+            strength: 6,
             stamina: 1,
             vitality: 1,
             intelligence: 1,
@@ -119,21 +120,21 @@ fn game() {
     arena.send(
         USER_ID,
         ArenaAction::Register {
-            lobby_id: 1,
+            lobby_id: 0,
             owner_id: USER_ID.into(),
         },
     );
     arena.send(
         USER2_ID,
         ArenaAction::Register {
-            lobby_id: 1,
+            lobby_id: 0,
             owner_id: USER2_ID.into(),
         },
     );
     arena.send(
         USER3_ID,
         ArenaAction::Register {
-            lobby_id: 1,
+            lobby_id: 0,
             owner_id: USER3_ID.into(),
         },
     );
@@ -141,15 +142,15 @@ fn game() {
     arena.send(
         USER4_ID,
         ArenaAction::Register {
-            lobby_id: 1,
+            lobby_id: 0,
             owner_id: USER4_ID.into(),
         },
     );
 
-    arena.send(USER_ID, ArenaAction::ReserveGas { lobby_id: 1 });
-    arena.send(USER_ID, ArenaAction::ReserveGas { lobby_id: 1 });
+    arena.send(USER_ID, ArenaAction::ReserveGas { lobby_id: 0 });
+    arena.send(USER_ID, ArenaAction::ReserveGas { lobby_id: 0 });
 
-    arena.send(USER_ID, ArenaAction::Play { lobby_id: 1 });
+    arena.send(USER_ID, ArenaAction::Play { lobby_id: 0 });
 
     mint.send(
         USER_ID,
@@ -177,6 +178,26 @@ fn game() {
             attr: (mint_io::AttributeChoice::Strength),
         },
     );
+
+    arena.send(USER_ID, ArenaAction::CreateLobby { capacity: (2) });
+
+    arena.send(
+        USER_ID,
+        ArenaAction::Register {
+            lobby_id: 1,
+            owner_id: USER_ID.into(),
+        },
+    );
+
+    arena.send(
+        USER4_ID,
+        ArenaAction::Register {
+            lobby_id: 1,
+            owner_id: USER4_ID.into(),
+        },
+    );
+
+    arena.send(USER_ID, ArenaAction::Play { lobby_id: 1 });
 
     // arena.send(
     //     USER_ID,

@@ -187,7 +187,7 @@ export const ButtonsJoinReservePlay = ({
               .filter(Boolean)
               .join(" ")}
             onClick={handleJoin}
-            disabled={isPlayDisabled}
+            disabled={isJoinButtonDisabled}
             loading={isLoading}
           >
             {JOIN_BUTTON_TEXT}

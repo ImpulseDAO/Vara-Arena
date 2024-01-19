@@ -1,4 +1,4 @@
-.content_wrapper {
+.lobby_content_wrapper {
   width: -webkit-fill-available;
   background-image: url("../../assets/images/waitingScreen.webp");
   background-repeat: no-repeat;
@@ -16,8 +16,10 @@
     align-items: center;
   }
 
+  --lobby-width: 540px;
+
   .modal_loader {
-    width: 540px;
+    width: var(--lobby-width);
     background: rgba(0, 0, 0, 0.7);
     border-top: 2px solid white;
     border-left: 2px solid white;
@@ -58,6 +60,10 @@
       height: 22px;
       border-radius: 40px;
     }
+  }
+
+  .modal_table {
+    width: var(--lobby-width);
   }
 
   .row_lvl {

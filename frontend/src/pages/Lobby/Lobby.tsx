@@ -65,7 +65,7 @@ export const Lobby = () => {
   const tierText = `Tier ${tier}`;
 
   return (
-    <div className="content_wrapper">
+    <div className="lobby_content_wrapper">
       <div className="modal_queue">
 
         <div className="modal_loader">

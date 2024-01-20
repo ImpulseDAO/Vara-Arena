@@ -31,7 +31,7 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
 
   useEffect(() => {
     if (account) {
-      // navigate("/arena");
+      navigate("/arena");
     }
   }, [account, navigate]);
 

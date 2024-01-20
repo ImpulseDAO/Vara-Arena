@@ -88,9 +88,9 @@
     ```sh
     docker exec -it --user=root indexer-db-1 /bin/bash
 
-    root@565d0f87d4f6:/# pg_isready
+    root@123:/# pg_isready
     /var/run/postgresql:5432 - accepting connections
-    root@565d0f87d4f6:/# psql -U postgres
+    root@123:/# psql -U postgres
     postgres=# \l
     ```
 

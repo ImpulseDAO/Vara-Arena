@@ -50,7 +50,7 @@ export const History = () => {
    * 
    */
 
-  const inProgressRows = battleLogs?.map((battleLog: BattleLog) => {
+  const inProgressRows = battleLogs?.toReversed().map((battleLog: BattleLog) => {
     const { id } = battleLog;
     const char1Id = battleLog.character1.character;
     const char2Id = battleLog.character2.character;

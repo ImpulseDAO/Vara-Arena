@@ -70,58 +70,58 @@
       }
     }
   }
+
+  /**
+  * NEW
+  */
+
+  .modal_table {
+    display: flex;
+    flex: 1;
+
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.7);
+    overflow-y: scroll;
+    & * {
+      color: white;
+    }
+  }
+
+  table {
+    .table_row {
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.table_row_highlighted {
+        background: rgba(135, 147, 255, 0.228);
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      //
+      border: 2px solid #ffffff;
+      border-radius: 16px;
+      //
+      font-size: 14px;
+      font-weight: bold;
+      //
+      padding: 0.2rem 1rem;
+    }
+  }
 }
 
 .row_ownerId {
   border-bottom: 1px solid #35b5d4;
   color: #35b5d4;
-}
-
-/**
-  * NEW
-  */
-
-.modal_table {
-  display: flex;
-  flex: 1;
-
-  border-left: 2px solid white;
-  border-right: 2px solid white;
-  border-bottom: 2px solid white;
-  border-bottom-right-radius: 12px;
-  border-bottom-left-radius: 12px;
-
-  background: rgba(0, 0, 0, 0.7);
-  overflow-y: scroll;
-  & * {
-    color: white;
-  }
-}
-
-table {
-  .table_row {
-    cursor: pointer;
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    &.table_row_highlighted {
-      background: rgba(135, 147, 255, 0.228);
-    }
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    //
-    border: 2px solid #ffffff;
-    border-radius: 16px;
-    //
-    font-size: 14px;
-    font-weight: bold;
-    //
-    padding: 0.2rem 1rem;
-  }
 }

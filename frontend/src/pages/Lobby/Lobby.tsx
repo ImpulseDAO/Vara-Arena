@@ -12,6 +12,8 @@ import { PlayersTable } from "./components/PlayersTable";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
 import { TheButton } from "components/TheButton";
 import { newRoutes } from "app/routes";
+import { NoCharacter } from "./components/NoCharacter";
+import { useMediaQuery } from "@mantine/hooks";
 
 export const Lobby = () => {
   const navigate = useNavigate();
@@ -64,9 +66,22 @@ export const Lobby = () => {
   const tier = String(lobbyInfo?.['tier']);
   const tierText = `Tier ${tier}`;
 
+  const isWide = useMediaQuery('(min-width: 1200px)');
+
+
   return (
     <div className="lobby_content_wrapper">
+
+
       <div className="modal_queue">
+
+        <NoCharacter
+          mb="lg"
+          style={isWide ? {
+            position: 'absolute',
+            left: '2rem'
+          } : {}}
+        />
 
         <div className="modal_loader">
           <p className="modal_tille">Tournament participants</p>

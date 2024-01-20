@@ -33,7 +33,7 @@ export const useOnRegisterForBattle = () => {
 
           reply != null &&
             setTimeout(() => {
-              const { lobbyId, playerId, tier } = reply.PlayerRegistered;
+              const { lobbyId, playerId, tier } = reply.PlayerRegistered ?? {};
               const message = `Player ${playerId} registered for lobby ${lobbyId} with tier ${tier}`;
               console.info(message);
               alert.success(message);

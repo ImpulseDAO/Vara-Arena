@@ -5,12 +5,10 @@ import { useAlert, useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
 import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
 import { useNavigate } from "react-router-dom";
-import { Anchor, Button, Text } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { MAX_GAS_LIMIT } from "consts";
 import { useOnRegisterForBattle } from "pages/StartFight/hooks/useOnSubmit";
 import { useMyHeroIsDead } from "app/api/mintState";
-import { routes } from "app/routes";
-import { Panel } from "components/Panel";
 
 // type States = "initial" | "reserved_once" | "reserved_twice" | "starting";
 
@@ -70,7 +68,7 @@ export const ButtonsJoinReservePlay = ({
   const isPlayDisabled = hasPlayerJoined && playersNeeded > players.length;
 
   const reserveGas = React.useCallback(() => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       send({
         payload: {
           ReserveGas: {
@@ -83,7 +81,10 @@ export const ButtonsJoinReservePlay = ({
           resolve("successfully reserved gas");
           handleGasReserved();
         },
-        onError: () => console.log("error while reserving gas"),
+        onError: () => {
+          console.log("error while reserving gas");
+          reject("error while reserving gas");
+        },
       });
     });
   }, [send, lobbyId, handleGasReserved]);
@@ -232,28 +233,6 @@ export const ButtonsJoinReservePlay = ({
               {`Gas reserved ${gasReservedTimes} time(s)`}
             </Text>
           )
-          : null
-      }
-      {
-        isMyHeroDead || isFresh ? (
-          <Panel mt={'7rem'} mb='3rem' p="md" maw="20rem">
-            <Text fz={14} fw="500" ta="center">
-              {
-                isMyHeroDead
-                  ? <>Unfortunately, you cannot participate in battles, because your character is <Text component="span" c='redHealth' fz={14}>dead</Text>.</>
-                  : "You cannot participate in battles, because you don't have any character yet."
-              }
-              <br />
-              <Anchor
-                fw="500"
-                onClick={() => navigate(routes.mintCharacter)}
-                fz={14}
-              >
-                Click here to create a character
-              </Anchor>
-            </Text>
-          </Panel>
-        )
           : null
       }
       {isUserHasPermissionToCancel ? (

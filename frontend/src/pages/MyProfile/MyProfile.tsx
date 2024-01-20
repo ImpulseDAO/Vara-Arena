@@ -130,9 +130,9 @@ export const Profile = ({
             name={character.name}
             shortId={getShortIdString(character.id)}
             //
-            exp={stats.experience}
+            exp={character.experience}
             maxExp={stats.maxExp}
-            level={stats.level}
+            level={character.level}
           />
 
           <UploadStrategyWidget />

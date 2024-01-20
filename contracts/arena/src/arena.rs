@@ -185,17 +185,17 @@ impl Arena {
     }
 
     pub async fn register(&mut self, lobby_id: u128, owner_id: ActorId) {
-        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
-
-        if lobby.characters.len() == lobby.capacity.size.into() {
-            panic!("max number of players is already registered");
-        }
-
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
             .await
             .expect("unable to receive reply");
+
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+
+        if lobby.characters.len() == lobby.capacity.size.into() {
+            panic!("max number of players is already registered");
+        }
 
         let character = Character {
             owner: owner_id,

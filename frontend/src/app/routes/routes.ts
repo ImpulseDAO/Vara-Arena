@@ -38,3 +38,7 @@ export const newRoutes = {
     battleId?: string;
   }) => `/tournament-result/${lobbyId}${battleId ? `/${battleId}` : ""}`,
 };
+
+export const staticRoutes = {
+  discord: "https://discord.gg/JNrDXbKVpz",
+};

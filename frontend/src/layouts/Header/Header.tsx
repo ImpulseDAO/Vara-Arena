@@ -5,6 +5,9 @@ import "./styles.scss";
 import { useAccount, useApi, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
 import { newRoutes } from "app/routes";
+import { DiscordLogo } from "components/Icons";
+import { Anchor, Box, Flex } from "@mantine/core";
+import { staticRoutes } from "app/routes/routes";
 
 export type HeaderProps = {};
 
@@ -41,10 +44,22 @@ export const Header: FC<HeaderProps> = () => {
   const { value: balanceValue, unit: balanceUnit } = balanceFormat.getFormattedBalance(balance);
 
   return (
-    <div className="header">
-      <p className={"header_title"} onClick={() => navigate(newRoutes.arena)}>
-        Arena
-      </p>
+    <div className="header" >
+      <a
+        href={staticRoutes.discord}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Flex
+          className="header_join_community"
+          gap={'sm'}
+          style={{ cursor: 'pointer' }}
+          align={'center'}
+        >
+          <DiscordLogo className="transition" width={'30px'} height={'30px'} display={'inline'} />
+          <span className="transition">Join Community</span>
+        </Flex>
+      </a>
 
       <div className={"header_nav"}>
         {navLinks.map(({ name, path }) => (

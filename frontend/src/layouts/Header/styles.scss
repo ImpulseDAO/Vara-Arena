@@ -18,6 +18,16 @@
   @media screen and (max-width: 600px) {
     padding: 0 2rem;
   }
+
+  .header_join_community {
+    .transition {
+      transition: all 0.1s ease-in-out;
+    }
+
+    &:hover .transition {
+      color: var(--mantine-color-primary-4);
+    }
+  }
 }
 
 .header_nav {

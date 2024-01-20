@@ -8,8 +8,8 @@ services:
       POSTGRES_PASSWORD: postgres
     shm_size: 1gb
     ports:
-      - "${DB_PORT}:5432"
+      - "127.0.0.1:${DB_PORT}:5432"
       # command: ["postgres", "-c", "log_statement=all"]
-#    volumes:
-#      - ./data/db:/var/lib/postgresql/data
+      #    volumes:
+      #      - ./data/db:/var/lib/postgresql/data
 

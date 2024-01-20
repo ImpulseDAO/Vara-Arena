@@ -62,12 +62,11 @@
   sqd secrets:set RPC_ENDPOINT
   ```
 * Paste `wss://testnet-archive.vara.network`
-* Press CMD+D to save/exit
+* Press CTRL+D twice to save/exit (make sure you do it twice)
 * Check configured Subsquid CLI secrets
   ```sh
   sqd secrets:ls
   ```
-* Troubleshooting: It does not appear to read Subsquid secret that has been set with `sqd secrets:set RPC_ENDPOINT` and then pasting `wss://testnet-archive.vara.network` and pressing CTRL+D twice to save it. Due to this issue it was necessary to hard-code the URL in indexer/squid.yaml as `RPC_ENDPOINT: "wss://testnet-archive.vara.network"` for it to work
 * Change back to the project root directory, and then login to Subsquid Cloud using the Subsquid CLI using a script that reads your deployment key from the .env file. Note: This avoids the security risk of entering the deployment key directly in the terminal
   ```sh
   ./sqd-auth.sh
@@ -83,6 +82,7 @@
   sqd run .
   docker ps -a
   ```
+* Troubleshooting: If you get the following error `FATAL sqd:processor TypeError [ERR_INVALID_URL]: Invalid URL` when running the Subsquid project locally with the above commands, then it is likely unable to read the Subsquid secret that has been set with `sqd secrets:set RPC_ENDPOINT`. Try removing that secret with `sqd secrets rm RPC_ENDPOINT` and try carefully adding it again. If that does not work then try hard-coding the URL `RPC_ENDPOINT: "wss://testnet-archive.vara.network"` in indexer/squid.yaml to see if that works.
 * Troubleshooting: If you get an error `Error: connect ECONNREFUSED ::1:23798` then try stopping and removing the indexer Docker container by running `docker stop indexer-db-1 && docker rm indexer-db-1`, then try re-running the above commands again. If that still doesn't work, then try modifying the indexer/docker-composer.yml file before stopping and removing the indexer Docker container and re-running the above commands as follows:
   * Add `PGUSER: postgres`
   * Change `"${DB_PORT}:5432"` to `"127.0.0.1:${DB_PORT}:5432"`

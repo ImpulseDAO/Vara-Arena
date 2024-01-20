@@ -16,20 +16,20 @@
 ## Quickstart
 
 * Install Rust and build
-```sh
-RUST_NIGHTLY="2023-09-18"
-rustup toolchain install "nightly-${RUST_NIGHTLY}" && \
-rustup component add rust-src rustfmt clippy --toolchain "nightly-${RUST_NIGHTLY}" && \
-rustup target add wasm32-unknown-unknown --toolchain "nightly-${RUST_NIGHTLY}" && \
-rustup toolchain install "nightly-${RUST_NIGHTLY}" --profile minimal --component rustfmt
-rustup default "nightly-${RUST_NIGHTLY}" && \
-rustup override set "nightly-${RUST_NIGHTLY}" && \
-cargo version && \
-rustc --version && \
-cargo test && \
-cargo install --git=https://github.com/rustwasm/wasm-pack && \
-cargo build --release
-```
+  ```sh
+  RUST_NIGHTLY="2023-09-18"
+  rustup toolchain install "nightly-${RUST_NIGHTLY}" && \
+  rustup component add rust-src rustfmt clippy --toolchain "nightly-${RUST_NIGHTLY}" && \
+  rustup target add wasm32-unknown-unknown --toolchain "nightly-${RUST_NIGHTLY}" && \
+  rustup toolchain install "nightly-${RUST_NIGHTLY}" --profile minimal --component rustfmt
+  rustup default "nightly-${RUST_NIGHTLY}" && \
+  rustup override set "nightly-${RUST_NIGHTLY}" && \
+  cargo version && \
+  rustc --version && \
+  cargo test && \
+  cargo install --git=https://github.com/rustwasm/wasm-pack && \
+  cargo build --release
+  ```
 * [Follow the Vara-Arena Indexer Instructions](./indexer/README.md)
 * Optional: Install Node.js without NVM and skip the next couple of steps that use NVM instead.
 * Install NVM https://nodejs.org/en/download/package-manager#nvm.

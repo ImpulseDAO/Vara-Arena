@@ -15,6 +15,7 @@
 
 ## Quickstart
 
+* Run the following in the project root directory
 * Install Rust and build
   ```sh
   RUST_NIGHTLY="2023-09-18"
@@ -52,7 +53,7 @@
   ```
 * Obtain Subsquid Cloud deployment key `DEPLOYMENT_KEY` from https://app.subsquid.io/
 * Add your Subsquid deployment key that you obtained from https://app.subsquid.io/squids as the value of `DEPLOYMENT_KEY` in the .env file
-* Source the .env file
+* Source the .env file to make the environment variables available in your terminal session
   ```sh
   source .env
   ```
@@ -66,8 +67,8 @@
   ```sh
   sqd secrets:ls
   ```
-* FIXME: It does not appear to read Subsquid secret that has been set with `sqd secrets:set RPC_ENDPOINT` and then pasting `wss://testnet-archive.vara.network` and pressing CTRL+D twice to save it. Due to this issue it was necessary to hard-code the URL in squid.yaml for it to work
-* Login to Subsquid Cloud using the Subsquid CLI using a script that reads your deployment key from the .env file. Note: This avoids the security risk of entering the deployment key directly in the terminal
+* Troubleshooting: It does not appear to read Subsquid secret that has been set with `sqd secrets:set RPC_ENDPOINT` and then pasting `wss://testnet-archive.vara.network` and pressing CTRL+D twice to save it. Due to this issue it was necessary to hard-code the URL in indexer/squid.yaml as `RPC_ENDPOINT: "wss://testnet-archive.vara.network"` for it to work
+* Change back to the project root directory, and then login to Subsquid Cloud using the Subsquid CLI using a script that reads your deployment key from the .env file. Note: This avoids the security risk of entering the deployment key directly in the terminal
   ```sh
   ./sqd-auth.sh
   ```
@@ -82,6 +83,9 @@
   sqd run .
   docker ps -a
   ```
+* Troubleshooting: If you get an error `Error: connect ECONNREFUSED ::1:23798` then try stopping and removing the indexer Docker container by running `docker stop indexer-db-1 && docker rm indexer-db-1`, then try re-running the above commands again. If that still doesn't work, then try modifying the indexer/docker-composer.yml file before stopping and removing the indexer Docker container and re-running the above commands as follows:
+  * Add `PGUSER: postgres`
+  * Change `"${DB_PORT}:5432"` to `"127.0.0.1:${DB_PORT}:5432"`
 * View  GraphiQL playground available at http://localhost:4350/graphql
 * Optional:
   * View Postgresql DB by entering the docker container's shell and running the following commands
@@ -102,6 +106,11 @@
   ```sh
   npm i
   npm run predeploy
+  ```
+* Note: If you want to stop and remove the indexer's Docker container then run:
+  ```sh
+  docker stop indexer-db-1
+  docker rm indexer-db-1
   ```
 
 ## Contributing

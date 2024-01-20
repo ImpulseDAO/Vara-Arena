@@ -31,14 +31,13 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
 
   useEffect(() => {
     if (account) {
-      navigate("/arena");
+      // navigate("/arena");
     }
   }, [account, navigate]);
 
   return (
     <>
       <div className="scr_start">
-        <p>Arena</p>
         <Button onClick={toggle}>Connect wallet to enter the Arena</Button>
         {visible && <AccountsModal close={toggle} />}
       </div>

@@ -12,19 +12,6 @@
   align-items: center;
   position: relative;
 
-  & > p {
-    color: white;
-    font-size: 10rem;
-    font-family: "serpiente_display_triadisplay";
-
-    @media screen and (max-width: 600px) {
-      font-size: 8rem;
-    }
-    @media screen and (max-width: 400px) {
-      font-size: 6rem;
-    }
-  }
-
   .button {
     cursor: pointer;
     height: 60px;

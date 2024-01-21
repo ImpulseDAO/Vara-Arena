@@ -5,7 +5,7 @@
 - [Prerequisites](#prerequisites)
 - [Quickstart](#quickstart)
 - [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)e readme)
+- [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 

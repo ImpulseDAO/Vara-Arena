@@ -19,7 +19,7 @@ jobs:
           git config --global user.email 'github-actions@github.com'
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
         working-directory: frontend
 
       - name: Deploy

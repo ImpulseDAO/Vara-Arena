@@ -16,6 +16,12 @@
 
 ## Quickstart
 
+* Switch to the upstream branch `update-frontend` that includes latest changes that work. Note: If you do not use the correct branch then you may encounter issues such as [this](https://github.com/ImpulseDAO/Vara-Arena/issues/59)
+  ```
+  git remote add upstream https://github.com/ImpulseDAO/Vara-Arena
+  git fetch upstream update-frontend:update-frontend
+  git checkout update-frontend
+  ```
 * Run the following in the project root directory
 * Install Rust and build
   ```sh
@@ -58,7 +64,12 @@
   ```sh
   source .env
   ```
-* **Production Only** Update Subsquid CLI secrets https://docs.subsquid.io/squid-cli/secrets/
+* **Development environment only**
+  * Modify indexer/squid.yaml as follows:
+    * Replace `RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}` with `RPC_ENDPOINT: "wss://testnet-archive.vara.network"`
+    * Replace `MINT_COST: ${{ secrets.MINT_COST }}` with `MINT_COST: "10"`
+
+* **Production environment only** Update Subsquid CLI secrets https://docs.subsquid.io/squid-cli/secrets/
   ```sh
   sqd secrets:set RPC_ENDPOINT
   ```
@@ -71,6 +82,11 @@
 * Change back to the project root directory, and then login to Subsquid Cloud using the Subsquid CLI using a script that reads your deployment key from the .env file. Note: This avoids the security risk of entering the deployment key directly in the terminal
   ```sh
   ./sqd-auth.sh
+  ```
+
+* Stop and remove any previous indexer Docker containers that may be running:
+  ```sh
+  docker stop indexer-db-1 && docker rm indexer-db-1
   ```
 * Run the following in the indexer/ subdirectory:
   ```sh
@@ -94,21 +110,37 @@
     root@123:/# psql -U postgres
     postgres=# \l
     ```
-
 * Open a new terminal window. Change to to frontend/ subdirectory.
   ```sh
   cd frontend
   ```
-* Install dependencies and build the frontend:
+* Modify the file _env.example. Replace `IS_TESTNET=true` with `REACT_APP_IS_TESTNET=true`
+* Generate .env file from _env.example
+  ```sh
+  cp _env.example .env
+  ```
+* Source the .env file
+  ```sh
+  source .env
+  ```
+* Install dependencies, build, and run the frontend:
   ```sh
   npm i
-  npm run predeploy
+  npm run prebuild
+  npm run build
+  npm run dev
   ```
-* Note: If you want to stop and remove the indexer's Docker container then run:
-  ```sh
-  docker stop indexer-db-1
-  docker rm indexer-db-1
-  ```
+* Wait until it displays the following in the terminal logs, where X.X.X.X is your public IP address
+```
+...
+[1]   Local:            http://localhost:3000/Vara-Arena
+[1]   On Your Network:  http://X.X.X.X:3000/Vara-Arena
+...
+[1] webpack compiled successfully
+[1] No issues found.
+```
+* Go to http://X.X.X.X:3000/Vara-Arena in your browser to connect your wallet and play the game.
+  * Note: It may automatically open http://localhost:3000/Vara-Arena, but that does not load the game, so replace `localhost` with your public IP address
 
 ## Contributing
 
@@ -116,7 +148,6 @@
 
 ## Troubleshooting
 
-* If you get the following error `FATAL sqd:processor TypeError [ERR_INVALID_URL]: Invalid URL` when running the Subsquid project locally with the above commands, then it is likely unable to read the Subsquid secret that has been set with `sqd secrets:set RPC_ENDPOINT`. Try removing that secret with `sqd secrets rm RPC_ENDPOINT` and try carefully adding it again. If that does not work then try hard-coding the URL `RPC_ENDPOINT: "wss://testnet-archive.vara.network"` in indexer/squid.yaml to see if that works.
 * If you get an error `Error: connect ECONNREFUSED ::1:23798` then try stopping and removing the indexer Docker container by running `docker stop indexer-db-1 && docker rm indexer-db-1`, then try re-running the above commands again. If that still doesn't work, then try modifying the indexer/docker-composer.yml file before stopping and removing the indexer Docker container and re-running the above commands as follows:
   * Add `PGUSER: postgres`
   * Change `"${DB_PORT}:5432"` to `"127.0.0.1:${DB_PORT}:5432"`

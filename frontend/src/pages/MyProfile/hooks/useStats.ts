@@ -46,16 +46,16 @@ export const useStats = (character?: Character) => {
             onSuccess: () => {
               console.log("LevelUp message successfully sent");
               onSuccess?.();
+              setIsStatsMutating(false);
             },
             onError: () => {
               console.log("Error while sending LevelUp message");
               onError?.();
+              setIsStatsMutating(false);
             },
           });
         } catch (e) {
           console.log(e);
-        } finally {
-          setIsStatsMutating(false);
         }
       }
     },

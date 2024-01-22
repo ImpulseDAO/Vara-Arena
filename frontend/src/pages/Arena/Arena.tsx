@@ -20,17 +20,19 @@ export const Arena = () => {
   const cards = useMemo(() => {
     if (!lobbiesData) return [];
 
-    return [...lobbiesData?.lobbies].reverse().map(lobby => {
-      return {
-        tierText: 'tier' in lobby ? `Tier ${lobby.tier}` : "",
-        lobbyId: lobby.id,
-        playersSize: lobby.capacity,
-        playersJoined: lobby.characters.length,
-        gasNeeded: PLAYERS_TO_RESERVATIONS_NEEDED_MAP[lobby.capacity],
-        gasReserved: lobby.reservationsCount,
-        isFinished: lobby.battleLogs.length > 0,
-      };
-    });
+    return [...lobbiesData?.lobbies]
+      .sort((a, b) => parseInt(b.id) - parseInt(a.id))
+      .map(lobby => {
+        return {
+          tierText: 'tier' in lobby ? `Tier ${lobby.tier}` : "",
+          lobbyId: lobby.id,
+          playersSize: lobby.capacity,
+          playersJoined: lobby.characters.length,
+          gasNeeded: PLAYERS_TO_RESERVATIONS_NEEDED_MAP[lobby.capacity],
+          gasReserved: lobby.reservationsCount,
+          isFinished: lobby.battleLogs.length > 0,
+        };
+      });
   }, [lobbiesData]);
 
   /**

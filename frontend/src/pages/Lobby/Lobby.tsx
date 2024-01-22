@@ -1,19 +1,19 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import "./styles.scss";
-import ProgressIcon from "../../assets/svg/progress.svg";
-
+import ProgressIcon from "assets/svg/progress.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { ButtonsJoinReservePlay } from "./components/ButtonJoinReservePlay";
 import { useLobby } from "app/api/lobbies";
 import { GasReserved } from "components/GasReserved/GasReserved";
 import { Badge, Box, Stack, Text } from "@mantine/core";
 import { useMyAccountId } from "hooks/hooks";
-import { PlayersTable } from "./components/PlayersTable";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
 import { TheButton } from "components/TheButton";
 import { newRoutes } from "app/routes";
 import { NoCharacter } from "./components/NoCharacter";
 import { useMediaQuery } from "@mantine/hooks";
+//
+import { PlayersTable } from "../@shared/PlayersTable";
 
 export const Lobby = () => {
   const navigate = useNavigate();

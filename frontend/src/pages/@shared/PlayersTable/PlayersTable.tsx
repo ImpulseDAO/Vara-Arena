@@ -5,8 +5,10 @@ import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { getShortIdString } from "utils";
-import { useAllBattleLogs } from '../../../app/api/battleLogs';
+import { useAllBattleLogs } from 'app/api/battleLogs';
 import { Flex } from "@mantine/core";
+//
+import "./PlayersTable.scss";
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -102,7 +104,9 @@ export const PlayersTableView = ({
   }, [battleLogs, characters]);
 
   return (
-    <TableUI rows={inProgressRows} columns={inProgressColumns} />
+    <div className="playersTable">
+      <TableUI rows={inProgressRows} columns={inProgressColumns} />
+    </div>
   );
 };
 

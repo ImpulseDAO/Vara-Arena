@@ -103,7 +103,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                 />
               </Box>
 
-              <SchoolOfMagicChoice onChange={onShoolOfMagicChange} />
+              {/* <SchoolOfMagicChoice onChange={onShoolOfMagicChange} /> */}
             </div>
           </div>
           <div className={"buttonsGrid"}>

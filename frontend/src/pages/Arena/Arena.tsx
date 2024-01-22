@@ -1,17 +1,21 @@
-import { Title, Box, Grid, Image, Select, Stack, Badge, type TitleProps, Text, Flex } from "@mantine/core";
-import ArenaPng from "assets/images/arena.png";
+import { Grid, Select, Stack, Badge, Flex, HoverCard } from "@mantine/core";
 import { TheButton } from "components/TheButton";
 import { Panel } from "components/Panel";
 import { useCreateLobby, useLobbies } from "app/api/lobbies";
 import { useNavigate } from "react-router-dom";
 import { newRoutes } from "app/routes";
 import { useMemo, useRef } from "react";
-import { GasReserved } from "components/GasReserved/GasReserved";
 import { useAlert } from "@gear-js/react-hooks";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
+import { useMyAccountId } from "hooks/hooks";
+import { SwordsImage } from "./components/SwordsImage";
+import { TitleText } from "./components/TitleText";
+import { Card } from "./components/Card";
+import { PlayersTable } from "pages/@shared/PlayersTable";
 
 export const Arena = () => {
   const alert = useAlert();
+  const myAccountId = useMyAccountId();
   const navigate = useNavigate();
   const selectRef = useRef<HTMLInputElement | null>(null);
 
@@ -23,17 +27,21 @@ export const Arena = () => {
     return [...lobbiesData?.lobbies]
       .sort((a, b) => parseInt(b.id) - parseInt(a.id))
       .map(lobby => {
+        const isMyCharacterInLobby = lobby.characters.some(character => character.character.owner === myAccountId);
+
         return {
           tierText: 'tier' in lobby ? `Tier ${lobby.tier}` : "",
           lobbyId: lobby.id,
+          players: lobby.characters.map(character => character.character),
           playersSize: lobby.capacity,
           playersJoined: lobby.characters.length,
           gasNeeded: PLAYERS_TO_RESERVATIONS_NEEDED_MAP[lobby.capacity],
           gasReserved: lobby.reservationsCount,
           isFinished: lobby.battleLogs.length > 0,
+          isMyCharacterInLobby
         };
       });
-  }, [lobbiesData]);
+  }, [lobbiesData, myAccountId]);
 
   /**
    * Get handleJoinLobby
@@ -144,30 +152,72 @@ export const Arena = () => {
           </Panel>
         </GridColumn>
 
-        {cards.map((card, index) => (
-          <GridColumn key={`${index} - ${card.lobbyId}`}>
+        {cards.map((card, index) => {
+          const players = card.players;
+
+          let hasPlayerJoined = false;
+
+          const characters = players.map((character) => {
+            const isMyCharacter = character.owner === myAccountId;
+            // set isPlayerJoined to "true" if current player has joined
+            hasPlayerJoined = hasPlayerJoined || isMyCharacter;
+
+            return ({
+              isMyCharacter,
+              playerId: character.owner,
+              id: character.id,
+              name: character.name,
+              level: character.level ?? 0,
+            });
+          }) ?? [];
+
+          return <GridColumn key={`${index} - ${card.lobbyId}`}>
             <Card
               isFinished={card.isFinished}
               tierText={card.tierText}
               lobbyId={card.lobbyId}
-              playersSize={card.playersSize}
-              playersJoined={card.playersJoined}
               gasNeeded={card.gasNeeded}
               gasReserved={card.gasReserved}
-              onJoin={() => {
-                console.log('onJoin');
-                handleJoinLobby({ lobbyId: card.lobbyId });
-              }}
+              onJoin={() => handleJoinLobby({ lobbyId: card.lobbyId })}
+
+              playersBadge={(
+                <HoverCard
+                  position="top"
+                  transitionProps={{
+                    duration: 250,
+                    transition: 'fade'
+                  }}
+                  styles={{
+                    dropdown: {
+                      padding: 0,
+                      backgroundColor: 'transparent',
+                      border: 'none',
+                      borderTop: '2px solid white',
+                      transformOrigin: 'bottom center',
+                      transform: 'scale(0.73)'
+                    },
+                  }}
+                  radius={0}
+                >
+                  <HoverCard.Target>
+                    <Badge c={'white'} style={{ textTransform: 'none', cursor: 'pointer' }} color={card.isMyCharacterInLobby ? 'green.7' : 'primary'}>
+                      {card.playersJoined} of {card.playersSize} players
+                    </Badge>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown bg="rgb(0,0,0,.6)">
+                    <PlayersTable characters={characters} />
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              )}
+              isHighlighted={card.isMyCharacterInLobby}
             />
-          </GridColumn>
-        ))}
+          </GridColumn>;
+        }
+        )}
       </Grid>
     </Flex >
   );
 };
-
-const SwordsImage = () => <Image maw={105} src={ArenaPng} mb={14} />;
-const TitleText = ({ children, ...titleProps }: TitleProps) => <Title order={2} c={'white'} {...titleProps} >{children}</Title>;
 
 const GridColumn = ({ children }) => {
   return (
@@ -180,73 +230,5 @@ const GridColumn = ({ children }) => {
     >
       {children}
     </Grid.Col>
-  );
-};
-
-const Card = ({
-  isFinished,
-  tierText,
-  lobbyId,
-  playersSize,
-  playersJoined,
-  gasNeeded,
-  gasReserved,
-  onJoin
-}: {
-  isFinished?: boolean,
-  tierText: string,
-  lobbyId: string,
-  playersSize: number | string,
-  playersJoined: number,
-  gasNeeded: number,
-  gasReserved: number,
-  onJoin: () => void,
-}) => {
-  return (
-    <Panel h={370} pos="relative" >
-      {/* Lobby ID - absolutely positioned*/}
-      <Box pos="absolute"
-        top={10}
-        right={10}
-      >
-        <Text fz={12} fw="600" color="white" bg={"rgba(0, 0, 0, 0.4)"}
-          py={4}
-          px={8}
-          style={{
-            borderRadius: 9999,
-          }}
-        >Lobby ID #{lobbyId}</Text>
-      </Box>
-
-      {/* Centered Content */}
-      <Stack align="center" h="100%" gap={0}>
-        <SwordsImage />
-
-        <TitleText mb="sm">{tierText}</TitleText>
-
-        <Badge c={'white'} style={{ textTransform: 'none' }}>
-          {playersJoined} of {playersSize} players
-        </Badge>
-
-        <Box
-          mt="auto"
-          mb="lg"
-        >
-          {
-            isFinished
-              ? <Text c="red" fw={600}>Lobby ended</Text>
-              : gasNeeded > 0 ? <GasReserved  {...{ gasNeeded, gasReserved }} /> : null
-          }
-        </Box>
-
-        <TheButton onClick={() => {
-          setTimeout(onJoin, 200);
-        }} w="100%" >
-          Join the Lobby
-        </TheButton>
-
-      </Stack>
-
-    </Panel>
   );
 };

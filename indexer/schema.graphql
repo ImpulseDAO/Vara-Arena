@@ -15,6 +15,7 @@ type Lobby @entity {
   capacity: Int!
   reservationsCount: Int!
   tier: Int!
+  started: Boolean!
   characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
   battleLogs: [BattleLog!]! @derivedFrom(field: "lobby")
 }

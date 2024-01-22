@@ -87,6 +87,9 @@ pub enum ArenaEvent {
     GasReserved {
         lobby_id: u128,
     },
+    BattleStarted {
+        lobby_id: u128,
+    },
     LobbyBattleLog {
         lobby_id: u128,
         winner_id: u128,

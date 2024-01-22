@@ -35,6 +35,7 @@ pub struct Lobby {
     winners: Vec<u128>,
     losers: Vec<ActorId>,
     logs: Vec<BattleLog>,
+    started: bool,
 }
 
 #[derive(Default)]
@@ -84,14 +85,21 @@ impl Arena {
             panic!("not enough players to start the battle");
         }
 
+        if lobby.started {
+            panic!("the battle is already started");
+        }
+
         if lobby.battles.is_empty() {
             debug!("starting the battle");
+            lobby.started = true;
             lobby.source = Some(msg::source());
             lobby.battles = lobby
                 .characters
                 .chunks_exact(2)
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
+
+            msg::reply(ArenaEvent::BattleStarted { lobby_id }, 0);
         }
         let source = lobby.source.expect("original sender is not specified");
 

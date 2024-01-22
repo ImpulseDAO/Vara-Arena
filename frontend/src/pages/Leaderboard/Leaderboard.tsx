@@ -82,7 +82,7 @@ export const Leaderboard = () => {
                     /* Level */
                     <div className={'badge'}>{row.level}</div>,
                     /* Owner ID */
-                    <div >{getShortIdString(row.ownerId)}</div>,
+                    <div title={row.ownerId}>{getShortIdString(row.ownerId)}</div>,
                   ].map((cellContent, idx) => {
                     return (
                       <Table.Td

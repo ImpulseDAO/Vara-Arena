@@ -73,6 +73,7 @@ export const Leaderboard = () => {
                   //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
                   // }}
                   className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
+                  key={row.ownerId}
                 >
                   {[
                     /* Rating */

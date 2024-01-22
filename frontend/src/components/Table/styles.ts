@@ -16,7 +16,7 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const Column = styled.div<{ position?: "left" | "right" | "center" }>`
+const Column = styled.div<{ position?: "left" | "right" | "center"; }>`
   display: flex;
   align-items: center;
   height: 16px;

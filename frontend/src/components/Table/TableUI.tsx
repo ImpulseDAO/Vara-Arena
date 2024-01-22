@@ -39,7 +39,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
                 sortedColumn.field === column.field
               }
               sortable={column.sortable ?? SortType.ascending}
-              isLeftPadded={index === 0}
+              $isLeftPadded={index === 0}
             >
               {column.headerName}
             </Styled.ColumnText>

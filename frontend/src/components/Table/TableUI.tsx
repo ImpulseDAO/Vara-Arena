@@ -38,7 +38,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
-              sortable={column.sortable ?? false}
+              sortable={column.sortable ?? SortType.ascending}
               isLeftPadded={index === 0}
             >
               {column.headerName}

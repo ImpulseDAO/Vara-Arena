@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { SortType } from './constants';
 
 const Container = styled.div`
   display: flex;
@@ -27,7 +28,7 @@ const Column = styled.div<{ position?: "left" | "right" | "center" }>`
 
 const ColumnText = styled.p<{
   active: boolean;
-  sortable: boolean;
+  sortable: SortType;
   isLeftPadded?: boolean;
 }>`
   color: white;

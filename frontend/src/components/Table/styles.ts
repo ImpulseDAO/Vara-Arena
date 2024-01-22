@@ -81,15 +81,15 @@ const Row = styled.div`
 
 const Cell = styled.div<{
   position?: "center" | "left" | "right";
-  ableClick?: boolean;
+  $ableClick?: boolean;
 }>`
   display: flex;
   ${({ position }) => css`
     justify-content: ${position};
   `}
 
-  cursor: ${({ ableClick }) => {
-    return ableClick ? "pointer" : "default";
+  cursor: ${({ $ableClick }) => {
+    return $ableClick ? "pointer" : "default";
   }};
 `;
 

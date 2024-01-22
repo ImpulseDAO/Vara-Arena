@@ -19,7 +19,7 @@ It accumulates [kusama](https://kusama.network) account transfers and serves the
 
 ## Prerequisites
 
-* node 16.x
+* node 18.x
 * docker
 * npm -- note that `yarn` package manager is not supported
 
@@ -30,7 +30,7 @@ Please [install](https://docs.subsquid.io/squid-cli/installation/) it before pro
 
 ```bash
 # 1. Install dependencies
-npm ci
+npm i
 
 # 2. Start target Postgres database and detach
 sqd up
@@ -58,9 +58,9 @@ To make sure you're indexing the right chain one can additionally filter by the 
 
 ```typescript
 processor.setDataSource({
-  archive: lookupArchive("kusama", { 
+  archive: lookupArchive("kusama", {
     release: "ArrowSquid",
-    genesis: "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe" 
+    genesis: "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe"
   }),
   //...
 });
@@ -108,7 +108,7 @@ npx squid-typeorm-migration create
 npx squid-typeorm-migration apply
 
 # Revert the last performed migration
-npx squid-typeorm-migration revert         
+npx squid-typeorm-migration revert
 ```
 Available `sqd` shortcuts:
 ```bash
@@ -119,12 +119,12 @@ sqd migration:generate
 sqd migration:apply
 ```
 
-### 4. Generate TypeScript definitions for substrate events, calls and storage 
+### 4. Generate TypeScript definitions for substrate events, calls and storage
 
-This is an optional part, but it is very advisable. 
+This is an optional part, but it is very advisable.
 
-Event, call and runtime storage data come to mapping handlers as raw untyped json. 
-While it is possible to work with raw untyped json data, 
+Event, call and runtime storage data come to mapping handlers as raw untyped json.
+While it is possible to work with raw untyped json data,
 it's extremely error-prone and the json structure may change over time due to runtime upgrades.
 
 Squid framework provides a tool for generating type-safe wrappers around events, calls and runtime storage items for
@@ -150,7 +150,7 @@ For more information, consult the [Deployment Guide](https://docs.subsquid.io/de
 
 Squid tools assume a certain project layout.
 
-* All compiled js files must reside in `lib` and all TypeScript sources in `src`. 
+* All compiled js files must reside in `lib` and all TypeScript sources in `src`.
 The layout of `lib` must reflect `src`.
 * All TypeORM classes must be exported by `src/model/index.ts` (`lib/model` module).
 * Database schema must be defined in `schema.graphql`.
@@ -161,10 +161,10 @@ See the [full desription](https://docs.subsquid.io/basics/squid-structure/) in t
 
 ## Types bundle
 
-Substrate chains that have blocks with metadata versions below 14 don't provide enough 
+Substrate chains that have blocks with metadata versions below 14 don't provide enough
 information to decode their data. For those chains, external [type](https://polkadot.js.org/docs/api/start/types.extend) [definitions](https://polkadot.js.org/docs/api/start/types.extend) are required.
 
-Subsquid tools include definitions for many chains, however sometimes external 
+Subsquid tools include definitions for many chains, however sometimes external
 definitions are still required.
 
 You can pass them as a special json file (types bundle) of the following structure:
@@ -206,12 +206,12 @@ those two are not fully compatible.
 
 ## Differences from polkadot.js
 
-Polkadot.js provides lots of [specialized classes](https://polkadot.js.org/docs/api/start/types.basics) for various types of data. 
+Polkadot.js provides lots of [specialized classes](https://polkadot.js.org/docs/api/start/types.basics) for various types of data.
 Even primitives like `u32` are exposed through special classes.
 In contrast, the squid framework works only with plain js primitives and objects.
 For instance, account data is passed to the handler context as a plain byte array.  To convert it into a standard human-readable format one should explicitly use a utility lib `@subsquid/ss58`:
 
-```typescript 
+```typescript
     // ...
     from: ss58.codec('kusama').encode(rec.from),
     to: ss58.codec('kusama').encode(rec.to),

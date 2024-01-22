@@ -34,7 +34,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
             onClick={onClickSort(column)}
           >
             <Styled.ColumnText
-              active={
+              $active={
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
@@ -45,7 +45,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
             </Styled.ColumnText>
             {/* {column.sortable && (
               <Styled.ColumnIcon
-                active={
+                $active={
                   sortedColumn.sortType !== SortType.default &&
                   sortedColumn.field === column.field
                 }

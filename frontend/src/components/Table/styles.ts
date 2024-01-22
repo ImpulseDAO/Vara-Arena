@@ -27,20 +27,20 @@ const Column = styled.div<{ position?: "left" | "right" | "center" }>`
 `;
 
 const ColumnText = styled.p<{
-  active: boolean;
+  $active: boolean;
   sortable: SortType;
   $isLeftPadded?: boolean; // https://styled-components.com/docs/api#transient-props
 }>`
   color: white;
   font-size: 12px;
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
   padding-left: ${({ $isLeftPadded }) => ($isLeftPadded ? "1.5rem" : "")};
 `;
 
-// const ColumnIcon = styled.div<{ active: boolean; sortType: SortType }>`
+// const ColumnIcon = styled.div<{ $active: boolean; sortType: SortType }>`
 //   height: 16px;
 //   width: 16px;
-//   visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
+//   visibility: ${({ $active }) => ($active ? 'visible' : 'hidden')};
 //   ${({ sortType }) => {
 //     if (sortType === SortType.ascending) {
 //       return css`

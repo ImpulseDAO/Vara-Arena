@@ -99,6 +99,7 @@ export const BattleResult = ({
    */
   const [currentTurnIndex, setCurrentTurnIndexRaw] = useState(0);
   const { turns } = battleLog ?? {};
+  const firstTurn = turns?.[0];
   const currentTurn = turns?.[currentTurnIndex];
   const lastTurnIndex = (turns?.length ?? 0) - 1;
   const [canGoBack, canGoNext] = [currentTurnIndex > 0, currentTurnIndex < lastTurnIndex];
@@ -230,8 +231,16 @@ export const BattleResult = ({
 
       <Flex gap='md'>
         <Panel w={SIDE_PANEL_WIDTH} >
-          {currentTurn ? <CharPanel character={char1} charState={currentTurn?.character1 ?? undefined} /> : null}
+          {currentTurn
+            ? (
+              <CharPanel
+                character={char1}
+                charState={currentTurn?.character1 ?? undefined}
+                initialCharState={firstTurn?.character1 ?? undefined}
+              />
+            ) : null}
         </Panel>
+
         <Panel
           w={MID_PANEL_WIDTH}
           style={{
@@ -312,8 +321,13 @@ export const BattleResult = ({
 
         <Panel w={SIDE_PANEL_WIDTH} >
           {currentTurn
-            ? <CharPanel character={char2} charState={currentTurn?.character2 ?? undefined} />
-            : null}
+            ? (
+              <CharPanel
+                character={char2}
+                charState={currentTurn?.character2 ?? undefined}
+                initialCharState={firstTurn?.character2 ?? undefined}
+              />
+            ) : null}
         </Panel>
       </Flex>
     </>

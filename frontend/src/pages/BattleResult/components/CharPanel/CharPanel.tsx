@@ -7,12 +7,20 @@ import { useRef } from "react";
 import { getShortIdString, getXpNeededForLvlUp } from "utils";
 import { CharacterState } from "../types";
 
-export const CharPanel = ({ character, charState }: { character: any; charState?: CharacterState; }) => {
+export const CharPanel = ({
+  character,
+  charState,
+  initialCharState,
+}: {
+  character: any;
+  charState?: CharacterState;
+  initialCharState?: CharacterState;
+}) => {
 
   const health = Math.ceil(charState?.hp ?? 0);
-  const healthMax = getFullHp(character.attributes.vitality);
+  const healthMax = initialCharState?.hp ?? 0;
   const energy = Math.ceil(charState?.energy ?? 0);
-  const energyMax = getFullEnergy(character.attributes.stamina);
+  const energyMax = initialCharState?.energy ?? 0;
 
   /**
    *  This is done to force rerender the component when the health/energy is full
@@ -27,10 +35,10 @@ export const CharPanel = ({ character, charState }: { character: any; charState?
          * Key is here to force rerender (see above)
          */
         key={keyRef.current}
-        health={Math.ceil(charState?.hp ?? 0)}
-        healthMax={getFullHp(character.attributes.vitality)}
-        energy={Math.ceil(charState?.energy ?? 0)}
-        energyMax={getFullEnergy(character.attributes.stamina)}
+        health={health}
+        healthMax={healthMax}
+        energy={energy}
+        energyMax={energyMax}
       />
 
       <CharInfo

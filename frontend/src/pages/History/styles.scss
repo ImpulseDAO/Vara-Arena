@@ -17,6 +17,10 @@
     &:hover {
       background: rgba(255, 255, 255, 0.1);
     }
+
+    &.table_row_highlighted {
+      background: rgba(135, 147, 255, 0.228);
+    }
   }
 
   .modal_leaderboard {
@@ -29,6 +33,7 @@
 
     margin-top: 42px;
     overflow-y: scroll;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -57,6 +62,7 @@
 
     background: rgba(0, 0, 0, 0.7);
     overflow-y: scroll;
+
     & * {
       color: white;
     }
@@ -75,6 +81,7 @@
     //
     padding: 0.1rem 0.8rem;
   }
+
   .row_lvl {
     display: flex;
     align-items: center;
@@ -89,10 +96,12 @@
   .row_player {
     display: flex;
     gap: 12px;
-    & > div {
+
+    &>div {
       display: flex;
       flex-direction: column;
       gap: 4px;
+
       .row_name {
         font-weight: bold;
       }

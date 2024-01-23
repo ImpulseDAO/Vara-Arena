@@ -16,7 +16,7 @@ export const useGetRowItems = ({
       const items = columns.reduce<ReactNode[]>((acc, cur, i) => {
         const item = (
           <Styled.Cell
-            position={cur.position}
+            $position={cur.$position}
             key={i}
             style={{ width: cur.width }}
             $ableClick={!!cellClick}

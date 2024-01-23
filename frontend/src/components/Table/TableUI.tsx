@@ -38,12 +38,12 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
-              sortable={column.sortable ?? SortType.ascending}
+              $sortable={column.$sortable ?? SortType.ascending}
               $isLeftPadded={index === 0}
             >
               {column.headerName}
             </Styled.ColumnText>
-            {/* {column.sortable && (
+            {/* {column.$sortable && (
               <Styled.ColumnIcon
                 $active={
                   sortedColumn.sortType !== SortType.default &&

@@ -28,7 +28,7 @@ const Column = styled.div<{ position?: "left" | "right" | "center" }>`
 
 const ColumnText = styled.p<{
   $active: boolean;
-  sortable: SortType;
+  $sortable: SortType;
   $isLeftPadded?: boolean; // https://styled-components.com/docs/api#transient-props
 }>`
   color: white;

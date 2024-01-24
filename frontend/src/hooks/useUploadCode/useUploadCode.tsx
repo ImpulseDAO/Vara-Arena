@@ -18,6 +18,7 @@ import {
   TransactionName,
   TransactionStatus,
 } from "./types";
+import { addCodeIdToLocalStorage } from "hooks/useCodeAndProgramIDs";
 
 const useUploadCode = () => {
   const { api } = useApi();
@@ -176,32 +177,3 @@ const useUploadCode = () => {
 
 export { useUploadCode };
 
-/**
- *  LocalStorage
- */
-
-const UPLOADED_CODE_IDS_ARRAY = "uploadedCodeIdsArray";
-
-export const addCodeIdToLocalStorage = (codeId: string) => {
-  const arrayOfCodeIds = JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as string[];
-
-  const uniqueSet = new Set(arrayOfCodeIds);
-  uniqueSet.add(codeId);
-
-  localStorage.setItem(UPLOADED_CODE_IDS_ARRAY, JSON.stringify(Array.from(uniqueSet)));
-};
-
-export const removeCodeIdFromLocalStorage = (codeId: string) => {
-  const newValue = getCodeIdsFromLocalStorage();
-
-  localStorage.setItem(
-    UPLOADED_CODE_IDS_ARRAY,
-    JSON.stringify(newValue.filter((id) => id !== codeId))
-  );
-
-  return newValue;
-};
-
-export const getCodeIdsFromLocalStorage = (): string[] => {
-  return (JSON.parse(localStorage.getItem(UPLOADED_CODE_IDS_ARRAY) || "[]") as []) ?? [];
-};

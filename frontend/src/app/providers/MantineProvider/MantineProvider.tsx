@@ -1,5 +1,6 @@
 import { MantineProvider as MantineProviderInitial } from "@mantine/core";
-import { theme } from "./theme";
+import { cssVariablesResolver, theme } from "./theme";
+import { ModalsProvider } from "./ModalsProvider";
 
 export const MantineProvider = ({
   children,
@@ -7,6 +8,10 @@ export const MantineProvider = ({
   children: React.ReactNode;
 }) => {
   return (
-    <MantineProviderInitial theme={theme}>{children}</MantineProviderInitial>
+    <MantineProviderInitial theme={theme} cssVariablesResolver={cssVariablesResolver}>
+      <ModalsProvider >
+        {children}
+      </ModalsProvider>
+    </MantineProviderInitial>
   );
 };

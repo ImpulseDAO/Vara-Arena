@@ -1,6 +1,5 @@
 import { STRATEGY_CODE_ID_HARDCODED, OLD_STRATEGIES_CODE_IDS_HARDCODED } from "consts";
-import { addCodeIdToLocalStorage } from "hooks/useUploadCode";
-import { removeCodeIdFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
+import { addCodeIdToLocalStorage, removeCodeIdFromLocalStorage } from "hooks/useCodeAndProgramIDs";
 import { useEffect } from "react";
 
 export const InitialConfigProvider = ({

@@ -5,10 +5,8 @@ import { StatBar } from "pages/@shared/StatBar";
 import { FC, memo, useRef } from "react";
 import "./styles.scss";
 import { Badge, Box, Table } from "@mantine/core";
-import { SchoolOfMagicChoice } from "./SchoolOfMagicChoice";
 import { TitleWithQuote } from "components/TitleWithQuote";
 import capitalize from "lodash/capitalize";
-import { StrategyInput } from "components/StrategyInput";
 import { getFullEnergy, getFullHp } from "consts";
 
 type MintCharacterViewProps = {
@@ -25,11 +23,8 @@ type MintCharacterViewProps = {
   disabled: boolean;
   onSubmit: VoidFunction;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onShoolOfMagicChange: (element: MagicElement) => void;
-  onUploadCodeChange: (codeId: string) => void;
   name: string;
-  codeId: string;
-  setCodeId: (codeId: string) => void;
+  strategyInput?: React.ReactNode;
 };
 
 export const MintCharacterView: FC<MintCharacterViewProps> = memo(
@@ -40,11 +35,8 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
     disabled,
     onSubmit,
     onChange,
-    onShoolOfMagicChange,
-    onUploadCodeChange,
     name,
-    codeId,
-    setCodeId,
+    strategyInput
   }) => {
     const initialStats = useRef({ ...stats });
 
@@ -65,11 +57,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                   placeholder="Enter character name"
                   name="name"
                 />
-                <StrategyInput
-                  codeId={codeId}
-                  setCodeId={setCodeId}
-                  onUploadCodeChange={onUploadCodeChange}
-                />
+                {strategyInput}
               </div>
               <PointsLeft points={stats.points} />
               {[

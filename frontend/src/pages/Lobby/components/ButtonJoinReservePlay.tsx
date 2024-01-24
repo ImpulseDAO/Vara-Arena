@@ -61,7 +61,7 @@ export const ButtonsJoinReservePlay = ({
   const isJoinButtonDisabled = isMyHeroDead || isFresh;
   const isReserveButtonReadyToShow = isReservationsNeeded && gasReservedTimes < RESERVATIONS_COUNT_FOR_4_PLAYERS;
   const isReservationFullfilled = !isReservationsNeeded || gasReservedTimes === RESERVATIONS_COUNT_FOR_4_PLAYERS;
-  const isStartButtonVisible = playersNeeded === players.length && isReservationFullfilled;
+  const isStartButtonVisible = playersNeeded === players.length && isReservationFullfilled && hasPlayerJoined;
 
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -153,6 +153,7 @@ export const ButtonsJoinReservePlay = ({
       const message = "You are not registered for the battle";
       console.error(message);
       alert.error(message);
+      setIsLoading(false);
       return;
     }
 

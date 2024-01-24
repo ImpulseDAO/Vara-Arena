@@ -58,17 +58,16 @@ export const History = () => {
     const playersNames = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.name ?? 'Player not found');
     const playersOwners = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.owner ?? 'Player not found');
 
-    const winnerName = battleLog.character1.winner
-      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)?.name
+    const winner: Pick<Character, 'name' | 'owner'> | undefined = battleLog.character1.winner
+      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)
       : battleLog.character2.winner
-        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)?.name
-        : 'No winner';
-    const winnerOwner = battleLog.character1.winner
-      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)?.owner
-      : battleLog.character2.winner
-        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)?.owner
-        : '';
-    const includesMyCharacter = playersOwners.includes(myAccountId) || (winnerOwner && winnerOwner === myAccountId);
+        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)
+        : { name: 'No winner', owner: '' };
+
+    const winnerName = winner?.name;
+    const winnerOwner = winner?.owner;
+
+    const includesMyCharacter = playersOwners.includes(myAccountId ?? '') || (winnerOwner && winnerOwner === myAccountId);
 
     return ({
       playersNames,
@@ -128,7 +127,8 @@ export const History = () => {
                     const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
                     navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
                   }}
-                  className={['table_row', row.includesMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
+                  className={['table_row', row.includesMyCharacter && !isFiltered ? 'table_row_highlighted' : ''].join(' ')}
+                  key={`${row.battleId}-${row.lobbyId}`}
                 >
                   {[
                     /* Lobby ID */
@@ -138,7 +138,7 @@ export const History = () => {
                     /* Players */
                     row.playersNames.map(playerName => {
                       return (
-                        <div>
+                        <div key={playerName}>
                           {playerName}
                         </div>
                       );

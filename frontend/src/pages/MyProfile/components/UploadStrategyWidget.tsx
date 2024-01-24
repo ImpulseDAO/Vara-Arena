@@ -1,14 +1,27 @@
 import { Anchor, Button, Flex, Stack, Text, Tooltip } from "@mantine/core";
 import { StrategyInput } from "components/StrategyInput";
-import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode";
 import { BlackButton } from "pages/BattleResult/components/BlackButton";
 import React from "react";
 import { useSendToMintContract } from '../../../app/api/sendMessages';
 import { MAX_GAS_LIMIT } from "consts";
 import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
+import { InputProgramId } from "./InputProgramId";
+import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
+import { getCodeIdsFromLocalStorage, useCodeAndProgramIDs } from "hooks/useCodeAndProgramIDs";
 
 export const UploadStrategyWidget = () => {
+  const alert = useStableAlert();
   const [isVisible, setIsVisible] = React.useState(false);
+
+  /**
+   * Code and program ids
+   */
+
+  const {
+    selectData,
+    update: updateCodeAndProgramIds,
+    getType
+  } = useCodeAndProgramIDs();
 
   /**
    * Voucher
@@ -20,14 +33,10 @@ export const UploadStrategyWidget = () => {
    * Upload code 
    */
 
-  const [data, setData] = React.useState({
-    codeId: getCodeIdsFromLocalStorage()[0] ?? "",
-    name: "",
-  });
-
-  const codeId = data.codeId;
-  const setCodeId = (codeId) => setData({ ...data, codeId });
-  const onUploadCodeChange = (codeId) => setData({ ...data, codeId });
+  const [value, setValue] = React.useState((getCodeIdsFromLocalStorage()[0] ?? null) as string | null);
+  const type = getType(value);
+  const codeId = type === 'code' ? value : null;
+  const programId = type === 'program' ? value : null;
 
   /**
    * Run contract method UpdateCharacter
@@ -44,9 +53,16 @@ export const UploadStrategyWidget = () => {
   const handleUpdateCharacter = React.useCallback(async () => {
     setIsUpdating(true);
 
+    if (codeId && programId) {
+      alert.error("You can't upload both codeId and programId at the same time");
+      setIsUpdating(false);
+      return;
+    }
+
     const payload = {
       UpdateCharacter: {
         code_id: codeId,
+        address: programId
       },
     };
 
@@ -64,8 +80,7 @@ export const UploadStrategyWidget = () => {
       },
     });
 
-
-  }, [codeId, sendToMintContract, shouldUseVoucher]);
+  }, [alert, codeId, programId, sendToMintContract, shouldUseVoucher]);
 
 
   if (!isVisible) {
@@ -115,10 +130,21 @@ export const UploadStrategyWidget = () => {
   return (
     <Stack gap={'sm'} >
       <StrategyInput
-        codeId={codeId}
-        setCodeId={setCodeId}
-        onUploadCodeChange={onUploadCodeChange}
+        value={value}
+        selectData={selectData}
+        setValue={(value) => {
+          setValue(value);
+          updateCodeAndProgramIds();
+        }}
       />
+
+      <InputProgramId
+        onUpdate={(programId) => {
+          updateCodeAndProgramIds();
+          setValue(programId);
+        }}
+      />
+
       <Flex gap="md">
         <Button
           variant="outline"

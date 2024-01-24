@@ -1,6 +1,7 @@
 import {
   type DefaultMantineColor,
   type MantineThemeOverride,
+  type CSSVariablesResolver,
   rem,
   MantineColorsTuple,
   darken,
@@ -10,6 +11,7 @@ export const customColors = {
   // as in Figma
   // https://www.figma.com/file/k61yZ0UVAlmOlvtTRJWFCh/Marketplace?node-id=470%3A11377&t=S3aqhDYsBpC3jlk8-4
   primary: "#2C67FF",
+  background: "rgba(0, 0, 0, 0.7)",
   //
   redHealth: "#f93642",
   blueEnergy: "#2152ff",
@@ -102,10 +104,35 @@ export const theme: MantineThemeOverride = {
     lg: rem(24),
     xl: rem(32),
   },
+  components: {
+    Modal: {},
+  },
   other: {
     // you can add here anything
   },
 };
+
+/**
+ *
+ */
+
+export const cssVariablesResolver: CSSVariablesResolver = (theme) => ({
+  variables: {},
+  dark: {
+    ...overwrittenVariables,
+  },
+  light: {
+    ...overwrittenVariables,
+  },
+});
+
+const overwrittenVariables = {
+  "--mantine-color-body": "rgba(0, 0, 0, 0.7)",
+} as const;
+
+/**
+ *
+ */
 
 type ExtendedCustomColors = keyof typeof customColors | DefaultMantineColor;
 

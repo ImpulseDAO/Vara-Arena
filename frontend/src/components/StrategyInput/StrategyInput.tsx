@@ -3,39 +3,20 @@ import {
 } from "hooks/useUploadCode";
 import { Select } from "@mantine/core";
 import React from "react";
-import { STRATEGY_CODE_ID_HARDCODED } from "consts";
-import { useAlert } from "@gear-js/react-hooks";
-import { getCodeIdsFromLocalStorage } from "hooks/useUploadCode/useUploadCode";
 import styles from "./StrategyInput.module.css";
+import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
 
 export const StrategyInput = ({
-  codeId,
-  setCodeId,
-  onUploadCodeChange,
+  value,
+  setValue,
+  selectData,
 }: {
-  codeId: string;
-  setCodeId: (codeId: string | null) => void;
-  onUploadCodeChange: (codeId: string) => void;
+  value?: string | null;
+  selectData: { value: string; label: string; }[];
+  setValue: (value: string | null) => void;
 }) => {
-  const alert = useAlert();
+  const alert = useStableAlert();
   const uploadCode = useUploadCode();
-
-  const [strategyCodeIds, setStrategyCodeIds] = React.useState<string[]>(getCodeIdsFromLocalStorage());
-
-  const selectData = React.useMemo(() => {
-    return strategyCodeIds.map((codeId, index) => {
-      const firstPart =
-        codeId === STRATEGY_CODE_ID_HARDCODED
-          ? "Default Strategy"
-          : `Strategy ${index + 1}`;
-
-      return {
-        value: codeId,
-        label: `${firstPart}: ${codeId.substring(0, 8)}...`,
-      };
-    });
-  }, [strategyCodeIds]);
-
 
   /**
    * 
@@ -64,16 +45,14 @@ export const StrategyInput = ({
           resolve: (codeId) => {
             console.log("upload code resolved for codeId ", codeId);
 
-            setCodeId(codeId);
-            onUploadCodeChange(codeId);
-            setStrategyCodeIds(getCodeIdsFromLocalStorage());
+            setValue(codeId);
           },
         });
       }
     };
   };
 
-  const handleClickAndUpload = () => {
+  const handleUploadCodeClick = () => {
     if (inputFileRef.current) {
       inputFileRef.current.click();
     }
@@ -83,19 +62,19 @@ export const StrategyInput = ({
     <>
       <Select
         data={[
-          ...selectData,
           {
             value: "upload",
             label: "+ Upload code",
           },
+          ...selectData,
         ]}
-        value={codeId}
-        onChange={(value) => {
+        value={value}
+        onChange={async (value) => {
           if (value === "upload") {
-            handleClickAndUpload();
+            handleUploadCodeClick();
             return;
           }
-          setCodeId(value);
+          setValue(value);
         }}
         placeholder="Select items"
         nothingFoundMessage="Nothing found"

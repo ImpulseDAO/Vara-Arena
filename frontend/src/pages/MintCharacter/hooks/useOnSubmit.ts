@@ -13,7 +13,7 @@ export const useOnSubmit = ({
   stats,
   onSuccess,
 }: {
-  codeId: string;
+  codeId: string | null;
   name: string;
   stats: {
     strength: number;

@@ -1,5 +1,1 @@
-export {
-  useUploadCode,
-  addCodeIdToLocalStorage,
-  getCodeIdsFromLocalStorage,
-} from "./useUploadCode";
+export { useUploadCode } from "./useUploadCode";

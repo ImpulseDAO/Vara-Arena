@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkvara_arena=self.webpackChunkvara_arena||[]).push([[339,842],{8126:(a,e,r)=>{r.r(e),r.d(e,{BattleResultPage:()=>t.qN,TournamentResultPage:()=>u.TournamentResultPage});var t=r(1636),u=r(2714)}}]);

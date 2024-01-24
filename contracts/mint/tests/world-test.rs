@@ -26,17 +26,35 @@ fn gold_distribution() {
             reservation_duration: 2_592_000,
             mint_cost: Some(mint_cost),
             gold_pool_amount: 1000,
+            season_duration_in_days: 5,
         },
     );
 
     assert!(!result.main_failed());
 
     system.mint_to(10, 100_000_000_000_000);
+    system.mint_to(20, 100_000_000_000_000);
     let result = mint.send_with_value(
         10,
         MintAction::CreateCharacter {
             code_id,
             name: "Alice".to_string(),
+            attributes: InitialAttributes {
+                agility: 1,
+                strength: 1,
+                stamina: 1,
+                vitality: 1,
+                intelligence: 6,
+            },
+        },
+        mint_cost,
+    );
+
+    let res = mint.send_with_value(
+        20,
+        MintAction::CreateCharacter {
+            code_id,
+            name: "Bob".to_string(),
             attributes: InitialAttributes {
                 agility: 1,
                 strength: 1,
@@ -69,6 +87,18 @@ fn gold_distribution() {
         MintAction::BattleResult {
             owner_id: 10.into(),
             character_id: 0,
+            losers: vec![],
+            reply_to: 10.into(),
+        },
+    );
+
+    assert!(!result.main_failed());
+
+    let result = mint.send(
+        10,
+        MintAction::BattleResult {
+            owner_id: 20.into(),
+            character_id: 1,
             losers: vec![],
             reply_to: 10.into(),
         },

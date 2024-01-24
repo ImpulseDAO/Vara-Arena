@@ -6,7 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { BackgroundImage, Box, LoadingOverlay, useMantineTheme } from "@mantine/core";
 
 import StartFightPng from "assets/images/startFightScreen.webp";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 
 
 export type AuthorizedLayerProps = {
@@ -19,15 +19,13 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
     const theme = useMantineTheme();
     const { pathname } = useLocation();
 
-    console.log('pathname', pathname);
-
     const { account, isAccountReady } = useAccount();
 
     const navigate = useNavigate();
 
     useEffect(() => {
       if (isAccountReady && !account) {
-        navigate("/");
+        navigate(routes.startScreen);
       }
     }, [account, isAccountReady, navigate]);
 
@@ -35,7 +33,7 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
 
     return (
       <div className="app">
-        {pathname.startsWith(newRoutes.arena) ? (
+        {pathname.startsWith(routes.arena) ? (
           < BackgroundImage
             src={StartFightPng}
             style={{

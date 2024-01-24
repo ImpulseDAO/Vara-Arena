@@ -1,7 +1,7 @@
 import { FC, ReactNode, memo } from 'react';
 import './styles.scss';
 import UserIcon from '../../assets/svg/user.svg';
-export type CustomOptionProps = { children: ReactNode };
+export type CustomOptionProps = { children: ReactNode; };
 
 export const CustomOption: FC<CustomOptionProps> = memo(
   //@ts-ignore
@@ -15,7 +15,7 @@ export const CustomOption: FC<CustomOptionProps> = memo(
           selectProps.onMenuClose();
         }}
       >
-        <img src={UserIcon} />
+        <img src={UserIcon} alt="user icon" />
         <p>{children}</p>
       </div>
     );

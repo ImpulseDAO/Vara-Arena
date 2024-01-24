@@ -5,10 +5,10 @@ import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
 import { useAllBattleLogs } from 'app/api/battleLogs';
-import { ActionIcon, Anchor, Flex, Menu, Button, Text, Stack } from "@mantine/core";
+import { ActionIcon, Anchor, Flex, Menu, Button, Text } from "@mantine/core";
 //
 import "./PlayersTable.scss";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 import { useNavigate } from "react-router-dom";
 import { ThreeDotsIcon } from "components/Icons";
 
@@ -125,7 +125,7 @@ export const PlayersTableView = ({
               py="xs"
               h={30}
               variant="subtle"
-              onClick={() => navigate(newRoutes.profile(id))}
+              onClick={() => navigate(routes.profile(id))}
             >
               <Text size="sm" c="white">
                 See profile
@@ -160,7 +160,7 @@ export const Row = ({
   return (
     <div className="row_player">
       <Anchor onClick={() => {
-        navigate(newRoutes.profile(id));
+        navigate(routes.profile(id));
       }}>
         <img src={AvatarIcon} alt="AvatarIcon" className={`${isSelected ? 'selected_image' : ''}`} />
       </Anchor>

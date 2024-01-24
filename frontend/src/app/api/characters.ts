@@ -4,7 +4,6 @@ import {
   getGraphQLPrimaryKey,
   useGraphQL,
 } from "app/providers/ReactQuery/useGraphQL";
-import { UseQueryResult } from "@tanstack/react-query";
 import { queryClient } from "app/providers/ReactQuery";
 
 const allCharactersQueryDocument = graphql(/* GraphQL */ `

@@ -1,20 +1,18 @@
 import React, { Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { AuthorizedLayer } from "layouts/AuthorizedLayer";
+import { oldRoutes } from "./routes";
 import { routes } from "./routes";
-import { newRoutes } from "./routes";
 import { ProfilePage } from "pages/MyProfile/MyProfile";
 //
 const History = React.lazy(() => import("pages/History").then(({ History }) => ({ default: History })));
 const Lobby = React.lazy(() => import("pages/Lobby").then(({ Lobby }) => ({ default: Lobby })));
-const Battle = React.lazy(() => import("pages/Battle").then(({ Battle }) => ({ default: Battle })));
 const MyProfile = React.lazy(() => import("pages/MyProfile").then(({ MyProfile }) => ({ default: MyProfile })));
 const BattleResultPage = React.lazy(() => import("pages/BattleResult").then(({ BattleResultPage }) => ({ default: BattleResultPage })));
 const Leaderboard = React.lazy(() => import("pages/Leaderboard").then(({ Leaderboard }) => ({ default: Leaderboard })));
 const Arena = React.lazy(() => import("pages/Arena").then(({ Arena }) => ({ default: Arena })));
 const UploadStrategy = React.lazy(() => import("pages/UploadStrategy").then(({ UploadStrategy }) => ({ default: UploadStrategy })));
 const MintCharacter = React.lazy(() => import("pages/MintCharacter").then(({ MintCharacter }) => ({ default: MintCharacter })));
-const StartFight = React.lazy(() => import("pages/StartFight").then(({ StartFight }) => ({ default: StartFight })));
 const StartScreen = React.lazy(() => import("pages/StartScreen").then(({ StartScreen }) => ({ default: StartScreen })));
 const TournamentResultPage = React.lazy(() => import("pages/BattleResult/TournamentResult").then(({ TournamentResultPage }) => ({ default: TournamentResultPage })));
 //
@@ -27,24 +25,20 @@ const options: Parameters<typeof createBrowserRouter>[1] = {
 
 export const appRouter = createBrowserRouter(
   [
-    { element: <StartScreen />, path: routes.startScreen },
-    { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
-
-    { element: <UploadStrategy />, path: routes.strategy, auth: true },
-    // 
-    { element: <Battle />, path: routes.battle, auth: true },
-    { element: < StartFight />, path: routes.startFightDynamic, auth: true },
+    { element: <UploadStrategy />, path: oldRoutes.strategy, auth: true },
     /**
      * NEW ROUTES:
     */
-    { element: <Lobby />, path: newRoutes.lobbyDynamic, auth: true },
-    { element: <Arena />, path: newRoutes.arena, auth: true },
-    { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
-    { element: <ProfilePage />, path: newRoutes.profileDynamic, auth: true },
-    { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
-    { element: <History />, path: newRoutes.history, auth: true },
-    { element: <BattleResultPage />, path: newRoutes.battleResultDynamic, auth: true },
-    { element: <TournamentResultPage />, path: newRoutes.tournamentResultDynamic, auth: true },
+    { element: <StartScreen />, path: routes.startScreen },
+    { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
+    { element: <Lobby />, path: routes.lobbyDynamic, auth: true },
+    { element: <Arena />, path: routes.arena, auth: true },
+    { element: <MyProfile />, path: routes.myProfile, auth: true },
+    { element: <ProfilePage />, path: routes.profileDynamic, auth: true },
+    { element: <Leaderboard />, path: routes.leaderboard, auth: true },
+    { element: <History />, path: routes.history, auth: true },
+    { element: <BattleResultPage />, path: routes.battleResultDynamic, auth: true },
+    { element: <TournamentResultPage />, path: routes.tournamentResultDynamic, auth: true },
     /**
      * END NEW ROUTES
      */

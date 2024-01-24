@@ -1,5 +1,5 @@
 {
-  "name": "dapp",
+  "name": "vara-arena",
   "version": "0.1.1",
   "private": true,
   "homepage": "https://impulsedao.github.io/Vara-Arena",
@@ -12,7 +12,8 @@
     "prebuild": "graphql-codegen",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
     "@gear-js/api": "0.35.2",

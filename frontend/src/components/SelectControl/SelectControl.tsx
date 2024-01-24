@@ -1,4 +1,4 @@
-import { FC, ReactNode, memo } from 'react';
+import { ReactNode } from 'react';
 import './styles.scss';
 import { ControlProps, components } from 'react-select';
 

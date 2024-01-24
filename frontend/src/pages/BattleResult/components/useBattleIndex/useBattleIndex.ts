@@ -1,4 +1,4 @@
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 import { useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -21,7 +21,7 @@ export const useBattleIndex = () => {
       if (!lobbyId) {
         console.error("lobbyId is not defined");
       } else {
-        navigate(newRoutes.tournamentResult({ lobbyId, battleId: `${idx}` }));
+        navigate(routes.tournamentResult({ lobbyId, battleId: `${idx}` }));
       }
     },
     [battleId, lobbyId, navigate]

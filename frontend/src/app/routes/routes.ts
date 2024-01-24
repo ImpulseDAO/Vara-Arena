@@ -1,25 +1,13 @@
-export const routes = {
-  startScreen: "/",
-  mintCharacter: "/mint-character",
-  tournament: "/tournament",
-  leaderboard: "/leaderboard",
-  logs: "/logs",
+export const oldRoutes = {
   strategy: "/strategy",
-  arena: "/arena",
-  //
-  profile: (profileId: string) => `/profile/${profileId}`,
-  //
-  battle: "/battle",
-  wildcard: "/*",
-  //
-  startFightDynamic: `/start-fight/:lobbyId`,
-  startFight: (lobbyId: string) => `/start-fight/${lobbyId}`,
 };
 
-export const newRoutes = {
-  home: "/",
+export const routes = {
+  wildcard: "/*",
+  startScreen: "/",
   arena: "/arena",
   history: "/history",
+  mintCharacter: "/mint-character",
   lobbyDynamic: "/lobby/:lobbyId",
   lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",

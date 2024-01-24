@@ -1,7 +1,7 @@
 import './styles.scss';
 import { getCharacterFromBattleLogById, useAllBattleLogs } from 'app/api/battleLogs';
 import { Flex, Table } from '@mantine/core';
-import { newRoutes } from 'app/routes';
+import { routes } from 'app/routes';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BattleLog } from 'gql/graphql';
 import React, { useEffect } from 'react';
@@ -125,7 +125,7 @@ export const History = () => {
                 <Table.Tr
                   onClick={() => {
                     const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
-                    navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
+                    navigate(routes.tournamentResult({ lobbyId, battleId }));
                   }}
                   className={['table_row', row.includesMyCharacter && !isFiltered ? 'table_row_highlighted' : ''].join(' ')}
                   key={`${row.battleId}-${row.lobbyId}`}

@@ -6,7 +6,6 @@ import LockSvg from "../../assets/svg/lock.svg";
 import CharSvg from "../../assets/svg/char.svg";
 import GoldCoin from "../../assets/images/goldCoin.png";
 //
-import { getShortIdString } from "utils";
 import { getFullEnergy, getFullHp } from "consts";
 import { useStats } from "./hooks/useStats";
 import { useCharacterById } from "app/api/characters";
@@ -36,14 +35,18 @@ export const MyProfile = () => {
 };
 
 export const ProfilePage = () => {
-  const params = useParams();
+  const params = useParams<{
+    profileId: string;
+  }>();
 
-  if (!params.id) {
+  if (!params.profileId) {
     throw new Error("No id provided");
   }
 
-  const { data: character } = useCharacterById({ id: params.id });
+  const { data: characterData } = useCharacterById({ id: params.profileId });
   const { data: myCharacterFromState } = useMyCharacterFromContractState();
+
+  const character = characterData?.characterById;
 
   if (!character || !myCharacterFromState) {
     return null;
@@ -72,25 +75,26 @@ export const Profile = ({
    */
 
   character = useMemo(() => {
-    return character ?? {
+    if (character) return character;
+
+    else return {
       id: String(myCharacter.id),
       name: myCharacter.name,
       attributes: myCharacter.attributes,
       level: myCharacter.level,
       experience: myCharacter.experience,
-      lives_count: myCharacter.attributes.livesCount,
+      livesCount: myCharacter.attributes.livesCount,
       balance: myCharacter.attributes.balance,
       owner: '',
-      tier_rating: myCharacter.attributes.tierRating,
+      rating: myCharacter.attributes.tierRating,
     };
+
   }, [character, myCharacter]);
   const isMyCharacter = character?.id === String(myCharacter.id);
 
   const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr, isStatsMutating } = useStats(
     character
   );
-
-
 
   /**
    * 
@@ -99,7 +103,6 @@ export const Profile = ({
   if (!myCharacter) {
     return null;
   }
-
 
   return (
     <div className="profile">
@@ -128,7 +131,7 @@ export const Profile = ({
           <CharInfo
             isMyCharacter={isMyCharacter}
             name={character.name}
-            shortId={getShortIdString(character.id)}
+            idStr={`#${character.id}`}
             //
             exp={character.experience}
             maxExp={stats.maxExp}
@@ -139,7 +142,10 @@ export const Profile = ({
 
           <CharStats
             character={character}
-            isReadyForLevelUp={stats.points > 0}
+            /**
+             * isReadyForLevelUp is true only if we are viewing our own character
+             */
+            isReadyForLevelUp={isMyCharacter && stats.points > 0}
             selectAttr={selectAttr}
             isLoading={isStatsMutating}
           />
@@ -148,7 +154,7 @@ export const Profile = ({
 
         <div className="profile_equip">
           <StatBar
-            lives={character.lives_count}
+            lives={character.livesCount}
             health={getFullHp(character.attributes.vitality)}
             energy={getFullEnergy(character.attributes.stamina)}
           />

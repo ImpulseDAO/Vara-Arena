@@ -6,7 +6,7 @@ import { Table, Text } from "@mantine/core";
 import { getShortIdString } from "utils";
 import { useMyAccountId } from "hooks/hooks";
 import { useNavigate } from "react-router-dom";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 
 export const Leaderboard = () => {
   const navigate = useNavigate();
@@ -82,7 +82,7 @@ export const Leaderboard = () => {
                     cursor: 'pointer',
                   }}
                   onClick={() => {
-                    navigate(newRoutes.profile(String(row.id)));
+                    navigate(routes.profile(String(row.id)));
                   }}
                 >
                   {[

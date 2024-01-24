@@ -3,7 +3,7 @@ import { TheButton } from "components/TheButton";
 import { Panel } from "components/Panel";
 import { useCreateLobby, useLobbies } from "app/api/lobbies";
 import { useNavigate } from "react-router-dom";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 import { useMemo, useRef } from "react";
 import { useAlert } from "@gear-js/react-hooks";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
@@ -51,7 +51,7 @@ export const Arena = () => {
   }) => {
     console.log('handleJoinLobby', lobbyId);
 
-    navigate(newRoutes.lobby(lobbyId));
+    navigate(routes.lobby(lobbyId));
   };
 
   /**
@@ -131,7 +131,7 @@ export const Arena = () => {
                     .then(async (reply) => {
                       if (reply) {
                         const { lobbyId } = reply.LobbyCreated;
-                        setTimeout(() => navigate(newRoutes.lobby(lobbyId)), 800);
+                        setTimeout(() => navigate(routes.lobby(lobbyId)), 800);
                       }
                       /**
                        * Refetch lobbies after successful promise resolution

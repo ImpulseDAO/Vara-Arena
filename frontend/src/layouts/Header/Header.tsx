@@ -1,12 +1,12 @@
 import { Wallet } from "components/wallet";
 import { FC, useReducer } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./styles.scss";
 import { useAccount, useApi, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 import { DiscordLogo } from "components/Icons";
-import { Anchor, Box, Flex } from "@mantine/core";
+import { Flex } from "@mantine/core";
 import { staticRoutes } from "app/routes/routes";
 
 export type HeaderProps = {};
@@ -14,19 +14,19 @@ export type HeaderProps = {};
 const navLinks = [
   {
     name: "Arena",
-    path: newRoutes.arena,
+    path: routes.arena,
   },
   {
     name: "History",
-    path: newRoutes.history,
+    path: routes.history,
   },
   {
     name: "Leaderboard",
-    path: newRoutes.leaderboard,
+    path: routes.leaderboard,
   },
   {
     name: "My Profile",
-    path: newRoutes.myProfile,
+    path: routes.myProfile,
   },
 ];
 
@@ -37,7 +37,6 @@ export const Header: FC<HeaderProps> = () => {
   const balance = useBalance(decodedAddress).balance?.toString() ?? '';
   const balanceFormat = useBalanceFormat();
   const [visible, toggle] = useReducer((state) => !state, false);
-  const navigate = useNavigate();
 
   if (!isAccountReady || !isApiReady) return null;
   // we should wait until api is ready, thats why this line is below "if" block

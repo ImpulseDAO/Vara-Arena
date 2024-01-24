@@ -20,7 +20,7 @@ export const StartFightView: FC<StartFightViewProps> = memo(
     return (
       <div className="arena">
         <div className="arena_modal">
-          <img className="arena_img" src={ArenaPng} />
+          <img className="arena_img" src={ArenaPng} alt="arena" />
           <p className="arena_title">Enter the Arena</p>
           {/* <div className="arena_select_wrapper">
             <p>Select your character</p>

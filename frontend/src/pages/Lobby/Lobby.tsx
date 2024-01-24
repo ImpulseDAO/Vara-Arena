@@ -9,7 +9,7 @@ import { Badge, Box, Stack, Text } from "@mantine/core";
 import { useMyAccountId } from "hooks/hooks";
 import { PLAYERS_TO_RESERVATIONS_NEEDED_MAP } from "consts";
 import { TheButton } from "components/TheButton";
-import { newRoutes } from "app/routes";
+import { routes } from "app/routes";
 import { NoCharacter } from "./components/NoCharacter";
 import { useMediaQuery } from "@mantine/hooks";
 //
@@ -145,7 +145,7 @@ export const Lobby = () => {
                   onStartButtonSucess: () => {
                     setTimeout(() => {
                       refetchLobbyQuery();
-                      navigate(newRoutes.tournamentResult({ lobbyId: lobbyId ?? '' }));
+                      navigate(routes.tournamentResult({ lobbyId: lobbyId ?? '' }));
                     }, 3000);
                   },
                 }}
@@ -160,7 +160,7 @@ export const Lobby = () => {
               <TheButton
                 mt="lg"
                 w={200}
-                onClick={() => lobbyId && navigate(newRoutes.tournamentResult({ lobbyId }))}
+                onClick={() => lobbyId && navigate(routes.tournamentResult({ lobbyId }))}
               >
                 See results
               </TheButton>

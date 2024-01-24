@@ -13,43 +13,47 @@ async fn main() {
 
     // TODO::
     // add a turn.you.rest_count check to improve your strategy ;)
+    if turn.enemy.attributes.agility > 1 {
+        if turn.you.energy >= CATAPULT_COST
+            && (turn.enemy.position - turn.you.position != 1
+                && turn.you.position - turn.enemy.position != 1)
+        {
+            debug!("replying based on Attributes == Water Burst");
+            msg::reply(
+                BattleAction::CastSpell {
+                    spell: Spell::WaterBurst,
+                },
+                0,
+            )
+            .expect("unable to reply");
+        } else if turn.you.energy >= SPELL_COST && turn.you.fire_wall.0 == 0 {
+            debug!("fire Wall");
 
-    if turn.you.energy >= CATAPULT_COST
-        && (turn.enemy.position - turn.you.position != 1
-            && turn.you.position - turn.enemy.position != 1)
-    {
-        debug!("CATAPULT");
-        msg::reply(
-            BattleAction::CastSpell {
-                spell: Spell::EarthCatapult,
-            },
-            0,
-        )
-        .expect("unable to reply");
-    } else if turn.you.energy >= SPELL_COST && turn.you.fire_wall.0 == 0 {
-        debug!("fire Wall");
-
-        msg::reply(
-            BattleAction::CastSpell {
-                spell: Spell::FireWall,
-            },
-            0,
-        )
-        .expect("unable to reply");
-    } else if (turn.enemy.position - turn.you.position == 1
-        || turn.you.position - turn.enemy.position == 1)
-        && turn.you.energy >= QUICK_ATTACK_COST
-    {
-        debug!("MAGE attaking");
-        msg::reply(
-            BattleAction::Attack {
-                kind: AttackKind::Quick,
-            },
-            0,
-        )
-        .expect("unable to reply");
+            msg::reply(
+                BattleAction::CastSpell {
+                    spell: Spell::FireWall,
+                },
+                0,
+            )
+            .expect("unable to reply");
+        } else if (turn.enemy.position - turn.you.position == 1
+            || turn.you.position - turn.enemy.position == 1)
+            && turn.you.energy >= QUICK_ATTACK_COST
+        {
+            debug!("MAGE attaking");
+            msg::reply(
+                BattleAction::Attack {
+                    kind: AttackKind::Quick,
+                },
+                0,
+            )
+            .expect("unable to reply");
+        } else {
+            debug!("resting...");
+            msg::reply(BattleAction::Rest, 0).expect("unable to reply");
+        }
     } else {
-        debug!("resting...");
+        debug!("agi 1...");
         msg::reply(BattleAction::Rest, 0).expect("unable to reply");
     }
 }

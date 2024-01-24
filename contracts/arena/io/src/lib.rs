@@ -151,6 +151,7 @@ pub struct CharacterState {
     pub water_burst: u8,
     pub fire_haste: u8,
     pub earth_smites: (u8, u8),
+    pub attributes: CharacterAttributes,
 }
 
 #[derive(Encode, Decode)]

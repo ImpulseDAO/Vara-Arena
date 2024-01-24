@@ -20,13 +20,13 @@ const inProgressColumns: TableColumnsType[] = [
     field: "NB",
     headerName: "Number of battles",
     width: 144,
-    position: "center",
+    $position: "center",
   },
   {
     field: "level",
     headerName: "Level",
     width: 172,
-    position: "center",
+    $position: "center",
   },
 ];
 
@@ -128,4 +128,4 @@ export const Row = ({
       </div>
     </div>
   );
-}; 
+};

@@ -14,7 +14,7 @@ export const History = () => {
   const myAccountId = useMyAccountId();
 
   /**
-   * 
+   *
    */
 
   const { data: myCharacters } = useMyCharacters({ owner_eq: myAccountId ?? '' });
@@ -47,7 +47,7 @@ export const History = () => {
   }, [battleLogsUnfiltered, isFiltered, myCharacters?.characters]);
 
   /**
-   * 
+   *
    */
 
   const inProgressRows = battleLogs?.toReversed().map((battleLog: BattleLog) => {
@@ -56,17 +56,26 @@ export const History = () => {
     const char2Id = battleLog.character2.character;
 
     const playersNames = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.name ?? 'Player not found');
+    const playersOwners = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.owner ?? 'Player not found');
+
+    const winnerName = battleLog.character1.winner
+      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)?.name
+      : battleLog.character2.winner
+        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)?.name
+        : 'No winner';
+    const winnerOwner = battleLog.character1.winner
+      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)?.owner
+      : battleLog.character2.winner
+        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)?.owner
+        : '';
+    const includesMyCharacter = playersOwners.includes(myAccountId) || (winnerOwner && winnerOwner === myAccountId);
 
     return ({
       playersNames,
       battleId: id,
       lobbyId: battleLog.lobby.id,
-      winner: battleLog.character1.winner
-        ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)?.name
-        : battleLog.character2.winner
-          ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)?.name :
-          'No winner'
-
+      winner: winnerName,
+      includesMyCharacter
     });
   }) ?? [];
 
@@ -119,7 +128,7 @@ export const History = () => {
                     const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
                     navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
                   }}
-                  className='table_row'
+                  className={['table_row', row.includesMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
                 >
                   {[
                     /* Lobby ID */

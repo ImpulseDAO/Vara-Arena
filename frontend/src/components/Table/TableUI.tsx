@@ -34,18 +34,18 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
             onClick={onClickSort(column)}
           >
             <Styled.ColumnText
-              active={
+              $active={
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
-              sortable={column.sortable ?? false}
-              isLeftPadded={index === 0}
+              $sortable={column.$sortable ?? SortType.ascending}
+              $isLeftPadded={index === 0}
             >
               {column.headerName}
             </Styled.ColumnText>
-            {/* {column.sortable && (
+            {/* {column.$sortable && (
               <Styled.ColumnIcon
-                active={
+                $active={
                   sortedColumn.sortType !== SortType.default &&
                   sortedColumn.field === column.field
                 }

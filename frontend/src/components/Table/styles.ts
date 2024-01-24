@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { SortType } from './constants';
 
 const Container = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const Column = styled.div<{ position?: "left" | "right" | "center" }>`
+const Column = styled.div<{ position?: "left" | "right" | "center"; }>`
   display: flex;
   align-items: center;
   height: 16px;
@@ -26,20 +27,20 @@ const Column = styled.div<{ position?: "left" | "right" | "center" }>`
 `;
 
 const ColumnText = styled.p<{
-  active: boolean;
-  sortable: boolean;
-  isLeftPadded?: boolean;
+  $active: boolean;
+  $sortable: SortType;
+  $isLeftPadded?: boolean; // https://styled-components.com/docs/api#transient-props
 }>`
   color: white;
   font-size: 12px;
-  font-weight: ${({ active }) => (active ? "bold" : "normal")};
-  padding-left: ${({ isLeftPadded }) => (isLeftPadded ? "1.5rem" : "")};
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+  padding-left: ${({ $isLeftPadded }) => ($isLeftPadded ? "1.5rem" : "")};
 `;
 
-// const ColumnIcon = styled.div<{ active: boolean; sortType: SortType }>`
+// const ColumnIcon = styled.div<{ $active: boolean; sortType: SortType }>`
 //   height: 16px;
 //   width: 16px;
-//   visibility: ${({ active }) => (active ? 'visible' : 'hidden')};
+//   visibility: ${({ $active }) => ($active ? 'visible' : 'hidden')};
 //   ${({ sortType }) => {
 //     if (sortType === SortType.ascending) {
 //       return css`
@@ -80,15 +81,15 @@ const Row = styled.div`
 
 const Cell = styled.div<{
   position?: "center" | "left" | "right";
-  ableClick?: boolean;
+  $ableClick?: boolean;
 }>`
   display: flex;
   ${({ position }) => css`
     justify-content: ${position};
   `}
 
-  cursor: ${({ ableClick }) => {
-    return ableClick ? "pointer" : "default";
+  cursor: ${({ $ableClick }) => {
+    return $ableClick ? "pointer" : "default";
   }};
 `;
 

@@ -73,6 +73,7 @@ export const Leaderboard = () => {
                   //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
                   // }}
                   className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
+                  key={row.ownerId}
                 >
                   {[
                     /* Rating */
@@ -82,7 +83,7 @@ export const Leaderboard = () => {
                     /* Level */
                     <div className={'badge'}>{row.level}</div>,
                     /* Owner ID */
-                    <div >{getShortIdString(row.ownerId)}</div>,
+                    <div title={row.ownerId}>{getShortIdString(row.ownerId)}</div>,
                   ].map((cellContent, idx) => {
                     return (
                       <Table.Td

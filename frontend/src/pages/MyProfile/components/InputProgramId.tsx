@@ -31,11 +31,11 @@ export const InputProgramId = ({
             onChange={(event) => {
               valueRef.current = event.currentTarget.value;
             }}
-            mt="lg"
+            mt="sm"
             label="Program ID"
             placeholder="Program ID"
             labelProps={{
-              mb: 2,
+              mb: 3,
             }}
           />
         </Text>

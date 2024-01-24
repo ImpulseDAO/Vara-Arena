@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AuthorizedLayer } from "layouts/AuthorizedLayer";
 import { routes } from "./routes";
 import { newRoutes } from "./routes";
+import { ProfilePage } from "pages/MyProfile/MyProfile";
 //
 const History = React.lazy(() => import("pages/History").then(({ History }) => ({ default: History })));
 const Lobby = React.lazy(() => import("pages/Lobby").then(({ Lobby }) => ({ default: Lobby })));
@@ -31,7 +32,6 @@ export const appRouter = createBrowserRouter(
 
     { element: <UploadStrategy />, path: routes.strategy, auth: true },
     // 
-    { element: <MyProfile />, path: routes.profileDynamic, auth: true },
     { element: <Battle />, path: routes.battle, auth: true },
     { element: < StartFight />, path: routes.startFightDynamic, auth: true },
     /**
@@ -40,6 +40,7 @@ export const appRouter = createBrowserRouter(
     { element: <Lobby />, path: newRoutes.lobbyDynamic, auth: true },
     { element: <Arena />, path: newRoutes.arena, auth: true },
     { element: <MyProfile />, path: newRoutes.myProfile, auth: true },
+    { element: <ProfilePage />, path: newRoutes.profileDynamic, auth: true },
     { element: <Leaderboard />, path: newRoutes.leaderboard, auth: true },
     { element: <History />, path: newRoutes.history, auth: true },
     { element: <BattleResultPage />, path: newRoutes.battleResultDynamic, auth: true },

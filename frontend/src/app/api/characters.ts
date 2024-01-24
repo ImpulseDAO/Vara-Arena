@@ -68,10 +68,13 @@ const characterByIdQueryDocument = graphql(/* GraphQL */ `
     characterById(id: $character_id) {
       attributes
       experience
+      balance
       id
       level
-      name
       owner
+      livesCount
+      name
+      rating
     }
   }
 `);
@@ -79,5 +82,5 @@ const characterByIdQueryDocument = graphql(/* GraphQL */ `
 export const useCharacterById = ({ id }: { id: string }) => {
   return useGraphQL(characterByIdQueryDocument, {
     character_id: id,
-  }) as UseQueryResult<Character>;
+  });
 };

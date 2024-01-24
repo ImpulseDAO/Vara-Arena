@@ -5,8 +5,11 @@ import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { Table, Text } from "@mantine/core";
 import { getShortIdString } from "utils";
 import { useMyAccountId } from "hooks/hooks";
+import { useNavigate } from "react-router-dom";
+import { newRoutes } from "app/routes";
 
 export const Leaderboard = () => {
+  const navigate = useNavigate();
   const myAccountId = useMyAccountId();
 
   const { data: mintState } = useMintState({
@@ -35,6 +38,7 @@ export const Leaderboard = () => {
       ownerId,
       rating: c.attributes.tierRating,
       isMyCharacter,
+      id: c.id,
     };
   });
 
@@ -74,6 +78,12 @@ export const Leaderboard = () => {
                   // }}
                   className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
                   key={row.ownerId}
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => {
+                    navigate(newRoutes.profile(String(row.id)));
+                  }}
                 >
                   {[
                     /* Rating */

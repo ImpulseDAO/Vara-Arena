@@ -1,10 +1,9 @@
 import { Stack } from "@mantine/core";
-import { getFullHp, getFullEnergy } from "consts";
 import { CharInfo } from "pages/@shared/CharInfo";
 import { CharStats } from "pages/@shared/CharStats/CharStats";
 import { StatBar } from "pages/@shared/StatBar";
 import { useRef } from "react";
-import { getShortIdString, getXpNeededForLvlUp } from "utils";
+import { getXpNeededForLvlUp } from "utils";
 import { CharacterState } from "../types";
 
 export const CharPanel = ({
@@ -46,7 +45,7 @@ export const CharPanel = ({
 
         isMyCharacter={true}
         name={character.name}
-        shortId={getShortIdString(character.id)}
+        idStr={`#${character.id}`}
         //
         exp={character.experience}
         maxExp={getXpNeededForLvlUp(character.level)}

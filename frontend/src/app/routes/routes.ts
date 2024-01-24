@@ -7,7 +7,6 @@ export const routes = {
   strategy: "/strategy",
   arena: "/arena",
   //
-  profileDynamic: "/profile/:profileId",
   profile: (profileId: string) => `/profile/${profileId}`,
   //
   battle: "/battle",
@@ -25,6 +24,8 @@ export const newRoutes = {
   lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",
   myProfile: "/my-profile",
+  profileDynamic: "/profile/:profileId",
+  profile: (profileId: string) => `/profile/${profileId}`,
   //
   battleResultDynamic: "/battle-result/:battleId",
   battleResult: (battleId: string) => `/battle-result/${battleId}`,

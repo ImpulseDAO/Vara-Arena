@@ -24,7 +24,7 @@ export const CharStats = ({
       }}
     >
       <Divider mt="sm" />
-      <Attribute attributeName="Rating" value={character.tier_rating ?? 0} my="lg" />
+      <Attribute attributeName="Rating" value={character.rating ?? 0} my="lg" />
       <Divider mb="xs" />
       {[
         'strength',

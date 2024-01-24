@@ -18,7 +18,7 @@ const documents = {
     "\n  query BattleLogsByLobbyId($lobbyId: String!) {\n    battleLogs(where: { lobby: { id_eq: $lobbyId } }) {\n      id\n    }\n  }\n": types.BattleLogsByLobbyIdDocument,
     "\n  query AllCharacters {\n    characters {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n": types.AllCharactersDocument,
     "\n  query CharactersByOwner($owner_eq: String!) {\n    characters(where: { owner_eq: $owner_eq }) {\n      id\n      level\n      name\n      owner\n      experience\n      attributes\n    }\n  }\n": types.CharactersByOwnerDocument,
-    "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n": types.CharacterByIdDocument,
+    "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      balance\n      id\n      level\n      owner\n      livesCount\n      name\n      rating\n    }\n  }\n": types.CharacterByIdDocument,
     "\n  query Lobbies {\n    lobbies {\n      id\n      capacity\n      tier\n      reservationsCount\n      characters {\n        id\n        character {\n          id\n          name\n          owner\n          level\n          experience\n          attributes\n        }\n      }\n      battleLogs {\n        id\n      }\n    }\n  }\n": types.LobbiesDocument,
     "\n  query LobbyById2($id: String!) {\n    lobbyById(id: $id) {\n      id\n      capacity\n      tier\n      reservationsCount\n      characters {\n        id\n        character {\n          id\n          name\n          owner\n          level\n          experience\n          attributes\n        }\n      }\n      battleLogs {\n        id\n      }\n    }\n  }\n": types.LobbyById2Document,
 };
@@ -60,7 +60,7 @@ export function graphql(source: "\n  query CharactersByOwner($owner_eq: String!)
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n"): (typeof documents)["\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      id\n      level\n      name\n      owner\n    }\n  }\n"];
+export function graphql(source: "\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      balance\n      id\n      level\n      owner\n      livesCount\n      name\n      rating\n    }\n  }\n"): (typeof documents)["\n  query CharacterById($character_id: String!) {\n    characterById(id: $character_id) {\n      attributes\n      experience\n      balance\n      id\n      level\n      owner\n      livesCount\n      name\n      rating\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

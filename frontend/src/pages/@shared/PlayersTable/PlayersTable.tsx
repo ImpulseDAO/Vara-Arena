@@ -4,11 +4,13 @@ import { useMemo } from "react";
 import AvatarIcon from "assets/images/avatar.png";
 import { TableUI } from "components/Table";
 import { TableColumnsType } from "components/Table/types";
-import { getShortIdString } from "utils";
 import { useAllBattleLogs } from 'app/api/battleLogs';
-import { Flex } from "@mantine/core";
+import { ActionIcon, Anchor, Flex, Menu, Button, Text, Stack } from "@mantine/core";
 //
 import "./PlayersTable.scss";
+import { newRoutes } from "app/routes";
+import { useNavigate } from "react-router-dom";
+import { ThreeDotsIcon } from "components/Icons";
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -28,6 +30,12 @@ const inProgressColumns: TableColumnsType[] = [
     width: 172,
     $position: "center",
   },
+  {
+    field: "menu",
+    headerName: "",
+    width: 50,
+    $position: "center",
+  }
 ];
 
 export const PlayersTable = ({
@@ -73,6 +81,7 @@ export const PlayersTableView = ({
   }>,
   battleLogs: BattleLogsReturned,
 }) => {
+  const navigate = useNavigate();
   const inProgressRows = useMemo(() => {
     if (!characters || isEmpty(Object.values(characters))) {
       return [
@@ -96,12 +105,39 @@ export const PlayersTableView = ({
 
     return characters.map(({ name, id, level, isMyCharacter }) => ({
       name,
-      id: <Row name={name} id={getShortIdString(id)} isSelected={isMyCharacter} />,
+      id: <Row name={name} id={id} isSelected={isMyCharacter} />,
       NB: battleLogs?.filter(({ character1, character2 }) => character1.character === id || character2.character === id).length ?? 0,
       level: <span className="row_lvl">{level} LVL</span>,
+      menu: (
+        <Menu position="bottom-end" offset={3} >
+          <Menu.Target>
+            <ActionIcon
+              className="menuIcon"
+              size="md"
+            >
+              <ThreeDotsIcon fill="white" />
+            </ActionIcon>
+          </Menu.Target>
+
+          <Menu.Dropdown bg="black">
+            <Button
+              size="sm"
+              py="xs"
+              h={30}
+              variant="subtle"
+              onClick={() => navigate(newRoutes.profile(id))}
+            >
+              <Text size="sm" c="white">
+                See profile
+              </Text>
+            </Button>
+            {/* Other items to be added in the future if needed... */}
+          </Menu.Dropdown>
+        </Menu>
+      ),
       isMyCharacter,
     }));
-  }, [battleLogs, characters]);
+  }, [battleLogs, characters, navigate]);
 
   return (
     <div className="playersTable">
@@ -119,12 +155,18 @@ export const Row = ({
   id: string,
   isSelected: boolean;
 }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="row_player">
-      <img src={AvatarIcon} alt="AvatarIcon" className={`${isSelected ? 'selected_image' : ''}`} />
+      <Anchor onClick={() => {
+        navigate(newRoutes.profile(id));
+      }}>
+        <img src={AvatarIcon} alt="AvatarIcon" className={`${isSelected ? 'selected_image' : ''}`} />
+      </Anchor>
       <div>
         <p className="row_name">{name}</p>
-        <p>{id}</p>
+        <p>{`#${id}`}</p>
       </div>
     </div>
   );

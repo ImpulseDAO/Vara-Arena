@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 export const CharInfo = ({
   isMyCharacter,
   name,
-  shortId,
+  idStr,
   //
   exp,
   maxExp,
@@ -15,7 +15,7 @@ export const CharInfo = ({
 }: {
   isMyCharacter: boolean;
   name: string;
-  shortId: string;
+  idStr: string;
   //
   exp: number;
   maxExp: number;
@@ -26,7 +26,7 @@ export const CharInfo = ({
       <img className={`profile_avatar ${isMyCharacter ? 'my_avatar' : ''}`} src={AvatarIcon} alt="AvatarIcon" />
       <div className="profile_name">
         <p>{name}</p>
-        <p>{shortId}</p>
+        <p>{idStr}</p>
 
         <LevelBar maxXp={maxExp} curXp={exp} level={level} />
       </div>

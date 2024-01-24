@@ -2,6 +2,8 @@
 import { Text } from "@mantine/core";
 import { type BattleStep, type LogEntry, spellnames } from "../types";
 
+const NBSP = '\u00A0';
+
 export function visualizeBattleLog(battleSteps: BattleStep[], characters: ({ name: string, id: string; })[]): React.ReactNode[][] {
   const results: React.ReactNode[][] = [];
 
@@ -73,10 +75,10 @@ const getLogEntry = (log: LogEntry, charName: string, color: string) => {
 
       return (
         <Text component="span">
-          <Name {...{ charName, color }} /> casts {spell} spell.
-          {'heal' in details ? ` ${details.heal} HP healed` : null}
-          {'damage' in details ? ` ${details.damage} damage dealt` : null}
-          {'enemyPosition' in details ? ` Enemy thrown to position ${details.enemyPosition}` : null}
+          <Name {...{ charName, color }} /> casts {spell}.
+          {'heal' in details ? ` ${details.heal}${NBSP}HP healed` : null}
+          {'damage' in details ? ` ${details.damage}${NBSP}damage dealt.` : null}
+          {'enemyPosition' in details ? ` Enemy thrown to position${NBSP}${details.enemyPosition}.` : null}
         </Text>
       );
     case log.action.fireWall != null:

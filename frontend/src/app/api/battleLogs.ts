@@ -29,6 +29,9 @@ export const allbattleLogsQueryDocument = graphql(`
       }
       lobby {
         id
+        tier
+        capacity
+        reservationsCount
         characters {
           id
           character {
@@ -40,7 +43,6 @@ export const allbattleLogsQueryDocument = graphql(`
             id
           }
         }
-        capacity
       }
       turns {
         character1 {
@@ -103,6 +105,9 @@ const battleLogByIdQueryDocument = graphql(/* GraphQL */ `
       }
       lobby {
         id
+        tier
+        reservationsCount
+        capacity
         characters {
           id
           character {
@@ -114,13 +119,19 @@ const battleLogByIdQueryDocument = graphql(/* GraphQL */ `
             id
           }
         }
-        capacity
       }
       turns {
         character1 {
           energy
           hp
           position
+
+          chillingTouch
+          earthSkin
+          earthSmites
+          fireHaste
+          fireWall
+          waterBurst
         }
         logs {
           action
@@ -130,6 +141,13 @@ const battleLogByIdQueryDocument = graphql(/* GraphQL */ `
           energy
           position
           hp
+
+          chillingTouch
+          earthSkin
+          earthSmites
+          fireHaste
+          fireWall
+          waterBurst
         }
       }
     }

@@ -147,6 +147,7 @@ export const BattleResult = ({
   const [isPlaying, setIsPlaying] = useState(false);
   useEffect(() => {
 
+    const PLAYING_INTERVAL_MS = 150;
     if (isPlaying) {
       const interval = setInterval(() => {
         setCurrentTurnIndex((prev) => {
@@ -157,7 +158,7 @@ export const BattleResult = ({
             return prev;
           }
         });
-      }, 100);
+      }, PLAYING_INTERVAL_MS);
       return () => clearInterval(interval);
     }
 

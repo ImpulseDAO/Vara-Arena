@@ -1,6 +1,8 @@
 import './styles.scss';
+import { debounce } from 'lodash';
 import { getCharacterFromBattleLogById, useAllBattleLogs } from 'app/api/battleLogs';
-import { Flex, Table } from '@mantine/core';
+import { Flex, Table, Text, TextInput, rem } from '@mantine/core';
+import { IconSearch } from '@tabler/icons-react';
 import { routes } from 'app/routes';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BattleLog } from 'gql/graphql';
@@ -12,20 +14,20 @@ import { TheButton } from 'components/TheButton';
 export const History = () => {
   const navigate = useNavigate();
   const myAccountId = useMyAccountId();
+  const [searchStr, setSearchStr] = React.useState('');
 
   /**
    *
    */
 
   const { data: myCharacters } = useMyCharacters({ owner_eq: myAccountId ?? '' });
-  const { data: battleLogsUnfiltered } = useAllBattleLogs();
+  const { data: battleLogsUnfilteredUnsorted } = useAllBattleLogs();
 
   /**
    * If true, only show battle logs where the player's characters are involved.
    */
   const [searchParams, setSearchParams] = useSearchParams();
   const isFiltered = searchParams.get('filtered') === 'true';
-
 
   useEffect(() => {
     // set initial if not set
@@ -35,49 +37,75 @@ export const History = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const battleLogsUnfilteredSorted = React.useMemo(() => {
+    return battleLogsUnfilteredUnsorted?.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  }, [battleLogsUnfilteredUnsorted]);
+
+  /**
+   * Filter battle logs
+   */
+
   const battleLogs = React.useMemo(() => {
-    if (!isFiltered) { return battleLogsUnfiltered; }
+    if (!isFiltered) { return battleLogsUnfilteredSorted; }
 
     const myCharactersIds = myCharacters?.characters.map((character) => character.id) ?? [];
 
-    return battleLogsUnfiltered?.filter((battleLog: BattleLog) => {
+    return battleLogsUnfilteredSorted?.filter((battleLog: BattleLog) => {
       return (myCharactersIds.includes(battleLog.character1.character)
         || myCharactersIds.includes(battleLog.character2.character));
     });
-  }, [battleLogsUnfiltered, isFiltered, myCharacters?.characters]);
+  }, [battleLogsUnfilteredSorted, isFiltered, myCharacters?.characters]);
 
   /**
-   *
+   * Apply search string
    */
 
-  const inProgressRows = battleLogs?.toReversed().map((battleLog: BattleLog) => {
-    const { id } = battleLog;
-    const char1Id = battleLog.character1.character;
-    const char2Id = battleLog.character2.character;
+  const battleLogsAfterSearch = React.useMemo(() => {
+    if (!searchStr) { return battleLogs; }
 
-    const playersNames = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.name ?? 'Player not found');
-    const playersOwners = [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId)?.owner ?? 'Player not found');
+    return battleLogs?.filter((battleLog: BattleLog) => {
+      if (battleLog.lobby.id.toLowerCase().includes(searchStr.toLowerCase())) { return true; }
+      if (battleLog.id.toLowerCase().includes(searchStr.toLowerCase())) { return true; }
 
-    const winner: Pick<Character, 'name' | 'owner'> | undefined = battleLog.character1.winner
-      ? getCharacterFromBattleLogById(battleLog as BattleLog, char1Id)
-      : battleLog.character2.winner
-        ? getCharacterFromBattleLogById(battleLog as BattleLog, char2Id)
-        : { name: 'No winner', owner: '' };
+      const playersInBattle = getPlayersInBattle(battleLog);
 
-    const winnerName = winner?.name;
-    const winnerOwner = winner?.owner;
-
-    const includesMyCharacter = playersOwners.includes(myAccountId ?? '') || (winnerOwner && winnerOwner === myAccountId);
-
-    return ({
-      playersNames,
-      battleId: id,
-      lobbyId: battleLog.lobby.id,
-      winner: winnerName,
-      includesMyCharacter
+      return playersInBattle.some(character => {
+        return character?.name.toLowerCase().includes(searchStr.toLowerCase());
+      });
     });
-  }) ?? [];
+  }, [battleLogs, searchStr]);
 
+  /**
+   * transform rows data
+   */
+
+  const inProgressRows = React.useMemo(() => {
+    return battleLogsAfterSearch?.toReversed().map((battleLog: BattleLog) => {
+      const { id } = battleLog;
+      const playersInBattle = getPlayersInBattle(battleLog);
+
+      const playersNames = playersInBattle.map((character) => character?.name ?? 'Player not found');
+      const playersOwners = playersInBattle.map((character) => character?.owner ?? 'Player not found');
+      const winner = battleLog.character1.winner ? playersInBattle[0] : battleLog.character2.winner ? playersInBattle[1] : { name: 'No winner', owner: '' };
+
+      const winnerName = winner?.name;
+      const winnerOwner = winner?.owner;
+
+      const includesMyCharacter = playersOwners.includes(myAccountId ?? '') || (winnerOwner && winnerOwner === myAccountId);
+
+      return ({
+        playersNames,
+        battleId: id,
+        lobbyId: battleLog.lobby.id,
+        tier: battleLog.lobby.tier,
+        winner: winnerName,
+        includesMyCharacter
+      });
+    }) ?? [];
+  }, [battleLogsAfterSearch, myAccountId]);
+
+
+  const BUTTON_WIDTH = '200px';
 
   return (
     <div className='logs'>
@@ -85,8 +113,11 @@ export const History = () => {
         <Flex
           style={{ alignSelf: 'stretch' }}
           mb="xs"
+          justify={'space-between'}
+          w="100%"
         >
           <TheButton
+            w={BUTTON_WIDTH}
             size="sm"
             bg="black"
             onClick={() => setSearchParams(prev => {
@@ -95,6 +126,27 @@ export const History = () => {
               return newParams;
             },)}
           >{isFiltered ? "Show all logs" : "Show my logs only"}</TheButton>
+
+          <TextInput
+            w={BUTTON_WIDTH}
+            size="sm"
+            placeholder="Search..."
+            rightSectionWidth={42}
+            styles={{
+              input: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                border: '2px solid white',
+                color: 'white'
+              }
+            }}
+            c="white"
+            leftSection={<IconSearch style={{ width: rem(18), height: rem(18) }} color="white" stroke={2.5} />}
+            onChange={(event) => {
+              debounce(() => {
+                setSearchStr(event.target.value);
+              }, 300, { maxWait: 1000 })();
+            }}
+          />
         </Flex>
 
         <div className='header'>History</div>
@@ -105,6 +157,7 @@ export const History = () => {
                 {[
                   'Lobby ID',
                   'Battle ID',
+                  'Tier',
                   'Players',
                   'Winner',
                 ].map((header, idx) => {
@@ -135,6 +188,8 @@ export const History = () => {
                     <div className={'badge'} > {row.lobbyId}</div>,
                     /* Battle ID */
                     <div className={'badge'}>{row.battleId}</div>,
+                    /* Tier */
+                    <Text ta="center" size='sm' fw="500">{row.tier}</Text>,
                     /* Players */
                     row.playersNames.map(playerName => {
                       return (
@@ -170,9 +225,21 @@ export const History = () => {
 const CELL_WIDTH = {
   0: '100px',
   1: '100px',
+  2: '40px'
 };
 
 const TEXT_ALIGN = {
   0: 'center',
   1: 'center',
+  2: 'center'
 };
+
+/**
+ * Utils
+ */
+
+function getPlayersInBattle(battleLog: BattleLog) {
+  const char1Id = battleLog.character1.character;
+  const char2Id = battleLog.character2.character;
+  return [char1Id, char2Id].map((charId) => getCharacterFromBattleLogById(battleLog, charId));
+}

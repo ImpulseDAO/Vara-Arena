@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkvara_arena=self.webpackChunkvara_arena||[]).push([[142],{6142:(a,e,r)=>{r.r(e),r.d(e,{MyProfile:()=>s.F9});var s=r(1010)}}]);

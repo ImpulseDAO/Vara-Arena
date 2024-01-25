@@ -21,13 +21,6 @@ export type Incremental<T> =
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
     };
 /** All built-in and custom scalars, mapped to their actual values */
-type LLL = Exact<{
-  optional?: "hello";
-}>;
-
-type LLLA = {
-  optional?: "hello";
-};
 
 export type Scalars = {
   ID: { input: string; output: string };

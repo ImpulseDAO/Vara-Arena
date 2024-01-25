@@ -130,7 +130,7 @@ export const History = () => {
           <TextInput
             w={BUTTON_WIDTH}
             size="sm"
-            placeholder="Search..."
+            placeholder="Search by ID or name"
             rightSectionWidth={42}
             styles={{
               input: {

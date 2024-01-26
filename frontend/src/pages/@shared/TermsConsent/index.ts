@@ -1,0 +1,1 @@
+export { TermsConsent } from "./TermsConsent";

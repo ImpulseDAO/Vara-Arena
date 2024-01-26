@@ -4,6 +4,8 @@ import { AuthorizedLayer } from "layouts/AuthorizedLayer";
 import { oldRoutes } from "./routes";
 import { routes } from "./routes";
 import { ProfilePage } from "pages/MyProfile/MyProfile";
+import { LogoutScreen } from "pages/LogoutScreen";
+import { APP_ROUTER_BASENAME } from "consts";
 //
 const History = React.lazy(() => import("pages/History").then(({ History }) => ({ default: History })));
 const Lobby = React.lazy(() => import("pages/Lobby").then(({ Lobby }) => ({ default: Lobby })));
@@ -20,7 +22,7 @@ const TournamentResultPage = React.lazy(() => import("pages/BattleResult/Tournam
 const options: Parameters<typeof createBrowserRouter>[1] = {
   // see more https://github.com/rafgraph/spa-github-pages
   // also this is related to the `homepage` field in package.json
-  basename: "/Vara-Arena",
+  basename: APP_ROUTER_BASENAME,
 };
 
 export const appRouter = createBrowserRouter(
@@ -29,6 +31,7 @@ export const appRouter = createBrowserRouter(
     /**
      * NEW ROUTES:
     */
+    { element: <LogoutScreen />, path: routes.logoutScreen },
     { element: <StartScreen />, path: routes.startScreen },
     { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
     { element: <Lobby />, path: routes.lobbyDynamic, auth: true },
@@ -45,12 +48,16 @@ export const appRouter = createBrowserRouter(
 
     { element: <div></div>, path: routes.wildcard, auth: true },
   ].map(({ element, path, auth }) => ({
-    element: auth ? (
-      <Suspense>
-        <AuthorizedLayer>{element}</AuthorizedLayer>
-      </Suspense>
-    ) : element,
     path,
+    element:
+      <Suspense>
+        {
+          auth
+            ? <AuthorizedLayer>{element}</AuthorizedLayer>
+            : element
+        }
+      </Suspense>
+
   })),
   options
 );

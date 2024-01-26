@@ -7,7 +7,7 @@ import { BackgroundImage, Box, LoadingOverlay, useMantineTheme } from "@mantine/
 
 import StartFightPng from "assets/images/startFightScreen.webp";
 import { routes } from "app/routes";
-
+import { TermsConsent } from "pages/@shared/TermsConsent";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;
@@ -55,6 +55,8 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
         >
           {isLoading ? <LoadingOverlay visible loaderProps={{ size: 80, variant: 'oval', color: theme.primaryColor }} overlayProps={{ color: theme.colors.gray90[0] }} /> : children}
         </Box>
+
+        <TermsConsent />
 
       </div >
     );

@@ -18,6 +18,8 @@ const LOCAL_STORAGE = {
 export const IS_TESTNET = process.env.REACT_APP_IS_TESTNET;
 console.log("IS_TESTNET", IS_TESTNET);
 
+export const APP_ROUTER_BASENAME = "/Vara-Arena";
+
 /**
  *
  */

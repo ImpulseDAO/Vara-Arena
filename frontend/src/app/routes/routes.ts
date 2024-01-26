@@ -5,6 +5,7 @@ export const oldRoutes = {
 export const routes = {
   wildcard: "/*",
   startScreen: "/",
+  logoutScreen: "/logout",
   arena: "/arena",
   history: "/history",
   mintCharacter: "/mint-character",

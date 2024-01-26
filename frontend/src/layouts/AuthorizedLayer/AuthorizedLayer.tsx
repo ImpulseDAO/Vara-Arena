@@ -56,7 +56,7 @@ export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
           {isLoading ? <LoadingOverlay visible loaderProps={{ size: 80, variant: 'oval', color: theme.primaryColor }} overlayProps={{ color: theme.colors.gray90[0] }} /> : children}
         </Box>
 
-        <TermsConsent />
+        <TermsConsent key={account?.decodedAddress} />
 
       </div >
     );

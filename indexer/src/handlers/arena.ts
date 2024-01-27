@@ -62,8 +62,8 @@ export async function handleArenaMessage(
             }
 
             let fullHpByCharacter = {
-                [character1.id]: getFullHp((character1.attributes as any).vitality),
-                [character2.id]: getFullHp((character2.attributes as any).vitality),
+                [character1.id]: getFullHp(character1.level),
+                [character2.id]: getFullHp(character2.level),
             }
             let fullEnergyByCharacter = {
                 [character1.id]: getFullEnergy((character1.attributes as any).stamina),
@@ -171,11 +171,6 @@ export async function handleArenaMessage(
                                     player.hp = Math.min(player.hp + event.action.castSpell.result.waterRestoration.heal, fullHp)
                                     player.energy -= 5
                                     break
-                                case 'earthCatapult':
-                                    enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.earthCatapult.damage, 0)
-                                    enemy.position = event.action.castSpell.result.earthCatapult.enemyPosition
-                                    player.energy -= 7
-                                    break
                                 case 'waterBurst':
                                     enemy.hp = Math.max(enemy.hp - event.action.castSpell.result.waterBurst.damage, 0)
                                     enemy.waterBurst = 3
@@ -267,8 +262,8 @@ export async function handleArenaMessage(
     }
 }
 
-function getFullHp(vitality: number): number {
-    return 90 + vitality * 3
+function getFullHp(level: number): number {
+    return 90 + level * 15
 }
 
 function getFullEnergy(stamina: number): number {

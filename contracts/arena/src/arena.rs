@@ -99,7 +99,7 @@ impl Arena {
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
 
-            msg::reply(ArenaEvent::BattleStarted { lobby_id }, 0);
+            msg::send(msg::source(), ArenaEvent::BattleStarted { lobby_id }, 0);
         }
         let source = lobby.source.expect("original sender is not specified");
 
@@ -210,7 +210,7 @@ impl Arena {
             id: character_info.id,
             algorithm_id: character_info.algorithm_id,
             name: character_info.name,
-            hp: utils::full_hp(character_info.attributes.vitality),
+            hp: utils::full_hp(character_info.level),
             energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,

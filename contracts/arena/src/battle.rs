@@ -187,7 +187,7 @@ impl Battle {
 fn spell_initiative(spell: &Spell) -> u16 {
     match spell {
         Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 20,
-        Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 15,
+        Spell::Fireball | Spell::WaterBurst => 15,
         Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 10,
     }
 }

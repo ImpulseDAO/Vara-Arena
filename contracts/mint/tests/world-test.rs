@@ -43,7 +43,6 @@ fn gold_distribution() {
                 agility: 1,
                 strength: 1,
                 stamina: 1,
-                vitality: 1,
                 intelligence: 6,
             },
         },
@@ -59,7 +58,21 @@ fn gold_distribution() {
                 agility: 1,
                 strength: 1,
                 stamina: 1,
-                vitality: 1,
+                intelligence: 6,
+            },
+        },
+        mint_cost,
+    );
+
+    let res = mint.send_with_value(
+        20,
+        MintAction::CreateCharacter {
+            code_id,
+            name: "Bob".to_string(),
+            attributes: InitialAttributes {
+                agility: 1,
+                strength: 1,
+                stamina: 1,
                 intelligence: 6,
             },
         },

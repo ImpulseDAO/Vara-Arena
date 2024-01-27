@@ -185,7 +185,10 @@ pub enum MintEvent {
         character_id: u128,
         attr: AttributeChoice,
     },
-    CharacterUpdated,
+    CharacterUpdated {
+        character_id: u128,
+        algorithm_id: ActorId,
+    },
     BattleResultHandled {
         winner_id: u128,
         winner_xp: u32,

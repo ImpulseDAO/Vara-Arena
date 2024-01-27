@@ -50,6 +50,7 @@ impl Battle {
                 fire_haste: self.c1.fire_haste,
                 fire_wall: self.c1.fire_wall,
                 water_burst: self.c1.water_burst,
+                attributes: self.c1.attributes.clone(),
             };
             let p2_state = CharacterState {
                 hp: self.c2.hp,
@@ -63,6 +64,7 @@ impl Battle {
                 fire_haste: self.c2.fire_haste,
                 fire_wall: self.c2.fire_wall,
                 water_burst: self.c2.water_burst,
+                attributes: self.c2.attributes.clone(),
             };
 
             let p1_turn = YourTurn {
@@ -116,6 +118,13 @@ impl Battle {
             self.c2.disable_agiim = false;
 
             if p1_initiative > p2_initiative {
+                debug!(
+                    "p1 initiative = {} x p2 initiative = {} !",
+                    p1_initiative, p2_initiative
+                );
+
+                debug!("p1 name = {} x p2 name = {} !", self.c1.name, self.c2.name);
+
                 self.c1.parry = matches!(&p1_action, BattleAction::Parry);
                 self.c2.parry = false;
 
@@ -177,22 +186,22 @@ impl Battle {
 
 fn spell_initiative(spell: &Spell) -> u16 {
     match spell {
-        Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 10,
-        Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 16,
-        Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 20,
+        Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 20,
+        Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 15,
+        Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 10,
     }
 }
 
 fn action_initiative(action: &BattleAction) -> u16 {
     match action {
         BattleAction::Attack { kind } => match kind {
-            AttackKind::Quick => 10,
+            AttackKind::Quick => 20,
             AttackKind::Precise => 15,
-            AttackKind::Heavy => 20,
+            AttackKind::Heavy => 10,
         },
-        BattleAction::MoveLeft | BattleAction::MoveRight | BattleAction::Rest => 8,
-        BattleAction::Parry => 12,
-        BattleAction::Guardbreak => 18,
+        BattleAction::MoveLeft | BattleAction::MoveRight | BattleAction::Rest => 22,
+        BattleAction::Parry => 18,
+        BattleAction::Guardbreak => 12,
         BattleAction::CastSpell { spell } => spell_initiative(spell),
     }
 }
@@ -212,7 +221,7 @@ fn player_initiative(player: &Character, enemy: &Character, action: &BattleActio
     if player.disable_agiim {
         base_initiative
     } else {
-        base_initiative - (u16::from(player.attributes.agility) * modifier)
+        base_initiative + (u16::from(player.attributes.agility) * modifier)
     }
 }
 

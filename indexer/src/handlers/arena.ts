@@ -251,9 +251,16 @@ export async function handleArenaMessage(
         let lobby = lobbies.get(data.gasReserved.lobbyId)
         if (lobby == null) {
             lobby = await store.findOneOrFail(Lobby, { where: { id: data.gasReserved.lobbyId } })
-            lobbies.set(data.gasReserved.lobbyId, lobby)
+            lobbies.set(lobby.id, lobby)
         }
         lobby.reservationsCount += 1
+    } else if (data.battleStarted) {
+        let lobby = lobbies.get(data.battleStarted.lobbyId)
+        if (lobby == null) {
+            lobby = await store.findOneOrFail(Lobby, { where: { id: data.battleStarted.lobbyId } })
+            lobbies.set(lobby.id, lobby)
+        }
+        lobby.started = true
     } else {
         console.log(data)
         throw new Error('event is not supported')

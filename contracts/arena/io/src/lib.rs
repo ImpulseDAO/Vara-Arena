@@ -87,6 +87,9 @@ pub enum ArenaEvent {
     GasReserved {
         lobby_id: u128,
     },
+    BattleStarted {
+        lobby_id: u128,
+    },
     LobbyBattleLog {
         lobby_id: u128,
         winner_id: u128,
@@ -151,6 +154,7 @@ pub struct CharacterState {
     pub water_burst: u8,
     pub fire_haste: u8,
     pub earth_smites: (u8, u8),
+    pub attributes: CharacterAttributes,
 }
 
 #[derive(Encode, Decode)]

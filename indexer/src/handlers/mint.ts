@@ -66,8 +66,14 @@ export async function handleMintMessage(
         let xpConsume = levelXp[character.level]
         character.level += 1
         character.experience -= xpConsume
-    } else if ('characterUpdated' in data) {
-        // update character algorithmId?
+    } else if (data.characterUpdated) {
+        let character = characters.get(data.characterUpdated.characterId)
+        if (character == null) {
+            character = await store.findOneOrFail(Character, { where: { id: data.characterUpdated.characterId } })
+            characters.set(character.id, character)
+        }
+
+        character.algorithmId = data.characterUpdated.algorithmId
     } else if (data.goldDistributed) {
         for (let characterId in data.goldDistributed.distribution) {
             let balance = data.goldDistributed.distribution[characterId]

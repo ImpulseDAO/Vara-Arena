@@ -13,7 +13,6 @@ async fn main() {
 
     // TODO::
     // add a turn.you.rest_count check to improve your strategy ;)
-
     if turn.you.energy >= CATAPULT_COST
         && (turn.enemy.position - turn.you.position != 1
             && turn.you.position - turn.enemy.position != 1)
@@ -49,7 +48,7 @@ async fn main() {
         )
         .expect("unable to reply");
     } else {
-        debug!("resting...");
+        debug!("agi 1...");
         msg::reply(BattleAction::Rest, 0).expect("unable to reply");
     }
 }

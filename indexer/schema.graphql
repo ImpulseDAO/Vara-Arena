@@ -8,6 +8,7 @@ type Character @entity {
   rating: Int!
   livesCount: Int!
   balance: Int!
+  algorithmId: String!
 }
 
 type Lobby @entity {
@@ -15,6 +16,7 @@ type Lobby @entity {
   capacity: Int!
   reservationsCount: Int!
   tier: Int!
+  started: Boolean!
   characters: [LobbyCharacter!]! @derivedFrom(field: "lobby")
   battleLogs: [BattleLog!]! @derivedFrom(field: "lobby")
 }

@@ -102,10 +102,10 @@ impl Arena {
             msg::reply(ArenaEvent::BattleStarted { lobby_id }, 0);
         }
         let source = lobby.source.expect("original sender is not specified");
-
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
 
+        debug!("LOG {:?}", log);
         if log.character1.1 {
             let loser = lobby
                 .characters

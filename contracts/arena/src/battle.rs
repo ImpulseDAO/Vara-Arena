@@ -7,7 +7,7 @@ const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
 
 const INITIATIVE_MODIFIER: u16 = 125;
-
+const GAS_FOR_STEP: u64 = 40_000_000_000;
 pub struct Battle {
     pub c1: Character,
     pub c2: Character,
@@ -71,45 +71,54 @@ impl Battle {
                 you: p1_state.clone(),
                 enemy: p2_state.clone(),
             };
-            let p1_action: BattleAction =
-                match msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
-                    .expect("unable to send message")
-                    .await
-                {
-                    Ok(action) => action,
-                    Err(err) => match err {
-                        Error::Timeout(_, _) => {
-                            return BattleLog {
-                                character1: (self.c1.id, false),
-                                character2: (self.c2.id, true),
-                                turns,
-                            }
-                        }
-                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
-                    },
-                };
+            debug!("sending msg 1");
+            let p1_action: BattleAction = match msg::send_with_gas_for_reply_as(
+                self.c1.algorithm_id,
+                p1_turn,
+                GAS_FOR_STEP,
+                0,
+                0,
+            )
+            .expect("unable to send message")
+            .await
+            {
+                Ok(action) => {
+                    debug!("{:?}", action);
+                    action
+                }
+                Err(_) => {
+                    return BattleLog {
+                        character1: (self.c1.id, false),
+                        character2: (self.c2.id, true),
+                        turns,
+                    };
+                }
+            };
+            debug!("sending msg 2");
 
             let p2_turn = YourTurn {
                 you: p2_state,
                 enemy: p1_state,
             };
-            let p2_action: BattleAction =
-                match msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
-                    .expect("unable to send message")
-                    .await
-                {
-                    Ok(action) => action,
-                    Err(err) => match err {
-                        Error::Timeout(_, _) => {
-                            return BattleLog {
-                                character1: (self.c1.id, true),
-                                character2: (self.c2.id, false),
-                                turns,
-                            }
-                        }
-                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
-                    },
-                };
+            let p2_action: BattleAction = match msg::send_with_gas_for_reply_as(
+                self.c2.algorithm_id,
+                p2_turn,
+                GAS_FOR_STEP,
+                0,
+                0,
+            )
+            .expect("unable to send message")
+            .await
+            {
+                Ok(action) => action,
+                Err(_) => {
+                    return BattleLog {
+                        character1: (self.c1.id, false),
+                        character2: (self.c2.id, true),
+                        turns,
+                    };
+                }
+            };
 
             let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
             let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);

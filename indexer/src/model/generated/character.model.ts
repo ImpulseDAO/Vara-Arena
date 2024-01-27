@@ -33,4 +33,7 @@ export class Character {
 
     @Column_("int4", {nullable: false})
     balance!: number
+
+    @Column_("text", {nullable: false})
+    algorithmId!: string
 }

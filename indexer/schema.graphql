@@ -8,6 +8,7 @@ type Character @entity {
   rating: Int!
   livesCount: Int!
   balance: Int!
+  algorithmId: String!
 }
 
 type Lobby @entity {

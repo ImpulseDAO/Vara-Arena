@@ -112,7 +112,14 @@ impl Mint {
 
         character.algorithm_id = algorithm_id;
 
-        msg::reply(MintEvent::CharacterUpdated, 0).expect("unable to reply");
+        msg::reply(
+            MintEvent::CharacterUpdated {
+                character_id: character.id,
+                algorithm_id,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn character_info(&self, owner_id: CharacterId) {

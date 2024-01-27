@@ -35,8 +35,8 @@ pub fn execute_cast_spell(
         Spell::WaterRestoration => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                let heal = player.attributes.intelligence * 3;
-                enemy.hp = enemy.hp.saturating_sub(heal);
+                let heal = player.attributes.intelligence * 2;
+                player.hp = player.hp + heal;
                 CastSpellResult::WaterRestoration { heal }
             } else {
                 return TurnEvent::NotEnoughEnergy {

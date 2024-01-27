@@ -202,7 +202,7 @@ impl Arena {
             id: character_info.id,
             algorithm_id: character_info.algorithm_id,
             name: character_info.name,
-            hp: utils::full_hp(character_info.attributes.vitality),
+            hp: utils::full_hp(character_info.level),
             energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,

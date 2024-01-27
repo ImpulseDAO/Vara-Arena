@@ -26,6 +26,7 @@ fn gold_distribution() {
             reservation_duration: 2_592_000,
             mint_cost: Some(mint_cost),
             gold_pool_amount: 1000,
+            season_duration_in_days: 7,
         },
     );
 
@@ -41,7 +42,6 @@ fn gold_distribution() {
                 agility: 1,
                 strength: 1,
                 stamina: 1,
-                vitality: 1,
                 intelligence: 6,
             },
         },

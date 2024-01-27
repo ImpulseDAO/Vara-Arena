@@ -65,7 +65,6 @@ impl Mint {
             attributes: CharacterAttributes {
                 strength: attributes.strength,
                 agility: attributes.agility,
-                vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 intelligence: attributes.intelligence,
                 lives_count: self.config.lives_count,
@@ -152,7 +151,7 @@ impl Mint {
             2 => 10,
             3..=5 => 15,
             6..=9 => 20,
-            _ => 25,
+            _ => 40,
         };
         character.increase_xp();
         character.attributes.increase_rating(earned_rating);

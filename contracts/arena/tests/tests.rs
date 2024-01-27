@@ -64,7 +64,6 @@ fn game() {
             agility: 1,
             strength: 1,
             stamina: 1,
-            vitality: 1,
             intelligence: 6,
         },
     };
@@ -76,7 +75,6 @@ fn game() {
             agility: 1,
             strength: 4,
             stamina: 1,
-            vitality: 3,
             intelligence: 1,
         },
     };
@@ -88,7 +86,6 @@ fn game() {
             agility: 4,
             strength: 3,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };
@@ -100,7 +97,6 @@ fn game() {
             agility: 1,
             strength: 6,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };

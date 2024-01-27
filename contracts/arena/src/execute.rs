@@ -74,7 +74,6 @@ fn execute_attack_kind(
                     }
                     if enemy.earth_skin.0 > 0 {
                         if enemy.earth_skin.1 > damage {
-                            damage = 0;
                             enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
                         } else {
                             damage = damage - enemy.earth_skin.1;

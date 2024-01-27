@@ -18,10 +18,10 @@ async fn main() {
         && (turn.enemy.position - turn.you.position != 1
             && turn.you.position - turn.enemy.position != 1)
     {
-        debug!("CATAPULT");
+        debug!("healing");
         msg::reply(
             BattleAction::CastSpell {
-                spell: Spell::EarthCatapult,
+                spell: Spell::WaterRestoration,
             },
             0,
         )

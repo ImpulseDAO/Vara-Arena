@@ -99,7 +99,7 @@ impl Arena {
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
 
-            msg::reply(ArenaEvent::BattleStarted { lobby_id }, 0);
+            msg::send(msg::source(), ArenaEvent::BattleStarted { lobby_id }, 0);
         }
         let source = lobby.source.expect("original sender is not specified");
 

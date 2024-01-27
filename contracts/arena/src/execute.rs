@@ -84,7 +84,7 @@ fn execute_attack_kind(
                     if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
                         let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
-                        // enemy.fire_wall = (0, 0);
+                        enemy.fire_wall = (0, 0);
                         logs.push(TurnLog {
                             character: player.id,
                             action: TurnEvent::FireWall { damage },

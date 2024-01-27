@@ -122,7 +122,6 @@ pub enum Spell {
     EarthSkin,
     WaterRestoration,
     Fireball,
-    EarthCatapult,
     WaterBurst,
     FireHaste,
     EarthSmites,

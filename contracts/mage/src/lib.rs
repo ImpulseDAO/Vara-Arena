@@ -4,7 +4,6 @@ use arena_io::{AttackKind, BattleAction, Spell, YourTurn};
 use gstd::{debug, msg};
 
 const SPELL_COST: u8 = 5;
-const CATAPULT_COST: u8 = 7;
 const QUICK_ATTACK_COST: u8 = 2;
 
 #[gstd::async_main]
@@ -13,14 +12,13 @@ async fn main() {
 
     // TODO::
     // add a turn.you.rest_count check to improve your strategy ;)
-    if turn.you.energy >= CATAPULT_COST
+    if turn.you.energy >= SPELL_COST
         && (turn.enemy.position - turn.you.position != 1
             && turn.you.position - turn.enemy.position != 1)
     {
-        debug!("healing");
         msg::reply(
             BattleAction::CastSpell {
-                spell: Spell::WaterRestoration,
+                spell: Spell::Fireball,
             },
             0,
         )

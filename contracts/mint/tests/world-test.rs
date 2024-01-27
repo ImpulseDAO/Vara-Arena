@@ -58,7 +58,6 @@ fn gold_distribution() {
                 agility: 1,
                 strength: 1,
                 stamina: 1,
-                vitality: 1,
                 intelligence: 6,
             },
         },

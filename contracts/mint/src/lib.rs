@@ -347,13 +347,11 @@ impl Mint {
         assert!(attributes.stamina >= 1);
         assert!(attributes.strength >= 1);
         assert!(attributes.intelligence >= 1);
-        assert!(attributes.vitality >= 1);
         let mut sum: u8 = 0;
         sum = sum.checked_add(attributes.agility).unwrap();
         sum = sum.checked_add(attributes.stamina).unwrap();
         sum = sum.checked_add(attributes.strength).unwrap();
         sum = sum.checked_add(attributes.intelligence).unwrap();
-        sum = sum.checked_add(attributes.vitality).unwrap();
         assert!(sum == 10, "invalid amount of attributes")
     }
 

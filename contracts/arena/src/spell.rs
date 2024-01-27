@@ -56,26 +56,6 @@ pub fn execute_cast_spell(
                 };
             }
         }
-        Spell::EarthCatapult => {
-            if let Some(energy) = player.energy.checked_sub(7) {
-                player.energy = energy;
-                let damage = player.attributes.intelligence * 3;
-                enemy.hp = enemy.hp.saturating_sub(damage);
-                if player.position > enemy.position {
-                    enemy.position = enemy.position.saturating_sub(2);
-                } else {
-                    enemy.position = min(enemy.position + 2, 15);
-                }
-                CastSpellResult::EarthCatapult {
-                    damage,
-                    enemy_position: enemy.position,
-                }
-            } else {
-                return TurnEvent::NotEnoughEnergy {
-                    action: action.clone(),
-                };
-            }
-        }
         Spell::WaterBurst => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;

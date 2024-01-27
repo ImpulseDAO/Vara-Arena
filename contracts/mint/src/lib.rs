@@ -300,6 +300,7 @@ impl Mint {
         let unit_rating_payment = amount_for_distribution / self.total_rating;
 
         let mut live_characters = Vec::new();
+        let mut distribution: BTreeMap<u128, u128> = BTreeMap::new();
         for character_info in self.characters.values_mut() {
             if character_info.attributes.lives_count > 0 {
                 let earned_daily_balance =
@@ -309,6 +310,7 @@ impl Mint {
                     .balance
                     .saturating_add(earned_daily_balance.into());
                 live_characters.push(character_info.clone());
+                distribution.insert(character_info.id, character_info.attributes.balance);
             }
         }
 
@@ -319,6 +321,8 @@ impl Mint {
             );
             // TO DO select that amount of characters to send vara
         }
+
+        msg::reply(MintEvent::GoldDistributed { distribution }, 0).expect("unable to reply");
     }
 
     fn stop_daily_gold_distribution(&mut self) {

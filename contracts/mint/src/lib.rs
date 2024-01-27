@@ -224,6 +224,7 @@ impl Mint {
     }
 
     fn distribute_daily_pool(&mut self) {
+        debug!("Delayed message!");
         assert_eq!(
             self.daily_gold_distr_status,
             DailyGoldDistrStatus::Active,
@@ -239,18 +240,19 @@ impl Mint {
 
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;
-
+        debug!("unit_rating_payment {:?}", unit_rating_payment);
         for character_info in self.characters.values_mut() {
             if character_info.attributes.lives_count > 0 {
                 let earned_daily_balance =
                     character_info.attributes.tier_rating * unit_rating_payment;
+                debug!("earned_daily_balance {:?}", earned_daily_balance);
                 character_info.attributes.balance = character_info
                     .attributes
                     .balance
                     .saturating_add(earned_daily_balance.into());
             }
         }
-
+        debug!("Delayed message!");
         // Check gas in message
         // If the remaining gas in the message is less than the minimum gas amount on config
         // then new gas is taken from the reservation.
@@ -269,6 +271,7 @@ impl Mint {
                 self.daily_gold_distr_status = DailyGoldDistrStatus::OutOfGas;
             }
         } else {
+            debug!("send next");
             msg::send_delayed(
                 program_id,
                 MintAction::DistributeDailyPool,

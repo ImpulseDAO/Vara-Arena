@@ -49,7 +49,7 @@ export async function handleMintMessage(
             character.livesCount -= 1
         }
     } else if (data.levelUpdated) {
-        if (!['Strength', 'Agility', 'Vitality', 'Stamina', 'Intelligence'].includes(data.levelUpdated.attr)) {
+        if (!['Strength', 'Agility', 'Stamina', 'Intelligence'].includes(data.levelUpdated.attr)) {
             console.log(data.levelUpdated.attr)
             throw new Error('unknown attr')
         }

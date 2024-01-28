@@ -57,50 +57,51 @@ fn game() {
         .into();
     let code_id2 = CodeId::from(hash2);
 
+    let hash3: [u8; 32] = system
+        .submit_code("../../target/wasm32-unknown-unknown/release/berserk.wasm")
+        .into();
+    let code_id3 = CodeId::from(hash3);
+
     let payload1 = MintAction::CreateCharacter {
         code_id: code_id2,
-        name: "Alice".to_string(),
+        name: "Wizzard".to_string(),
         attributes: InitialAttributes {
             agility: 1,
             strength: 1,
-            stamina: 1,
-            vitality: 1,
+            stamina: 2,
             intelligence: 6,
         },
     };
 
     let payload2 = MintAction::CreateCharacter {
         code_id,
-        name: "Bob".to_string(),
+        name: "Rogue".to_string(),
         attributes: InitialAttributes {
-            agility: 6,
-            strength: 1,
+            agility: 5,
+            strength: 3,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };
 
     let payload3 = MintAction::CreateCharacter {
-        code_id,
-        name: "Che".to_string(),
+        code_id: code_id3,
+        name: "Knight".to_string(),
         attributes: InitialAttributes {
-            agility: 6,
-            strength: 1,
-            stamina: 1,
-            vitality: 1,
+            agility: 1,
+            strength: 6,
+            stamina: 2,
             intelligence: 1,
         },
     };
 
     let payload4 = MintAction::CreateCharacter {
         code_id,
-        name: "Dua".to_string(),
+        name: "Rogue".to_string(),
         attributes: InitialAttributes {
-            agility: 6,
-            strength: 1,
+            agility: 5,
+            strength: 3,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };

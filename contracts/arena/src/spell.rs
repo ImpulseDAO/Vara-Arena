@@ -35,8 +35,8 @@ pub fn execute_cast_spell(
         Spell::WaterRestoration => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                let heal = player.attributes.intelligence * 3;
-                enemy.hp = enemy.hp.saturating_sub(heal);
+                let heal = player.attributes.intelligence * 2;
+                player.hp = player.hp + heal;
                 CastSpellResult::WaterRestoration { heal }
             } else {
                 return TurnEvent::NotEnoughEnergy {
@@ -50,26 +50,6 @@ pub fn execute_cast_spell(
                 let damage = player.attributes.intelligence * 3;
                 enemy.hp = enemy.hp.saturating_sub(damage);
                 CastSpellResult::Fireball { damage }
-            } else {
-                return TurnEvent::NotEnoughEnergy {
-                    action: action.clone(),
-                };
-            }
-        }
-        Spell::EarthCatapult => {
-            if let Some(energy) = player.energy.checked_sub(7) {
-                player.energy = energy;
-                let damage = player.attributes.intelligence * 3;
-                enemy.hp = enemy.hp.saturating_sub(damage);
-                if player.position > enemy.position {
-                    enemy.position = enemy.position.saturating_sub(2);
-                } else {
-                    enemy.position = min(enemy.position + 2, 15);
-                }
-                CastSpellResult::EarthCatapult {
-                    damage,
-                    enemy_position: enemy.position,
-                }
             } else {
                 return TurnEvent::NotEnoughEnergy {
                     action: action.clone(),

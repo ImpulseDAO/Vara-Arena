@@ -27,7 +27,7 @@ export const Leaderboard = () => {
     });
   }, [characters]);
 
-  const ROWS_MIN = 2;
+  const ROWS_MIN = 5;
   const inProgressRows = entries.map(([ownerId, c]) => {
     const isMyCharacter = ownerId === myAccountId;
 
@@ -112,15 +112,18 @@ export const Leaderboard = () => {
 
                   </Table.Tr>);
               })}
-              {Array(Math.max(ROWS_MIN - inProgressRows.length, 0)).fill(null).map(() => {
-                return (
+              {ROWS_MIN - inProgressRows.length &&
+                /**
+                 * This is needed to keep the table rows height consistent
+                 */
+                (
                   <Table.Tr>
                     <Table.Td colSpan={4} >
 
                     </Table.Td>
                   </Table.Tr>
-                );
-              })}
+                )
+              }
             </Table.Tbody>
           </Table>
         </div>

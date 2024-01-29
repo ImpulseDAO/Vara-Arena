@@ -85,7 +85,7 @@ impl Arena {
             panic!("not enough players to start the battle");
         }
 
-        if lobby.started {
+        if lobby.started && msg::source() != exec::program_id() {
             panic!("the battle is already started");
         }
 
@@ -99,7 +99,8 @@ impl Arena {
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
 
-            msg::send(msg::source(), ArenaEvent::BattleStarted { lobby_id }, 0);
+            msg::send(msg::source(), ArenaEvent::BattleStarted { lobby_id }, 0)
+                .expect("unable to send");
         }
         let source = lobby.source.expect("original sender is not specified");
         let battle = lobby.battles.pop().unwrap();

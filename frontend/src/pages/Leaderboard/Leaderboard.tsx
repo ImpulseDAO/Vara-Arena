@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import "./styles.scss";
 import { useMintState } from "app/api/mintState";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
-import { Table, Text } from "@mantine/core";
+import { Box, Table, Text } from "@mantine/core";
 import { getShortIdString } from "utils";
 import { useMyAccountId } from "hooks/hooks";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +27,7 @@ export const Leaderboard = () => {
     });
   }, [characters]);
 
-
+  const ROWS_MIN = 2;
   const inProgressRows = entries.map(([ownerId, c]) => {
     const isMyCharacter = ownerId === myAccountId;
 
@@ -69,45 +69,59 @@ export const Leaderboard = () => {
                 })}
               </Table.Tr>
             </Table.Thead>
-            <Table.Tbody>{inProgressRows.map((row) => {
-              return (
-                <Table.Tr
-                  // onClick={() => {
-                  //   const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
-                  //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
-                  // }}
-                  className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
-                  key={row.ownerId}
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => {
-                    navigate(routes.profile(String(row.id)));
-                  }}
-                >
-                  {[
-                    /* Rating */
-                    <div className={'badge'}>{row.rating}</div>,
-                    /* Name */
-                    <Text size="md"> {row.name}</Text>,
-                    /* Level */
-                    <div className={'badge'}>{row.level}</div>,
-                    /* Owner ID */
-                    <div title={row.ownerId}>{getShortIdString(row.ownerId)}</div>,
-                  ].map((cellContent, idx) => {
-                    return (
-                      <Table.Td
-                        key={idx}
-                        w={CELL_WIDTH[idx]}
-                        ta={TEXT_ALIGN[idx]}
-                      >
-                        {cellContent}
-                      </Table.Td>
-                    );
-                  })}
+            <Table.Tbody>
+              {inProgressRows.map((row) => {
+                return (
+                  <Table.Tr
+                    // onClick={() => {
+                    //   const [lobbyId, battleId] = row.battleId.split('-') as [string, string | undefined];
+                    //   navigate(newRoutes.tournamentResult({ lobbyId, battleId }));
+                    // }}
+                    className={['table_row', row.isMyCharacter ? 'table_row_highlighted' : ''].join(' ')}
+                    key={row.ownerId}
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      navigate(routes.profile(String(row.id)));
+                    }}
+                  >
+                    {[
+                      /* Rating */
+                      <Box className={'badge'} >{row.rating}</Box>,
+                      /* Name */
+                      <Text size="md"> {row.name}</Text>,
+                      /* Level */
+                      <div className={'badge'}>{row.level}</div>,
+                      /* Owner ID */
+                      <div title={row.ownerId}>{getShortIdString(row.ownerId)}</div>,
+                    ].map((cellContent, idx) => {
+                      return (
+                        <Table.Td
+                          key={idx}
+                          w={CELL_WIDTH[idx]}
+                          ta={TEXT_ALIGN[idx]}
 
-                </Table.Tr>);
-            })}</Table.Tbody>
+                        >
+                          <Box h="2rem">
+                            {cellContent}
+                          </Box>
+                        </Table.Td>
+                      );
+                    })}
+
+                  </Table.Tr>);
+              })}
+              {Array(Math.max(ROWS_MIN - inProgressRows.length, 0)).fill(null).map(() => {
+                return (
+                  <Table.Tr>
+                    <Table.Td colSpan={4} >
+
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })}
+            </Table.Tbody>
           </Table>
         </div>
       </div>

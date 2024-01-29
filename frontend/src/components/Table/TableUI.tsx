@@ -28,7 +28,7 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
       <Styled.Columns>
         {columns.map((column, index) => (
           <Styled.Column
-            position={column.position}
+            position={column.$position}
             key={column.field}
             style={{ width: column.width }}
             onClick={onClickSort(column)}

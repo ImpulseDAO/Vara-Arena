@@ -7,10 +7,10 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "codegen": "graphql-codegen --watch",
-    "start": "react-app-rewired start",
+    "start": "react-app-rewired --max_old_space_size=2048 start",
     "dev": "concurrently \"npm run codegen\" \"npm run start\"",
     "prebuild": "graphql-codegen",
-    "build": "react-app-rewired build",
+    "build": "react-app-rewired --max_old_space_size=2048 build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"

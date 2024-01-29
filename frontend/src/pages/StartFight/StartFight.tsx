@@ -50,7 +50,6 @@ export const StartFight = memo(() => {
     attributes: {
       strength: string;
       agility: string;
-      vitality: string;
       stamina: string;
     };
     name: string;

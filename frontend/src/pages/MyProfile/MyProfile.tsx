@@ -155,7 +155,7 @@ export const Profile = ({
         <div className="profile_equip">
           <StatBar
             lives={character.livesCount}
-            health={getFullHp(character.attributes.vitality)}
+            health={getFullHp(character.level)}
             energy={getFullEnergy(character.attributes.stamina)}
           />
 

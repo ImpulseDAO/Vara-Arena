@@ -1,6 +1,6 @@
 import React from "react";
 import { useConsent } from "./components/utils";
-import { Center, Checkbox, Flex, Overlay, Stack, Text, Button, Anchor, Box } from "@mantine/core";
+import { Center, Checkbox, Flex, Overlay, Stack, Text, Button, Anchor } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { routes } from "app/routes";
 import { APP_ROUTER_BASENAME } from "consts";

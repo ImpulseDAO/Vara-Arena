@@ -5,7 +5,6 @@
 type Attributes = {
   strength: number;
   agility: number;
-  vitality: number;
   stamina: number;
   intelligence: number;
 };

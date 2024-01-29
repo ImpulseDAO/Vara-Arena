@@ -8,16 +8,10 @@ import { Badge, Box, Table } from "@mantine/core";
 import { TitleWithQuote } from "components/TitleWithQuote";
 import capitalize from "lodash/capitalize";
 import { getFullEnergy, getFullHp } from "consts";
+import { CharacterStats } from "../hooks/useStats";
 
 type MintCharacterViewProps = {
-  stats: {
-    strength: number;
-    agility: number;
-    vitality: number;
-    stamina: number;
-    intelligence: number;
-    points: number;
-  };
+  stats: CharacterStats;
   decrease: (stat) => void;
   increase: (stat) => void;
   disabled: boolean;
@@ -63,7 +57,6 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
               {[
                 'strength',
                 'agility',
-                'vitality',
                 'stamina',
                 'intelligence'
               ].map((statName) => {
@@ -86,7 +79,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
             <div className={"modal_right"}>
               <Box pt="2.5rem" mb="2rem">
                 <StatBar
-                  health={getFullHp(stats.vitality)}
+                  health={getFullHp(stats.level)}
                   energy={getFullEnergy(stats.stamina)}
                 />
               </Box>

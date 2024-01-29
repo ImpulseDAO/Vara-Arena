@@ -29,7 +29,6 @@ export const CharStats = ({
       {[
         'strength',
         'agility',
-        'vitality',
         'stamina',
         'intelligence',
       ].map((attrName) => (

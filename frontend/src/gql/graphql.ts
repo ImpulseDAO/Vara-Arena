@@ -95,6 +95,10 @@ export enum BattleLogOrderByInput {
   LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
   LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
   LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST',
+  LobbyStartedAsc = 'lobby_started_ASC',
+  LobbyStartedAscNullsFirst = 'lobby_started_ASC_NULLS_FIRST',
+  LobbyStartedDesc = 'lobby_started_DESC',
+  LobbyStartedDescNullsLast = 'lobby_started_DESC_NULLS_LAST',
   LobbyTierAsc = 'lobby_tier_ASC',
   LobbyTierAscNullsFirst = 'lobby_tier_ASC_NULLS_FIRST',
   LobbyTierDesc = 'lobby_tier_DESC',
@@ -155,6 +159,7 @@ export type BattleTurn = {
 
 export type Character = {
   __typename?: 'Character';
+  algorithmId: Scalars['String']['output'];
   attributes: Scalars['JSON']['output'];
   balance: Scalars['Int']['output'];
   experience: Scalars['Int']['output'];
@@ -173,6 +178,10 @@ export type CharacterEdge = {
 };
 
 export enum CharacterOrderByInput {
+  AlgorithmIdAsc = 'algorithmId_ASC',
+  AlgorithmIdAscNullsFirst = 'algorithmId_ASC_NULLS_FIRST',
+  AlgorithmIdDesc = 'algorithmId_DESC',
+  AlgorithmIdDescNullsLast = 'algorithmId_DESC_NULLS_LAST',
   BalanceAsc = 'balance_ASC',
   BalanceAscNullsFirst = 'balance_ASC_NULLS_FIRST',
   BalanceDesc = 'balance_DESC',
@@ -288,6 +297,23 @@ export type CharacterTurnState = {
 export type CharacterWhereInput = {
   AND?: InputMaybe<Array<CharacterWhereInput>>;
   OR?: InputMaybe<Array<CharacterWhereInput>>;
+  algorithmId_contains?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_endsWith?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_eq?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_gt?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_gte?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  algorithmId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  algorithmId_lt?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_lte?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_not_contains?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_not_eq?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  algorithmId_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  algorithmId_startsWith?: InputMaybe<Scalars['String']['input']>;
   attributes_eq?: InputMaybe<Scalars['JSON']['input']>;
   attributes_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   attributes_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
@@ -412,6 +438,7 @@ export type Lobby = {
   characters: Array<LobbyCharacter>;
   id: Scalars['String']['output'];
   reservationsCount: Scalars['Int']['output'];
+  started: Scalars['Boolean']['output'];
   tier: Scalars['Int']['output'];
 };
 
@@ -445,6 +472,10 @@ export type LobbyCharacterEdge = {
 };
 
 export enum LobbyCharacterOrderByInput {
+  CharacterAlgorithmIdAsc = 'character_algorithmId_ASC',
+  CharacterAlgorithmIdAscNullsFirst = 'character_algorithmId_ASC_NULLS_FIRST',
+  CharacterAlgorithmIdDesc = 'character_algorithmId_DESC',
+  CharacterAlgorithmIdDescNullsLast = 'character_algorithmId_DESC_NULLS_LAST',
   CharacterBalanceAsc = 'character_balance_ASC',
   CharacterBalanceAscNullsFirst = 'character_balance_ASC_NULLS_FIRST',
   CharacterBalanceDesc = 'character_balance_DESC',
@@ -493,6 +524,10 @@ export enum LobbyCharacterOrderByInput {
   LobbyReservationsCountAscNullsFirst = 'lobby_reservationsCount_ASC_NULLS_FIRST',
   LobbyReservationsCountDesc = 'lobby_reservationsCount_DESC',
   LobbyReservationsCountDescNullsLast = 'lobby_reservationsCount_DESC_NULLS_LAST',
+  LobbyStartedAsc = 'lobby_started_ASC',
+  LobbyStartedAscNullsFirst = 'lobby_started_ASC_NULLS_FIRST',
+  LobbyStartedDesc = 'lobby_started_DESC',
+  LobbyStartedDescNullsLast = 'lobby_started_DESC_NULLS_LAST',
   LobbyTierAsc = 'lobby_tier_ASC',
   LobbyTierAscNullsFirst = 'lobby_tier_ASC_NULLS_FIRST',
   LobbyTierDesc = 'lobby_tier_DESC',
@@ -551,6 +586,10 @@ export enum LobbyOrderByInput {
   ReservationsCountAscNullsFirst = 'reservationsCount_ASC_NULLS_FIRST',
   ReservationsCountDesc = 'reservationsCount_DESC',
   ReservationsCountDescNullsLast = 'reservationsCount_DESC_NULLS_LAST',
+  StartedAsc = 'started_ASC',
+  StartedAscNullsFirst = 'started_ASC_NULLS_FIRST',
+  StartedDesc = 'started_DESC',
+  StartedDescNullsLast = 'started_DESC_NULLS_LAST',
   TierAsc = 'tier_ASC',
   TierAscNullsFirst = 'tier_ASC_NULLS_FIRST',
   TierDesc = 'tier_DESC',
@@ -601,6 +640,9 @@ export type LobbyWhereInput = {
   reservationsCount_lte?: InputMaybe<Scalars['Int']['input']>;
   reservationsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
   reservationsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  started_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  started_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  started_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
   tier_eq?: InputMaybe<Scalars['Int']['input']>;
   tier_gt?: InputMaybe<Scalars['Int']['input']>;
   tier_gte?: InputMaybe<Scalars['Int']['input']>;

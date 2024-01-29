@@ -1,9 +1,10 @@
+import { ATTRIBUTES_POINTS_WHILE_MINTING } from "consts";
 import { useState } from "react";
 
 export type CharacterStats = {
+  level: number;
   strength: number;
   agility: number;
-  vitality: number;
   stamina: number;
   points: number;
   intelligence: number;
@@ -11,12 +12,12 @@ export type CharacterStats = {
 
 export const useStats = (
   initialStats: CharacterStats = {
+    level: 1,
     strength: 1,
     agility: 1,
-    vitality: 1,
     stamina: 1,
     intelligence: 1,
-    points: 5,
+    points: ATTRIBUTES_POINTS_WHILE_MINTING,
   }
 ) => {
   const [stats, setStats] = useState(initialStats);

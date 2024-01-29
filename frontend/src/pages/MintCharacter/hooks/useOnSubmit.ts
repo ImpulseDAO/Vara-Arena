@@ -18,7 +18,6 @@ export const useOnSubmit = ({
   stats: {
     strength: number;
     agility: number;
-    vitality: number;
     stamina: number;
     intelligence: number;
     points: number;
@@ -57,7 +56,6 @@ export const useOnSubmit = ({
           agility: stats.agility,
           stamina: stats.stamina,
           strength: stats.strength,
-          vitality: stats.vitality,
           intelligence: stats.intelligence,
         },
         name,

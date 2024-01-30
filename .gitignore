@@ -5,6 +5,8 @@ frontend/.env
 frontend/node_modules
 frontend/build
 frontend/.vscode
+frontend/.DS_Store
+frontend/.DS_Store?
 **/*.code-workspace
 
 **/*/.idea

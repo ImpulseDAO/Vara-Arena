@@ -113,8 +113,8 @@ impl Battle {
                 Ok(action) => action,
                 Err(_) => {
                     return BattleLog {
-                        character1: (self.c1.id, false),
-                        character2: (self.c2.id, true),
+                        character1: (self.c1.id, true),
+                        character2: (self.c2.id, false),
                         turns,
                     };
                 }

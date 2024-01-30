@@ -29,6 +29,7 @@ export async function handleArenaMessage(
             capacity: data.lobbyCreated.capacity,
             reservationsCount: 0,
             tier: 0,
+            started: false,
         })
         lobbies.set(lobby.id, lobby)
     } else if (data.playerRegistered) {

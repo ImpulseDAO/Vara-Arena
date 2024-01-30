@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Vara-Arena/static/css/main.ba6ef63a.css",
-    "main.js": "/Vara-Arena/static/js/main.147a213a.js",
+    "main.js": "/Vara-Arena/static/js/main.caa47587.js",
     "static/css/685.d46da522.chunk.css": "/Vara-Arena/static/css/685.d46da522.chunk.css",
     "static/js/685.803676c1.chunk.js": "/Vara-Arena/static/js/685.803676c1.chunk.js",
     "static/css/352.d8d0642d.chunk.css": "/Vara-Arena/static/css/352.d8d0642d.chunk.css",
@@ -10,7 +10,7 @@
     "static/js/339.1e75a4ad.chunk.js": "/Vara-Arena/static/js/339.1e75a4ad.chunk.js",
     "static/css/339.04b3d6a9.chunk.css": "/Vara-Arena/static/css/339.04b3d6a9.chunk.css",
     "static/css/225.58900f16.chunk.css": "/Vara-Arena/static/css/225.58900f16.chunk.css",
-    "static/js/225.f8c1ff61.chunk.js": "/Vara-Arena/static/js/225.f8c1ff61.chunk.js",
+    "static/js/225.c10cd68c.chunk.js": "/Vara-Arena/static/js/225.c10cd68c.chunk.js",
     "static/css/303.8dcb964b.chunk.css": "/Vara-Arena/static/css/303.8dcb964b.chunk.css",
     "static/js/303.c304f213.chunk.js": "/Vara-Arena/static/js/303.c304f213.chunk.js",
     "static/css/417.82e27b8f.chunk.css": "/Vara-Arena/static/css/417.82e27b8f.chunk.css",
@@ -46,14 +46,14 @@
     "index.html": "/Vara-Arena/index.html",
     "static/media/progress.svg": "/Vara-Arena/static/media/progress.32123ade9716c5ec3561f8cd389547ec.svg",
     "main.ba6ef63a.css.map": "/Vara-Arena/static/css/main.ba6ef63a.css.map",
-    "main.147a213a.js.map": "/Vara-Arena/static/js/main.147a213a.js.map",
+    "main.caa47587.js.map": "/Vara-Arena/static/js/main.caa47587.js.map",
     "685.d46da522.chunk.css.map": "/Vara-Arena/static/css/685.d46da522.chunk.css.map",
     "685.803676c1.chunk.js.map": "/Vara-Arena/static/js/685.803676c1.chunk.js.map",
     "352.d8d0642d.chunk.css.map": "/Vara-Arena/static/css/352.d8d0642d.chunk.css.map",
     "352.52785f10.chunk.js.map": "/Vara-Arena/static/js/352.52785f10.chunk.js.map",
     "339.04b3d6a9.chunk.css.map": "/Vara-Arena/static/css/339.04b3d6a9.chunk.css.map",
     "225.58900f16.chunk.css.map": "/Vara-Arena/static/css/225.58900f16.chunk.css.map",
-    "225.f8c1ff61.chunk.js.map": "/Vara-Arena/static/js/225.f8c1ff61.chunk.js.map",
+    "225.c10cd68c.chunk.js.map": "/Vara-Arena/static/js/225.c10cd68c.chunk.js.map",
     "303.8dcb964b.chunk.css.map": "/Vara-Arena/static/css/303.8dcb964b.chunk.css.map",
     "303.c304f213.chunk.js.map": "/Vara-Arena/static/js/303.c304f213.chunk.js.map",
     "417.82e27b8f.chunk.css.map": "/Vara-Arena/static/css/417.82e27b8f.chunk.css.map",
@@ -68,6 +68,6 @@
   },
   "entrypoints": [
     "static/css/main.ba6ef63a.css",
-    "static/js/main.147a213a.js"
+    "static/js/main.caa47587.js"
   ]
 }

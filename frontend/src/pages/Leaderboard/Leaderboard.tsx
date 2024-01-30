@@ -103,9 +103,7 @@ export const Leaderboard = () => {
                           ta={TEXT_ALIGN[idx]}
 
                         >
-                          <Box h="2rem">
-                            {cellContent}
-                          </Box>
+                          {cellContent}
                         </Table.Td>
                       );
                     })}

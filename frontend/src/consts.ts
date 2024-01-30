@@ -35,11 +35,51 @@ export const MINT_PROGRAM_ID =
   "0x1000c12bd3730628cd16512aeb1f922fa6cb02ba944337cabfb4eddc63828e65";
 
 // STRATEGY
-export const STRATEGY_CODE_ID_HARDCODED =
-  "0x6d5dbdcb194f16fe1c7dbbe9c406f4b3fe656a88c1052375f8be3e68668231bd";
+
+export const HARDCODED_CHARACTERS: Array<{
+  name: string;
+  codeId: HexString;
+  stats: Attributes;
+}> = [
+  {
+    name: "Knight",
+    codeId:
+      "0xfad6e3370d8a923ded6f6100394a8e8a101f8d62f1e5a6c7359a1750e0bf295f",
+    stats: {
+      strength: 6,
+      agility: 1,
+      stamina: 2,
+      intelligence: 1,
+    },
+  },
+  {
+    name: "Rogue",
+    codeId:
+      "0xcd6a676a0e6195ae6d06f37cd2380547a5e954316e4b29aa1f1d314f9ac6c9ff",
+    stats: {
+      strength: 3,
+      agility: 5,
+      stamina: 1,
+      intelligence: 1,
+    },
+  },
+  {
+    name: "Fire Mage",
+    codeId:
+      "0xaa8e933f629845a0e52edc8dcac4d8e203e006d22c5d271d348b0a6b20fdb7a8",
+    stats: {
+      strength: 1,
+      agility: 1,
+      stamina: 2,
+      intelligence: 6,
+    },
+  },
+];
+
 // OLD ! OLD ! OLD strategy code id. We shoould keep track of it
 export const OLD_STRATEGIES_CODE_IDS_HARDCODED = [
   "0x60a2e174175bdfee6cb59411c3f1a440c9b9f3e5065766994e625857456f7d1e",
+  "0x6d5dbdcb194f16fe1c7dbbe9c406f4b3fe656a88c1052375f8be3e68668231bd",
 ];
 
 /**

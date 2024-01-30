@@ -1,4 +1,4 @@
-import { STRATEGY_CODE_ID_HARDCODED, OLD_STRATEGIES_CODE_IDS_HARDCODED } from "consts";
+import { HARDCODED_CHARACTERS, OLD_STRATEGIES_CODE_IDS_HARDCODED } from "consts";
 import { addCodeIdToLocalStorage, removeCodeIdFromLocalStorage } from "hooks/useCodeAndProgramIDs";
 import { useEffect } from "react";
 
@@ -31,7 +31,8 @@ const useHardcodedStrategy = (callback?: () => unknown) => {
    * Add hardcoded strategy to local storage
    */
   useEffect(() => {
-    addCodeIdToLocalStorage(STRATEGY_CODE_ID_HARDCODED);
+    const codeIdsToBeAdded = HARDCODED_CHARACTERS.map(({ codeId }) => codeId);
+    addCodeIdToLocalStorage(codeIdsToBeAdded);
     callback?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

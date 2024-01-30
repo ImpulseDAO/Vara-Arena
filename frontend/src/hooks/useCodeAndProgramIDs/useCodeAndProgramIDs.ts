@@ -1,4 +1,4 @@
-import { STRATEGY_CODE_ID_HARDCODED } from "consts";
+import { HARDCODED_CHARACTERS } from "consts";
 import React from "react";
 
 export const useCodeAndProgramIDs = () => {
@@ -15,14 +15,17 @@ export const useCodeAndProgramIDs = () => {
 
   const selectData = React.useMemo(() => {
     const codeIds = strategyCodeIds.map((codeId, index) => {
-      const firstPart =
-        codeId === STRATEGY_CODE_ID_HARDCODED
-          ? "Default Strategy"
-          : `Strategy ${index + 1}`;
+      const strategy = HARDCODED_CHARACTERS.find(
+        (char) => char.codeId === codeId
+      );
+
+      const title = strategy?.name ?? `Strategy ${index + 1}`;
 
       return {
         value: codeId,
-        label: `${firstPart}: ${codeId.substring(0, 8)}...`,
+        label: `${title}: ${codeId.substring(0, 6)}...${codeId.substring(
+          codeId.length - 4
+        )}`,
       };
     });
 
@@ -65,13 +68,18 @@ const UPLOADED_PROGRAM_IDS_ARRAY = "uploadedProgramIdsArray";
  * GENERIC
  */
 
-export const addIdToLocalStorage = (id: string, localStorageKey: string) => {
+export const addIdToLocalStorage = (
+  idOrIds: string | string[],
+  localStorageKey: string
+) => {
+  const ids = typeof idOrIds === "string" ? [idOrIds] : idOrIds;
+
   const arrayOfCodeIds = JSON.parse(
     localStorage.getItem(localStorageKey) || "[]"
   ) as string[];
 
   const uniqueSet = new Set(arrayOfCodeIds);
-  uniqueSet.add(id);
+  ids.forEach((id) => uniqueSet.add(id));
 
   localStorage.setItem(localStorageKey, JSON.stringify(Array.from(uniqueSet)));
 };
@@ -100,8 +108,8 @@ export const getIdsFromLocalStorage = (localStorageKey: string): string[] => {
  * CODE IDS
  */
 
-export const addCodeIdToLocalStorage = (codeId: string) =>
-  addIdToLocalStorage(codeId, UPLOADED_CODE_IDS_ARRAY);
+export const addCodeIdToLocalStorage = (codeIdOrCodeIds: string | string[]) =>
+  addIdToLocalStorage(codeIdOrCodeIds, UPLOADED_CODE_IDS_ARRAY);
 export const removeCodeIdFromLocalStorage = (codeId: string) =>
   removeIdFromLocalStorage(codeId, UPLOADED_CODE_IDS_ARRAY);
 export const getCodeIdsFromLocalStorage = () =>

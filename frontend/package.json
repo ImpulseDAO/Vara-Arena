@@ -13,7 +13,8 @@
     "build": "react-app-rewired --max_old_space_size=2048 build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint ./src --ext .js,.jsx,.ts,.tsx",
+    "do:start": "npm run build && pm2 restart frontend-app"
   },
   "dependencies": {
     "@gear-js/api": "0.35.2",

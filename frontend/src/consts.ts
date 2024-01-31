@@ -36,12 +36,16 @@ export const MINT_PROGRAM_ID =
 
 // STRATEGY
 
+export type Specialization = "knight" | "rogue" | "mage" | "custom";
+
 export const HARDCODED_CHARACTERS: Array<{
+  key: Specialization;
   name: string;
-  codeId: HexString;
+  codeId?: HexString;
   stats: Attributes;
 }> = [
   {
+    key: "knight",
     name: "Knight",
     codeId:
       "0xfad6e3370d8a923ded6f6100394a8e8a101f8d62f1e5a6c7359a1750e0bf295f",
@@ -53,6 +57,7 @@ export const HARDCODED_CHARACTERS: Array<{
     },
   },
   {
+    key: "rogue",
     name: "Rogue",
     codeId:
       "0xcd6a676a0e6195ae6d06f37cd2380547a5e954316e4b29aa1f1d314f9ac6c9ff",
@@ -64,6 +69,7 @@ export const HARDCODED_CHARACTERS: Array<{
     },
   },
   {
+    key: "mage",
     name: "Fire Mage",
     codeId:
       "0xaa8e933f629845a0e52edc8dcac4d8e203e006d22c5d271d348b0a6b20fdb7a8",
@@ -75,6 +81,30 @@ export const HARDCODED_CHARACTERS: Array<{
     },
   },
 ];
+
+const defaultStats = {
+  strength: 1,
+  agility: 1,
+  stamina: 1,
+  intelligence: 1,
+};
+
+export const getSpecializationOptions = (specialization?: Specialization) => {
+  const character = HARDCODED_CHARACTERS.find(
+    (char) => char.key === specialization
+  );
+  return {
+    initialStats: character?.stats ?? defaultStats,
+    codeId: character?.codeId,
+  };
+};
+
+export const getInitialStats = (specialization?: Specialization) => {
+  const character = HARDCODED_CHARACTERS.find(
+    (char) => char.key === specialization
+  );
+  return character?.stats ?? defaultStats;
+};
 
 // OLD ! OLD ! OLD strategy code id. We shoould keep track of it
 export const OLD_STRATEGIES_CODE_IDS_HARDCODED = [
@@ -109,7 +139,7 @@ export const XP_NEEDED_FOR_LEVEL_UP_MAP = {
   10: 1_312_200,
 };
 
-export const ATTRIBUTES_POINTS_WHILE_MINTING = 6;
+export const POINTS_WHEN_MINTING_TOTAL = 10;
 
 /**
  * Calculations

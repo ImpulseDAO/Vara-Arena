@@ -1,26 +1,34 @@
-import { ATTRIBUTES_POINTS_WHILE_MINTING } from "consts";
+import { POINTS_WHEN_MINTING_TOTAL } from "consts";
 import { useState } from "react";
 
-export type CharacterStats = {
-  level: number;
-  strength: number;
-  agility: number;
-  stamina: number;
-  points: number;
-  intelligence: number;
+export type CharacterStats = Attributes & {
+  level?: number;
+  points?: number;
 };
 
-export const useStats = (
-  initialStats: CharacterStats = {
-    level: 1,
-    strength: 1,
-    agility: 1,
-    stamina: 1,
-    intelligence: 1,
-    points: ATTRIBUTES_POINTS_WHILE_MINTING,
-  }
-) => {
-  const [stats, setStats] = useState(initialStats);
+const defaultAttributes: Required<Attributes> = {
+  strength: 1,
+  agility: 1,
+  stamina: 1,
+  intelligence: 1,
+};
+const getPointsLeft = (stats: CharacterStats) =>
+  POINTS_WHEN_MINTING_TOTAL - Object.values(stats).reduce((a, b) => a + b, 0);
+
+const defaultStats: Required<CharacterStats> = {
+  level: 1,
+  ...defaultAttributes,
+  points: getPointsLeft(defaultAttributes),
+};
+
+export const useStats = (initialStats: CharacterStats = defaultStats) => {
+  const pointsLeft = getPointsLeft(initialStats);
+  const initialWithDefault = {
+    ...defaultStats,
+    ...initialStats,
+    points: pointsLeft,
+  };
+  const [stats, setStats] = useState(initialWithDefault);
   const increase = (name) => {
     if (stats.points > 0) {
       setStats((prevStats) => ({

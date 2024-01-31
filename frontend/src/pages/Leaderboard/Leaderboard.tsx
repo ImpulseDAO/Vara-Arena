@@ -7,6 +7,7 @@ import { getShortIdString } from "utils";
 import { useMyAccountId } from "hooks/hooks";
 import { useNavigate } from "react-router-dom";
 import { routes } from "app/routes";
+import { Header } from "components/PanelWithHeader/components/Header";
 
 export const Leaderboard = () => {
   const navigate = useNavigate();
@@ -45,7 +46,7 @@ export const Leaderboard = () => {
   return (
     <div className="leaderboard">
       <div className="content-wrapper">
-        <div className="header">Leaderboard</div>
+        <Header>Leaderboard</Header>
 
         <div className='modal_table'>
           <Table horizontalSpacing="md" verticalSpacing="md" >

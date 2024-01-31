@@ -1,0 +1,39 @@
+.selectClass {
+  &.background {
+    width: -webkit-fill-available;
+
+    background-image: url("../../assets/images/profile.webp");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    overflow: scroll;
+  }
+
+  .panel {
+    margin: 2rem 5rem 4rem;
+    max-width: 1200px;
+    min-width: 500px;
+  }
+
+  .content {
+    padding: 3rem;
+
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+
+    column-gap: 2.2rem;
+    row-gap: 1.2rem;
+  }
+
+  .classDescription {
+    font-size: 14px;
+    line-height: 18px;
+  }
+}

@@ -6,6 +6,7 @@ import { routes } from "./routes";
 import { ProfilePage } from "pages/MyProfile/MyProfile";
 import { LogoutScreen } from "pages/LogoutScreen";
 import { APP_ROUTER_BASENAME } from "consts";
+import { SelectClass } from "pages/SelectClass";
 //
 const History = React.lazy(() => import("pages/History").then(({ History }) => ({ default: History })));
 const Lobby = React.lazy(() => import("pages/Lobby").then(({ Lobby }) => ({ default: Lobby })));
@@ -33,6 +34,7 @@ export const appRouter = createBrowserRouter(
     */
     { element: <LogoutScreen />, path: routes.logoutScreen },
     { element: <StartScreen />, path: routes.startScreen },
+    { element: <SelectClass />, path: routes.selectClass, auth: true },
     { element: <MintCharacter />, path: routes.mintCharacter, auth: true },
     { element: <Lobby />, path: routes.lobbyDynamic, auth: true },
     { element: <Arena />, path: routes.arena, auth: true },

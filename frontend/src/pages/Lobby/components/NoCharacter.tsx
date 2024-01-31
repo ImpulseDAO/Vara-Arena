@@ -22,7 +22,7 @@ export const NoCharacter = (boxProps: BoxProps) => {
           <br />
           <Anchor
             fw="500"
-            onClick={() => navigate(routes.mintCharacter)}
+            onClick={() => navigate(routes.selectClass)}
             fz={14}
           >
             Click here to create a character

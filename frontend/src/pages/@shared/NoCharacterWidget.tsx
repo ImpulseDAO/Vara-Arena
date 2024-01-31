@@ -16,7 +16,7 @@ export const NoCharacterWidget = () => {
         >
           You don't have a character yet
         </Title>
-        <TheButton onClick={() => navigate(routes.mintCharacter)} w="100%">
+        <TheButton onClick={() => navigate(routes.selectClass)} w="100%">
           Create
         </TheButton>
       </Panel>

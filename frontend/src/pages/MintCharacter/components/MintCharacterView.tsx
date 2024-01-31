@@ -32,8 +32,6 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
     name,
     strategyInput
   }) => {
-    const initialStats = useRef({ ...stats });
-
     return (
       <div className="mint_char">
         <Table className={"table_container"}>
@@ -69,7 +67,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                     secondButton={"+"}
                     onClickFirstButton={() => decrease(statName)}
                     onClickSecondButton={() => increase(statName)}
-                    isFirstDisabled={stats[statName] === initialStats.current[statName]}
+                    isFirstDisabled={stats[statName] === 1}
                     isSecondDisabled={stats.points === 0}
                   />
                 );
@@ -79,7 +77,7 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
             <div className={"modal_right"}>
               <Box pt="2.5rem" mb="2rem">
                 <StatBar
-                  health={getFullHp(stats.level)}
+                  health={getFullHp(stats.level ?? 1)}
                   energy={getFullEnergy(stats.stamina)}
                 />
               </Box>

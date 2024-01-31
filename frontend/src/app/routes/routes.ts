@@ -1,3 +1,5 @@
+import { type To } from "react-router-dom";
+
 export const oldRoutes = {
   strategy: "/strategy",
 };
@@ -8,7 +10,12 @@ export const routes = {
   logoutScreen: "/logout",
   arena: "/arena",
   history: "/history",
+  selectClass: "/select-class",
   mintCharacter: "/mint-character",
+  mintCharacterRoute: (specialization?: string): To => ({
+    pathname: "/mint-character",
+    search: `${specialization ? `?specialization=${specialization}` : ""}`,
+  }),
   lobbyDynamic: "/lobby/:lobbyId",
   lobby: (lobbyId: string) => `/lobby/${lobbyId}`,
   leaderboard: "/leaderboard",

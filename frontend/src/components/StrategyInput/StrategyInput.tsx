@@ -1,7 +1,7 @@
 import {
   useUploadCode,
 } from "hooks/useUploadCode";
-import { Select } from "@mantine/core";
+import { Select, SelectProps } from "@mantine/core";
 import React from "react";
 import styles from "./StrategyInput.module.css";
 import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
@@ -10,11 +10,12 @@ export const StrategyInput = ({
   value,
   setValue,
   selectData,
+  ...selectProps
 }: {
   value?: string | null;
   selectData: { value: string; label: string; }[];
   setValue: (value: string | null) => void;
-}) => {
+} & SelectProps) => {
   const alert = useStableAlert();
   const uploadCode = useUploadCode();
 
@@ -61,6 +62,7 @@ export const StrategyInput = ({
   return (
     <>
       <Select
+        {...selectProps}
         data={[
           {
             value: "upload",

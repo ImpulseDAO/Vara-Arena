@@ -11,7 +11,7 @@ import {
 } from '@subsquid/substrate-processor'
 
 export const MINT_ADDRESS = '0x1000c12bd3730628cd16512aeb1f922fa6cb02ba944337cabfb4eddc63828e65'
-export const ARENA_ADDRESS = '0x93f8be77e4f2cd5a9339e63786e2943266100d803a4a9a06628aa0010c606574'
+export const ARENA_ADDRESS = '0xd9e7cce42bf9322fea90ae21a78ec09a8f0f88edca8e25add2b20c757708d146'
 
 export const processor = new SubstrateBatchProcessor()
     .setDataSource({

@@ -268,5 +268,5 @@ function getFullHp(level: number): number {
 }
 
 function getFullEnergy(stamina: number): number {
-    return 20 + stamina * 3
+    return 20 + stamina * 10
 }

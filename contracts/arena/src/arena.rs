@@ -6,7 +6,22 @@ use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, MintAction};
 
 const GAS_FOR_BATTLE: u64 = 245_000_000_000;
-const LOBBY_CAPACITY: [u8; 3] = [2, 4, 8];
+const LOBBY_CAPACITY: [Capacity; 2] = [
+    Capacity {
+        size: 2,
+        reservations: 0,
+    },
+    Capacity {
+        size: 4,
+        reservations: 2,
+    },
+];
+
+#[derive(Clone, Default)]
+struct Capacity {
+    size: u8,
+    reservations: u8,
+}
 
 #[derive(Default)]
 pub struct Lobby {
@@ -14,12 +29,13 @@ pub struct Lobby {
     current_tier: SetTier,
     characters: Vec<Character>,
     source: Option<ActorId>, // original play sender
-    capacity: u8,
+    capacity: Capacity,
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
     winners: Vec<u128>,
     losers: Vec<ActorId>,
     logs: Vec<BattleLog>,
+    started: bool,
 }
 
 #[derive(Default)]
@@ -38,22 +54,24 @@ impl Arena {
     }
 
     pub fn create_lobby(&mut self, capacity: u8) {
-        if !LOBBY_CAPACITY.contains(&capacity) {
-            panic!("lobby capacity out of range: {:?}", LOBBY_CAPACITY);
-        }
+        let capacity = LOBBY_CAPACITY
+            .iter()
+            .find(|c| c.size == capacity)
+            .expect("lobby capacity out of range");
 
-        self.lobby_count += 1;
+        let lobby_id = self.lobby_count;
         let lobby = Lobby {
-            id: self.lobby_count,
-            capacity,
+            id: lobby_id,
+            capacity: capacity.clone(),
             ..Default::default()
         };
         self.lobbys.insert(lobby.id, lobby);
+        self.lobby_count += 1;
 
         msg::reply(
             ArenaEvent::LobbyCreated {
-                lobby_id: self.lobby_count,
-                capacity,
+                lobby_id,
+                capacity: capacity.size,
             },
             0,
         )
@@ -63,24 +81,32 @@ impl Arena {
     pub async fn play(&mut self, lobby_id: u128) {
         let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
 
-        if lobby.characters.len() != lobby.capacity.into() {
+        if lobby.characters.len() != lobby.capacity.size.into() {
             panic!("not enough players to start the battle");
+        }
+
+        if lobby.started && msg::source() != exec::program_id() {
+            panic!("the battle is already started");
         }
 
         if lobby.battles.is_empty() {
             debug!("starting the battle");
+            lobby.started = true;
             lobby.source = Some(msg::source());
             lobby.battles = lobby
                 .characters
                 .chunks_exact(2)
                 .map(|characters| Battle::new(characters[0].clone(), characters[1].clone()))
                 .collect();
+
+            msg::send(msg::source(), ArenaEvent::BattleStarted { lobby_id }, 0)
+                .expect("unable to send");
         }
         let source = lobby.source.expect("original sender is not specified");
-
         let battle = lobby.battles.pop().unwrap();
         let log = battle.fight().await;
 
+        debug!("LOG {:?}", log);
         if log.character1.1 {
             let loser = lobby
                 .characters
@@ -115,6 +141,7 @@ impl Arena {
                         owner_id: winner.owner,
                         character_id: winner.id,
                         losers: lobby.losers.drain(..).collect(),
+                        reply_to: source,
                     },
                     0,
                 )
@@ -167,22 +194,24 @@ impl Arena {
     }
 
     pub async fn register(&mut self, lobby_id: u128, owner_id: ActorId) {
-        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
-        if lobby.characters.len() == lobby.capacity.into() {
-            panic!("max number of players is already registered");
-        }
         let payload = MintAction::CharacterInfo { owner_id };
         let character_info: CharacterInfo = msg::send_for_reply_as(self.mint, payload, 0, 0)
             .expect("unable to send message")
             .await
             .expect("unable to receive reply");
 
+        let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+
+        if lobby.characters.len() == lobby.capacity.size.into() {
+            panic!("max number of players is already registered");
+        }
+
         let character = Character {
             owner: owner_id,
             id: character_info.id,
             algorithm_id: character_info.algorithm_id,
             name: character_info.name,
-            hp: utils::full_hp(character_info.attributes.vitality),
+            hp: utils::full_hp(character_info.level),
             energy: utils::full_energy(character_info.attributes.stamina),
             position: 0,
             attributes: character_info.attributes,
@@ -217,45 +246,36 @@ impl Arena {
         // set current tournament tier based on the first registered character's level
         // Initialize current_tier based on the level of the first registered character
         if let SetTier::Tier0 = lobby.current_tier {
-            lobby.current_tier = match character.level {
-                0 => unreachable!(),
-                1 => SetTier::Tier5,
-                2 => SetTier::Tier4,
-                3..=5 => SetTier::Tier3,
-                6..=9 => SetTier::Tier2,
-                _ => SetTier::Tier1,
-            };
+            lobby.current_tier = character_tier.clone();
+        }
+
+        if character_tier == lobby.current_tier {
+            lobby.characters.push(character);
+            // add if can't register send the error message ("Wrong Tier") && test it
             msg::reply(
-                ArenaEvent::TierSet {
+                ArenaEvent::PlayerRegistered {
                     lobby_id,
-                    tier: lobby.current_tier as u8,
+                    player_id: character_info.id,
+                    tier: character_tier as u8,
                 },
                 0,
             )
             .expect("unable to reply");
-        }
-        if character_tier == lobby.current_tier {
-            lobby.characters.push(character);
-            // add if can't register send the error message ("Wrong Tier") && test it
         } else {
             panic!("Can't Register for this Tier");
         };
 
         debug!("Current tier after registration {:#?}", lobby.current_tier);
         debug!("Registered participants{:?}", lobby.characters);
-
-        msg::reply(
-            ArenaEvent::PlayerRegistered {
-                lobby_id,
-                player_id: character_info.id,
-            },
-            0,
-        )
-        .expect("unable to reply");
     }
 
     pub fn reserve_gas(&mut self, lobby_id: u128) {
         let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
+
+        if lobby.reservations.len() == lobby.capacity.reservations.into() {
+            panic!("lobby need no more reservations");
+        }
+
         let reservation_id =
             ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
         lobby.reservations.push(reservation_id);

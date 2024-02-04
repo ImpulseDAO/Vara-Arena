@@ -13,6 +13,26 @@ fn is_attack_successful(hit_chance: u8) -> bool {
     utils::get_random_value(100) < hit_chance
 }
 
+fn attack_power(base_damage: u8, strength: u8, agility: u8, kind: &AttackKind) -> u8 {
+    let is_crit = utils::get_random_value(100 + agility * 2);
+    debug!("{:?}", is_crit);
+
+    let damage_modifier = match kind {
+        AttackKind::Quick => 2,
+        AttackKind::Precise => 3,
+        AttackKind::Heavy => 4,
+    };
+
+    if is_crit > 100 {
+        // Scale damage using player's strength and agility
+        let damage = base_damage + strength * 2 + (agility + damage_modifier) * 2;
+        damage
+    } else {
+        let damage = base_damage + strength * 2;
+        damage
+    }
+}
+
 fn execute_attack_kind(
     player: &mut Character,
     enemy: &mut Character,
@@ -42,13 +62,18 @@ fn execute_attack_kind(
                 };
                 let success = is_attack_successful(hit_chance);
                 if success {
-                    let mut damage = base_damage + player.attributes.strength * 2;
+                    let mut damage = attack_power(
+                        base_damage,
+                        player.attributes.strength,
+                        player.attributes.agility,
+                        &kind,
+                    );
+                    debug!("damage is {:?}", damage);
                     if player.earth_smites.0 > 0 {
                         damage += player.earth_smites.1;
                     }
                     if enemy.earth_skin.0 > 0 {
                         if enemy.earth_skin.1 > damage {
-                            damage = 0;
                             enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
                         } else {
                             damage = damage - enemy.earth_skin.1;
@@ -59,6 +84,7 @@ fn execute_attack_kind(
                     if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
                         let damage = enemy.fire_wall.1;
                         player.hp = player.hp.saturating_sub(damage);
+                        enemy.fire_wall = (0, 0);
                         logs.push(TurnLog {
                             character: player.id,
                             action: TurnEvent::FireWall { damage },
@@ -222,7 +248,8 @@ pub fn execute_action(
             }
         }
         BattleAction::CastSpell { spell } => {
-            debug!("player {:?} CASTING SPELL", player.id);
+            debug!("player {:?} CASTING SPELL {:?} ", player.name, spell);
+
             let event = execute_cast_spell(player, enemy, spell, action);
             logs.push(TurnLog {
                 character: player.id,

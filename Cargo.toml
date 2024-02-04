@@ -6,6 +6,8 @@ members = [
     "contracts/arena/state",
     "contracts/mint/io",
     "contracts/mint/state",
+    "contracts/spending-all-gas",
+    "contracts/wrong-reply-format",
 ]
 
 [workspace.package]

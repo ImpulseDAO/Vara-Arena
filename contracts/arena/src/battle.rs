@@ -7,7 +7,7 @@ const FIRST_POS: u8 = 6;
 const SECOND_POS: u8 = 10;
 
 const INITIATIVE_MODIFIER: u16 = 125;
-
+const GAS_FOR_STEP: u64 = 40_000_000_000;
 pub struct Battle {
     pub c1: Character,
     pub c2: Character,
@@ -50,6 +50,7 @@ impl Battle {
                 fire_haste: self.c1.fire_haste,
                 fire_wall: self.c1.fire_wall,
                 water_burst: self.c1.water_burst,
+                attributes: self.c1.attributes.clone(),
             };
             let p2_state = CharacterState {
                 hp: self.c2.hp,
@@ -63,51 +64,61 @@ impl Battle {
                 fire_haste: self.c2.fire_haste,
                 fire_wall: self.c2.fire_wall,
                 water_burst: self.c2.water_burst,
+                attributes: self.c2.attributes.clone(),
             };
 
             let p1_turn = YourTurn {
                 you: p1_state.clone(),
                 enemy: p2_state.clone(),
             };
-            let p1_action: BattleAction =
-                match msg::send_for_reply_as(self.c1.algorithm_id, p1_turn, 0, 0)
-                    .expect("unable to send message")
-                    .await
-                {
-                    Ok(action) => action,
-                    Err(err) => match err {
-                        Error::Timeout(_, _) => {
-                            return BattleLog {
-                                character1: (self.c1.id, false),
-                                character2: (self.c2.id, true),
-                                turns,
-                            }
-                        }
-                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
-                    },
-                };
+            debug!("sending msg 1");
+            let p1_action: BattleAction = match msg::send_with_gas_for_reply_as(
+                self.c1.algorithm_id,
+                p1_turn,
+                GAS_FOR_STEP,
+                0,
+                0,
+            )
+            .expect("unable to send message")
+            .await
+            {
+                Ok(action) => {
+                    debug!("{:?}", action);
+                    action
+                }
+                Err(_) => {
+                    return BattleLog {
+                        character1: (self.c1.id, false),
+                        character2: (self.c2.id, true),
+                        turns,
+                    };
+                }
+            };
+            debug!("sending msg 2");
 
             let p2_turn = YourTurn {
                 you: p2_state,
                 enemy: p1_state,
             };
-            let p2_action: BattleAction =
-                match msg::send_for_reply_as(self.c2.algorithm_id, p2_turn, 0, 0)
-                    .expect("unable to send message")
-                    .await
-                {
-                    Ok(action) => action,
-                    Err(err) => match err {
-                        Error::Timeout(_, _) => {
-                            return BattleLog {
-                                character1: (self.c1.id, true),
-                                character2: (self.c2.id, false),
-                                turns,
-                            }
-                        }
-                        _ => panic!("unable to receive `BattleAction`: {err:?}"),
-                    },
-                };
+            let p2_action: BattleAction = match msg::send_with_gas_for_reply_as(
+                self.c2.algorithm_id,
+                p2_turn,
+                GAS_FOR_STEP,
+                0,
+                0,
+            )
+            .expect("unable to send message")
+            .await
+            {
+                Ok(action) => action,
+                Err(_) => {
+                    return BattleLog {
+                        character1: (self.c1.id, true),
+                        character2: (self.c2.id, false),
+                        turns,
+                    };
+                }
+            };
 
             let p1_initiative = player_initiative(&self.c1, &self.c2, &p1_action);
             let p2_initiative = player_initiative(&self.c2, &self.c1, &p2_action);
@@ -116,6 +127,13 @@ impl Battle {
             self.c2.disable_agiim = false;
 
             if p1_initiative > p2_initiative {
+                debug!(
+                    "p1 initiative = {} x p2 initiative = {} !",
+                    p1_initiative, p2_initiative
+                );
+
+                debug!("p1 name = {} x p2 name = {} !", self.c1.name, self.c2.name);
+
                 self.c1.parry = matches!(&p1_action, BattleAction::Parry);
                 self.c2.parry = false;
 
@@ -177,22 +195,22 @@ impl Battle {
 
 fn spell_initiative(spell: &Spell) -> u16 {
     match spell {
-        Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 10,
-        Spell::Fireball | Spell::EarthCatapult | Spell::WaterBurst => 16,
-        Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 20,
+        Spell::FireWall | Spell::EarthSkin | Spell::WaterRestoration => 20,
+        Spell::Fireball | Spell::WaterBurst => 15,
+        Spell::FireHaste | Spell::EarthSmites | Spell::ChillingTouch => 10,
     }
 }
 
 fn action_initiative(action: &BattleAction) -> u16 {
     match action {
         BattleAction::Attack { kind } => match kind {
-            AttackKind::Quick => 10,
+            AttackKind::Quick => 20,
             AttackKind::Precise => 15,
-            AttackKind::Heavy => 20,
+            AttackKind::Heavy => 10,
         },
-        BattleAction::MoveLeft | BattleAction::MoveRight | BattleAction::Rest => 8,
-        BattleAction::Parry => 12,
-        BattleAction::Guardbreak => 18,
+        BattleAction::MoveLeft | BattleAction::MoveRight | BattleAction::Rest => 22,
+        BattleAction::Parry => 18,
+        BattleAction::Guardbreak => 12,
         BattleAction::CastSpell { spell } => spell_initiative(spell),
     }
 }
@@ -212,7 +230,7 @@ fn player_initiative(player: &Character, enemy: &Character, action: &BattleActio
     if player.disable_agiim {
         base_initiative
     } else {
-        base_initiative - (u16::from(player.attributes.agility) * modifier)
+        base_initiative + (u16::from(player.attributes.agility) * modifier)
     }
 }
 

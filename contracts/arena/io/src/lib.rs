@@ -13,20 +13,20 @@ pub enum ArenaAction {
     ReserveGas { lobby_id: u128 },
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Debug)]
 pub struct TurnLog {
     pub character: u128,
     pub action: TurnEvent,
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Debug)]
 pub enum AttackResult {
     Damage(u8),
     Parry,
     Miss,
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Debug)]
 pub enum CastSpellResult {
     FireWall,
     EarthSkin { defence: u8 },
@@ -39,7 +39,7 @@ pub enum CastSpellResult {
     ChillingTouch,
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Debug)]
 pub enum TurnEvent {
     NotEnoughEnergy {
         action: BattleAction,
@@ -66,7 +66,7 @@ pub enum TurnEvent {
     },
 }
 
-#[derive(Encode, Decode, TypeInfo)]
+#[derive(Encode, Decode, TypeInfo, Debug)]
 pub struct BattleLog {
     pub character1: (u128, bool),
     pub character2: (u128, bool),
@@ -82,12 +82,12 @@ pub enum ArenaEvent {
     PlayerRegistered {
         lobby_id: u128,
         player_id: u128,
-    },
-    TierSet {
-        lobby_id: u128,
         tier: u8,
     },
     GasReserved {
+        lobby_id: u128,
+    },
+    BattleStarted {
         lobby_id: u128,
     },
     LobbyBattleLog {
@@ -122,7 +122,6 @@ pub enum Spell {
     EarthSkin,
     WaterRestoration,
     Fireball,
-    EarthCatapult,
     WaterBurst,
     FireHaste,
     EarthSmites,
@@ -154,6 +153,7 @@ pub struct CharacterState {
     pub water_burst: u8,
     pub fire_haste: u8,
     pub earth_smites: (u8, u8),
+    pub attributes: CharacterAttributes,
 }
 
 #[derive(Encode, Decode)]

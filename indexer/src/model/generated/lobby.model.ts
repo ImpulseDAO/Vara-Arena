@@ -20,6 +20,9 @@ export class Lobby {
     @Column_("int4", {nullable: false})
     tier!: number
 
+    @Column_("bool", {nullable: false})
+    started!: boolean
+
     @OneToMany_(() => LobbyCharacter, e => e.lobby)
     characters!: LobbyCharacter[]
 

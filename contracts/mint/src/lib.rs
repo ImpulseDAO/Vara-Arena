@@ -2,7 +2,7 @@
 
 use gstd::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 use gstd::prog::ProgramGenerator;
-use gstd::{exec, msg, prelude::*, ActorId, CodeId, ReservationId};
+use gstd::{debug, exec, msg, prelude::*, ActorId, CodeId, ReservationId};
 use mint_io::{
     AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus,
     InitialAttributes, MintAction, MintEvent, MintState,
@@ -17,7 +17,9 @@ struct Mint {
     admins: BTreeSet<ActorId>,
     config: Config,
     reservations: Vec<ReservationId>,
-    pool_amount: u128,
+    gold_pool_amount: u128,
+    daily_gold_pool_amount: u128,
+    vara_pool_amount: u128,
     total_rating: u128,
     daily_gold_distr_status: DailyGoldDistrStatus,
     character_id: u128,
@@ -26,6 +28,9 @@ struct Mint {
 static mut MINT: Option<Mint> = None;
 
 impl Mint {
+    fn deposit_vara(&mut self) {
+        self.vara_pool_amount = self.vara_pool_amount.saturating_add(msg::value());
+    }
     fn add_admin(&mut self, admin: &ActorId) {
         self.check_if_admin(&msg::source());
         self.admins.insert(*admin);
@@ -43,7 +48,7 @@ impl Mint {
                 msg::value(),
                 "Please attach the exact amount of Vara"
             );
-            self.pool_amount = self.pool_amount.saturating_add(mint_cost);
+            self.vara_pool_amount = self.vara_pool_amount.saturating_add(mint_cost);
         }
 
         self.check_attributes(&attributes);
@@ -60,7 +65,6 @@ impl Mint {
             attributes: CharacterAttributes {
                 strength: attributes.strength,
                 agility: attributes.agility,
-                vitality: attributes.vitality,
                 stamina: attributes.stamina,
                 intelligence: attributes.intelligence,
                 lives_count: self.config.lives_count,
@@ -107,7 +111,14 @@ impl Mint {
 
         character.algorithm_id = algorithm_id;
 
-        msg::reply(MintEvent::CharacterUpdated, 0).expect("unable to reply");
+        msg::reply(
+            MintEvent::CharacterUpdated {
+                character_id: character.id,
+                algorithm_id,
+            },
+            0,
+        )
+        .expect("unable to reply");
     }
 
     fn character_info(&self, owner_id: CharacterId) {
@@ -118,7 +129,13 @@ impl Mint {
         msg::reply(character, 0).expect("unable to reply");
     }
 
-    fn increase_xp(&mut self, owner_id: CharacterId, character_id: u128, losers: Vec<ActorId>) {
+    fn increase_xp(
+        &mut self,
+        owner_id: CharacterId,
+        character_id: u128,
+        losers: Vec<ActorId>,
+        reply_to: ActorId,
+    ) {
         let caller = msg::source();
 
         if let Some(arena_id) = self.arena_contract {
@@ -137,39 +154,23 @@ impl Mint {
 
         let earned_rating = match character.level {
             0 => unreachable!(),
-            1 => 25,
-            2 => 20,
-            3 => 15,
-            4 => 10,
-            _ => 5,
+            1 => 5,
+            2 => 10,
+            3..=5 => 15,
+            6..=9 => 20,
+            _ => 40,
         };
         character.increase_xp();
-
         character.attributes.increase_rating(earned_rating);
-        msg::reply(
-            MintEvent::RatingUpdated {
-                character_id: character.id,
-                rating: character.attributes.tier_rating,
-            },
-            0,
-        )
-        .expect("unable to reply");
 
         let xp = character.experience;
         self.characters.insert(owner_id, character.clone());
 
+        let mut losers_id = vec![];
         for character_id in losers {
             if let Entry::Occupied(mut character_info) = self.characters.entry(character_id) {
                 character_info.get_mut().attributes.lives_count -= 1;
-                msg::reply(
-                    MintEvent::LivesCountUpdated {
-                        character_id: character_info.get().id,
-                        count: character_info.get().attributes.lives_count,
-                    },
-                    0,
-                )
-                .expect("unable to reply");
-
+                losers_id.push(character_info.get().id);
                 if character_info.get().attributes.lives_count == 0 {
                     character_info.remove_entry();
                 }
@@ -178,14 +179,17 @@ impl Mint {
 
         self.total_rating = self.total_rating.saturating_add(earned_rating.into());
 
-        msg::reply(
-            MintEvent::XpUpdated {
-                character_id: character.id,
-                xp,
+        msg::send(
+            reply_to,
+            MintEvent::BattleResultHandled {
+                winner_id: character_id,
+                winner_xp: xp,
+                winner_rating: character.attributes.tier_rating,
+                losers: losers_id,
             },
             0,
         )
-        .expect("unable to reply");
+        .expect("unable to send");
     }
 
     fn set_arena(&mut self, arena_id: ActorId) {
@@ -237,11 +241,12 @@ impl Mint {
             "The caller must be the contract itself"
         );
 
-        let amount_for_distribution = self.config.gold_pool_amount;
+        let amount_for_distribution = self.daily_gold_pool_amount;
 
         // Payment per rating unit
         let unit_rating_payment = amount_for_distribution / self.total_rating;
 
+        let mut distribution: BTreeMap<u128, u128> = BTreeMap::new();
         for character_info in self.characters.values_mut() {
             if character_info.attributes.lives_count > 0 {
                 let earned_daily_balance =
@@ -250,8 +255,12 @@ impl Mint {
                     .attributes
                     .balance
                     .saturating_add(earned_daily_balance.into());
+                distribution.insert(character_info.id, character_info.attributes.balance);
             }
         }
+
+        let admin = self.admins.first().expect("admins set can't be empty");
+        msg::send(*admin, MintEvent::GoldDistributed { distribution }, 0).expect("unable to send");
 
         // Check gas in message
         // If the remaining gas in the message is less than the minimum gas amount on config
@@ -271,15 +280,48 @@ impl Mint {
                 self.daily_gold_distr_status = DailyGoldDistrStatus::OutOfGas;
             }
         } else {
-            msg::send_with_gas_delayed(
+            msg::send_delayed(
                 program_id,
                 MintAction::DistributeDailyPool,
-                self.config.gas_for_daily_distribution,
                 0,
                 self.config.update_interval_in_blocks,
             )
             .expect("Error during sending a delayed message");
         }
+    }
+
+    fn end_season_distribution(&mut self, player_percentage_for_vara_distr: Option<u16>) {
+        self.check_if_admin(&msg::source());
+
+        let amount_for_distribution = self.gold_pool_amount;
+
+        // Payment per rating unit
+        let unit_rating_payment = amount_for_distribution / self.total_rating;
+
+        let mut live_characters = Vec::new();
+        let mut distribution: BTreeMap<u128, u128> = BTreeMap::new();
+        for character_info in self.characters.values_mut() {
+            if character_info.attributes.lives_count > 0 {
+                let earned_daily_balance =
+                    character_info.attributes.tier_rating * unit_rating_payment;
+                character_info.attributes.balance = character_info
+                    .attributes
+                    .balance
+                    .saturating_add(earned_daily_balance.into());
+                live_characters.push(character_info.clone());
+                distribution.insert(character_info.id, character_info.attributes.balance);
+            }
+        }
+
+        if let Some(percentage) = player_percentage_for_vara_distr {
+            assert!(
+                percentage <= 1000,
+                "Not allowed to send more than 1000 messages"
+            );
+            // TO DO select that amount of characters to send vara
+        }
+
+        msg::reply(MintEvent::GoldDistributed { distribution }, 0).expect("unable to reply");
     }
 
     fn stop_daily_gold_distribution(&mut self) {
@@ -305,13 +347,11 @@ impl Mint {
         assert!(attributes.stamina >= 1);
         assert!(attributes.strength >= 1);
         assert!(attributes.intelligence >= 1);
-        assert!(attributes.vitality >= 1);
         let mut sum: u8 = 0;
         sum = sum.checked_add(attributes.agility).unwrap();
         sum = sum.checked_add(attributes.stamina).unwrap();
         sum = sum.checked_add(attributes.strength).unwrap();
         sum = sum.checked_add(attributes.intelligence).unwrap();
-        sum = sum.checked_add(attributes.vitality).unwrap();
         assert!(sum == 10, "invalid amount of attributes")
     }
 
@@ -360,10 +400,15 @@ impl Mint {
 #[no_mangle]
 unsafe extern "C" fn init() {
     let config: Config = msg::load().expect("Unable to decode Config");
+    let gold_pool_amount = config.gold_pool_amount / 2;
+    let daily_gold_pool_amount = gold_pool_amount / config.season_duration_in_days;
+
     let contract_owner = msg::source();
     MINT = Some(Mint {
         admins: BTreeSet::from([contract_owner]),
         config,
+        gold_pool_amount,
+        daily_gold_pool_amount,
         ..Default::default()
     });
 }
@@ -375,6 +420,7 @@ extern "C" fn handle() {
     let caller = msg::source();
 
     match action {
+        MintAction::DepositVara => mint.deposit_vara(),
         MintAction::CreateCharacter {
             code_id,
             name,
@@ -387,7 +433,8 @@ extern "C" fn handle() {
             owner_id,
             character_id,
             losers,
-        } => mint.increase_xp(owner_id, character_id, losers),
+            reply_to,
+        } => mint.increase_xp(owner_id, character_id, losers, reply_to),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
         MintAction::MakeReservation => mint.make_reservation(),
@@ -414,6 +461,9 @@ extern "C" fn handle() {
             mint_cost,
             gold_pool_amount,
         ),
+        MintAction::FinalDistribution {
+            player_percentage_for_vara_distr,
+        } => mint.end_season_distribution(player_percentage_for_vara_distr),
     }
 }
 

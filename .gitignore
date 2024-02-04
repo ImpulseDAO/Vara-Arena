@@ -1,5 +1,6 @@
 target/
 .binpath
+.env
 .metahash
 frontend/.env
 frontend/node_modules

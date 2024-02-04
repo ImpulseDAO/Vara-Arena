@@ -11,6 +11,7 @@ deploy:
   processor:
     env:
       RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
+      MINT_COST: ${{ secrets.MINT_COST }}
     cmd: [ "sqd", "process:prod" ]
   api:
     cmd: [ "sqd", "serve:prod" ]

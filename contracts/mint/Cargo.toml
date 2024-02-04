@@ -13,3 +13,6 @@ mint-io.workspace = true
 gear-wasm-builder.workspace = true
 gmeta.workspace = true
 mint-io.workspace = true
+
+[dev-dependencies]
+gtest.workspace = true

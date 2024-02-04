@@ -8,7 +8,6 @@ use gstd::{debug, prelude::*, ActorId, CodeId, Debug, TypeInfo};
 const MAX_LEVEL: usize = 10;
 const MAX_STRENGTH: usize = 9;
 const MAX_AGILITY: usize = 9;
-const MAX_VITALITY: usize = 9;
 const MAX_STAMINA: usize = 9;
 const MAX_INTELLIGENCE: usize = 9;
 
@@ -23,7 +22,6 @@ const LEVEL_XP: [u32; MAX_LEVEL + 1] = [
 pub struct InitialAttributes {
     pub strength: u8,
     pub agility: u8,
-    pub vitality: u8,
     pub stamina: u8,
     pub intelligence: u8,
 }
@@ -32,7 +30,6 @@ pub struct InitialAttributes {
 pub struct CharacterAttributes {
     pub strength: u8,
     pub agility: u8,
-    pub vitality: u8,
     pub stamina: u8,
     pub intelligence: u8,
     pub lives_count: u8,
@@ -50,6 +47,7 @@ pub struct Config {
     pub reservation_duration: u32,
     pub mint_cost: Option<u128>,
     pub gold_pool_amount: u128,
+    pub season_duration_in_days: u128,
 }
 
 #[derive(Encode, Decode, TypeInfo, Default, Debug, PartialEq, Eq)]
@@ -64,12 +62,11 @@ pub enum DailyGoldDistrStatus {
 pub enum AttributeChoice {
     Strength,
     Agility,
-    Vitality,
     Stamina,
     Intelligence,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct CharacterInfo {
     pub id: u128,
     pub algorithm_id: ActorId,
@@ -103,10 +100,6 @@ impl CharacterInfo {
                 assert!(self.attributes.agility != MAX_AGILITY as u8, "max level");
                 self.attributes.agility = self.attributes.agility + 1;
             }
-            AttributeChoice::Vitality => {
-                assert!(self.attributes.vitality != MAX_VITALITY as u8, "max level");
-                self.attributes.vitality = self.attributes.vitality + 1;
-            }
             AttributeChoice::Stamina => {
                 assert!(self.attributes.stamina != MAX_STAMINA as u8, "max level");
                 self.attributes.stamina = self.attributes.stamina + 1;
@@ -127,6 +120,7 @@ impl CharacterInfo {
 impl CharacterAttributes {
     pub fn increase_rating(&mut self, earned_rating: u128) {
         self.tier_rating = self.tier_rating.saturating_add(earned_rating);
+        debug!("Winner's rating is {:?}", self.tier_rating);
     }
 }
 
@@ -154,6 +148,7 @@ pub enum MintAction {
         owner_id: ActorId,
         character_id: u128,
         losers: Vec<ActorId>,
+        reply_to: ActorId,
     },
     SetArena {
         arena_id: ActorId,
@@ -175,6 +170,10 @@ pub enum MintAction {
         mint_cost: Option<u128>,
         gold_pool_amount: Option<u128>,
     },
+    DepositVara,
+    FinalDistribution {
+        player_percentage_for_vara_distr: Option<u16>,
+    },
 }
 
 #[derive(Encode, Decode, TypeInfo)]
@@ -182,26 +181,26 @@ pub enum MintEvent {
     CharacterCreated {
         character_info: CharacterInfo,
     },
-    LivesCountUpdated {
-        character_id: u128,
-        count: u8,
-    },
-    XpUpdated {
-        character_id: u128,
-        xp: u32,
-    },
-    RatingUpdated {
-        character_id: u128,
-        rating: u128,
-    },
     LevelUpdated {
         character_id: u128,
         attr: AttributeChoice,
     },
-    CharacterUpdated,
+    CharacterUpdated {
+        character_id: u128,
+        algorithm_id: ActorId,
+    },
+    BattleResultHandled {
+        winner_id: u128,
+        winner_xp: u32,
+        winner_rating: u128,
+        losers: Vec<u128>,
+    },
+    GoldDistributed {
+        distribution: BTreeMap<u128, u128>,
+    },
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone)]
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
 pub struct MintState {
     pub characters: BTreeMap<ActorId, CharacterInfo>,
 }

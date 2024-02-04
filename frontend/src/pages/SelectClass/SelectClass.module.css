@@ -15,7 +15,7 @@
   }
 
   .panel {
-    margin: 2rem 5rem 4rem;
+    margin: 2rem 5rem 3rem;
     max-width: 1200px;
     min-width: 500px;
   }
@@ -30,6 +30,12 @@
 
     column-gap: 2.2rem;
     row-gap: 1.2rem;
+  }
+
+  .classImage {
+    max-width: 215px;
+    align-self: center;
+    justify-self: center;
   }
 
   .classDescription {

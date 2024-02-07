@@ -35,6 +35,7 @@ pub struct CharacterAttributes {
     pub lives_count: u8,
     pub tier_rating: u128,
     pub balance: u128,
+    pub vara_balance: u128,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]
@@ -172,8 +173,9 @@ pub enum MintAction {
     },
     DepositVara,
     FinalDistribution {
-        player_percentage_for_vara_distr: Option<u16>,
+        amount_of_players: u16,
     },
+    ClaimVara,
 }
 
 #[derive(Encode, Decode, TypeInfo)]

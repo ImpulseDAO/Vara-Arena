@@ -70,6 +70,7 @@ impl Mint {
                 lives_count: self.config.lives_count,
                 tier_rating: 0,
                 balance: 0,
+                vara_balance: 0,
             },
             level: 1,
             experience: 0,
@@ -290,7 +291,7 @@ impl Mint {
         }
     }
 
-    fn end_season_distribution(&mut self, player_percentage_for_vara_distr: Option<u16>) {
+    fn final_season_distribution(&mut self, amount_of_players: u16) {
         self.check_if_admin(&msg::source());
 
         let amount_for_distribution = self.gold_pool_amount;
@@ -300,25 +301,45 @@ impl Mint {
 
         let mut live_characters = Vec::new();
         let mut distribution: BTreeMap<u128, u128> = BTreeMap::new();
-        for character_info in self.characters.values_mut() {
+        for (character_id, character_info) in &self.characters {
             if character_info.attributes.lives_count > 0 {
-                let earned_daily_balance =
-                    character_info.attributes.tier_rating * unit_rating_payment;
-                character_info.attributes.balance = character_info
-                    .attributes
-                    .balance
-                    .saturating_add(earned_daily_balance.into());
-                live_characters.push(character_info.clone());
-                distribution.insert(character_info.id, character_info.attributes.balance);
+                live_characters.push((*character_id, character_info.attributes.tier_rating));
             }
         }
 
-        if let Some(percentage) = player_percentage_for_vara_distr {
-            assert!(
-                percentage <= 1000,
-                "Not allowed to send more than 1000 messages"
-            );
-            // TO DO select that amount of characters to send vara
+        live_characters.sort_by(|a, b| b.1.cmp(&a.1));
+
+        // calculate the total rating of the players who will be given Vara
+        let mut rating = 0;
+
+        for i in 0..amount_of_players as usize {
+            rating += live_characters[i].1;
+        }
+
+        let unit_rating_vara_payment = self.vara_pool_amount / rating;
+
+        for (i, (character_id, tier_rating)) in live_characters.iter().enumerate() {
+            let earned_daily_balance = tier_rating * unit_rating_payment;
+            let earned_vara = if i < amount_of_players as usize {
+                let vara_amount = unit_rating_vara_payment * tier_rating;
+                if vara_amount >= 10_000_000_000 {
+                    vara_amount
+                } else {
+                    0
+                }
+            } else {
+                0
+            };
+
+            let mut id = 0;
+            let mut balance = 0;
+            self.characters.entry(*character_id).and_modify(|info| {
+                info.attributes.vara_balance += earned_vara;
+                info.attributes.balance += earned_daily_balance;
+                id = info.id;
+                balance = info.attributes.balance
+            });
+            distribution.insert(id, balance);
         }
 
         msg::reply(MintEvent::GoldDistributed { distribution }, 0).expect("unable to reply");
@@ -395,6 +416,24 @@ impl Mint {
             self.config.gold_pool_amount = gold_pool_amount;
         }
     }
+
+    fn claim_vara(&mut self) {
+        let id = msg::source();
+        let character_info = self
+            .characters
+            .get_mut(&id)
+            .expect("Character does not exist");
+        let vara_balance = character_info.attributes.vara_balance;
+        if vara_balance == 0 {
+            panic!("No vara to claim")
+        }
+        if vara_balance > self.vara_pool_amount {
+            panic!("Contract has no balance!")
+        }
+
+        self.vara_pool_amount -= vara_balance;
+        msg::send_with_gas(id, "", 0, vara_balance).expect("Error during vara sending");
+    }
 }
 
 #[no_mangle]
@@ -461,9 +500,10 @@ extern "C" fn handle() {
             mint_cost,
             gold_pool_amount,
         ),
-        MintAction::FinalDistribution {
-            player_percentage_for_vara_distr,
-        } => mint.end_season_distribution(player_percentage_for_vara_distr),
+        MintAction::FinalDistribution { amount_of_players } => {
+            mint.final_season_distribution(amount_of_players)
+        }
+        MintAction::ClaimVara => mint.claim_vara(),
     }
 }
 

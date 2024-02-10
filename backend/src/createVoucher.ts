@@ -35,37 +35,39 @@ export const createVoucher = async (
 
   const extrinsics = [tx, tx2].filter(Boolean).map((tx) => tx?.extrinsic);
 
-  return extrinsics.map((extrinsic) => {
-    return new Promise<VoucherIssuedData>((resolve, reject) => {
-      if (!KEYRING) {
-        reject(new Error("Keyring is not defined"));
-        return;
-      }
+  return Promise.all(
+    extrinsics.map((extrinsic) => {
+      return new Promise<VoucherIssuedData>((resolve, reject) => {
+        if (!KEYRING) {
+          reject(new Error("Keyring is not defined"));
+          return;
+        }
 
-      extrinsic
-        .signAndSend(KEYRING, async ({ events, status, isError }) => {
-          if (status.isInBlock) {
-            const viEvent = events.find(({ event }) => {
-              if (event.method === "ExtrinsicFailed") {
-                const error = api.getExtrinsicFailedError(event);
-                reject(error);
+        extrinsic
+          .signAndSend(KEYRING, async ({ events, status, isError }) => {
+            if (status.isInBlock) {
+              const viEvent = events.find(({ event }) => {
+                if (event.method === "ExtrinsicFailed") {
+                  const error = api.getExtrinsicFailedError(event);
+                  reject(error);
+                }
+                return event.method === "VoucherIssued";
+              });
+
+              const data = viEvent?.event.data as VoucherIssuedData;
+
+              if (data) {
+                resolve(data);
               }
-              return event.method === "VoucherIssued";
-            });
-
-            const data = viEvent?.event.data as VoucherIssuedData;
-
-            if (data) {
-              resolve(data);
+            } else if (isError) {
+              const error = new Error(`Failed to create voucher`);
+              reject(error);
             }
-          } else if (isError) {
-            const error = new Error(`Failed to create voucher`);
-            reject(error);
-          }
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-  });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    })
+  );
 };

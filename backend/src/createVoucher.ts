@@ -22,6 +22,11 @@ export const createVoucher = async (
   const extrinsic = tx.extrinsic;
 
   return new Promise<VoucherIssuedData>((resolve, reject) => {
+    if (!KEYRING) {
+      reject(new Error("Keyring is not defined"));
+      return;
+    }
+
     extrinsic
       .signAndSend(KEYRING, async ({ events, status, isError }) => {
         if (status.isInBlock) {

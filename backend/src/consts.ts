@@ -15,4 +15,12 @@ export const AMOUNT_IN_VARA = process.env.AMOUNT_IN_VARA as any as number;
 const jsonKeyring = KEYRING_PATH
   ? readFileSync(KEYRING_PATH).toString()
   : (KEYRING_JSON_CONTENT_STRING as string);
-export const KEYRING = GearKeyring.fromJson(jsonKeyring, KEYRING_PASSPHRASE);
+
+export const KEYRING = (() => {
+  try {
+    return GearKeyring.fromJson(jsonKeyring, KEYRING_PASSPHRASE);
+  } catch (error) {
+    console.error("Error while reading keyring", error);
+    return null;
+  }
+})();

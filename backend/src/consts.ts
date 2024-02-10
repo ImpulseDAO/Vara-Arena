@@ -5,6 +5,7 @@ export const PORT = process.env.PORT;
 
 export const NODE_ADDRESS = process.env.NODE_ADDRESS;
 export const GAME_ADDRESS = process.env.GAME_ADDRESS as HexString;
+export const GAME_ADDRESS_2 = process.env.GAME_ADDRESS_2 as HexString | null;
 export const KEYRING_PATH = process.env.PATH_TO_KEYS || "";
 export const KEYRING_JSON_CONTENT_STRING =
   process.env.KEYRING_JSON_CONTENT_STRING;

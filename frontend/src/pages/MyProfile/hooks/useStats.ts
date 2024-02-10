@@ -2,6 +2,7 @@ import { ProgramMetadata } from "@gear-js/api";
 import { useSendMessage } from "@gear-js/react-hooks";
 import { MAX_GAS_LIMIT, XP_NEEDED_FOR_LEVEL_UP_MAP } from "consts";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
+import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 
 export const useStats = (character?: Character) => {
@@ -12,6 +13,7 @@ export const useStats = (character?: Character) => {
     experience: 0,
     maxExp: 0,
   });
+  const shouldUseVoucher = useShouldUseVoucher();
   const [attr, setAttr] = useState("");
 
   const [alertVisible, toggleVisible] = useReducer((state) => !state, false);
@@ -42,6 +44,7 @@ export const useStats = (character?: Character) => {
                 attr,
               },
             },
+            withVoucher: shouldUseVoucher,
             gasLimit: MAX_GAS_LIMIT,
             onSuccess: () => {
               console.log("LevelUp message successfully sent");
@@ -59,7 +62,7 @@ export const useStats = (character?: Character) => {
         }
       }
     },
-    [attr, send]
+    [attr, send, shouldUseVoucher]
   );
 
   useEffect(() => {

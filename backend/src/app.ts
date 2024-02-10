@@ -29,7 +29,7 @@ app.post(`${PREFIX}/`, async (req: Request, res: Response) => {
   }
 });
 
-app.use(PREFIX, express.static("public/voucher"));
+// app.use(PREFIX, express.static("public/voucher"));
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);

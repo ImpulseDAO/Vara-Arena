@@ -42,7 +42,7 @@ app.post(`${PREFIX}/`, async (req: Request, res: Response) => {
       });
       return;
     } else if (bothFulfilled) {
-      res.status(500).send({
+      res.status(200).send({
         message: "Vouchers created successfully",
         results: promises.map(
           (promise) => (promise as PromiseFulfilledResult<any>)?.value

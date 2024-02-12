@@ -310,7 +310,6 @@ fn spending_all_gas_strategy() {
             agility: 1,
             strength: 1,
             stamina: 1,
-            vitality: 1,
             intelligence: 6,
         },
     };
@@ -322,7 +321,6 @@ fn spending_all_gas_strategy() {
             agility: 6,
             strength: 1,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };
@@ -407,7 +405,6 @@ fn wrong_reply_format() {
             agility: 1,
             strength: 1,
             stamina: 1,
-            vitality: 1,
             intelligence: 6,
         },
     };
@@ -419,7 +416,6 @@ fn wrong_reply_format() {
             agility: 6,
             strength: 1,
             stamina: 1,
-            vitality: 1,
             intelligence: 1,
         },
     };

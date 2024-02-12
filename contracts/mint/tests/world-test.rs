@@ -40,7 +40,7 @@ fn gold_distribution() {
             code_id,
             name: "Alice".to_string(),
             attributes: InitialAttributes {
-                agility: 1,
+                agility: 2,
                 strength: 1,
                 stamina: 1,
                 intelligence: 6,
@@ -55,7 +55,7 @@ fn gold_distribution() {
             code_id,
             name: "Bob".to_string(),
             attributes: InitialAttributes {
-                agility: 1,
+                agility: 2,
                 strength: 1,
                 stamina: 1,
                 intelligence: 6,
@@ -70,7 +70,7 @@ fn gold_distribution() {
             code_id,
             name: "Bob".to_string(),
             attributes: InitialAttributes {
-                agility: 1,
+                agility: 2,
                 strength: 1,
                 stamina: 1,
                 intelligence: 6,

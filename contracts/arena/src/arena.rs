@@ -277,7 +277,7 @@ impl Arena {
         }
 
         let reservation_id =
-            ReservationId::reserve(GAS_FOR_BATTLE, 500).expect("unable to reserve");
+            ReservationId::reserve(GAS_FOR_BATTLE, 864000).expect("unable to reserve");
         lobby.reservations.push(reservation_id);
         msg::reply(ArenaEvent::GasReserved { lobby_id }, 0).expect("unable to reply");
     }

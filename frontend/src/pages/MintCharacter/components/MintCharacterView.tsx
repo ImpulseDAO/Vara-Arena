@@ -104,9 +104,6 @@ export const MintCharacterView: FC<MintCharacterViewProps> = memo(
                 100 vara
               </Badge>
             </Button>
-            <div className="textWrapper">
-              75% is added to this season's prize pool
-            </div>
           </div>
         </Table>
       </div>

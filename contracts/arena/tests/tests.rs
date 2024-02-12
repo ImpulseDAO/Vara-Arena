@@ -307,7 +307,7 @@ fn spending_all_gas_strategy() {
         code_id: code_id2,
         name: "Alice".to_string(),
         attributes: InitialAttributes {
-            agility: 1,
+            agility: 2,
             strength: 1,
             stamina: 1,
             intelligence: 6,
@@ -321,7 +321,7 @@ fn spending_all_gas_strategy() {
             agility: 6,
             strength: 1,
             stamina: 1,
-            intelligence: 1,
+            intelligence: 2,
         },
     };
 
@@ -402,7 +402,7 @@ fn wrong_reply_format() {
         code_id: code_id2,
         name: "Alice".to_string(),
         attributes: InitialAttributes {
-            agility: 1,
+            agility: 2,
             strength: 1,
             stamina: 1,
             intelligence: 6,
@@ -416,7 +416,7 @@ fn wrong_reply_format() {
             agility: 6,
             strength: 1,
             stamina: 1,
-            intelligence: 1,
+            intelligence: 2,
         },
     };
 

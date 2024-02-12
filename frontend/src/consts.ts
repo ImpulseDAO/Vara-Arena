@@ -3,6 +3,8 @@ switch (true) {
     throw new Error("REACT_APP_IS_TESTNET env variable is not set");
   case process.env.REACT_APP_NODE_ADDRESS == null:
     throw new Error("REACT_APP_NODE_ADDRESS env variable is not set");
+  case process.env.REACT_APP_GRAPHQL_API_URL == null:
+    throw new Error("GRAPHQL_API_URL env variable is not set");
 
   default:
     break;
@@ -16,7 +18,8 @@ const LOCAL_STORAGE = {
   ACCOUNT: "account",
 };
 
-export const GRAPHQL_API_URL = process.env.GRAPHQL_API_URL as string;
+export const GRAPHQL_API_URL = process.env.REACT_APP_GRAPHQL_API_URL as string;
+console.log("GRAPHQL_API_URL", GRAPHQL_API_URL);
 
 export const IS_TESTNET = process.env.REACT_APP_IS_TESTNET === "true";
 console.log("IS_TESTNET", IS_TESTNET);

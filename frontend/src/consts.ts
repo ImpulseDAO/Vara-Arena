@@ -18,7 +18,7 @@ const LOCAL_STORAGE = {
 
 export const GRAPHQL_API_URL = process.env.GRAPHQL_API_URL as string;
 
-export const IS_TESTNET = process.env.REACT_APP_IS_TESTNET;
+export const IS_TESTNET = process.env.REACT_APP_IS_TESTNET === "true";
 console.log("IS_TESTNET", IS_TESTNET);
 
 export const APP_ROUTER_BASENAME = "/Vara-Arena";

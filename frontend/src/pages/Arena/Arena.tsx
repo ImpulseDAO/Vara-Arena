@@ -54,7 +54,6 @@ export const Arena = memo(() => {
       <Flex
         style={{
           flex: 1,
-          // justifyContent: "center",
         }}
       >
         <Grid

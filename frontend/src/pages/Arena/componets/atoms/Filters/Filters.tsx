@@ -25,13 +25,16 @@ export const Filters: FC<FiltersProps> = memo(({ onChangeFilters }) => {
       ),
     []
   );
+  console.log("tiers", tiers);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
     onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
   });
 
-  const [value, setValue] = useState<string[]>([]);
+  const [value, setValue] = useState<string[]>(
+    Array.from({ length: 5 }, (_, i) => `Tier ${i + 1}`)
+  );
 
   const handleValueSelect = useCallback(
     (val: string) =>

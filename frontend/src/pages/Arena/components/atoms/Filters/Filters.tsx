@@ -25,7 +25,6 @@ export const Filters: FC<FiltersProps> = memo(({ onChangeFilters }) => {
       ),
     []
   );
-  console.log("tiers", tiers);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -62,7 +61,7 @@ export const Filters: FC<FiltersProps> = memo(({ onChangeFilters }) => {
           {item}
         </Pill>
       )),
-    [value]
+    [handleValueRemove, value]
   );
 
   useEffect(() => {

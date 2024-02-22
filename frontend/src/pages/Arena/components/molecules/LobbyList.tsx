@@ -14,10 +14,11 @@ import { useMyCharacterFromContractState } from "app/api/mintState";
 type LobbyListProps = {
   filters: string[];
   availableCheck: boolean;
+  allOpenLobby: boolean;
 };
 
 export const LobbyList: FC<LobbyListProps> = memo(
-  ({ filters, availableCheck }) => {
+  ({ filters, availableCheck, allOpenLobby }) => {
     const myAccountId = useMyAccountId();
     const navigate = useNavigate();
     const { data: myCharacterFromState } = useMyCharacterFromContractState();
@@ -36,10 +37,16 @@ export const LobbyList: FC<LobbyListProps> = memo(
       if (!lobbiesData || !lobbiesData?.lobbies) return [];
       let lobbies = [...lobbiesData.lobbies];
 
-      if (availableCheck && myCharacterFromState?.level) {
+      if (availableCheck) {
+        if (!myCharacterFromState?.level) {
+          return [];
+        }
         lobbies = lobbies.filter(
           (lobby) => lobby.tier === getTier(myCharacterFromState.level)
         );
+      }
+      if (allOpenLobby) {
+        lobbies = lobbies.filter((lobby) => lobby.battleLogs.length === 0);
       }
 
       return lobbies
@@ -70,17 +77,14 @@ export const LobbyList: FC<LobbyListProps> = memo(
       filters,
       availableCheck,
       myCharacterFromState,
+      allOpenLobby,
     ]);
 
     return cards.map((card, index) => {
-      let hasPlayerJoined = false;
-
       const characters =
         card.players.map((character) => {
-          // TODO какая то странная логика тута
           const isMyCharacter = character.owner === myAccountId;
-          // set isPlayerJoined to "true" if current player has joined
-          hasPlayerJoined = hasPlayerJoined || isMyCharacter;
+
           return getCharacter({ character, isMyCharacter });
         }) ?? [];
 

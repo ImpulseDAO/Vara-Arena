@@ -1,12 +1,17 @@
 import { Grid, Flex, Checkbox, Box } from "@mantine/core";
-import { Filters, GridColumn } from "./componets/atoms";
-import { CreateLobby } from "./componets/molecules/CreateLobby";
-import { LobbyList } from "./componets/molecules/LobbyList";
+import { Filters, GridColumn } from "./components/atoms";
+import { CreateLobby } from "./components/molecules/CreateLobby";
+import { LobbyList } from "./components/molecules/LobbyList";
 import { memo, useCallback, useReducer, useState } from "react";
 
 export const Arena = memo(() => {
   const [filters, setFilters] = useState<string[]>([]);
   const [availableCheck, toggleAvailableCheck] = useReducer(
+    (state) => !state,
+    false
+  );
+
+  const [allOpenLobby, toggleAllOpenLobby] = useReducer(
     (state) => !state,
     false
   );
@@ -40,11 +45,17 @@ export const Arena = memo(() => {
             justifyContent: "center",
             borderRadius: "9px",
             border: "1px solid white",
+            gap: 10,
           }}
           bg={"black"}
         >
           <Checkbox
-            label="Show available"
+            label="Show all open lobbies"
+            checked={allOpenLobby}
+            onChange={toggleAllOpenLobby}
+          />
+          <Checkbox
+            label="Show available lobbies"
             checked={availableCheck}
             onChange={toggleAvailableCheck}
           />
@@ -57,7 +68,6 @@ export const Arena = memo(() => {
         }}
       >
         <Grid
-          // m={"lg"}
           mt={20}
           gutter={"md"}
           style={{
@@ -65,12 +75,14 @@ export const Arena = memo(() => {
             maxWidth: "min(1300px, 90%)",
           }}
         >
-          {/* Отображение карточки создания лобби */}
           <GridColumn>
             <CreateLobby />
           </GridColumn>
-          {/* Отображение списка лобби */}
-          <LobbyList filters={filters} availableCheck={availableCheck} />
+          <LobbyList
+            filters={filters}
+            allOpenLobby={allOpenLobby}
+            availableCheck={availableCheck}
+          />
         </Grid>
       </Flex>
     </Flex>

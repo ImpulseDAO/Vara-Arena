@@ -36,6 +36,7 @@ export const LobbyList: FC<LobbyListProps> = memo(
     const cards = useMemo(() => {
       if (!lobbiesData || !lobbiesData?.lobbies) return [];
       let lobbies = [...lobbiesData.lobbies];
+      console.log("lobbies", lobbies);
 
       if (availableCheck) {
         if (!myCharacterFromState?.level) {
@@ -52,7 +53,9 @@ export const LobbyList: FC<LobbyListProps> = memo(
       return lobbies
         .sort((a, b) => parseInt(b.id) - parseInt(a.id))
         .filter(
-          (lobby) => "tier" in lobby && filters.includes(`Tier ${lobby.tier}`)
+          (lobby) =>
+            "tier" in lobby &&
+            (filters.includes(`Tier ${lobby.tier}`) || lobby.tier === 0)
         )
         .map((lobby) => {
           const isMyCharacterInLobby = lobby.characters.some(
@@ -79,6 +82,8 @@ export const LobbyList: FC<LobbyListProps> = memo(
       myCharacterFromState,
       allOpenLobby,
     ]);
+
+    console.log("cards", cards);
 
     return cards.map((card, index) => {
       const characters =

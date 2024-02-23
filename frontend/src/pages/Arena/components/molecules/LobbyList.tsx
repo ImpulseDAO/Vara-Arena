@@ -42,7 +42,9 @@ export const LobbyList: FC<LobbyListProps> = memo(
           return [];
         }
         lobbies = lobbies.filter(
-          (lobby) => lobby.tier === getTier(myCharacterFromState.level)
+          (lobby) =>
+            lobby.tier === getTier(myCharacterFromState.level) ||
+            lobby.tier === 0
         );
       }
       if (allOpenLobby) {
@@ -52,7 +54,9 @@ export const LobbyList: FC<LobbyListProps> = memo(
       return lobbies
         .sort((a, b) => parseInt(b.id) - parseInt(a.id))
         .filter(
-          (lobby) => "tier" in lobby && filters.includes(`Tier ${lobby.tier}`)
+          (lobby) =>
+            "tier" in lobby &&
+            (filters.includes(`Tier ${lobby.tier}`) || lobby.tier === 0)
         )
         .map((lobby) => {
           const isMyCharacterInLobby = lobby.characters.some(

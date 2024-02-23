@@ -1,0 +1,21 @@
+.input {
+  background: rgb(0, 0, 0);
+  border-color: white;
+  width: 400px;
+}
+
+.text {
+  color: white;
+}
+
+.options {
+  background: black;
+}
+
+.option {
+  border-radius: 0;
+  &:hover {
+    background: none;
+    border-bottom: 1px solid white;
+  }
+}

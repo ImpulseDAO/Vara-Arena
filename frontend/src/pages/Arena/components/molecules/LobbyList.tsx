@@ -84,8 +84,6 @@ export const LobbyList: FC<LobbyListProps> = memo(
       allOpenLobby,
     ]);
 
-    console.log("cards", cards);
-
     return cards.map((card, index) => {
       const characters =
         card.players.map((character) => {

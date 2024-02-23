@@ -36,14 +36,15 @@ export const LobbyList: FC<LobbyListProps> = memo(
     const cards = useMemo(() => {
       if (!lobbiesData || !lobbiesData?.lobbies) return [];
       let lobbies = [...lobbiesData.lobbies];
-      console.log("lobbies", lobbies);
 
       if (availableCheck) {
         if (!myCharacterFromState?.level) {
           return [];
         }
         lobbies = lobbies.filter(
-          (lobby) => lobby.tier === getTier(myCharacterFromState.level)
+          (lobby) =>
+            lobby.tier === getTier(myCharacterFromState.level) ||
+            lobby.tier === 0
         );
       }
       if (allOpenLobby) {

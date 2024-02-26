@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/vara-testnet",
+  "specVersions": "https://v2.archive.subsquid.io/metadata/vara",
   "pallets": {
     "Gear": {
       "events": [

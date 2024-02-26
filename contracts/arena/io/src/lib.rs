@@ -64,6 +64,7 @@ pub enum TurnEvent {
     FireWall {
         damage: u8,
     },
+    ReplyError,
 }
 
 #[derive(Encode, Decode, TypeInfo, Debug)]

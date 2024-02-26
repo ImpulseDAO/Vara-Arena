@@ -212,6 +212,8 @@ export async function handleArenaMessage(
                         case 'guardbreak':
                             player.energy -= 2
                             break
+                        case 'replyError':
+                            break
                         default:
                             throw new Error(`action "${action}" is not supported`)
                     }

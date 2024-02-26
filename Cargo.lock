@@ -3274,16 +3274,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "scon"
-version = "0.1.0"
-dependencies = [
- "arena-io",
- "gear-wasm-builder",
- "gstd",
- "mint-io",
-]
-
-[[package]]
 name = "scopeguard"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

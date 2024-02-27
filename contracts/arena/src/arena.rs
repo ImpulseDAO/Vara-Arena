@@ -3,7 +3,7 @@ use crate::utils;
 use arena_io::{ArenaAction, ArenaEvent, ArenaState, BattleLog, Character, SetTier};
 use gstd::collections::BTreeMap;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
-use mint_io::{CharacterInfo, MintAction};
+use mint_io::{CharacterInfo, IdPair, MintAction};
 
 const GAS_FOR_BATTLE: u64 = 245_000_000_000;
 const LOBBY_CAPACITY: [Capacity; 2] = [
@@ -33,7 +33,7 @@ pub struct Lobby {
     reservations: Vec<ReservationId>,
     battles: Vec<Battle>,
     winners: Vec<u128>,
-    losers: Vec<ActorId>,
+    losers: Vec<IdPair>,
     logs: Vec<BattleLog>,
     started: bool,
 }
@@ -114,7 +114,10 @@ impl Arena {
                 .find(|c| c.id == log.character2.0)
                 .unwrap();
             lobby.winners.push(log.character1.0);
-            lobby.losers.push(loser.owner);
+            lobby.losers.push(IdPair {
+                owner_id: loser.owner,
+                character_id: loser.id,
+            });
         } else {
             let loser = lobby
                 .characters
@@ -122,7 +125,10 @@ impl Arena {
                 .find(|c| c.id == log.character1.0)
                 .unwrap();
             lobby.winners.push(log.character2.0);
-            lobby.losers.push(loser.owner);
+            lobby.losers.push(IdPair {
+                owner_id: loser.owner,
+                character_id: loser.id,
+            });
         }
         lobby.logs.push(log);
 
@@ -138,8 +144,10 @@ impl Arena {
                 msg::send(
                     self.mint,
                     MintAction::BattleResult {
-                        owner_id: winner.owner,
-                        character_id: winner.id,
+                        winner: IdPair {
+                            owner_id: winner.owner,
+                            character_id: winner.id,
+                        },
                         losers: lobby.losers.drain(..).collect(),
                         reply_to: source,
                     },

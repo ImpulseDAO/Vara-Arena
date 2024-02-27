@@ -77,6 +77,12 @@ pub struct CharacterInfo {
     pub experience: u32,
 }
 
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
+pub struct IdPair {
+    pub owner_id: ActorId,
+    pub character_id: u128,
+}
+
 impl CharacterInfo {
     pub fn increase_xp(&mut self) {
         self.experience = self.experience.saturating_add(XP_GAIN[self.level as usize]);
@@ -146,9 +152,8 @@ pub enum MintAction {
         owner_id: ActorId,
     },
     BattleResult {
-        owner_id: ActorId,
-        character_id: u128,
-        losers: Vec<ActorId>,
+        winner: IdPair,
+        losers: Vec<IdPair>,
         reply_to: ActorId,
     },
     SetArena {

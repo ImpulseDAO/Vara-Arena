@@ -2,9 +2,9 @@
 
 use gstd::collections::{btree_map::Entry, BTreeMap, BTreeSet};
 use gstd::prog::ProgramGenerator;
-use gstd::{debug, exec, msg, prelude::*, ActorId, CodeId, ReservationId};
+use gstd::{exec, msg, prelude::*, ActorId, CodeId, ReservationId};
 use mint_io::{
-    AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus,
+    AttributeChoice, CharacterAttributes, CharacterInfo, Config, DailyGoldDistrStatus, IdPair,
     InitialAttributes, MintAction, MintEvent, MintState,
 };
 
@@ -130,13 +130,7 @@ impl Mint {
         msg::reply(character, 0).expect("unable to reply");
     }
 
-    fn increase_xp(
-        &mut self,
-        owner_id: CharacterId,
-        character_id: u128,
-        losers: Vec<ActorId>,
-        reply_to: ActorId,
-    ) {
+    fn increase_xp(&mut self, winner: IdPair, losers: Vec<IdPair>, reply_to: ActorId) {
         let caller = msg::source();
 
         if let Some(arena_id) = self.arena_contract {
@@ -147,43 +141,46 @@ impl Mint {
 
         let mut character = self
             .characters
-            .get(&owner_id)
+            .get(&winner.owner_id)
             .cloned()
             .expect("invalid owner_id");
 
-        assert!(character.id == character_id);
+        if character.id == winner.character_id {
+            let earned_rating = match character.level {
+                0 => unreachable!(),
+                1 => 5,
+                2 => 10,
+                3..=5 => 15,
+                6..=9 => 20,
+                _ => 40,
+            };
+            character.increase_xp();
+            character.attributes.increase_rating(earned_rating);
 
-        let earned_rating = match character.level {
-            0 => unreachable!(),
-            1 => 5,
-            2 => 10,
-            3..=5 => 15,
-            6..=9 => 20,
-            _ => 40,
-        };
-        character.increase_xp();
-        character.attributes.increase_rating(earned_rating);
+            self.total_rating = self.total_rating.saturating_add(earned_rating.into());
+        }
 
         let xp = character.experience;
-        self.characters.insert(owner_id, character.clone());
+        self.characters.insert(winner.owner_id, character.clone());
 
         let mut losers_id = vec![];
-        for character_id in losers {
-            if let Entry::Occupied(mut character_info) = self.characters.entry(character_id) {
-                character_info.get_mut().attributes.lives_count -= 1;
-                losers_id.push(character_info.get().id);
-                if character_info.get().attributes.lives_count == 0 {
-                    character_info.remove_entry();
+        for id_pair in losers {
+            if let Entry::Occupied(mut character_info) = self.characters.entry(id_pair.owner_id) {
+                let character_id = character_info.get().id;
+                if id_pair.character_id == character_id {
+                    character_info.get_mut().attributes.lives_count -= 1;
+                    losers_id.push(character_id);
+                    if character_info.get().attributes.lives_count == 0 {
+                        character_info.remove_entry();
+                    }
                 }
             }
         }
 
-        self.total_rating = self.total_rating.saturating_add(earned_rating.into());
-
         msg::send(
             reply_to,
             MintEvent::BattleResultHandled {
-                winner_id: character_id,
+                winner_id: winner.character_id,
                 winner_xp: xp,
                 winner_rating: character.attributes.tier_rating,
                 losers: losers_id,
@@ -469,11 +466,10 @@ extern "C" fn handle() {
         }
         MintAction::CharacterInfo { owner_id } => mint.character_info(owner_id),
         MintAction::BattleResult {
-            owner_id,
-            character_id,
+            winner,
             losers,
             reply_to,
-        } => mint.increase_xp(owner_id, character_id, losers, reply_to),
+        } => mint.increase_xp(winner, losers, reply_to),
         MintAction::SetArena { arena_id } => mint.set_arena(arena_id),
         MintAction::LevelUp { attr } => mint.level_up(caller, attr),
         MintAction::MakeReservation => mint.make_reservation(),

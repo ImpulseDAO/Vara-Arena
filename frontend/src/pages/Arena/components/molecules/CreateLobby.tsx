@@ -1,4 +1,4 @@
-import { Select, Stack } from "@mantine/core";
+import { Select, Stack, Text } from "@mantine/core";
 import { Panel } from "components/Panel";
 import { FC, memo, useRef } from "react";
 import { SwordsImage, TitleText } from "../atoms";
@@ -7,14 +7,41 @@ import { useCreateLobby, useLobbies } from "app/api/lobbies";
 import { useNavigate } from "react-router-dom";
 import { routes } from "app/routes";
 import { useAlert } from "@gear-js/react-hooks";
+import { useMyCharacterFromContractState } from "app/api/mintState";
 
 export const CreateLobby: FC = memo(() => {
   const alert = useAlert();
   const selectRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-
+  const { data: myCharacterFromState } = useMyCharacterFromContractState();
   const { refetch: refetchLobbies } = useLobbies();
   const handleCreateLobby = useCreateLobby();
+
+  if (!myCharacterFromState) {
+    return (
+      <Panel h={370} bg="black">
+        <Stack align="center" justify="center" h="100%" gap={0}>
+          <Text
+            size="md"
+            display={"flex"}
+            ta="center"
+            style={{ alignItems: "center" }}
+            h={"100%"}
+          >
+            You don't have a character yet, create a character to play{" "}
+          </Text>
+          <TheButton
+            w={"100%"}
+            onClick={() => {
+              navigate(routes.selectClass);
+            }}
+          >
+            Create a character
+          </TheButton>
+        </Stack>
+      </Panel>
+    );
+  }
 
   return (
     <Panel h={370} bg="black">

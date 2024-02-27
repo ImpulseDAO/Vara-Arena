@@ -23,7 +23,6 @@ export const LobbyList: FC<LobbyListProps> = memo(
     const navigate = useNavigate();
     const { data: myCharacterFromState } = useMyCharacterFromContractState();
     const { data: lobbiesData } = useLobbies();
-
     /**
      * Get handleJoinLobby
      */
@@ -95,6 +94,7 @@ export const LobbyList: FC<LobbyListProps> = memo(
       return (
         <GridColumn key={`${index} - ${card.lobbyId}`}>
           <Card
+            disabled={!myCharacterFromState}
             imageComponent={() => <SwordsImage />}
             isFinished={card.isFinished}
             tierTextComponent={() => (

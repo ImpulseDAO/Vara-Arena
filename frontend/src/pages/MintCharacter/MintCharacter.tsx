@@ -1,91 +1,61 @@
-import { FC, memo, useEffect, useState, useMemo } from "react";
-import { useAccount, useApi, useReadWasmState } from "@gear-js/react-hooks";
-import { useUnit } from "effector-react";
-import { ProgramMetadata } from "@gear-js/api";
-import { userStore } from "model/user";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import { FC, memo, useState } from "react";
 import { MintCharacterView } from "./components/MintCharacterView";
-import { useWasmMetadata } from "./hooks/useWasmMetadata";
-import { MINT_ID, METADATA } from "./constants";
 import { useOnSubmit } from "./hooks/useOnSubmit";
 import { useStats } from "./hooks/useStats";
-import { useOnChange } from "./hooks/useOnChange";
-import React from "react";
-import {
-  addCodeIdToLocalStorage,
-  getCodeIdsFromLocalStorage,
-} from "hooks/useUploadCode/useUploadCode";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
+import { useCodeAndProgramIDs } from "hooks/useCodeAndProgramIDs";
+import { StrategyInput } from '../../components/StrategyInput/StrategyInput';
+import { useSearchParams } from "react-router-dom";
+import { Specialization, getSpecializationOptions } from "consts";
 
 export type MintCharacterProps = {};
 
-export const STRATEGY_CODE_ID_HARDCODED =
-  "0x25c002d7c488d8117a6c003c3ed04f11da6eb95f912dda39e31c4a634cd1f79f";
-// "0xfb63a322fb1836b112fc102d9ae966e0614afdf80e9f19e231e4a28328d0a989";
-
 export const MintCharacter: FC<MintCharacterProps> = memo(() => {
-  const { buffer } = useWasmMetadata(stateMetaWasm);
-  const setUserName = useUnit(userStore.setName);
-  const { account } = useAccount();
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
+  /**
+   * Stats state
+   */
+  const [searchParams] = useSearchParams();
+  const speciatlization = searchParams.get('specialization') as Specialization | undefined;
+  const { codeId: initialCodeId, initialStats } = getSpecializationOptions(speciatlization);
+  const { decrease, increase, stats } = useStats(initialStats);
 
-  const metaWasmData: MetaWasmDataType = useMemo(
-    () => ({
-      programId: MINT_ID,
-      programMetadata: meta,
-      wasm: buffer,
-      functionName: "character_info",
-      argument: account?.decodedAddress,
-    }),
-    [meta, buffer, account?.decodedAddress]
-  );
+  /**
+   * Inputs state
+   */
 
-  const charInfo = useReadWasmState<{
-    id: string;
-    attributes: {
-      strength: string;
-      agility: string;
-      vitality: string;
-      stamina: string;
-    };
-    name: string;
-  }>(metaWasmData);
+  const [codeId, setCodeId] = useState(initialCodeId as string | null);
+  const [name, setName] = useState("");
 
-  const [data, setData] = useState({
-    codeId: getCodeIdsFromLocalStorage()[0] ?? "",
-    name: "",
-  });
+  /**
+   * Submit and update handlers
+   */
+  const onSubmit = useOnSubmit({ codeId, name, stats });
 
-  React.useEffect(() => {
-    const codeIdsArr = getCodeIdsFromLocalStorage();
-    if (codeIdsArr.length === 0) {
-      addCodeIdToLocalStorage(STRATEGY_CODE_ID_HARDCODED);
-      setData((prev) => ({ ...prev, codeId: STRATEGY_CODE_ID_HARDCODED }));
-    }
-  }, []);
-
-  const { decrease, increase, stats } = useStats();
-  const onSubmit = useOnSubmit({ ...data, stats });
-  const onChangeInput = useOnChange(setData);
-
-  useEffect(() => {
-    if (charInfo.state) {
-      setUserName(charInfo.state);
-    }
-  }, [charInfo.state, setUserName]);
+  const {
+    selectData,
+    update: updateCodeAndProgramIds,
+  } = useCodeAndProgramIDs();
 
   return (
     <MintCharacterView
-      codeId={data.codeId}
-      setCodeId={(codeId) => setData({ ...data, codeId })}
-      name={data.name}
-      disabled={!!stats.points || !data.name}
+      name={name}
+      disabled={!!stats.points || !name}
       decrease={decrease}
       increase={increase}
-      onChange={onChangeInput}
+      onChange={({ target }) => setName(target.value)}
       onSubmit={onSubmit}
-      onUploadCodeChange={(codeId) => setData({ ...data, codeId })}
       stats={stats}
+      strategyInput={
+        <StrategyInput
+          label="Strategy"
+          labelProps={{ mb: '0.3rem' }}
+          value={codeId}
+          selectData={selectData}
+          setValue={(value) => {
+            setCodeId(value);
+            updateCodeAndProgramIds();
+          }}
+        />
+      }
     />
   );
 });

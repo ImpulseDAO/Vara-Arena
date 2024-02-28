@@ -1,0 +1,150 @@
+.profile {
+  padding-top: 40px;
+  width: -webkit-fill-available;
+  background-image: url("../../assets/images/profile.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding-bottom: 5rem;
+
+  .profile_alert_cancel,
+  .profile_alert_accept {
+    background: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    color: red;
+    border: none;
+    font-size: 16px;
+
+    &:active {
+      color: rgb(168, 0, 0);
+    }
+  }
+
+  .profile_alert_accept {
+    color: rgb(51, 111, 251);
+
+    &:active {
+      color: rgb(0, 50, 168);
+    }
+  }
+
+  .profile_char {
+    display: flex;
+    gap: 15px;
+
+    @media screen and (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .profile_data,
+  .profile_equip {
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+    width: min(375px, 95vw);
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    border: 2px solid white;
+    position: relative;
+    padding: 14px 24.5px 26px;
+  }
+
+  .imgWrapper {
+    height: 330px;
+    position: relative;
+  }
+
+  .lock_img1 {
+    position: absolute;
+    top: 0px;
+    left: calc(50% - 35px);
+  }
+  .lock_img2 {
+    position: absolute;
+    top: 30px;
+    left: 0px;
+  }
+  .lock_img3 {
+    position: absolute;
+    top: 105px;
+    left: 0px;
+  }
+  .lock_img4 {
+    position: absolute;
+    top: 180px;
+    left: 0px;
+  }
+  .lock_img5 {
+    position: absolute;
+    top: 255px;
+    left: 0px;
+  }
+  .char_svg {
+    position: absolute;
+    top: 87px;
+    left: calc(50% - 69.5px);
+  }
+  .lock_img6 {
+    position: absolute;
+    top: 30px;
+    right: 0px;
+  }
+  .lock_img7 {
+    position: absolute;
+    top: 105px;
+    right: 0px;
+  }
+  .lock_img8 {
+    position: absolute;
+    top: 180px;
+    right: 0px;
+  }
+  .lock_img9 {
+    position: absolute;
+    top: 255px;
+    right: 0px;
+  }
+}
+
+/**
+  * School of Magic / Gold
+  */
+
+.school_and_gold {
+  margin-top: 1rem;
+  width: auto;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .one_half {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .school_of_magic {
+    flex: 3;
+  }
+
+  .gold {
+    flex: 2;
+  }
+
+  .bottom_part {
+    margin-top: 0.3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+  }
+}

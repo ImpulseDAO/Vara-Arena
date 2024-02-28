@@ -4,19 +4,28 @@ import { useAccount } from "@gear-js/react-hooks";
 import { Account } from "@gear-js/react-hooks/dist/esm/types";
 import styles from "./AccountsModal.module.scss";
 import { memo } from "react";
+import { useNavigate } from "react-router-dom";
+import { routes } from "app/routes";
+import { IconLogout } from '@tabler/icons-react';
 
 type Props = {
   close: () => void;
-  userChoose: VoidFunction;
   account?: Account;
 };
 
-export const AccountsModal = memo(({ close, userChoose, account }: Props) => {
+export const AccountsModal = memo(({ close, account }: Props) => {
+  const navigate = useNavigate();
   const { accounts, logout } = useAccount();
+
+  const handleLogout = () => {
+    navigate(routes.logoutScreen);
+    logout();
+  };
+
   return (
-    <Modal heading="Connect" close={close}>
+    <Modal heading="Connect" close={close}  >
       {accounts ? (
-        <Accounts close={close} list={accounts} userChoose={userChoose} />
+        <Accounts close={close} list={accounts} />
       ) : (
         <p>
           Wallet extension was not found or disconnected. Please check how to
@@ -33,8 +42,9 @@ export const AccountsModal = memo(({ close, userChoose, account }: Props) => {
       )}
       {account ? (
         <div className={styles.footer}>
-          <div className={styles.logout} onClick={logout}>
-            logout
+          <div className={styles.logout} onClick={handleLogout}>
+            <IconLogout size={'1.5rem'} />
+            Logout
           </div>
         </div>
       ) : null}

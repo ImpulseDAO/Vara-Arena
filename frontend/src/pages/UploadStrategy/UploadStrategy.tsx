@@ -11,12 +11,10 @@ import { Table } from "@mantine/core";
 
 export const UploadStrategy = () => {
   const [programName, setProgramName] = useState("");
-  const [hash, setHash] = useState("");
-  const inputFileRef = useRef();
+  const inputFileRef = useRef<
+    HTMLInputElement | null
+  >(null);
   const navigate = useNavigate();
-  // const createProgram = useCreateHandler(
-  //   '0xf21da0f045ab6f5024dc6c764a3ce5496ffd8e69831ad27b5d42edf5bd247590'
-  // );
 
   const onChangeInputProgramName = useCallback(
     ({ target }: ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +24,7 @@ export const UploadStrategy = () => {
   );
 
   const [fileContent, setFileContent] = useState<
-    undefined | ArrayBuffer | string
+    undefined | ArrayBuffer | string | null
   >(undefined);
   const { api } = useApi();
   const { account } = useAccount();
@@ -51,16 +49,15 @@ export const UploadStrategy = () => {
   useEffect(() => {
     const foo = async () => {
       if (fileContent) {
-        //@ts-ignore
-        const { codeHash } = await api.code.upload(fileContent);
-
-        setHash(codeHash);
+        if (!account) {
+          throw new Error("No account");
+        }
 
         const [{ signer }] = await Promise.all([
           web3FromSource(account.meta.source),
         ]);
 
-        api.code.signAndSend(account.address, { signer }, ({ events }) => {
+        api?.code.signAndSend(account.address, { signer }, ({ events }) => {
           navigate("/arena");
 
           events.forEach(({ event: { method, data } }) => {
@@ -77,6 +74,7 @@ export const UploadStrategy = () => {
     };
 
     foo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileContent]);
 
   return (
@@ -97,7 +95,7 @@ export const UploadStrategy = () => {
         </div>
         <div className={"input_file_container"}>
           <div className={"input_file_content"}>
-            <img src={UploadIcon} className={"upload_icon"} />
+            <img src={UploadIcon} className={"upload_icon"} alt="upload icon" />
             <input
               type="file"
               onChange={uploadFile}
@@ -110,7 +108,7 @@ export const UploadStrategy = () => {
         </div>
 
         <div className={"buttonWrapper"}>
-          <Button className={"cancelButton"} onClick={() => {}}>
+          <Button className={"cancelButton"} onClick={() => { }}>
             Cancel
           </Button>
           <Button className={"uploadButton"} onClick={handleOnUpload}>

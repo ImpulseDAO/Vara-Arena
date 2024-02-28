@@ -1,43 +1,24 @@
-import { memo } from "react";
 import ReactDOM from "react-dom/client";
+import '@mantine/core/styles.css';
 import "./index.css";
-import {
-  AccountProvider,
-  ApiProvider as GearApiProvider,
-  AlertProvider as GearAlertProvider,
-} from "@gear-js/react-hooks";
-import { Alert, alertStyles } from "@gear-js/ui";
-import { ADDRESS } from "consts";
-import { ProviderProps } from "@gear-js/react-hooks/dist/esm/types";
 import { RouterProvider } from "react-router-dom";
-import { appRouter } from "app/AppRouter";
-import { MantineProvider } from "app/mantineProvider/MantineProvider";
-
-const ApiProvider = memo(({ children }: ProviderProps) => {
-  return (
-    <GearApiProvider providerAddress={ADDRESS.NODE}>{children}</GearApiProvider>
-  );
-});
-
-const AlertProvider = memo(({ children }: ProviderProps) => {
-  return (
-    <GearAlertProvider template={Alert} containerClassName={alertStyles.root}>
-      {children}
-    </GearAlertProvider>
-  );
-});
+import { appRouter } from "./app/AppRouter";
+import { Providers } from "./app/providers/providers";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-root.render(
-  <AlertProvider>
-    <ApiProvider>
-      <AccountProvider>
-        <MantineProvider>
-          <RouterProvider router={appRouter} />
-        </MantineProvider>
-      </AccountProvider>
-    </ApiProvider>
-  </AlertProvider>
-);
+
+function App() {
+  console.warn("ATTENTION: I will mark all places needed to be changed throughout the app with FIXME flag");
+  console.log("ATTENTION: I will mark all places needed to be changed throughout the app with FIXME flag");
+  console.warn("ATTENTION: I will mark all places needed to be changed throughout the app with FIXME flag");
+
+  return (
+    <Providers>
+      <RouterProvider router={appRouter} />
+    </Providers>
+  );
+}
+
+root.render(<App />);

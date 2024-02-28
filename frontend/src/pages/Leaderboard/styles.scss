@@ -1,52 +1,25 @@
 .leaderboard {
-  height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url("../../assets/images/leader.png");
+  background-image: url("../../assets/images/leader.webp");
   background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
+
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 
-  .back_button {
-    position: absolute;
-    top: 162px;
-    left: 206px;
-    color: white;
-    width: 86px;
-    height: 40px;
-    background: #000000;
-    border: 1px solid #ffffff;
-    border-radius: 8px;
-  }
+  padding: 2rem 3rem;
 
-  .modal_leaderboard {
-    margin-top: 42px;
-    overflow-y: scroll;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .scroll_container {
-    margin-top: 68px;
-  }
-
-  .header {
-    position: absolute;
-    width: 769px;
-    height: 68px;
-    background: black;
-    border-top: 2px solid white;
-    border-left: 2px solid white;
-    border-right: 2px solid white;
-    border-bottom: 2px solid white;
-    border-top-right-radius: 12px;
-    border-top-left-radius: 12px;
-    color: white;
+  .content-wrapper {
     display: flex;
-    justify-content: center;
-    font-size: 18px;
+    flex-direction: column;
+    flex: 1;
+    height: 90%;
+    overflow: hidden;
+
+    max-width: 700px;
   }
 
   .row_position {
@@ -80,6 +53,56 @@
       .row_name {
         font-weight: bold;
       }
+    }
+  }
+
+  /**
+  * NEW
+  */
+
+  .modal_table {
+    display: flex;
+    flex: 1;
+
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    border-bottom-right-radius: 12px;
+    border-bottom-left-radius: 12px;
+
+    background: rgba(0, 0, 0, 0.7);
+    overflow-y: scroll;
+    & * {
+      color: white;
+    }
+  }
+
+  table {
+    .table_row {
+      cursor: pointer;
+      height: 2rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      &.table_row_highlighted {
+        background: rgba(135, 147, 255, 0.228);
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      //
+      border: 2px solid #ffffff;
+      border-radius: 16px;
+      //
+      font-size: 14px;
+      font-weight: bold;
+      //
+      padding: 0.2rem 1rem;
     }
   }
 }

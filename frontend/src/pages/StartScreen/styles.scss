@@ -1,20 +1,16 @@
 .scr_start {
-  height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url("../../assets/images/startScreen.png");
+  height: 100lvh;
+
+  background-image: url("../../assets/images/startScreen.webp");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: 50%;
   padding-top: 130px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-
-  & > p {
-    color: white;
-    font-size: 160px;
-    font-family: "serpiente_display_triadisplay";
-  }
 
   .button {
     cursor: pointer;

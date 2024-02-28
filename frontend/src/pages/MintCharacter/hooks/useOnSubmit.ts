@@ -1,58 +1,81 @@
-import { useApi, useSendMessage } from "@gear-js/react-hooks";
-import { useCallback, useMemo } from "react";
-import { METADATA, MINT_ID } from "../constants";
-import {
-  IMessageSendOptions,
-  IMessageSendReplyOptions,
-  ProgramMetadata,
-} from "@gear-js/api";
+import { useSendMessage } from "@gear-js/react-hooks";
+import { useCallback, useMemo, useRef } from "react";
+import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
+import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
-import { ARENA_ID } from "pages/StartFight/constants";
+import { MAX_GAS_LIMIT, PAYMENT_FOR_MINTING } from "consts";
+import { resetUseMyCharacrersQuery } from "app/api/characters";
+import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 
 export const useOnSubmit = ({
   codeId,
   name,
   stats,
+  onSuccess,
 }: {
-  codeId: string;
+  codeId: string | null;
   name: string;
   stats: {
     strength: number;
     agility: number;
-    vitality: number;
     stamina: number;
+    intelligence: number;
     points: number;
   };
+  onSuccess?: () => void;
 }): VoidFunction => {
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const { api } = useApi();
+  /**
+   *  using ref to reduce the number of re-renders caused by the useCallback below
+   */
+  const onSuccessRef = useRef(onSuccess);
+  onSuccessRef.current = onSuccess;
 
-  const send = useSendMessage(MINT_ID, meta, { isMaxGasLimit: true });
+  /**
+   *
+   */
+
+  const shouldUseVoucher = useShouldUseVoucher();
+
+  /**
+   *
+   */
+  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
+
+  const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
   const navigate = useNavigate();
 
+  /**
+   *
+   */
+
   return useCallback(async () => {
-    send(
-      {
-        CreateCharacter: {
-          code_id: codeId,
-          attributes: {
-            agility: stats.agility,
-            stamina: stats.stamina,
-            strength: stats.strength,
-            vitality: stats.vitality,
-          },
-          name,
+    const payload = {
+      CreateCharacter: {
+        code_id: codeId,
+        attributes: {
+          agility: stats.agility,
+          stamina: stats.stamina,
+          strength: stats.strength,
+          intelligence: stats.intelligence,
         },
+        name,
       },
-      {
-        onSuccess: () => {
-          console.log("success");
-          navigate("/arena");
-        },
-        onError: () => {
-          console.log("error");
-        },
-      }
-    );
-  }, [codeId, name, navigate, send, stats]);
+    };
+
+    send({
+      payload,
+      gasLimit: MAX_GAS_LIMIT,
+      withVoucher: shouldUseVoucher,
+      onSuccess: (result) => {
+        console.log("success", result);
+        onSuccessRef.current?.();
+        resetUseMyCharacrersQuery();
+        navigate("/arena");
+      },
+      onError: () => {
+        console.log("error");
+      },
+      value: PAYMENT_FOR_MINTING,
+    });
+  }, [codeId, name, navigate, send, shouldUseVoucher, stats]);
 };

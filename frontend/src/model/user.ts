@@ -5,7 +5,6 @@ const $user = createStore<null | {
   attributes: {
     strength: string;
     agility: string;
-    vitality: string;
     stamina: string;
   };
   name: string;
@@ -17,7 +16,6 @@ const $user = createStore<null | {
 //     attributes: {
 //       strength: string;
 //       agility: string;
-//       vitality: string;
 //       stamina: string;
 //     };
 //     name: string;
@@ -30,7 +28,6 @@ const $user = createStore<null | {
 //     attributes: {
 //       strength: string;
 //       agility: string;
-//       vitality: string;
 //       stamina: string;
 //     };
 //     name: string;
@@ -42,7 +39,6 @@ const setName = createEvent<{
   attributes: {
     strength: string;
     agility: string;
-    vitality: string;
     stamina: string;
   };
   name: string;

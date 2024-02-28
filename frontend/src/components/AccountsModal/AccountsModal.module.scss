@@ -10,7 +10,15 @@
 }
 
 .logout {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
   font-size: 18px;
   cursor: pointer;
   color: white;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: rgb(167, 167, 167);
+  }
 }

@@ -1,79 +1,72 @@
-import { useWasmMetadata } from "./../../MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
 import { useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { ARENA_ID, METADATA } from "../constants";
-import {
-  useAccount,
-  useAlert,
-  useReadWasmState,
-  useSendMessage,
-} from "@gear-js/react-hooks";
+import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
+import { useAccount, useSendMessage } from "@gear-js/react-hooks";
 import { ProgramMetadata } from "@gear-js/api";
-import arenaMetaWasm from "../../../assets/arena_state.meta.wasm";
+import { MAX_GAS_LIMIT } from "consts";
+import { useWatchArenaMessages } from "hooks/useWatchArenaMessages/useWatchArenaMessages";
+import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
 
-export const useOnSubmit = (): VoidFunction => {
-  const navigate = useNavigate();
+export const useOnRegisterForBattle = () => {
   const { account } = useAccount();
-  const alert = useAlert();
+  const alert = useStableAlert();
 
-  const { buffer } = useWasmMetadata(arenaMetaWasm);
+  const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
+  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
 
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const send = useSendMessage(ARENA_ID, meta, { isMaxGasLimit: true });
+  const { subscribe, unsubscribe } = useWatchArenaMessages<{
+    PlayerRegistered: {
+      lobbyId: "32";
+      playerId: "9";
+      tier: "5";
+    };
+  }>();
 
-  // const charInfo = JSON.parse(localStorage.getItem("charInfo"));
+  return useCallback(
+    async ({ lobbyId }: { lobbyId: string }) => {
+      return new Promise(async (resolve, reject) => {
+        subscribe((reply, error) => {
+          if (error) {
+            reject(error.message);
+            alert.error(error.message);
+            return;
+          }
 
-  const arenaMetaWasmData: MetaWasmDataType = useMemo(
-    () => ({
-      programId: ARENA_ID,
-      programMetadata: meta,
-      wasm: buffer,
-      functionName: "registered",
-      argument: account?.decodedAddress,
-    }),
-    [account?.decodedAddress, meta, buffer]
-  );
+          reply != null &&
+            setTimeout(() => {
+              const { lobbyId, playerId, tier } = reply.PlayerRegistered ?? {};
+              const message = `Player ${playerId} registered for lobby ${lobbyId} with tier ${tier}`;
+              console.info(message);
+              alert.success(message);
+            });
 
-  const registered = useReadWasmState<
-    Array<{
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-      };
-      energy: string;
-      hp: string;
-      id: string;
-      name: string;
-      owner: string;
-      position: string;
-    }>
-  >(arenaMetaWasmData).state;
-  console.log(`registered`, registered);
-  return useCallback(() => {
-    if (registered !== undefined) {
-      navigate("/tournament");
-      if (registered.length < 2) {
-        send(
-          {
+          resolve(reply);
+        });
+        const rejectAfterTimeout = () =>
+          setTimeout(
+            () => reject(new Error("Timeout: no reply from the arena")),
+            4000
+          );
+        send({
+          payload: {
             Register: {
-              owner_id: account.decodedAddress,
+              owner_id: account?.decodedAddress,
+              lobby_id: lobbyId,
             },
           },
-          {
-            onSuccess: () => {
-              console.log("success");
-            },
-            onError: () => {
-              console.log("error");
-            },
-          }
-        );
-      } else {
-        alert.error("Max tournament players = 2, work in progress 🏗");
-      }
-    }
-  }, [account?.decodedAddress, navigate, send]);
+          gasLimit: MAX_GAS_LIMIT,
+          onSuccess: () => {
+            console.log('"Register" message sent');
+            rejectAfterTimeout();
+          },
+          onError: () => {
+            console.log("Error while sending Register message");
+            rejectAfterTimeout();
+          },
+        });
+      }).finally(() => {
+        unsubscribe();
+      });
+    },
+    [account?.decodedAddress, alert, send, subscribe, unsubscribe]
+  );
 };

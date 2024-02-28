@@ -1,35 +1,42 @@
-import { memo, useState, useMemo } from "react";
-import { useStore } from "effector-react";
-import { userStore } from "model/user";
+import { memo, useState, useMemo, useEffect } from "react";
 import { ProgramMetadata } from "@gear-js/api";
-import { useOnSubmit } from "./hooks/useOnSubmit";
+import { useOnRegisterForBattle } from "./hooks/useOnSubmit";
 import { StartFightView } from "./components/StartFightView";
-import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
+import { useAccount, useAlert, useReadWasmState } from "@gear-js/react-hooks";
+import stateMetaWasm from "../../assets/mint.opt.wasm";
 import { useWasmMetadata } from "../MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
-import { ARENA_ID, METADATA as ARENA_METADATA } from "./constants";
-import arenaMetaWasm from "../../assets/arena_state.meta.wasm";
+import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
+import { useParams } from "react-router-dom";
+import { useMyCharacter } from "app/api/characters";
 
 export const colourOptions = [
   { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
 ];
 
 export const StartFight = memo(() => {
-  const [user, setUser] = useState(undefined);
+  const alert = useAlert();
+  const { lobbyId } = useParams<{ lobbyId: string | undefined; }>();
+
+  /**
+   * Get user
+   */
+  const [user, setUser] = useState<typeof character>();
+  const { data: character } = useMyCharacter();
+  useEffect(() => {
+    if (character) {
+      setUser(character);
+    }
+
+  }, [character]);
+
   const { account } = useAccount();
   const { buffer } = useWasmMetadata(stateMetaWasm);
-  const { buffer: arenaMetaBuffer } = useWasmMetadata(arenaMetaWasm);
 
-  const meta = useMemo(() => ProgramMetadata.from(METADATA), []);
-  const arenaMeta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-
-  // const charInfo = JSON.parse(localStorage.getItem("charInfo"));
+  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
 
   const metaWasmData: MetaWasmDataType = useMemo(
     () => ({
-      programId: MINT_ID,
+      programId: MINT_PROGRAM_ID,
       programMetadata: meta,
       wasm: buffer,
       functionName: "character_info",
@@ -38,45 +45,29 @@ export const StartFight = memo(() => {
     [account?.decodedAddress, meta, buffer]
   );
 
-  const arenaMetaWasmData: MetaWasmDataType = useMemo(
-    () => ({
-      programId: ARENA_ID,
-      programMetadata: arenaMeta,
-      wasm: arenaMetaBuffer,
-      functionName: "registered",
-      argument: account?.decodedAddress,
-    }),
-    [account?.decodedAddress, arenaMeta, arenaMetaBuffer]
-  );
-
   const charInfo = useReadWasmState<{
     id: string;
     attributes: {
       strength: string;
       agility: string;
-      vitality: string;
       stamina: string;
     };
     name: string;
   }>(metaWasmData);
 
-  const registered = useReadWasmState<
-    Array<{
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-      };
-      energy: string;
-      hp: string;
-      id: string;
-      name: string;
-      owner: string;
-      position: string;
-    }>
-  >(arenaMetaWasmData).state;
-  const handleSubmit = useOnSubmit();
+  const registerForBattle = useOnRegisterForBattle();
+  const handleSubmit = () => {
+
+    if (!lobbyId) {
+      const message = "lobbyId is not defined";
+      console.error(message);
+      alert.error(message);
+      return;
+    }
+    console.log('registerForBattle called with lobbyId: ', lobbyId);
+    registerForBattle({ lobbyId });
+  };
+
   return (
     <StartFightView
       name={charInfo?.state?.name ?? ""}

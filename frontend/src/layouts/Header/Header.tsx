@@ -1,64 +1,88 @@
 import { Wallet } from "components/wallet";
-import { FC, useEffect, useReducer } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { FC, useReducer } from "react";
+import { NavLink } from "react-router-dom";
 import "./styles.scss";
-import { useAccount } from "@gear-js/react-hooks";
+import { useAccount, useApi, useBalance, useBalanceFormat } from "@gear-js/react-hooks";
 import { AccountsModal } from "components/AccountsModal";
+import { routes } from "app/routes";
+import { DiscordLogo } from "components/Icons";
+import { Flex } from "@mantine/core";
+import { staticRoutes } from "app/routes/routes";
 
 export type HeaderProps = {};
 
+const navLinks = [
+  {
+    name: "Arena",
+    path: routes.arena,
+  },
+  {
+    name: "History",
+    path: routes.history,
+  },
+  {
+    name: "Leaderboard",
+    path: routes.leaderboard,
+  },
+  {
+    name: "My Profile",
+    path: routes.myProfile,
+  },
+];
+
 export const Header: FC<HeaderProps> = () => {
-  const { account } = useAccount();
+  const { isApiReady } = useApi();
+  const { account, isAccountReady } = useAccount();
+  const decodedAddress = account?.decodedAddress;
+  const balance = useBalance(decodedAddress).balance?.toString() ?? '';
+  const balanceFormat = useBalanceFormat();
   const [visible, toggle] = useReducer((state) => !state, false);
-  const [userChoosed, userChoose] = useReducer((state) => !state, false);
-  const navigate = useNavigate();
+
+  if (!isAccountReady || !isApiReady) return null;
+  // we should wait until api is ready, thats why this line is below "if" block
+  const { value: balanceValue, unit: balanceUnit } = balanceFormat.getFormattedBalance(balance);
 
   return (
-    <div className="header">
-      <p className={"header_title"} onClick={() => navigate("/arena")}>
-        Arena
-      </p>
+    <div className="header" >
+      <a
+        href={staticRoutes.discord}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Flex
+          className="header_join_community"
+          gap={'sm'}
+          style={{ cursor: 'pointer' }}
+          align={'center'}
+        >
+          <DiscordLogo className="transition" width={'30px'} height={'30px'} display={'inline'} />
+          <span className="transition">Join Community</span>
+        </Flex>
+      </a>
 
       <div className={"header_nav"}>
-        <NavLink
-          to="/mint-character"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Create New
-        </NavLink>
-        <NavLink
-          to="/tournament"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Tournament
-        </NavLink>
-        <NavLink
-          to="/leaderboard"
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          Leaderboard
-        </NavLink>
-        <NavLink
-          to={`/profile/${account?.decodedAddress}`}
-          className={({ isActive }) => (isActive ? "active" : "")}
-        >
-          My profile
-        </NavLink>
+        {navLinks.map(({ name, path }) => (
+          <NavLink
+            key={name}
+            to={path}
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            {name}
+          </NavLink>
+        ))}
       </div>
-      {account && (
-        <div className="wallet_wrapper">
-          <Wallet
-            balance={account.balance}
-            address={account.address}
-            name={account.meta.name}
-            onClick={toggle}
-          />
-        </div>
-      )}
+      <div className="wallet_wrapper" >
+        {account && <Wallet
+          balance={balanceValue}
+          unit={balanceUnit}
+          address={account.address}
+          name={account.meta.name}
+          onClick={toggle}
+        />}
+      </div>
       {visible && (
         <AccountsModal
           close={toggle}
-          userChoose={userChoose}
           account={account}
         />
       )}

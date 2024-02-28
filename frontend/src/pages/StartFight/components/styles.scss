@@ -1,9 +1,9 @@
 .arena {
-  height: -webkit-fill-available;
   width: -webkit-fill-available;
-  background-image: url("../../../assets/images/startFightScreen.png");
+  background-image: url("../../../assets/images/startFightScreen.webp");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
   align-items: center;

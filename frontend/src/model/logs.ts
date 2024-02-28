@@ -14,7 +14,6 @@ const $usersOnBattle = createStore<null | Record<
     attributes: {
       strength: string;
       agility: string;
-      vitality: string;
       stamina: string;
     };
   }
@@ -29,7 +28,6 @@ const updateUsersReadyForBattle = createEvent<
       attributes: {
         strength: string;
         agility: string;
-        vitality: string;
         stamina: string;
       };
     }

@@ -1,6 +1,6 @@
 {
-    "editor.formatOnSave": true,
-    "rust-analyzer.linkedProjects": [
-        "./contracts/mint/Cargo.toml"
-    ]
+  "editor.formatOnSave": true,
+  "javascript.format.semicolons": "insert",
+  "typescript.format.semicolons": "insert",
+  "rust-analyzer.linkedProjects": ["./contracts/mint/Cargo.toml"]
 }

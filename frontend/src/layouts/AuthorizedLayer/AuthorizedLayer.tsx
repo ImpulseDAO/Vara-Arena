@@ -1,13 +1,13 @@
 import { Header } from "layouts/Header";
-import { FC, ReactNode, memo, useEffect, useMemo } from "react";
+import { FC, ReactNode, memo, useEffect } from "react";
 import "./styles.scss";
-import { useAccount, useReadWasmState } from "@gear-js/react-hooks";
-import { useNavigate } from "react-router-dom";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
-import { ProgramMetadata } from "@gear-js/api";
-import { MINT_ID, METADATA } from "pages/MintCharacter/constants";
-import { useWasmMetadata } from "../../pages/MintCharacter/hooks/useWasmMetadata";
-import { MetaWasmDataType } from "app/types/metaWasmDataType";
+import { useAccount, useApi } from "@gear-js/react-hooks";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BackgroundImage, Box, LoadingOverlay, useMantineTheme } from "@mantine/core";
+
+import StartFightPng from "assets/images/startFightScreen.webp";
+import { routes } from "app/routes";
+import { TermsConsent } from "pages/@shared/TermsConsent";
 
 export type AuthorizedLayerProps = {
   children: ReactNode;
@@ -15,50 +15,50 @@ export type AuthorizedLayerProps = {
 
 export const AuthorizedLayer: FC<AuthorizedLayerProps> = memo(
   ({ children }) => {
-    const { account } = useAccount();
+    const { isApiReady } = useApi();
+    const theme = useMantineTheme();
+    const { pathname } = useLocation();
+
+    const { account, isAccountReady } = useAccount();
+
     const navigate = useNavigate();
-    const { buffer } = useWasmMetadata(stateMetaWasm);
-    const meta = ProgramMetadata.from(METADATA);
-
-    const metaWasmData: MetaWasmDataType = useMemo(
-      () => ({
-        programId: MINT_ID,
-        programMetadata: meta,
-        wasm: buffer,
-        functionName: "character_info",
-        argument: account?.decodedAddress,
-      }),
-      [meta, buffer, account?.decodedAddress]
-    );
-
-    const charInfo = useReadWasmState<{
-      id: string;
-      attributes: {
-        strength: string;
-        agility: string;
-        vitality: string;
-        stamina: string;
-      };
-      name: string;
-    }>(metaWasmData);
 
     useEffect(() => {
-      if (charInfo.state) {
-        localStorage.setItem("charInfo", JSON.stringify(charInfo.state));
+      if (isAccountReady && !account) {
+        navigate(routes.startScreen);
       }
-    }, [charInfo.state]);
+    }, [account, isAccountReady, navigate]);
 
-    useEffect(() => {
-      if (!account) {
-        navigate("/");
-      }
-    }, [account, navigate]);
+    const isLoading = !isAccountReady || !isApiReady;
 
     return (
       <div className="app">
+        {pathname.startsWith(routes.arena) ? (
+          < BackgroundImage
+            src={StartFightPng}
+            style={{
+              position: 'absolute',
+              top: '80px', // check header's height
+              left: 0,
+              bottom: 0,
+              right: 0,
+              overflow: 'hidden'
+            }}
+          />
+        ) : null}
+
         <Header />
-        <div className="content">{children}</div>
-      </div>
+
+        <Box
+          className="content"
+          pos="relative"
+        >
+          {isLoading ? <LoadingOverlay visible loaderProps={{ size: 80, variant: 'oval', color: theme.primaryColor }} overlayProps={{ color: theme.colors.gray90[0] }} /> : children}
+        </Box>
+
+        <TermsConsent key={account?.decodedAddress} />
+
+      </div >
     );
   }
 );

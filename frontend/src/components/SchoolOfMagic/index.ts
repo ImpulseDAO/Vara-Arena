@@ -1,0 +1,1 @@
+export { SchoolOfMagic } from "./ShoolOfMagic";

@@ -2,9 +2,7 @@ import { FC, memo, useEffect, useReducer, useState } from "react";
 import "./styles.scss";
 import { Button } from "components/Button";
 import { AccountsModal } from "components/AccountsModal";
-import stateMetaWasm from "../../assets/mint_state.meta.wasm";
 import { useAccount, useAlert } from "@gear-js/react-hooks";
-import { MINT_ID } from "pages/MintCharacter/constants";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export const useWasmMetadata = (source: RequestInfo | URL) => {
@@ -28,7 +26,6 @@ export type StartScreenProps = {};
 
 export const StartScreen: FC<StartScreenProps> = memo(() => {
   const [visible, toggle] = useReducer((state) => !state, false);
-  const [userChoosed, userChoose] = useReducer((state) => !state, false);
   const navigate = useNavigate();
   const { account } = useAccount();
 
@@ -41,9 +38,8 @@ export const StartScreen: FC<StartScreenProps> = memo(() => {
   return (
     <>
       <div className="scr_start">
-        <p>Arena</p>
         <Button onClick={toggle}>Connect wallet to enter the Arena</Button>
-        {visible && <AccountsModal close={toggle} userChoose={userChoose} />}
+        {visible && <AccountsModal close={toggle} />}
       </div>
       <Outlet />
     </>

@@ -16,9 +16,9 @@ export const useClickSort: UseClickSortType = (setSortedColumn) => {
   return useCallback(
     (column) => {
       return () => {
-        const { field, sortable, sortName } = column;
+        const { field, $sortable, sortName } = column;
         setSortedColumn((prev) => {
-          if (!sortable) {
+          if (!$sortable) {
             return prev;
           }
 
@@ -27,8 +27,8 @@ export const useClickSort: UseClickSortType = (setSortedColumn) => {
               prev.sortType === SortType.ascending
                 ? SortType.descending
                 : prev.sortType === SortType.descending
-                ? SortType.default
-                : SortType.ascending;
+                  ? SortType.default
+                  : SortType.ascending;
             return { field, sortType, sortName };
           }
           return { field, sortType: SortType.ascending, sortName };

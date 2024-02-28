@@ -1,9 +1,15 @@
 .mint_char {
-  height: -webkit-fill-available;
+  --column-min-width: 350px;
+  --button-width: 185px;
+  --button-height: 44px;
+
+  overflow: scroll;
+
   width: -webkit-fill-available;
-  background-image: url("../../../assets/images/mintCharacterScreen.png");
+  background-image: url("../../../assets/images/mintCharacterScreen.webp");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,8 +26,7 @@
 
   .table_header {
     width: 100%;
-    height: 80px;
-    background: black;
+    height: 70px;
     margin-top: -1px;
     display: flex;
     justify-content: center;
@@ -31,14 +36,15 @@
     border-bottom: 1px solid #eaecf0;
     color: white;
     font-size: 18px;
+    font-weight: 500;
     border-radius: 8px 8px 0 0;
   }
 
   .table_container {
-    margin: 44px 120px 280px;
+    margin: 30px 120px 100px;
     display: flex;
     width: 880px;
-    height: 700px;
+    max-width: 90vw;
     background: rgba(0, 0, 0, 0.7);
     border: 2px solid #eaecf0;
     border-radius: 8px;
@@ -47,159 +53,130 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    :is(Button) {
+    @media screen and (min-width: 600px) {
       flex-direction: column;
+      align-items: stretch;
     }
   }
 
-  .modal {
+  .modal_wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+
+    margin-bottom: 1.2rem;
+    padding: 1rem 2rem 0;
+  }
+
+  .modal_left,
+  .modal_right {
+    width: auto;
+    margin-inline: auto;
+    max-width: 100%;
+
+    @media screen and (min-width: 440px) {
+      min-width: var(--column-min-width);
+    }
+  }
+
+  .modal_left {
     display: flex;
     flex-direction: column;
-    row-gap: 27px;
-    width: 375px;
+    row-gap: 19px;
     box-sizing: border-box;
-    padding: 24px 24px 16px;
     flex-wrap: wrap;
   }
-
-  .imgWrapper {
-    position: relative;
-    // display: flex;
-    // flex-direction: column;
-    // flex-basis: fit-content;
-    //gap: 27px;
-    //box-sizing: border-box;
-    //padding: 16px 28px;
-    //flex-wrap: wrap;
-    //& > :nth-child(5) {align-self: center}
-  }
-
-  //.bar {
-  //  width: 375px;
-  //  color: white;
-  //  font-size: 18px;
-  //  flex-direction: row;
-  //  align-items: center;
-  //  gap: 0px;
-  //  margin: 0;
-  //}
 
   .modal_right {
     display: flex;
     flex-direction: column;
-    // row-gap: 27px;
-    width: 375px;
-    height: 442px;
+    justify-content: space-between;
     box-sizing: border-box;
-    // padding: 24px 24px 16px;
-    // flex-wrap: wrap;
-    //& > :nth-child(5) {align-self: center}
-
-    .lock_img0 {
-      position: absolute;
-      top: 0px;
-      left: calc(50% - 35px);
-    }
-    .lock_img1 {
-      position: absolute;
-      top: 30px;
-      left: 0;
-    }
-
-    .lock_img2 {
-      position: absolute;
-      top: 105px;
-      left: 0px;
-    }
-    .lock_img3 {
-      position: absolute;
-      top: 180px;
-      left: 0px;
-    }
-    .lock_img4 {
-      position: absolute;
-      top: 255px;
-      left: 0px;
-    }
-    .char_svg {
-      position: absolute;
-      top: 87px;
-      left: calc(50% - 69.5px);
-    }
-    .lock_img5 {
-      position: absolute;
-      top: 30px;
-      right: 0px;
-    }
-    .lock_img6 {
-      position: absolute;
-      top: 105px;
-      right: 0px;
-    }
-    .lock_img7 {
-      position: absolute;
-      top: 180px;
-      right: 0px;
-    }
-    .lock_img8 {
-      position: absolute;
-      top: 255px;
-      right: 0px;
-    }
-    .lock_img9 {
-      position: absolute;
-      top: 255px;
-      right: 0px;
-    }
   }
 
   .top_wrapper {
     display: grid;
-    gap: 20px;
-  }
-
-  .char_info {
-    color: white;
-    font-size: 18px;
+    gap: 17px;
   }
 
   .points {
-    margin-left: auto;
+    padding-top: 0.5rem;
     color: white;
     font-size: 18px;
     & > span {
       margin-left: 5px;
-      color: #2152ff;
+      color: var(--color-blue-energy);
     }
   }
 
-  .buttonWrapper {
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-    margin-bottom: 43px;
+  .buttonsGrid {
+    flex: 1;
+    margin-bottom: 35px;
+    //
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: 1fr auto auto 1fr;
+    grid-template-areas:
+      ". cancel mint text"
+      ". . . .";
+
+    @media screen and (max-width: 750px) {
+      padding-inline: 1.5rem;
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "cancel mint "
+        ". text ";
+    }
+
+    @media screen and (max-width: 550px) {
+      grid-gap: 0.5rem;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "cancel"
+        "mint"
+        "text ";
+
+      .cancelButton {
+        margin-bottom: 0.6rem;
+      }
+      .textWrapper {
+        text-align: center;
+      }
+    }
+  }
+
+  .cancelButton {
+    grid-area: cancel;
+  }
+  .mintButton {
+    grid-area: mint;
+  }
+  .textWrapper {
+    grid-area: text;
   }
 
   .cancelButton {
     border-radius: 8px;
-    height: 44px;
-    width: 167.5px;
+    height: var(--button-height);
+    min-width: var(--button-width);
     font-size: 16px;
     box-sizing: border-box;
     padding: 10px 18px;
     color: #344054;
     border: none;
-  }
-
-  .lock_img {
-    width: 70px;
-    height: 70px;
+    cursor: pointer;
   }
 
   .mintButton {
+    display: flex;
+    flex-direction: row;
+    text-wrap: nowrap;
+
     border-radius: 8px;
-    height: 44px;
-    width: 167.5px;
+    height: var(--button-height);
+    min-width: var(--button-width);
+
     font-size: 16px;
     box-sizing: border-box;
     padding: 10px 18px;
@@ -212,9 +189,16 @@
     }
   }
 
+  .textWrapper {
+    color: #f0ff41;
+    padding-right: 0.8rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+
   .input_container {
     height: 44px;
-    width: 320px;
+    width: 100%;
     color: white;
     & > input {
       color: white;

@@ -1,6 +1,7 @@
 .header {
   width: 100%;
   height: 80px;
+  flex-shrink: 0;
   background: black;
   padding: 0px 120px;
   display: flex;
@@ -9,24 +10,76 @@
   box-sizing: border-box;
   position: relative;
   z-index: 1;
-}
 
-.header_nav {
-  width: 500px;
-  font-size: 18px;
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  & > a {
-    color: white;
-    text-decoration: none;
-    &.active {
-      color: #2c67ff;
+  @media screen and (max-width: 750px) {
+    padding: 0 3rem;
+  }
+
+  @media screen and (max-width: 600px) {
+    padding: 0 2rem;
+  }
+
+  .header_join_community {
+    .transition {
+      transition: all 0.1s ease-in-out;
+    }
+
+    &:hover .transition {
+      color: var(--mantine-color-primary-4);
     }
   }
 }
 
-@media screen and (max-width: 1250px) {
+.header_nav {
+  flex: 1;
+  max-width: 500px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  gap: 20px;
+  padding-inline: 2rem;
+  justify-content: space-between;
+  & > a {
+    color: white;
+    text-decoration: none;
+    text-wrap: nowrap;
+    &.active {
+      color: #2c67ff;
+    }
+  }
+
+  @media screen and (max-width: 450px) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+
+    & > a {
+      margin: auto;
+      margin-block: 0.5rem !important;
+      margin-inline: 0.5rem;
+    }
+  }
+}
+
+/*
+ * MOBILE
+ */
+@media screen and (max-width: 450px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0;
+    padding: 0;
+    padding-bottom: 0.6rem;
+  }
+
+  .wallet_wrapper {
+    margin-block: 0.5rem !important;
+  }
+}
+
+@media screen and (max-width: 1000px) {
   .header {
     flex-wrap: wrap;
     height: unset;
@@ -37,33 +90,23 @@
     margin-inline: auto;
   }
 
+  .wallet_wrapper {
+    min-width: 208px;
+  }
+
   .header_nav a,
   .wallet_wrapper {
     margin-block: 1rem;
   }
 
-  .header_title {
-    margin-top: 2rem;
-  }
-
   /*
   * Order
   */
-  .header_title {
-    order: 1;
-  }
+
   .wallet_wrapper {
     order: 2;
   }
   .header_nav {
     order: 3;
   }
-}
-
-.header_title {
-  font-family: "serpiente_display_triadisplay";
-  font-size: 40px;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
 }

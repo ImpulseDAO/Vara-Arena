@@ -1,0 +1,46 @@
+.playersTable {
+  .row_lvl {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    background: white;
+    border-radius: 16px;
+
+    padding-inline: 0.5rem;
+
+    color: black;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .row_player {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-left: 20px;
+    & > div {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      .row_name {
+        font-weight: bold;
+      }
+    }
+
+    .selected_image {
+      border-radius: 50%;
+      border: 2px solid #2c67ff;
+    }
+  }
+
+  .menuIcon {
+    padding: 5px;
+    border: 1px solid white;
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}

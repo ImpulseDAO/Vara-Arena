@@ -26,25 +26,26 @@ export const TableUI: FC<TableUIProps> = ({ columns, rows, cellClick }) => {
   return (
     <Styled.Container>
       <Styled.Columns>
-        {columns.map((column) => (
+        {columns.map((column, index) => (
           <Styled.Column
-            position={column.position}
+            position={column.$position}
             key={column.field}
             style={{ width: column.width }}
             onClick={onClickSort(column)}
           >
             <Styled.ColumnText
-              active={
+              $active={
                 sortedColumn.sortType !== SortType.default &&
                 sortedColumn.field === column.field
               }
-              sortable={column.sortable}
+              $sortable={column.$sortable ?? SortType.ascending}
+              $isLeftPadded={index === 0}
             >
               {column.headerName}
             </Styled.ColumnText>
-            {/* {column.sortable && (
+            {/* {column.$sortable && (
               <Styled.ColumnIcon
-                active={
+                $active={
                   sortedColumn.sortType !== SortType.default &&
                   sortedColumn.field === column.field
                 }

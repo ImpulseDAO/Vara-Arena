@@ -1,4 +1,5 @@
 .buttonText {
+  font-weight: 600;
 }
 
 .pointButtonWrapper {
@@ -21,17 +22,34 @@
 }
 
 .pointButton {
-  height: 30px;
-  width: 30px;
+  $button-bg-color: #f9fafb;
+
+  height: 40px;
+  width: 40px;
   border: 1px solid rgba(208, 213, 221, 1);
   font-size: 12px;
   box-sizing: border-box;
   padding: 0px;
-  background: #664d3573;
-  color: white;
-  cursor: pointer;
+  background: $button-bg-color;
+  color: #475467;
 
-  &.secondBtn {
-    border-radius: 0 !important;
+  &[data-disabled] {
+    background: darken($color: $button-bg-color, $amount: 7%);
   }
+
+  &:hover:not(.secondBtn) {
+    background-color: #adc3f5 !important;
+  }
+
+  &:active:not(.secondBtn) {
+    transform: none;
+  }
+}
+
+.secondBtn {
+  background: white;
+  border-radius: 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
 }

@@ -1,4 +1,11 @@
 .account_button {
   box-sizing: border-box;
   background: #232323;
+  transition: background-color 0.1s ease-in-out;
+  justify-content: start;
+}
+
+.active_button {
+  background: #858585;
+  border: 1px solid white;
 }

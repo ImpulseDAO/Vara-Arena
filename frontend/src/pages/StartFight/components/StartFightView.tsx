@@ -1,11 +1,7 @@
 import "./styles.scss";
-import ArenaPng from "../../../assets/images/arena.png";
-import Select from "react-select";
+import ArenaPng from "assets/images/arena.png";
 import { FC, memo } from "react";
 
-import userIcon from "../../../assets/svg/user.svg";
-import { CustomOption } from "components/CustomOption";
-import { SelectControl } from "components/SelectControl";
 import { Button } from "components/Button";
 
 export const colourOptions = [
@@ -24,9 +20,9 @@ export const StartFightView: FC<StartFightViewProps> = memo(
     return (
       <div className="arena">
         <div className="arena_modal">
-          <img className="arena_img" src={ArenaPng} />
+          <img className="arena_img" src={ArenaPng} alt="arena" />
           <p className="arena_title">Enter the Arena</p>
-          <div className="arena_select_wrapper">
+          {/* <div className="arena_select_wrapper">
             <p>Select your character</p>
             <Select
               className="arena_select"
@@ -45,7 +41,7 @@ export const StartFightView: FC<StartFightViewProps> = memo(
               ]}
               selectedUser={user}
             />
-          </div>
+          </div> */}
           <Button onClick={handleSubmit} disabled={!user}>
             Start fight
           </Button>

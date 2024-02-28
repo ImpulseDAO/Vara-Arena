@@ -1,0 +1,6 @@
+.blackButton {
+  &:disabled {
+    background: var(--mantine-color-gray-6);
+    color: var(--mantine-color-gray50-1);
+  }
+}

@@ -1,6 +1,8 @@
 use crate::execute::execute_action;
-use arena_io::{AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, YourTurn};
-use gstd::errors::Error;
+use arena_io::{
+    AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, TurnEvent, TurnLog,
+    YourTurn,
+};
 use gstd::{debug, msg, prelude::*};
 
 const FIRST_POS: u8 = 6;
@@ -87,6 +89,10 @@ impl Battle {
                     action
                 }
                 Err(_) => {
+                    turn_logs.push(TurnLog {
+                        character: self.c1.id,
+                        action: TurnEvent::ReplyError,
+                    });
                     return BattleLog {
                         character1: (self.c1.id, false),
                         character2: (self.c2.id, true),
@@ -112,6 +118,10 @@ impl Battle {
             {
                 Ok(action) => action,
                 Err(_) => {
+                    turn_logs.push(TurnLog {
+                        character: self.c2.id,
+                        action: TurnEvent::ReplyError,
+                    });
                     return BattleLog {
                         character1: (self.c1.id, true),
                         character2: (self.c2.id, false),

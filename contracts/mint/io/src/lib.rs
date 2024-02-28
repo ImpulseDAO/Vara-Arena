@@ -35,6 +35,7 @@ pub struct CharacterAttributes {
     pub lives_count: u8,
     pub tier_rating: u128,
     pub balance: u128,
+    pub vara_balance: u128,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone, Default, Debug)]
@@ -74,6 +75,12 @@ pub struct CharacterInfo {
     pub attributes: CharacterAttributes,
     pub level: u8,
     pub experience: u32,
+}
+
+#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
+pub struct IdPair {
+    pub owner_id: ActorId,
+    pub character_id: u128,
 }
 
 impl CharacterInfo {
@@ -145,9 +152,8 @@ pub enum MintAction {
         owner_id: ActorId,
     },
     BattleResult {
-        owner_id: ActorId,
-        character_id: u128,
-        losers: Vec<ActorId>,
+        winner: IdPair,
+        losers: Vec<IdPair>,
         reply_to: ActorId,
     },
     SetArena {
@@ -172,8 +178,9 @@ pub enum MintAction {
     },
     DepositVara,
     FinalDistribution {
-        player_percentage_for_vara_distr: Option<u16>,
+        amount_of_players: u16,
     },
+    ClaimVara,
 }
 
 #[derive(Encode, Decode, TypeInfo)]

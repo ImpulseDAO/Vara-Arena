@@ -32,8 +32,8 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
 
     for (let block of ctx.blocks) {
         for (let event of block.events) {
-            if (events.gear.userMessageSent.v1000.is(event)) {
-                let { message } = events.gear.userMessageSent.v1000.decode(event)
+            if (events.gear.userMessageSent.v210.is(event)) {
+                let { message } = events.gear.userMessageSent.v210.decode(event)
 
                 if (message.details?.code.__kind == 'Error') {
                     console.log('skipping unsuccessful message')

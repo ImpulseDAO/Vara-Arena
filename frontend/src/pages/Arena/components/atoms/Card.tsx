@@ -14,6 +14,7 @@ export const Card = ({
   isHighlighted,
   playersBadge,
   imageComponent,
+  disabled,
 }: {
   imageComponent: () => ReactElement;
   isFinished?: boolean;
@@ -24,6 +25,7 @@ export const Card = ({
   onJoin: () => void;
   isHighlighted: boolean;
   playersBadge?: React.ReactNode;
+  disabled?: boolean;
 }) => {
   return (
     <Panel
@@ -70,6 +72,8 @@ export const Card = ({
         </Box>
 
         <TheButton
+          bg={disabled ? "gray" : "blueEnergy"}
+          disabled={disabled}
           onClick={() => {
             setTimeout(onJoin, 200);
           }}

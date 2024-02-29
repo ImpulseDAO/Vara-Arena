@@ -6,7 +6,7 @@ import {
   type UseQueryOptions,
   type UseQueryResult,
 } from "@tanstack/react-query";
-import { GRAPHQL_API_URL } from "app/api/consts";
+import { GRAPHQL_API_URL } from "consts";
 
 export const getGraphQLPrimaryKey = (document: TypedDocumentNode<any, any>) => {
   return (document.definitions[0] as any).name?.value as string;

@@ -1,9 +1,11 @@
 import { TypeormDatabase } from '@subsquid/typeorm-store'
 import { Store } from '@subsquid/typeorm-store'
+import { Event } from '@subsquid/substrate-processor'
 
 import { processor, MINT_ADDRESS, ARENA_ADDRESS } from './processor'
 import { Character, Lobby, LobbyCharacter, BattleLog, Mint } from './model'
 import { events } from './types'
+import { UserMessage } from './types/v1110'
 import { handleMintMessage, handleArenaMessage } from './handlers'
 
 let mint: Mint | undefined
@@ -22,18 +24,27 @@ async function getMint(store: Store) {
     return mint
 }
 
+function getMessage(event: Event): UserMessage {
+    if (events.gear.userMessageSent.v210.matches(event.block)) {
+        return events.gear.userMessageSent.v210.decode(event).message
+    } else if (events.gear.userMessageSent.v1110.matches(event.block)) {
+        return events.gear.userMessageSent.v1110.decode(event).message
+    } else {
+        throw new Error('unsupported runtime')
+    }
+}
 
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
-    let characters: Map<string, Character> = new Map()
-    let lobbies: Map<string, Lobby> = new Map()
+    let characters: Map<number, Character> = new Map()
+    let lobbies: Map<number, Lobby> = new Map()
     let lobbiesCharacter: Map<string, LobbyCharacter> = new Map()
     let battleLogs: Map<string, BattleLog> = new Map()
     let mint = await getMint(ctx.store)
 
     for (let block of ctx.blocks) {
         for (let event of block.events) {
-            if (events.gear.userMessageSent.v210.is(event)) {
-                let { message } = events.gear.userMessageSent.v210.decode(event)
+            if (event.name == 'Gear.UserMessageSent') {
+                let message = getMessage(event)
 
                 if (message.details?.code.__kind == 'Error') {
                     console.log('skipping unsuccessful message')

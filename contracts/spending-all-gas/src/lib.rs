@@ -1,6 +1,6 @@
 #![no_std]
 
-use gstd::{debug, prelude::*};
+use gstd::debug;
 
 #[no_mangle]
 extern "C" fn handle() {

@@ -25,7 +25,7 @@ fn game() {
         "../../target/wasm32-unknown-unknown/release/arena.wasm",
     );
 
-    let config = mint_io::Config {
+    let config = Config {
         lives_count: 5,
         gas_for_daily_distribution: 20000000000,
         minimum_gas_amount: 20000000000,

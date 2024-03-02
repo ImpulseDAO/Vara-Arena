@@ -1,6 +1,6 @@
 use gstd::CodeId;
 use gtest::{Program, System};
-use mint_io::{Config, InitialAttributes, MintAction, MintState};
+use mint_io::{Config, IdPair, InitialAttributes, MintAction, MintState};
 
 #[test]
 fn gold_distribution() {
@@ -98,8 +98,10 @@ fn gold_distribution() {
     let result = mint.send(
         10,
         MintAction::BattleResult {
-            owner_id: 10.into(),
-            character_id: 0,
+            winner: IdPair {
+                owner_id: 10.into(),
+                character_id: 0,
+            },
             losers: vec![],
             reply_to: 10.into(),
         },
@@ -110,8 +112,10 @@ fn gold_distribution() {
     let result = mint.send(
         10,
         MintAction::BattleResult {
-            owner_id: 20.into(),
-            character_id: 1,
+            winner: IdPair {
+                owner_id: 20.into(),
+                character_id: 1,
+            },
             losers: vec![],
             reply_to: 10.into(),
         },

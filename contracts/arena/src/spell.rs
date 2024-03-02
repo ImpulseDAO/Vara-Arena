@@ -1,5 +1,5 @@
-use arena_io::{BattleAction, CastSpellResult, Character, Spell, TurnEvent};
-use core::cmp::min;
+use crate::character::Character;
+use arena_io::{BattleAction, CastSpellResult, Spell, TurnEvent};
 
 pub fn execute_cast_spell(
     player: &mut Character,

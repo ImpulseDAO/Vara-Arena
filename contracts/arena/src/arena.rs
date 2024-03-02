@@ -1,6 +1,6 @@
 use crate::battle::Battle;
-use crate::utils;
-use arena_io::{ArenaAction, ArenaEvent, ArenaState, BattleLog, Character, SetTier};
+use crate::character::Character;
+use arena_io::{ArenaAction, ArenaEvent, ArenaState, BattleLog, SetTier};
 use gstd::collections::BTreeMap;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
 use mint_io::{CharacterInfo, IdPair, MintAction};
@@ -214,26 +214,7 @@ impl Arena {
             panic!("max number of players is already registered");
         }
 
-        let character = Character {
-            owner: owner_id,
-            id: character_info.id,
-            algorithm_id: character_info.algorithm_id,
-            name: character_info.name,
-            hp: utils::full_hp(character_info.level),
-            energy: utils::full_energy(character_info.attributes.stamina),
-            position: 0,
-            attributes: character_info.attributes,
-            level: character_info.level,
-            parry: false,
-            rest_count: 0,
-            disable_agiim: false,
-            fire_wall: (0, 0),
-            earth_skin: (0, 0),
-            chilling_touch: 0,
-            earth_smites: (0, 0),
-            fire_haste: 0,
-            water_burst: 0,
-        };
+        let character = Character::new(character_info, owner_id);
 
         // Check whether player already registered
         if lobby.characters.iter().any(|c| c.owner == owner_id) {
@@ -258,17 +239,17 @@ impl Arena {
         }
 
         if character_tier == lobby.current_tier {
-            lobby.characters.push(character);
             // add if can't register send the error message ("Wrong Tier") && test it
             msg::reply(
                 ArenaEvent::PlayerRegistered {
                     lobby_id,
-                    player_id: character_info.id,
+                    player_id: character.id,
                     tier: character_tier as u8,
                 },
                 0,
             )
             .expect("unable to reply");
+            lobby.characters.push(character);
         } else {
             panic!("Can't Register for this Tier");
         };

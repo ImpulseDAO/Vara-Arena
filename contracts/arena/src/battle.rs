@@ -1,7 +1,7 @@
+use crate::character::Character;
 use crate::execute::execute_action;
 use arena_io::{
-    AttackKind, BattleAction, BattleLog, Character, CharacterState, Spell, TurnEvent, TurnLog,
-    YourTurn,
+    AttackKind, BattleAction, BattleLog, CharacterState, Spell, TurnEvent, TurnLog, YourTurn,
 };
 use gstd::{debug, msg, prelude::*};
 

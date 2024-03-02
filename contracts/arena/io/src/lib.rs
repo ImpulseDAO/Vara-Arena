@@ -163,47 +163,6 @@ pub struct YourTurn {
     pub enemy: CharacterState,
 }
 
-#[derive(Encode, Decode, TypeInfo, Clone, Debug)]
-pub struct Character {
-    pub owner: ActorId,
-    pub id: u128,
-    pub algorithm_id: ActorId,
-    pub name: String,
-    pub hp: u8,
-    pub energy: u8,
-    pub position: u8,
-    pub attributes: CharacterAttributes,
-    pub level: u8,
-
-    // battle specific fields
-    // store them here to avoid using extra structs
-    #[codec(skip)]
-    pub parry: bool,
-    #[codec(skip)]
-    pub rest_count: u8,
-    #[codec(skip)]
-    pub disable_agiim: bool,
-    // spell effects
-    #[codec(skip)]
-    pub fire_wall: (u8, u8),
-    #[codec(skip)]
-    pub earth_skin: (u8, u8),
-    #[codec(skip)]
-    pub chilling_touch: u8,
-    #[codec(skip)]
-    pub water_burst: u8,
-    #[codec(skip)]
-    pub fire_haste: u8,
-    #[codec(skip)]
-    pub earth_smites: (u8, u8),
-}
-
-#[derive(Encode, Decode, TypeInfo, Clone)]
-pub struct BattleState {
-    pub c1: Character,
-    pub c2: Character,
-}
-
 #[derive(Encode, Decode, TypeInfo, Clone)]
 pub struct ArenaState {
     pub mint: ActorId,

@@ -1,6 +1,7 @@
+use crate::character::Character;
 use crate::spell::execute_cast_spell;
 use crate::utils;
-use arena_io::{AttackKind, AttackResult, BattleAction, Character, TurnEvent, TurnLog};
+use arena_io::{AttackKind, AttackResult, BattleAction, TurnEvent, TurnLog};
 use core::cmp::{max, min};
 use gstd::{debug, prelude::*};
 

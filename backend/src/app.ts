@@ -18,37 +18,29 @@ app.use(express.json());
 const PREFIX = "/voucher";
 
 app.post(`${PREFIX}/`, async (req: Request, res: Response) => {
+  const accountUser = req.body.account as HexString;
   try {
-    const accountUser = req.body.account as HexString;
+    console.log(`${accountUser} is creating voucher`);
 
     const programs = [GAME_ADDRESS, GAME_ADDRESS_2].filter(Boolean);
 
-    const data: (PromiseSettledResult<VoucherIssuedData> & {
-      programId: HexString;
-    })[] = [];
+    let voucherIssuedData: VoucherIssuedData = await createVoucher(
+      accountUser,
+      programs
+    );
+    console.log("data", voucherIssuedData.toHuman());
 
-    for (const program of programs) {
-      try {
-        const result = await createVoucher(accountUser, program);
-        data.push({ status: "fulfilled", value: result, programId: program });
-      } catch (error) {
-        data.push({ status: "rejected", reason: error, programId: program });
-      }
-    }
-
-    const bothRejected = data.every((item) => item.status === "rejected");
-
-    if (bothRejected) {
-      throw new Error("Error creating voucher. Both vouchers rejected.");
-    }
-
-    res.send(data);
+    console.log(`${accountUser} created voucher`);
+    res.send(voucherIssuedData);
   } catch (error) {
+    console.error(`${accountUser} failed to create voucher. Error below:`);
+    console.error(error);
+
     res.status(500).send(error);
   }
 });
 
-app.use(PREFIX, express.static("public/voucher"));
+// app.use(PREFIX, express.static("public/voucher"));
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);

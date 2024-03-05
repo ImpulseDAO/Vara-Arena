@@ -17,3 +17,5 @@ const jsonKeyring = KEYRING_PATH
   ? readFileSync(KEYRING_PATH).toString()
   : (KEYRING_JSON_CONTENT_STRING as string);
 export const KEYRING = GearKeyring.fromJson(jsonKeyring, KEYRING_PASSPHRASE);
+
+export const VOUCHER_DURATION = 10000;

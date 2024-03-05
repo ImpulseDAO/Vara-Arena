@@ -1,10 +1,16 @@
 import { GearApi, decodeAddress, VoucherIssuedData } from "@gear-js/api";
 import { type HexString } from "@polkadot/util/types";
-import { AMOUNT_IN_VARA, GAME_ADDRESS, KEYRING, NODE_ADDRESS } from "./consts";
+import {
+  AMOUNT_IN_VARA,
+  GAME_ADDRESS,
+  KEYRING,
+  NODE_ADDRESS,
+  VOUCHER_DURATION,
+} from "./consts";
 
 export const createVoucher = async (
   accountUser: HexString,
-  programId: HexString = GAME_ADDRESS
+  programIds: HexString[] = [GAME_ADDRESS]
 ) => {
   const api = await GearApi.create({
     providerAddress: NODE_ADDRESS,
@@ -12,14 +18,20 @@ export const createVoucher = async (
 
   const account = decodeAddress(accountUser);
 
-  // Specify the number of issues
-  const tx = api.voucher.issue(
+  /**
+   * Argument mapping
+   */
+  const value = AMOUNT_IN_VARA * 10 ** api.registry.chainDecimals[0];
+
+  const tx = await api.voucher.issue(
     account,
-    programId,
-    AMOUNT_IN_VARA * 10 ** api.registry.chainDecimals[0]
+    value,
+    VOUCHER_DURATION,
+    programIds,
+    true
   );
 
-  const extrinsic = tx.extrinsic;
+  const { extrinsic, voucherId } = tx;
 
   return new Promise<VoucherIssuedData>((resolve, reject) => {
     extrinsic

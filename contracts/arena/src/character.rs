@@ -1,3 +1,4 @@
+use crate::effects::{EffectKind, Effects, Stack};
 use crate::utils;
 use gstd::{prelude::*, ActorId};
 use mint_io::{CharacterAttributes, CharacterInfo};
@@ -26,6 +27,8 @@ pub struct Character {
     pub water_burst: u8,
     pub fire_haste: u8,
     pub earth_smites: (u8, u8),
+
+    effects: Effects,
 }
 
 impl Character {
@@ -49,6 +52,19 @@ impl Character {
             earth_smites: (0, 0),
             fire_haste: 0,
             water_burst: 0,
+            effects: Effects::new(),
         }
+    }
+
+    pub fn get_effect(&self, kind: EffectKind) -> Stack {
+        self.effects.get_effect(kind)
+    }
+
+    pub fn add_effect(&mut self, kind: EffectKind, stack: Stack, duration: Option<u8>) {
+        self.effects.add_effect(kind, stack, duration);
+    }
+
+    pub fn round_tick(&mut self) {
+        self.effects.update_effects();
     }
 }

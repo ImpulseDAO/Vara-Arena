@@ -1,6 +1,6 @@
-use crate::character::Character;
 use crate::spell::execute_cast_spell;
 use crate::utils;
+use crate::{character::Character, effects::EffectKind};
 use arena_io::{AttackKind, AttackResult, BattleAction, TurnEvent, TurnLog};
 use core::cmp::{max, min};
 use gstd::{debug, prelude::*};
@@ -14,22 +14,18 @@ fn is_attack_successful(hit_chance: u8) -> bool {
     utils::get_random_value(100) < hit_chance
 }
 
-fn attack_power(base_damage: u8, strength: u8, agility: u8, kind: &AttackKind) -> u8 {
+fn attack_power(character: &Character, base_damage: u8, crit_modifier: u8) -> u8 {
+    let agility = character.attributes.agility;
+    let strength = character.attributes.strength;
+    let empower = character.get_effect(EffectKind::Empower);
     let is_crit = utils::get_random_value(100 + agility * 2);
     debug!("{:?}", is_crit);
 
-    let damage_modifier = match kind {
-        AttackKind::Quick => 2,
-        AttackKind::Precise => 3,
-        AttackKind::Heavy => 4,
-    };
-
+    let damage = base_damage + empower + strength * 2;
     if is_crit > 100 {
         // Scale damage using player's strength and agility
-        let damage = base_damage + strength * 2 + (agility + damage_modifier) * 2;
-        damage
+        damage + (agility + crit_modifier) * 2
     } else {
-        let damage = base_damage + strength * 2;
         damage
     }
 }
@@ -40,6 +36,7 @@ fn execute_attack_kind(
     energy: u8,
     base_hit_chance: u8,
     base_damage: u8,
+    crit_modifier: u8,
     kind: &AttackKind,
     logs: &mut Vec<TurnLog>,
 ) {
@@ -63,12 +60,7 @@ fn execute_attack_kind(
                 };
                 let success = is_attack_successful(hit_chance);
                 if success {
-                    let mut damage = attack_power(
-                        base_damage,
-                        player.attributes.strength,
-                        player.attributes.agility,
-                        &kind,
-                    );
+                    let mut damage = attack_power(player, base_damage, crit_modifier);
                     debug!("damage is {:?}", damage);
                     if player.earth_smites.0 > 0 {
                         damage += player.earth_smites.1;
@@ -135,9 +127,9 @@ fn execute_attack(
     logs: &mut Vec<TurnLog>,
 ) {
     match kind {
-        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, kind, logs),
-        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, kind, logs),
-        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20, kind, logs),
+        AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, 2, kind, logs),
+        AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, 3, kind, logs),
+        AttackKind::Heavy => execute_attack_kind(player, enemy, 6, 35, 20, 4, kind, logs),
     }
 }
 

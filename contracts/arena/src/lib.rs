@@ -7,6 +7,7 @@ use gstd::{msg, prelude::*, ActorId};
 mod arena;
 mod battle;
 mod character;
+mod effects;
 mod execute;
 mod spell;
 mod utils;

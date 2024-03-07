@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
-import { MAX_GAS_LIMIT, PAYMENT_FOR_MINTING } from "consts";
+import { MAX_GAS_LIMIT } from "consts";
 import { resetUseMyCharacrersQuery } from "app/api/characters";
 import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 
@@ -75,7 +75,6 @@ export const useOnSubmit = ({
       onError: () => {
         console.log("error");
       },
-      value: PAYMENT_FOR_MINTING,
     });
   }, [codeId, name, navigate, send, shouldUseVoucher, stats]);
 };

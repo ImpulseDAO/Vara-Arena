@@ -4,7 +4,6 @@ import { BlackButton } from "pages/BattleResult/components/BlackButton";
 import React from "react";
 import { useSendToMintContract } from '../../../app/api/sendMessages';
 import { MAX_GAS_LIMIT } from "consts";
-import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 import { InputProgramId } from "./InputProgramId";
 import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
 import { getCodeIdsFromLocalStorage, useCodeAndProgramIDs } from "hooks/useCodeAndProgramIDs";
@@ -23,11 +22,6 @@ export const UploadStrategyWidget = () => {
     getType
   } = useCodeAndProgramIDs();
 
-  /**
-   * Voucher
-   */
-
-  const shouldUseVoucher = useShouldUseVoucher();
 
   /**
    * Upload code 
@@ -69,7 +63,6 @@ export const UploadStrategyWidget = () => {
     sendToMintContract({
       payload,
       gasLimit: MAX_GAS_LIMIT,
-      withVoucher: shouldUseVoucher,
       onSuccess: (result) => {
         console.log("UpdateCharacter message successfully sent", result);
         setIsUpdating(false);
@@ -80,7 +73,7 @@ export const UploadStrategyWidget = () => {
       },
     });
 
-  }, [alert, codeId, programId, sendToMintContract, shouldUseVoucher]);
+  }, [alert, codeId, programId, sendToMintContract]);
 
 
   if (!isVisible) {

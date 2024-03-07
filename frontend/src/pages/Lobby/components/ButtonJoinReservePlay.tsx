@@ -10,8 +10,6 @@ import { MAX_GAS_LIMIT } from "consts";
 import { useOnRegisterForBattle } from "pages/StartFight/hooks/useOnSubmit";
 import { useMyHeroIsDead } from "app/api/mintState";
 
-// type States = "initial" | "reserved_once" | "reserved_twice" | "starting";
-
 const JOIN_BUTTON_TEXT = "Join the battle";
 const RESERVE_BUTTON_TEXT = "Reserve gas";
 const PLAY_BUTTON_TEXT = "Start battle";

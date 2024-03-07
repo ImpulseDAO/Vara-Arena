@@ -3,9 +3,8 @@ import { useCallback, useMemo, useRef } from "react";
 import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
 import { ProgramMetadata } from "@gear-js/api";
 import { useNavigate } from "react-router-dom";
-import { MAX_GAS_LIMIT, PAYMENT_FOR_MINTING } from "consts";
+import { MAX_GAS_LIMIT } from "consts";
 import { resetUseMyCharacrersQuery } from "app/api/characters";
-import { useShouldUseVoucher } from "hooks/useShouldUseVoucher";
 
 export const useOnSubmit = ({
   codeId,
@@ -29,12 +28,6 @@ export const useOnSubmit = ({
    */
   const onSuccessRef = useRef(onSuccess);
   onSuccessRef.current = onSuccess;
-
-  /**
-   *
-   */
-
-  const shouldUseVoucher = useShouldUseVoucher();
 
   /**
    *
@@ -65,7 +58,6 @@ export const useOnSubmit = ({
     send({
       payload,
       gasLimit: MAX_GAS_LIMIT,
-      withVoucher: shouldUseVoucher,
       onSuccess: (result) => {
         console.log("success", result);
         onSuccessRef.current?.();
@@ -75,7 +67,6 @@ export const useOnSubmit = ({
       onError: () => {
         console.log("error");
       },
-      value: PAYMENT_FOR_MINTING,
     });
-  }, [codeId, name, navigate, send, shouldUseVoucher, stats]);
+  }, [codeId, name, navigate, send, stats]);
 };

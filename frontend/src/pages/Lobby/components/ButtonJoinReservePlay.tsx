@@ -47,7 +47,7 @@ export const ButtonsJoinReservePlay = ({
   const alert = useAlert();
   const navigate = useNavigate();
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(ARENA_PROGRAM_ID, meta);
 
   const isUserHasPermissionToCancel = false;
   const isReservationsNeeded = playersNeeded === 4;

@@ -23,7 +23,7 @@ export const useStats = (character?: Character) => {
   }, []);
 
   const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
-  const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(MINT_PROGRAM_ID, meta);
   const accept = useCallback(
     async ({
       onSuccess,

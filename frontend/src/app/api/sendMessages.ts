@@ -8,20 +8,16 @@ import {
 } from "consts";
 import { useCallback, useMemo } from "react";
 
-const options = {
-  isMaxGasLimit: true,
-};
-
 export const useSendToArena = () => {
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const sendToArenaContract = useSendMessage(ARENA_PROGRAM_ID, meta, options);
+  const sendToArenaContract = useSendMessage(ARENA_PROGRAM_ID, meta);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(sendToArenaContract, []);
 };
 
 export const useSendToMintContract = () => {
   const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
-  const sendToMintContract = useSendMessage(MINT_PROGRAM_ID, meta, options);
+  const sendToMintContract = useSendMessage(MINT_PROGRAM_ID, meta);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   return useCallback(sendToMintContract, []);
 };

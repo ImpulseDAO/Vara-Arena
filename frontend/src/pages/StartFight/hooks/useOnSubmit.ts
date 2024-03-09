@@ -11,7 +11,7 @@ export const useOnRegisterForBattle = () => {
   const alert = useStableAlert();
 
   const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const send = useSendMessage(ARENA_PROGRAM_ID, meta);
 
   const { subscribe, unsubscribe } = useWatchArenaMessages<{
     PlayerRegistered: {

@@ -47,7 +47,7 @@ export type Specialization = "knight" | "rogue" | "mage" | "custom";
 export const HARDCODED_CHARACTERS: Array<{
   key: Specialization;
   name: string;
-  codeId?: HexString;
+  codeId: HexString;
   stats: Attributes;
 }> = [
   {

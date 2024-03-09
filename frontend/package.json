@@ -19,7 +19,7 @@
   "dependencies": {
     "@gear-js/api": "0.35.2",
     "@gear-js/react-hooks": "0.9.2",
-    "@gear-js/ui": "0.5.19",
+    "@gear-js/ui": "^0.5.22",
     "@graphql-codegen/client-preset": "^4.1.0",
     "@mantine/core": "^7.4.0",
     "@mantine/dates": "^7.4.0",

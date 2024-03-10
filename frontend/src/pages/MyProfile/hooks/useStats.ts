@@ -1,8 +1,7 @@
-import { ProgramMetadata } from "@gear-js/api";
-import { useSendMessage } from "@gear-js/react-hooks";
+import { useSendToMintContract } from "app/api/sendMessages";
 import { MAX_GAS_LIMIT, XP_NEEDED_FOR_LEVEL_UP_MAP } from "consts";
-import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useFindMyVoucher } from "hooks/useFindMyVoucher";
+import { useCallback, useEffect, useReducer, useState } from "react";
 
 export const useStats = (character?: Character) => {
   const [stats, setStats] = useState({
@@ -22,8 +21,8 @@ export const useStats = (character?: Character) => {
     toggleVisible();
   }, []);
 
-  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
-  const send = useSendMessage(MINT_PROGRAM_ID, meta);
+  const { send } = useSendToMintContract();
+  const { findVoucher } = useFindMyVoucher();
   const accept = useCallback(
     async ({
       onSuccess,
@@ -32,17 +31,23 @@ export const useStats = (character?: Character) => {
       onSuccess?: () => void;
       onError?: () => void;
     } = {}) => {
+      const payload = {
+        LevelUp: {
+          attr,
+        },
+      };
+
       if (attr) {
         setIsStatsMutating(true);
         toggleVisible();
+
+        const { voucherId } = await findVoucher(payload, "MINT");
+
         try {
           await send({
-            payload: {
-              LevelUp: {
-                attr,
-              },
-            },
+            payload,
             gasLimit: MAX_GAS_LIMIT,
+            voucherId,
             onSuccess: () => {
               console.log("LevelUp message successfully sent");
               onSuccess?.();
@@ -59,7 +64,7 @@ export const useStats = (character?: Character) => {
         }
       }
     },
-    [attr, send]
+    [attr, findVoucher, send]
   );
 
   useEffect(() => {

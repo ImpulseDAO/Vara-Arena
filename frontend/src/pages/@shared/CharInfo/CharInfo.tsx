@@ -2,9 +2,12 @@ import { Box, BoxProps } from "@mantine/core";
 import "./styles.scss";
 import AvatarIcon from "assets/images/AvatarV2.png";
 import { useCallback, useEffect, useReducer, useState } from "react";
-import { Alert } from "components/Alert/Alert";
 import { routes } from "app/routes";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "components/Modal";
+import { CreateCharAlert } from "./components/CreateCharAlert";
+import { AccountsModal } from "components/AccountsModal";
+import { useAccount } from "@gear-js/react-hooks";
 
 export const CharInfo = ({
   isMyCharacter,
@@ -24,30 +27,46 @@ export const CharInfo = ({
   maxExp: number;
   level: number;
 } & BoxProps) => {
-  const [alertVisible, toggleVisible] = useReducer((state) => !state, false);
+  const [alertVisible, toggleModalVisible] = useReducer(
+    (state) => !state,
+    false
+  );
+  const [walletVisible, toggleWalletVisible] = useReducer(
+    (state) => !state,
+    false
+  );
   const navigate = useNavigate();
+  const { account } = useAccount();
+
   const handleClickAccept = useCallback(() => {
-    toggleVisible();
+    toggleModalVisible();
     navigate(routes.selectClass);
   }, [navigate]);
+
+  const handleClickWallet = useCallback(() => {
+    toggleWalletVisible();
+    toggleModalVisible();
+  }, []);
+
   return (
     <>
+      {account && walletVisible && (
+        <AccountsModal close={toggleWalletVisible} account={account} />
+      )}
       {alertVisible && (
-        <Alert
-          title="Warning: Create a new character"
-          subTitle="subtitle"
-          buttonsSlot={[
-            {
-              className: "profile_alert_accept",
-              children: "Accept",
-              onClick: handleClickAccept,
-            },
-            {
-              className: "profile_alert_cancel",
-              children: "Cancel",
-              onClick: toggleVisible,
-            },
-          ]}
+        <Modal
+          showCloseButton={true}
+          size="sm"
+          onClose={toggleModalVisible}
+          title="Create a new character"
+          contentSlot={<CreateCharAlert.Content />}
+          footerSlot={
+            <CreateCharAlert.Footer
+              name={name}
+              onChangeWallet={handleClickWallet}
+              onSubmit={handleClickAccept}
+            />
+          }
         />
       )}
       <Box className="profile_user" {...boxProps}>
@@ -57,7 +76,7 @@ export const CharInfo = ({
             src={AvatarIcon}
             alt="AvatarIcon"
           />
-          <button className="profile_create_new" onClick={toggleVisible}>
+          <button className="profile_create_new" onClick={toggleModalVisible}>
             create new
           </button>
         </div>

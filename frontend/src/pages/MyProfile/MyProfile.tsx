@@ -120,7 +120,6 @@ export const Profile = ({
 
   return (
     <div className="profile">
-      x
       {alertVisible && (
         <Alert
           title={`Please confirm ${selectedAttr} increase`}

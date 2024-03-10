@@ -2,7 +2,7 @@ import { Input } from "components";
 import { Button } from "components/Button";
 import { ButtonGroup } from "components/ButtonGroup";
 import { StatBar } from "pages/@shared/StatBar";
-import { FC, memo, useRef } from "react";
+import { FC, memo } from "react";
 import "./styles.scss";
 import { Badge, Box, Table } from "@mantine/core";
 import { TitleWithQuote } from "components/TitleWithQuote";

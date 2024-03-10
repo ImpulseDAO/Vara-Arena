@@ -80,4 +80,5 @@ export const useOnSubmit = ({
     stats.stamina,
     stats.strength,
   ]);
+  //
 };

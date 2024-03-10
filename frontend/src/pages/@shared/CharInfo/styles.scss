@@ -1,3 +1,9 @@
+// .profile_alert_accept {
+// }
+
+// .profile_alert_calcel {
+// }
+
 .profile_user {
   display: flex;
   gap: 20px;
@@ -13,6 +19,28 @@
 
   .my_avatar {
     border: 2px solid #2c67ff;
+  }
+  .profile_photo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .profile_create_new {
+      font-size: 12px;
+      background: #2c67ff;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: #3f75fd;
+      }
+
+      &:active {
+        background: #1958f8;
+      }
+    }
   }
 
   .profile_name {

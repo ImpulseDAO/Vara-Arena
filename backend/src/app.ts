@@ -28,10 +28,9 @@ app.post(`${PREFIX}/`, async (req: Request, res: Response) => {
       accountUser,
       programs
     );
-    console.log("data", voucherIssuedData.toHuman());
-
-    console.log(`${accountUser} created voucher`);
-    res.send(voucherIssuedData);
+    const data = voucherIssuedData.toHuman() as unknown as VoucherIssuedData;
+    console.log(`${accountUser} created voucher with id ${data.voucherId}`);
+    res.send(data);
   } catch (error) {
     console.error(`${accountUser} failed to create voucher. Error below:`);
     console.error(error);

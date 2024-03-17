@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useLayoutEffect } from "react";
+import { RefObject, useLayoutEffect } from "react";
 
 export const useClickOutside = (
   ref: RefObject<HTMLDivElement>,

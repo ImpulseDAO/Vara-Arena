@@ -1,4 +1,4 @@
-import { Button, Checkbox, Flex } from "@mantine/core";
+import { Button, Checkbox } from "@mantine/core";
 import { Styled } from "./styles";
 import { FC, useState } from "react";
 import { useDevice } from "shared/theme";
@@ -25,7 +25,7 @@ export const AlertFooter: FC<AlertFooterProps> = ({
         label={
           <>
             <div style={{ fontSize: 16, display: "flex", gap: 8 }}>
-              Ovewrite: <Styled.Name>{name}</Styled.Name>
+              Overwrite <Styled.Name>{name}</Styled.Name>
             </div>
           </>
         }

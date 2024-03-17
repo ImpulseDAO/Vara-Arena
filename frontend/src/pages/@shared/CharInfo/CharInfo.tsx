@@ -80,7 +80,7 @@ export const CharInfo = ({
           />
           {isMyCharacter && !!lives && (
             <button className="profile_create_new" onClick={toggleModalVisible}>
-              create new
+              Create New
             </button>
           )}
         </div>

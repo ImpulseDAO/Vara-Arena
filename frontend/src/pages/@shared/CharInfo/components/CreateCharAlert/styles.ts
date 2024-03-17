@@ -1,5 +1,4 @@
-import { sizeType } from "components/Modal";
-import { deviceType, getDeviceType } from "shared/theme";
+import { deviceType } from "shared/theme";
 import styled from "styled-components";
 
 const Content = styled.div`

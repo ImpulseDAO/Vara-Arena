@@ -429,6 +429,10 @@ impl Mint {
         }
 
         self.vara_pool_amount -= vara_balance;
+
+        // Reset the character's vara_balance to 0 after claiming
+        character_info.attributes.vara_balance = 0;
+
         msg::send_with_gas(id, "", 0, vara_balance).expect("Error during vara sending");
     }
 }

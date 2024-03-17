@@ -33,19 +33,22 @@ export const Arena = memo(() => {
       <Flex
         style={{
           gap: 10,
+          flexWrap: "wrap",
         }}
       >
         <Box
-          h={36}
-          pl={10}
-          pr={10}
+          // h={36}
+          p={10}
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
             borderRadius: "9px",
             border: "1px solid white",
-            gap: 10,
+            gap: 12,
+            flexWrap: "wrap",
+            width: "fitContent",
+            height: "fitContent",
+            minHeight: "36px",
           }}
           bg={"black"}
         >

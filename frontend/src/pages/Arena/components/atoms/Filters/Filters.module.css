@@ -2,6 +2,15 @@
   background: rgb(0, 0, 0);
   border-color: white;
   width: 400px;
+  gap: 12;
+  display: flex;
+  border: 1px solid white;
+  width: fit-content;
+  height: fit-content;
+  align-items: center;
+  border-radius: 9px;
+  flex-wrap: wrap;
+  min-height: 36px;
 }
 
 .text {

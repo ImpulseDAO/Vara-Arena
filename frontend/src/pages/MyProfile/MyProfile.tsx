@@ -24,14 +24,24 @@ import { useMemo } from "react";
 export const MyProfile = () => {
   const {
     data: myCharacterFromState,
-    refetch: refetchMyCharacterFromStateQuery
+    refetch: refetchMyCharacterFromStateQuery,
   } = useMyCharacterFromContractState();
 
   if (!myCharacterFromState) {
-    return <div className="profile"><NoCharacterWidget /></div>;
+    return (
+      <div className="profile">
+        <NoCharacterWidget />
+      </div>
+    );
   }
 
-  return <Profile character={undefined} myCharacter={myCharacterFromState} onSuccessfulLevelUp={refetchMyCharacterFromStateQuery} />;
+  return (
+    <Profile
+      character={undefined}
+      myCharacter={myCharacterFromState}
+      onSuccessfulLevelUp={refetchMyCharacterFromStateQuery}
+    />
+  );
 };
 
 export const ProfilePage = () => {
@@ -53,7 +63,6 @@ export const ProfilePage = () => {
   }
 
   return <Profile character={character} myCharacter={myCharacterFromState} />;
-
 };
 
 export const Profile = ({
@@ -63,7 +72,7 @@ export const Profile = ({
    */
   character,
   myCharacter,
-  onSuccessfulLevelUp
+  onSuccessfulLevelUp,
 }: {
   character?: Character;
   myCharacter: CharacterInContractState;
@@ -76,29 +85,30 @@ export const Profile = ({
 
   character = useMemo(() => {
     if (character) return character;
-
-    else return {
-      id: String(myCharacter.id),
-      name: myCharacter.name,
-      attributes: myCharacter.attributes,
-      level: myCharacter.level,
-      experience: myCharacter.experience,
-      livesCount: myCharacter.attributes.livesCount,
-      balance: myCharacter.attributes.balance,
-      owner: '',
-      rating: myCharacter.attributes.tierRating,
-    };
-
+    else
+      return {
+        id: String(myCharacter.id),
+        name: myCharacter.name,
+        attributes: myCharacter.attributes,
+        level: myCharacter.level,
+        experience: myCharacter.experience,
+        livesCount: myCharacter.attributes.livesCount,
+        balance: myCharacter.attributes.balance,
+        owner: "",
+        rating: myCharacter.attributes.tierRating,
+      };
   }, [character, myCharacter]);
   const isMyCharacter = character?.id === String(myCharacter.id);
 
-  const { accept, alertVisible, cancel, stats, selectAttr, selectedAttr, isStatsMutating } = useStats(
-    character
-  );
-
-  /**
-   * 
-   */
+  const {
+    accept,
+    alertVisible,
+    cancel,
+    stats,
+    selectAttr,
+    selectedAttr,
+    isStatsMutating,
+  } = useStats(character);
 
   if (!myCharacter) {
     return null;
@@ -118,16 +128,16 @@ export const Profile = ({
             {
               className: "profile_alert_accept",
               children: "Accept",
-              onClick: () => accept({
-                onSuccess: onSuccessfulLevelUp,
-              }),
+              onClick: () =>
+                accept({
+                  onSuccess: onSuccessfulLevelUp,
+                }),
             },
           ]}
         />
       )}
       <div className="profile_char">
         <div className="profile_data">
-
           <CharInfo
             isMyCharacter={isMyCharacter}
             name={character.name}
@@ -136,6 +146,7 @@ export const Profile = ({
             exp={character.experience}
             maxExp={stats.maxExp}
             level={character.level}
+            lives={character.livesCount}
           />
 
           <UploadStrategyWidget />
@@ -149,7 +160,6 @@ export const Profile = ({
             selectAttr={selectAttr}
             isLoading={isStatsMutating}
           />
-
         </div>
 
         <div className="profile_equip">
@@ -179,15 +189,21 @@ export const Profile = ({
             </div> */}
             <div className="one_half gold">
               <p>Gold:</p>
-              <Flex className="bottom_part" gap="md" align="center" style={{ position: 'relative' }} >
+              <Flex
+                className="bottom_part"
+                gap="md"
+                align="center"
+                style={{ position: "relative" }}
+              >
                 <Image width={40} src={GoldCoin} />
-                <Text fw="600" c="white" >{character.balance ?? 0}</Text>
+                <Text fw="600" c="white">
+                  {character.balance ?? 0}
+                </Text>
               </Flex>
             </div>
           </div>
-
         </div>
       </div>
-    </div >
+    </div>
   );
 };

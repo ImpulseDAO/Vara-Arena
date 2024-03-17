@@ -7,7 +7,7 @@ const Container = styled.div<{ size: keyof typeof sizeType }>`
   background: black;
   border: 1px solid white;
   border-radius: 12px;
-  padding: 8px 14px;
+  padding: 16px;
   gap: 4px;
 
   ${({ size }) => {

@@ -1,4 +1,4 @@
-import { Button, Checkbox } from "@mantine/core";
+import { Button, Checkbox, Flex } from "@mantine/core";
 import { Styled } from "./styles";
 import { FC, useState } from "react";
 import { useDevice } from "shared/theme";
@@ -24,7 +24,9 @@ export const AlertFooter: FC<AlertFooterProps> = ({
         onChange={(event) => setChecked(event.currentTarget.checked)}
         label={
           <>
-            Delete live character <Styled.Name>{name}</Styled.Name>
+            <div style={{ fontSize: 16, display: "flex", gap: 8 }}>
+              Ovewrite: <Styled.Name>{name}</Styled.Name>
+            </div>
           </>
         }
       />
@@ -37,12 +39,12 @@ export const AlertFooter: FC<AlertFooterProps> = ({
           disabled={!checked}
           style={{ width: "100%" }}
         >
-          Create new character
+          Create new
         </Button>
         <Button
           onClick={onChangeWallet}
           radius="sm"
-          bg="orange"
+          bg="#c77410"
           size="sm"
           style={{ width: "100%" }}
         >

@@ -7,7 +7,7 @@ export const AlertContent = () => {
         You can either use a new wallet or create a new character.
       </Styled.Description>
       <Styled.Attention>
-        Remember - 1 Discord = 1 Wallet = 1 Voucher
+        Remember: <br /> <span>1 Discord = 1 Wallet = 1 Voucher</span>
       </Styled.Attention>
     </Styled.Content>
   );

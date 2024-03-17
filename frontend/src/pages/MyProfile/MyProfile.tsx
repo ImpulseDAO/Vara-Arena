@@ -110,10 +110,6 @@ export const Profile = ({
     isStatsMutating,
   } = useStats(character);
 
-  /**
-   *
-   */
-
   if (!myCharacter) {
     return null;
   }
@@ -150,6 +146,7 @@ export const Profile = ({
             exp={character.experience}
             maxExp={stats.maxExp}
             level={character.level}
+            lives={character.livesCount}
           />
 
           <UploadStrategyWidget />

@@ -20,7 +20,12 @@ const Description = styled.p`
 `;
 
 const Attention = styled.p`
-  color: #e8ca64;
+  margin-top: 20px;
+  font-weight: bold;
+  & > span {
+    font-weight: normal;
+    color: #e8ca64;
+  }
 `;
 
 const ButtonGroup = styled.div<{ device: string }>`
@@ -35,7 +40,6 @@ const ButtonGroup = styled.div<{ device: string }>`
 const Name = styled.span`
   color: white;
   font-weight: bold;
-  font-size: 16px;
 `;
 
 export const Styled = {

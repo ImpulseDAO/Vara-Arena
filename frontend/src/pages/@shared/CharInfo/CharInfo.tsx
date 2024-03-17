@@ -17,6 +17,7 @@ export const CharInfo = ({
   exp,
   maxExp,
   level,
+  lives,
   ...boxProps
 }: {
   isMyCharacter: boolean;
@@ -26,6 +27,7 @@ export const CharInfo = ({
   exp: number;
   maxExp: number;
   level: number;
+  lives: number;
 } & BoxProps) => {
   const [alertVisible, toggleModalVisible] = useReducer(
     (state) => !state,
@@ -76,9 +78,11 @@ export const CharInfo = ({
             src={AvatarIcon}
             alt="AvatarIcon"
           />
-          <button className="profile_create_new" onClick={toggleModalVisible}>
-            create new
-          </button>
+          {isMyCharacter && !!lives && (
+            <button className="profile_create_new" onClick={toggleModalVisible}>
+              create new
+            </button>
+          )}
         </div>
         <div className="profile_name">
           <p>{name}</p>

@@ -4,6 +4,9 @@ import { CreateLobby } from "./components/molecules/CreateLobby";
 import { LobbyList } from "./components/molecules/LobbyList";
 import { memo, useCallback, useReducer, useState } from "react";
 
+import styles from "./Arena.module.scss";
+
+
 export const Arena = memo(() => {
   const [filters, setFilters] = useState<string[]>([]);
   const [availableCheck, toggleAvailableCheck] = useReducer(
@@ -23,14 +26,7 @@ export const Arena = memo(() => {
   return (
     <Flex
       mt={20}
-      pl={50}
-      pr={50}
-      style={{
-        flex: 1,
-        flexDirection: "column",
-        maxWidth: "min(1300px, 90%)",
-        marginInline: 'auto'
-      }}
+      className={styles.wrapper}
     >
       <Flex
         style={{
@@ -67,17 +63,12 @@ export const Arena = memo(() => {
         </Box>
         <Filters onChangeFilters={onChangeFilters} />
       </Flex>
-      <Flex
-        style={{
-          flex: 1,
-        }}
-      >
+      <Flex className={styles.gridWrapper}>
         <Grid
           mt={20}
           gutter={"md"}
-
         >
-          <GridColumn>
+          <GridColumn >
             <CreateLobby />
           </GridColumn>
           <LobbyList

@@ -10,6 +10,7 @@ import { HoverCard, Badge } from "@mantine/core";
 import { PlayersTable } from "pages/@shared/PlayersTable";
 import { getTier } from "pages/@shared/lib";
 import { useMyCharacterFromContractState } from "app/api/mintState";
+import { useMediaQuery } from "@mantine/hooks";
 
 type LobbyListProps = {
   filters: string[];
@@ -26,7 +27,7 @@ export const LobbyList: FC<LobbyListProps> = memo(
     /**
      * Get handleJoinLobby
      */
-    const handleJoinLobby = ({ lobbyId }: { lobbyId: string }) => {
+    const handleJoinLobby = ({ lobbyId }: { lobbyId: string; }) => {
       console.log("handleJoinLobby", lobbyId);
 
       navigate(routes.lobby(lobbyId));
@@ -83,6 +84,8 @@ export const LobbyList: FC<LobbyListProps> = memo(
       allOpenLobby,
     ]);
 
+    const isNarrowScreen = useMediaQuery("(max-width: 768px)");
+
     return cards.map((card, index) => {
       const characters =
         card.players.map((character) => {
@@ -106,6 +109,7 @@ export const LobbyList: FC<LobbyListProps> = memo(
             onJoin={() => handleJoinLobby({ lobbyId: card.lobbyId })}
             playersBadge={
               <HoverCard
+                disabled={isNarrowScreen}
                 position="top"
                 transitionProps={{
                   duration: 250,
@@ -123,7 +127,7 @@ export const LobbyList: FC<LobbyListProps> = memo(
                 }}
                 radius={0}
               >
-                <HoverCard.Target>
+                <HoverCard.Target >
                   <Badge
                     c={"white"}
                     style={{ textTransform: "none", cursor: "pointer" }}

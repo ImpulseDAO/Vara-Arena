@@ -11,6 +11,7 @@ import "./PlayersTable.scss";
 import { routes } from "app/routes";
 import { useNavigate } from "react-router-dom";
 import { ThreeDotsIcon } from "components/Icons";
+import { useMediaQuery } from "@mantine/hooks";
 
 const inProgressColumns: TableColumnsType[] = [
   {
@@ -156,14 +157,18 @@ export const Row = ({
   isSelected: boolean;
 }) => {
   const navigate = useNavigate();
+  const isSmall = useMediaQuery('(max-width: 600px)');
 
   return (
     <div className="row_player">
-      <Anchor onClick={() => {
-        navigate(routes.profile(id));
-      }}>
+      {isSmall ? null : <Anchor
+        onClick={() => {
+          navigate(routes.profile(id));
+        }}
+
+      >
         <img src={AvatarIcon} alt="AvatarIcon" className={`${isSelected ? 'selected_image' : ''}`} />
-      </Anchor>
+      </Anchor>}
       <div>
         <p className="row_name">{name}</p>
         <p>{`#${id}`}</p>

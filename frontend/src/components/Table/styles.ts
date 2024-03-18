@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { SortType } from './constants';
+import { SortType } from "./constants";
 
 const Container = styled.div`
   display: flex;
@@ -16,13 +16,19 @@ const Container = styled.div`
   overflow: hidden;
 `;
 
-const Column = styled.div<{ position?: "left" | "right" | "center"; }>`
+const Column = styled.div<{ position?: "left" | "right" | "center" }>`
   display: flex;
   align-items: center;
   height: 16px;
   gap: 4px;
   ${({ position }) => css`
     justify-content: ${position};
+    ${position &&
+    {
+      center: "text-align: center;",
+      left: "text-align: left;",
+      right: "text-align: right;",
+    }[position]}
   `}
 `;
 

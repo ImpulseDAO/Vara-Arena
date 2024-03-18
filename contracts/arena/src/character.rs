@@ -20,14 +20,6 @@ pub struct Character {
     pub rest_count: u8,
     pub disable_agiim: bool,
 
-    // spell effects
-    pub fire_wall: (u8, u8),
-    pub earth_skin: (u8, u8),
-    pub chilling_touch: u8,
-    pub water_burst: u8,
-    pub fire_haste: u8,
-    pub earth_smites: (u8, u8),
-
     effects: Effects,
 }
 
@@ -46,12 +38,6 @@ impl Character {
             parry: false,
             rest_count: 0,
             disable_agiim: false,
-            fire_wall: (0, 0),
-            earth_skin: (0, 0),
-            chilling_touch: 0,
-            earth_smites: (0, 0),
-            fire_haste: 0,
-            water_burst: 0,
             effects: Effects::new(),
         }
     }

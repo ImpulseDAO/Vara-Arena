@@ -1,4 +1,5 @@
 use crate::character::Character;
+use crate::effects::EffectKind;
 use arena_io::{BattleAction, CastSpellResult, Spell, TurnEvent};
 
 pub fn execute_cast_spell(
@@ -10,8 +11,9 @@ pub fn execute_cast_spell(
     let result = match spell {
         Spell::FireWall => {
             if let Some(energy) = player.energy.checked_sub(5) {
+                let firewall_damage = player.attributes.intelligence * 2;
                 player.energy = energy;
-                player.fire_wall = (3, player.attributes.intelligence * 2);
+                player.add_effect(EffectKind::Spikes, firewall_damage, Some(3));
                 CastSpellResult::FireWall
             } else {
                 return TurnEvent::NotEnoughEnergy {
@@ -22,9 +24,13 @@ pub fn execute_cast_spell(
         Spell::EarthSkin => {
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
-                player.earth_skin = (3, player.attributes.intelligence * 3);
+                player.add_effect(
+                    EffectKind::Regeneration,
+                    player.attributes.intelligence,
+                    Some(3),
+                );
                 CastSpellResult::EarthSkin {
-                    defence: player.earth_skin.1,
+                    defence: player.attributes.intelligence,
                 }
             } else {
                 return TurnEvent::NotEnoughEnergy {
@@ -60,7 +66,7 @@ pub fn execute_cast_spell(
             if let Some(energy) = player.energy.checked_sub(5) {
                 player.energy = energy;
                 let damage = 5 + player.attributes.intelligence * 2;
-                enemy.water_burst = 3;
+                enemy.add_effect(EffectKind::Blind, 1, Some(3));
                 enemy.hp = enemy.hp.saturating_sub(damage);
                 CastSpellResult::WaterBurst { damage }
             } else {
@@ -69,35 +75,12 @@ pub fn execute_cast_spell(
                 };
             }
         }
-        Spell::FireHaste => {
-            if let Some(energy) = player.energy.checked_sub(5) {
-                player.energy = energy;
-                player.fire_haste = 4;
-                CastSpellResult::FireHaste
-            } else {
-                return TurnEvent::NotEnoughEnergy {
-                    action: action.clone(),
-                };
-            }
-        }
         Spell::EarthSmites => {
             if let Some(energy) = player.energy.checked_sub(5) {
+                let damage = player.attributes.intelligence * 3;
                 player.energy = energy;
-                player.earth_smites = (4, player.attributes.intelligence * 3);
-                CastSpellResult::EarthSmites {
-                    damage: player.earth_smites.1,
-                }
-            } else {
-                return TurnEvent::NotEnoughEnergy {
-                    action: action.clone(),
-                };
-            }
-        }
-        Spell::ChillingTouch => {
-            if let Some(energy) = player.energy.checked_sub(5) {
-                player.energy = energy;
-                enemy.chilling_touch = 4;
-                CastSpellResult::ChillingTouch
+                player.add_effect(EffectKind::Empower, damage, Some(3));
+                CastSpellResult::EarthSmites { damage }
             } else {
                 return TurnEvent::NotEnoughEnergy {
                     action: action.clone(),

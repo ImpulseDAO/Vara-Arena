@@ -1,6 +1,7 @@
+use crate::character::Character;
+use crate::effects::EffectKind;
 use crate::spell::execute_cast_spell;
 use crate::utils;
-use crate::{character::Character, effects::EffectKind};
 use arena_io::{AttackKind, AttackResult, BattleAction, TurnEvent, TurnLog};
 use core::cmp::{max, min};
 use gstd::{debug, prelude::*};
@@ -53,36 +54,23 @@ fn execute_attack_kind(
                     },
                 });
             } else {
-                let hit_chance = if player.water_burst == 0 {
-                    base_hit_chance + player.attributes.agility * 2
-                } else {
-                    base_hit_chance
-                };
+                let blind = player.get_effect(EffectKind::Blind);
+                let hit_chance = base_hit_chance + player.attributes.agility * 2 - blind;
                 let success = is_attack_successful(hit_chance);
                 if success {
-                    let mut damage = attack_power(player, base_damage, crit_modifier);
+                    let damage = attack_power(player, base_damage, crit_modifier);
                     debug!("damage is {:?}", damage);
-                    if player.earth_smites.0 > 0 {
-                        damage += player.earth_smites.1;
-                    }
-                    if enemy.earth_skin.0 > 0 {
-                        if enemy.earth_skin.1 > damage {
-                            enemy.earth_skin.1 = enemy.earth_skin.1 - damage;
-                        } else {
-                            damage = damage - enemy.earth_skin.1;
-                            enemy.earth_skin = (0, 0);
-                        }
-                    }
                     enemy.hp = enemy.hp.saturating_sub(damage);
-                    if enemy.fire_wall.0 != 0 && enemy.hp != 0 {
-                        let damage = enemy.fire_wall.1;
-                        player.hp = player.hp.saturating_sub(damage);
-                        enemy.fire_wall = (0, 0);
+
+                    let spikes = enemy.get_effect(EffectKind::Spikes);
+                    if spikes > 0 {
+                        player.hp = player.hp.saturating_sub(spikes);
                         logs.push(TurnLog {
                             character: player.id,
                             action: TurnEvent::FireWall { damage },
                         });
                     }
+
                     logs.push(TurnLog {
                         character: player.id,
                         action: TurnEvent::Attack {

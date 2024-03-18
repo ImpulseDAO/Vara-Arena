@@ -124,9 +124,7 @@ pub enum Spell {
     WaterRestoration,
     Fireball,
     WaterBurst,
-    FireHaste,
     EarthSmites,
-    ChillingTouch,
 }
 
 #[derive(Encode, Decode, Debug, TypeInfo, Clone)]
@@ -148,12 +146,6 @@ pub struct CharacterState {
     pub rest_count: u8,
     pub disable_agiim: bool,
     // spell effects
-    pub fire_wall: (u8, u8),
-    pub earth_skin: (u8, u8),
-    pub chilling_touch: u8,
-    pub water_burst: u8,
-    pub fire_haste: u8,
-    pub earth_smites: (u8, u8),
     pub attributes: CharacterAttributes,
 }
 

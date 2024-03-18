@@ -9,6 +9,7 @@ pub enum EffectKind {
     Empower,
     Luck,
     Regeneration,
+    Blind,
 }
 
 #[derive(Clone, Debug)]

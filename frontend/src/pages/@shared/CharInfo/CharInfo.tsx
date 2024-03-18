@@ -46,8 +46,10 @@ export const CharInfo = ({
   }, [navigate]);
 
   const handleClickWallet = useCallback(() => {
-    toggleWalletVisible();
     toggleModalVisible();
+    setTimeout(() => {
+      toggleWalletVisible();
+    }, 100);
   }, []);
 
   return (

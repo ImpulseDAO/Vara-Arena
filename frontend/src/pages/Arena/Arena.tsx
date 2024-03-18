@@ -28,6 +28,8 @@ export const Arena = memo(() => {
       style={{
         flex: 1,
         flexDirection: "column",
+        maxWidth: "min(1300px, 90%)",
+        marginInline: 'auto'
       }}
     >
       <Flex
@@ -73,10 +75,7 @@ export const Arena = memo(() => {
         <Grid
           mt={20}
           gutter={"md"}
-          style={{
-            flex: 1,
-            maxWidth: "min(1300px, 90%)",
-          }}
+
         >
           <GridColumn>
             <CreateLobby />

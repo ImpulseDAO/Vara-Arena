@@ -149,7 +149,7 @@ export const Profile = ({
             lives={character.livesCount}
           />
 
-          <UploadStrategyWidget />
+          {isMyCharacter ? <UploadStrategyWidget /> : null}
 
           <CharStats
             character={character}

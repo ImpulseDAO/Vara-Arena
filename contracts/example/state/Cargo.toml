@@ -1,0 +1,14 @@
+[package]
+edition = "2021"
+name = "example-state"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+example-io = {path = "../io"}
+gmeta = {git = "https://github.com/gear-tech/gear.git", features = ["codegen"], tag = "v1.0.2"}
+gstd = {git = "https://github.com/gear-tech/gear.git", features = ["debug"], tag = "v1.0.2"}
+
+[build-dependencies]
+gear-wasm-builder = {git = "https://github.com/gear-tech/gear.git", features = ["metawasm"], tag = "v1.0.2"}

@@ -1,0 +1,13 @@
+[package]
+edition = "2021"
+name = "example-io"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+gmeta = {git = "https://github.com/gear-tech/gear.git", tag = "v1.0.2"}
+gstd = {git = "https://github.com/gear-tech/gear.git", features = ["debug"], tag = "v1.0.2"}
+mint-io = {path = "../../mint/io/"}
+parity-scale-codec = {version = "3", default-features = false}
+scale-info = {version = "2", default-features = false}

@@ -1,17 +1,16 @@
-import { useCallback, useMemo } from "react";
-import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
-import { useAccount, useSendMessage } from "@gear-js/react-hooks";
-import { ProgramMetadata } from "@gear-js/api";
+import { useCallback } from "react";
+import { useAccount } from "@gear-js/react-hooks";
 import { MAX_GAS_LIMIT } from "consts";
 import { useWatchArenaMessages } from "hooks/useWatchArenaMessages/useWatchArenaMessages";
 import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
+import { useSendToArena } from "app/api/sendMessages";
+import { useFindMyVoucher } from "hooks/useFindMyVoucher";
 
 export const useOnRegisterForBattle = () => {
   const { account } = useAccount();
   const alert = useStableAlert();
-
-  const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const { send } = useSendToArena();
+  const { findVoucher } = useFindMyVoucher();
 
   const { subscribe, unsubscribe } = useWatchArenaMessages<{
     PlayerRegistered: {
@@ -23,7 +22,16 @@ export const useOnRegisterForBattle = () => {
 
   return useCallback(
     async ({ lobbyId }: { lobbyId: string }) => {
+      const payload = {
+        Register: {
+          owner_id: account?.decodedAddress,
+          lobby_id: lobbyId,
+        },
+      };
+
       return new Promise(async (resolve, reject) => {
+        const { voucherId } = await findVoucher(payload, "ARENA");
+
         subscribe((reply, error) => {
           if (error) {
             reject(error.message);
@@ -41,19 +49,18 @@ export const useOnRegisterForBattle = () => {
 
           resolve(reply);
         });
-        const rejectAfterTimeout = () =>
+
+        const rejectAfterTimeout = () => {
           setTimeout(
             () => reject(new Error("Timeout: no reply from the arena")),
             4000
           );
+        };
+
         send({
-          payload: {
-            Register: {
-              owner_id: account?.decodedAddress,
-              lobby_id: lobbyId,
-            },
-          },
+          payload,
           gasLimit: MAX_GAS_LIMIT,
+          voucherId,
           onSuccess: () => {
             console.log('"Register" message sent');
             rejectAfterTimeout();
@@ -67,6 +74,6 @@ export const useOnRegisterForBattle = () => {
         unsubscribe();
       });
     },
-    [account?.decodedAddress, alert, send, subscribe, unsubscribe]
+    [account, alert, findVoucher, send, subscribe, unsubscribe]
   );
 };

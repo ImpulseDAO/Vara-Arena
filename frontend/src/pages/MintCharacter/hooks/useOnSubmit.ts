@@ -1,10 +1,9 @@
-import { useSendMessage } from "@gear-js/react-hooks";
-import { useCallback, useMemo, useRef } from "react";
-import { MINT_METADATA, MINT_PROGRAM_ID } from "consts";
-import { ProgramMetadata } from "@gear-js/api";
+import { useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { MAX_GAS_LIMIT } from "consts";
 import { resetUseMyCharacrersQuery } from "app/api/characters";
+import { useSendToMintContract } from "app/api/sendMessages";
+import { useFindMyVoucher } from "hooks/useFindMyVoucher";
 
 export const useOnSubmit = ({
   codeId,
@@ -32,9 +31,8 @@ export const useOnSubmit = ({
   /**
    *
    */
-  const meta = useMemo(() => ProgramMetadata.from(MINT_METADATA), []);
-
-  const send = useSendMessage(MINT_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const { send } = useSendToMintContract();
+  const { findVoucher } = useFindMyVoucher();
   const navigate = useNavigate();
 
   /**
@@ -55,9 +53,12 @@ export const useOnSubmit = ({
       },
     };
 
+    const { voucherId } = await findVoucher(payload, "MINT");
+
     send({
       payload,
       gasLimit: MAX_GAS_LIMIT,
+      voucherId,
       onSuccess: (result) => {
         console.log("success", result);
         onSuccessRef.current?.();
@@ -68,5 +69,16 @@ export const useOnSubmit = ({
         console.log("error");
       },
     });
-  }, [codeId, name, navigate, send, stats]);
+  }, [
+    codeId,
+    findVoucher,
+    name,
+    navigate,
+    send,
+    stats.agility,
+    stats.intelligence,
+    stats.stamina,
+    stats.strength,
+  ]);
+  //
 };

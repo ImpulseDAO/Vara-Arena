@@ -1,14 +1,14 @@
 import "../styles.scss";
 
-import React, { useCallback, useMemo } from "react";
-import { useAlert, useSendMessage } from "@gear-js/react-hooks";
-import { ProgramMetadata } from "@gear-js/api";
-import { ARENA_PROGRAM_ID, ARENA_METADATA } from "consts";
+import React, { useCallback } from "react";
+import { useAlert } from "@gear-js/react-hooks";
 import { useNavigate } from "react-router-dom";
 import { Button, Text } from "@mantine/core";
 import { MAX_GAS_LIMIT } from "consts";
 import { useOnRegisterForBattle } from "pages/StartFight/hooks/useOnSubmit";
 import { useMyHeroIsDead } from "app/api/mintState";
+import { useSendToArena } from "app/api/sendMessages";
+import { useFindMyVoucher } from "hooks/useFindMyVoucher";
 
 const JOIN_BUTTON_TEXT = "Join the battle";
 const RESERVE_BUTTON_TEXT = "Reserve gas";
@@ -46,8 +46,8 @@ export const ButtonsJoinReservePlay = ({
 }) => {
   const alert = useAlert();
   const navigate = useNavigate();
-  const meta = useMemo(() => ProgramMetadata.from(ARENA_METADATA), []);
-  const send = useSendMessage(ARENA_PROGRAM_ID, meta, { isMaxGasLimit: true });
+  const { send } = useSendToArena();
+  const { findVoucher } = useFindMyVoucher();
 
   const isUserHasPermissionToCancel = false;
   const isReservationsNeeded = playersNeeded === 4;
@@ -65,15 +65,15 @@ export const ButtonsJoinReservePlay = ({
 
   const isPlayDisabled = hasPlayerJoined && playersNeeded > players.length;
 
-  const reserveGas = React.useCallback(() => {
+  const reserveGas = React.useCallback(async () => {
+    const payload = { ReserveGas: { lobby_id: lobbyId } };
+    const { voucherId } = await findVoucher(payload, 'ARENA');
+
     return new Promise((resolve, reject) => {
       send({
-        payload: {
-          ReserveGas: {
-            lobby_id: lobbyId
-          }
-        },
+        payload,
         gasLimit: MAX_GAS_LIMIT,
+        voucherId,
         onSuccess: () => {
           console.log("successfully reserved gas");
           resolve("successfully reserved gas");
@@ -85,18 +85,18 @@ export const ButtonsJoinReservePlay = ({
         },
       });
     });
-  }, [send, lobbyId, handleGasReserved]);
+  }, [lobbyId, findVoucher, send, handleGasReserved]);
 
-  const startBattle = React.useCallback(() => {
+  const startBattle = React.useCallback(async () => {
+    const payload = { Play: { lobby_id: lobbyId } };
+    const { voucherId } = await findVoucher(payload, 'ARENA');
+
     return new Promise((resolve) => {
       send(
         {
-          payload: {
-            Play: {
-              lobby_id: lobbyId
-            },
-          },
+          payload,
           gasLimit: MAX_GAS_LIMIT,
+          voucherId,
           onSuccess: () => {
             localStorage.setItem("players", JSON.stringify([]));
             console.log("successfully started the battle");
@@ -107,7 +107,7 @@ export const ButtonsJoinReservePlay = ({
         }
       );
     });
-  }, [send, lobbyId, onStartButtonSucess]);
+  }, [lobbyId, findVoucher, send, onStartButtonSucess]);
 
   const registerForBattle = useOnRegisterForBattle();
 
@@ -163,12 +163,14 @@ export const ButtonsJoinReservePlay = ({
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
+    const payload = { CleanState: null };
+    const { voucherId } = await findVoucher(payload, 'ARENA');
+
     send(
       {
-        payload: {
-          CleanState: null,
-        },
+        payload,
+        voucherId,
         gasLimit: MAX_GAS_LIMIT,
         onSuccess: () => {
           console.log("CleanState message successfully sent");

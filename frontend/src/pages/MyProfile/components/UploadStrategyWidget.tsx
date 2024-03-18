@@ -7,6 +7,7 @@ import { MAX_GAS_LIMIT } from "consts";
 import { InputProgramId } from "./InputProgramId";
 import { useStableAlert } from "hooks/useWatchMessages/useStableAlert";
 import { getCodeIdsFromLocalStorage, useCodeAndProgramIDs } from "hooks/useCodeAndProgramIDs";
+import { useFindMyVoucher } from "hooks/useFindMyVoucher";
 
 export const UploadStrategyWidget = () => {
   const alert = useStableAlert();
@@ -36,7 +37,8 @@ export const UploadStrategyWidget = () => {
    * Run contract method UpdateCharacter
    */
 
-  const sendToMintContract = useSendToMintContract();
+  const { send } = useSendToMintContract();
+  const { findVoucher } = useFindMyVoucher();
 
   /**
    * 
@@ -60,9 +62,13 @@ export const UploadStrategyWidget = () => {
       },
     };
 
-    sendToMintContract({
+    const { voucherId } = await findVoucher(payload, 'MINT');
+
+
+    send({
       payload,
       gasLimit: MAX_GAS_LIMIT,
+      voucherId,
       onSuccess: (result) => {
         console.log("UpdateCharacter message successfully sent", result);
         setIsUpdating(false);
@@ -73,7 +79,7 @@ export const UploadStrategyWidget = () => {
       },
     });
 
-  }, [alert, codeId, programId, sendToMintContract]);
+  }, [alert, codeId, findVoucher, programId, send]);
 
 
   if (!isVisible) {

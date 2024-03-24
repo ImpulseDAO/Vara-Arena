@@ -1,4 +1,5 @@
-use crate::effects::{EffectKind, Effects, Stack};
+use crate::effect::{Effect, EffectKind, Effects, Stack};
+use crate::item::{Item, ItemTrigger};
 use crate::utils;
 use gstd::{prelude::*, ActorId};
 use mint_io::{CharacterAttributes, CharacterInfo};
@@ -21,10 +22,11 @@ pub struct Character {
     pub disable_agiim: bool,
 
     effects: Effects,
+    items: Vec<Item>,
 }
 
 impl Character {
-    pub fn new(character_info: CharacterInfo, owner_id: ActorId) -> Character {
+    pub fn new(character_info: CharacterInfo, owner_id: ActorId, items: Vec<Item>) -> Character {
         Character {
             owner: owner_id,
             id: character_info.id,
@@ -39,6 +41,7 @@ impl Character {
             rest_count: 0,
             disable_agiim: false,
             effects: Effects::new(),
+            items,
         }
     }
 
@@ -47,10 +50,25 @@ impl Character {
     }
 
     pub fn add_effect(&mut self, kind: EffectKind, stack: Stack, duration: Option<u8>) {
-        self.effects.add_effect(kind, stack, duration);
+        let effect = Effect {
+            kind,
+            stack,
+            duration,
+        };
+        self.effects.add_effect(effect);
     }
 
     pub fn round_tick(&mut self) {
         self.effects.update_effects();
+    }
+
+    pub fn trigger_items(&mut self, trigger: ItemTrigger) {
+        for item in &self.items {
+            if item.trigger == trigger {
+                for effect in &item.effects {
+                    self.effects.add_effect(effect.clone());
+                }
+            }
+        }
     }
 }

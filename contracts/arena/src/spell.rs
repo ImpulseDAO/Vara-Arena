@@ -1,5 +1,5 @@
 use crate::character::Character;
-use crate::effects::EffectKind;
+use crate::effect::EffectKind;
 use arena_io::{BattleAction, CastSpellResult, Spell, TurnEvent};
 
 pub fn execute_cast_spell(

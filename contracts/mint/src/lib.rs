@@ -74,6 +74,7 @@ impl Mint {
             },
             level: 1,
             experience: 0,
+            items: vec![],
         };
 
         self.characters.insert(msg::source(), info.clone());

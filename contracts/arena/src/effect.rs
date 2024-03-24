@@ -9,14 +9,15 @@ pub enum EffectKind {
     Empower,
     Luck,
     Regeneration,
+    Vampirism,
     Blind,
 }
 
 #[derive(Clone, Debug)]
-struct Effect {
-    kind: EffectKind,
-    duration: Option<u8>,
-    stack: Stack,
+pub struct Effect {
+    pub kind: EffectKind,
+    pub duration: Option<u8>,
+    pub stack: Stack,
 }
 
 #[derive(Clone, Debug)]
@@ -37,13 +38,8 @@ impl Effects {
         *self.stacks.get(&kind).unwrap_or(&0)
     }
 
-    pub fn add_effect(&mut self, kind: EffectKind, stack: Stack, duration: Option<u8>) {
-        assert!(stack > 0);
-        let effect = Effect {
-            kind,
-            stack,
-            duration,
-        };
+    pub fn add_effect(&mut self, effect: Effect) {
+        assert!(effect.stack > 0);
         self.effects.push(effect);
     }
 
@@ -70,12 +66,17 @@ impl Effects {
 
 #[cfg(test)]
 mod tests {
-    use crate::effects::{EffectKind, Effects};
+    use crate::effect::{Effect, EffectKind, Effects};
 
     #[test]
     fn default_usage() {
         let mut effects = Effects::new();
-        effects.add_effect(EffectKind::Empower, 2, Some(1));
+        let effect = Effect {
+            kind: EffectKind::Empower,
+            duration: Some(1),
+            stack: 2,
+        };
+        effects.add_effect(effect);
         effects.update_effects();
         assert!(effects.get_effect(EffectKind::Empower) == 2);
     }

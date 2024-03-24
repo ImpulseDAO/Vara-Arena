@@ -1,5 +1,6 @@
 use crate::character::Character;
-use crate::effects::EffectKind;
+use crate::effect::EffectKind;
+use crate::item::ItemTrigger;
 use crate::spell::execute_cast_spell;
 use crate::utils;
 use arena_io::{AttackKind, AttackResult, BattleAction, TurnEvent, TurnLog};
@@ -114,6 +115,7 @@ fn execute_attack(
     kind: &AttackKind,
     logs: &mut Vec<TurnLog>,
 ) {
+    player.trigger_items(ItemTrigger::OnAttack);
     match kind {
         AttackKind::Quick => execute_attack_kind(player, enemy, 2, 80, 5, 2, kind, logs),
         AttackKind::Precise => execute_attack_kind(player, enemy, 4, 60, 10, 3, kind, logs),

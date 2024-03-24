@@ -2,13 +2,16 @@
 
 use arena::Arena;
 use arena_io::ArenaAction;
+use effect::{Effect, EffectKind};
 use gstd::{msg, prelude::*, ActorId};
+use item::{Item, ItemStorage};
 
 mod arena;
 mod battle;
 mod character;
-mod effects;
+mod effect;
 mod execute;
+mod item;
 mod spell;
 mod utils;
 
@@ -17,7 +20,11 @@ static mut ARENA: Option<Arena> = None;
 #[no_mangle]
 unsafe extern "C" fn init() {
     let mint: ActorId = msg::load().expect("unable to decode `ActorId`");
-    ARENA = Some(Arena::new(mint));
+
+    let mut item_storage = ItemStorage::new();
+    initialize_items(&mut item_storage);
+
+    ARENA = Some(Arena::new(mint, item_storage));
 }
 
 #[gstd::async_main]
@@ -40,3 +47,5 @@ extern "C" fn state() {
     let state = arena.state();
     msg::reply(state, 0).expect("failed to share state");
 }
+
+fn initialize_items(storage: &mut ItemStorage) {}

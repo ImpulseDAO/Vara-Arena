@@ -1,5 +1,5 @@
 use crate::character::Character;
-use crate::effects::EffectKind;
+use crate::effect::EffectKind;
 use crate::execute::execute_action;
 use crate::utils::full_hp;
 use arena_io::{

@@ -1,5 +1,6 @@
 use crate::battle::Battle;
 use crate::character::Character;
+use crate::item::ItemStorage;
 use arena_io::{ArenaAction, ArenaEvent, ArenaState, BattleLog, SetTier};
 use gstd::collections::BTreeMap;
 use gstd::{debug, exec, msg, prelude::*, ActorId, ReservationId};
@@ -38,18 +39,20 @@ pub struct Lobby {
     started: bool,
 }
 
-#[derive(Default)]
 pub struct Arena {
     mint: ActorId,
     lobby_count: u128,
     lobbys: BTreeMap<u128, Lobby>,
+    item_storage: ItemStorage,
 }
 
 impl Arena {
-    pub fn new(mint: ActorId) -> Arena {
+    pub fn new(mint: ActorId, item_storage: ItemStorage) -> Arena {
         Arena {
             mint,
-            ..Default::default()
+            item_storage,
+            lobby_count: 0,
+            lobbys: BTreeMap::new(),
         }
     }
 
@@ -208,13 +211,13 @@ impl Arena {
             .await
             .expect("unable to receive reply");
 
+        let character = self.create_character(character_info, owner_id);
+
         let lobby = self.lobbys.get_mut(&lobby_id).expect("lobby isn't found");
 
         if lobby.characters.len() == lobby.capacity.size.into() {
             panic!("max number of players is already registered");
         }
-
-        let character = Character::new(character_info, owner_id);
 
         // Check whether player already registered
         if lobby.characters.iter().any(|c| c.owner == owner_id) {
@@ -276,5 +279,11 @@ impl Arena {
             mint: self.mint,
             lobby_count: self.lobby_count,
         }
+    }
+
+    fn create_character(&self, character_info: CharacterInfo, owner_id: ActorId) -> Character {
+        let items = self.item_storage.get_items(&character_info.items);
+        let character = Character::new(character_info, owner_id, items);
+        character
     }
 }

@@ -75,6 +75,7 @@ pub struct CharacterInfo {
     pub attributes: CharacterAttributes,
     pub level: u8,
     pub experience: u32,
+    pub items: Vec<String>,
 }
 
 #[derive(Encode, Decode, TypeInfo, Clone, Debug)]

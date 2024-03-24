@@ -84,7 +84,7 @@ export const Lobby = () => {
         />
 
         <div className="modal_loader">
-          <p className="modal_tille">Tournament participants</p>
+          <p className="modal_title">Tournament participants</p>
           <Stack align="center" pos="relative" w="100%">
             <AbsolutelyPositionedElements lobbyId={lobbyId} tierText={tierText} />
             {

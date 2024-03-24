@@ -1,0 +1,15 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: min(1300px, 90%);
+  flex: min(1300px, 90%);
+  margin-inline: auto;
+}
+
+.gridWrapper {
+  flex: 1;
+
+  & > div {
+    width: 100%;
+  }
+}
